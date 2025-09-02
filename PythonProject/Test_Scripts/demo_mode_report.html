@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Android Demo Mode Test Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f7f7f7; padding: 20px; }
+        h1 { color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #333; color: white; }
+        .pass { background-color: #c8e6c9; }
+        .fail { background-color: #ffcdd2; }
+        .log-block { margin-top: 5px; font-family: monospace; background: #f1f1f1; padding: 10px; border: 1px solid #ccc; white-space: pre-wrap; }
+        .collapsible {
+            background-color: #eee;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+        }
+        .active, .collapsible:hover { background-color: #ccc; }
+        .content {
+            padding: 0 18px;
+            display: none;
+            overflow: hidden;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Android Demo Mode Test Report</h1>
+    <p>Generated on: 2025-07-21 15:13:40</p>
+    <table>
+        <tr>
+            <th>Test Case</th>
+            <th>Status</th>
+            <th>Description</th>
+            <th>Duration</th>
+            <th>Logs</th>
+        </tr>
+
+        <tr class="fail">
+            <td>Demo_Mode_001</td>
+            <td>Failed</td>
+            <td>1 steps executed</td>
+            <td>0.00 sec</td>
+            <td>
+                <button class="collapsible">View Logs</button>
+                <div class="content"><div class="log-block">[FAIL] Exception: Demo_Mode_001() takes 0 positional arguments but 1 was given&lt;br&gt;</div></div>
+            </td>
+        </tr>
+
+        <tr class="fail">
+            <td>Demo_Mode_002</td>
+            <td>Failed</td>
+            <td>1 steps executed</td>
+            <td>0.00 sec</td>
+            <td>
+                <button class="collapsible">View Logs</button>
+                <div class="content"><div class="log-block">[FAIL] Exception: Demo_Mode_002() takes 0 positional arguments but 1 was given&lt;br&gt;</div></div>
+            </td>
+        </tr>
+
+        <tr class="fail">
+            <td>Demo_Mode_003</td>
+            <td>Failed</td>
+            <td>1 steps executed</td>
+            <td>0.00 sec</td>
+            <td>
+                <button class="collapsible">View Logs</button>
+                <div class="content"><div class="log-block">[FAIL] Exception: Demo_Mode_003() takes 0 positional arguments but 1 was given&lt;br&gt;</div></div>
+            </td>
+        </tr>
+
+    </table>
+    <script>
+        const coll = document.getElementsByClassName("collapsible");
+        for (let i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                } else {
+                    content.style.display = "block";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

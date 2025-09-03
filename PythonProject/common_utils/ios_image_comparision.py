@@ -2,7 +2,7 @@ from skimage.metrics import structural_similarity as ssim
 import os
 import cv2
 import time
-from common_utils.ios_controller import IOSController
+from PythonProject.common_utils.ios_controller import IOSController
 
 def find_icon_in_screen_ios(controller: IOSController, icon_filename, threshold=0.9):
     """

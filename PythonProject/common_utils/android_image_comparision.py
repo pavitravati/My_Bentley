@@ -1,6 +1,6 @@
 import cv2
 import os
-from common_utils.android_controller import DeviceController
+from PythonProject.common_utils.android_controller import DeviceController
 from skimage.metrics import structural_similarity as ssim
 import numpy as np
 controller = DeviceController()

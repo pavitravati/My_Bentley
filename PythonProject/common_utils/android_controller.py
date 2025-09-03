@@ -302,3 +302,41 @@ class DeviceController:
             print("⚠️ No metrics found on screen.")
 
         return metrics
+
+    def extract_profile_details(self):
+        details = {}
+
+        try:
+            # Last name
+            if self.d(text="Last name").exists:
+                value = self.d(text="Last name").sibling(className="android.widget.TextView", instance=1)
+                if value.exists:
+                    details["Last name"] = value.get_text()
+
+            # First name
+            if self.d(text="First name").exists:
+                value = self.d(text="First name").sibling(className="android.widget.TextView", instance=1)
+                if value.exists:
+                    details["First name"] = value.get_text()
+
+            # Email
+            if self.d(text="Email address").exists:
+                value = self.d(text="Email address").sibling(className="android.widget.TextView", instance=1)
+                if value.exists:
+                    details["Email address"] = value.get_text()
+
+        except Exception as e:
+            print(f"❌ Error while extracting profile details: {e}")
+
+        # Print results
+        if details:
+            print("\n✅ Extracted Profile Details:")
+            for k, v in details.items():
+                print(f"{k}: {v}")
+        else:
+            print("⚠️ No profile details found.")
+
+        return details
+
+
+

@@ -1,6 +1,6 @@
-from common_utils.html_test_report import *
-from Test_Scripts.Android_TestCase import *
-from common_utils.test_result_tracker import run_test_with_logs
+from PythonProject.common_utils.html_test_report import *
+from PythonProject.Test_Scripts.Android_TestCase import *
+from PythonProject.common_utils.test_result_tracker import run_test_with_logs
 
 all_tests = [
     Demo_Mode_001,

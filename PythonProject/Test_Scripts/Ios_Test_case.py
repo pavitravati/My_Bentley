@@ -1,6 +1,6 @@
 from time import sleep
-from common_utils.ios_image_comparision import *
-from common_utils.test_result_tracker import TestCaseResult
+from PythonProject.common_utils.ios_image_comparision import *
+from PythonProject.common_utils.test_result_tracker import TestCaseResult
 
 MAC_IP = "192.168.1.4"
 PORT = 8101

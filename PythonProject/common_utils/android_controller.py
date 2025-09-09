@@ -337,6 +337,3 @@ class DeviceController:
             print("⚠️ No profile details found.")
 
         return details
-
-
-

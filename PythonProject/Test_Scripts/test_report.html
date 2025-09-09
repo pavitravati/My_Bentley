@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Test Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f7f7f7; padding: 20px; }
+        h1 { color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #333; color: white; }
+        .pass { background-color: #c8e6c9; }
+        .fail { background-color: #ffcdd2; }
+        .log-block { margin-top: 5px; font-family: monospace; background: #f1f1f1; padding: 10px; border: 1px solid #ccc; white-space: pre-wrap; }
+        .collapsible {
+            background-color: #eee;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+        }
+        .active, .collapsible:hover { background-color: #ccc; }
+        .content {
+            padding: 0 18px;
+            display: none;
+            overflow: hidden;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Test Report</h1>
+    <p>Generated on: 2025-07-30 18:43:17</p>
+    <table>
+        <tr>
+            <th>Test Case</th>
+            <th>Status</th>
+            <th>Description</th>
+            <th>Duration</th>
+            <th>Logs</th>
+        </tr>
+
+            <tr class="pass">
+                <td>Demo_Mode_001</td>
+                <td>Passed</td>
+                <td>Accessing Demo mode</td>
+                <td>4.64</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">****** C:\Users\EBYW5T1\PycharmProjects\PythonProject\resource\Images/My_Bentley_Login_Page.png&lt;br&gt;Match confidence: {max_val}&lt;br&gt;****** C:\Users\EBYW5T1\PycharmProjects\PythonProject\resource\Images/My_Bentley_Demo_Mode_Page.png&lt;br&gt;Match confidence: {max_val}&lt;br&gt;✅ Demo_Mode_001 passed&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="pass">
+                <td>Demo_Mode_002</td>
+                <td>Passed</td>
+                <td>Verify Demo Mode content</td>
+                <td>10.57</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">****** C:\Users\EBYW5T1\PycharmProjects\PythonProject\resource\Images/My_Bentley_Login_Page.png&lt;br&gt;Match confidence: {max_val}&lt;br&gt;Match confidence: 1.0&lt;br&gt;Image found. Clicking at (982, 154)&lt;br&gt;****** C:\Users\EBYW5T1\PycharmProjects\PythonProject\resource\Images/My_Bentley_Demo_Mode_Page.png&lt;br&gt;Match confidence: {max_val}&lt;br&gt;✅ Demo mode dashboard visible,Demo_Mode_002 passed&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="pass">
+                <td>Demo_Mode_003</td>
+                <td>Passed</td>
+                <td>Verify Dashboard content</td>
+                <td>20.38</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">Match successful&lt;br&gt;Match successful&lt;br&gt;Match successful&lt;br&gt;Match successful&lt;br&gt;Match successful&lt;br&gt;Match successful&lt;br&gt;Match successful&lt;br&gt;✅ All initial UI images validated, Demo Mode 003 passed&lt;br&gt;&lt;br&gt;✅ Extracted Metrics:&lt;br&gt;Mileage: 4,321 mi&lt;br&gt;Lights: Off&lt;br&gt;Boot: Open&lt;br&gt;Bonnet: Closed&lt;br&gt;Fuel Range: 441 mi&lt;br&gt;Doors: Open&lt;br&gt;&lt;br&gt;✅ Extracted Metrics:&lt;br&gt;Windows: Closed&lt;br&gt;Oil Level: 90 %&lt;br&gt;Oil Change: due in 270 d, 7,500 mi&lt;br&gt;Cluster Warnings: No warnings&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="pass">
+                <td>Demo_Mode_004</td>
+                <td>Passed</td>
+                <td>Verify Car Remote screen</td>
+                <td>30.38</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">Match confidence: 0.9849343299865723&lt;br&gt;Image found. Clicking at (325, 2112)&lt;br&gt;****** C:\Users\EBYW5T1\PycharmProjects\PythonProject\resource\Images/Demo_Mode_Car_Remote_Screen.png&lt;br&gt;Match confidence: {max_val}&lt;br&gt;✅ Car Remote screen visible, Demo_Mode_004 Passed&lt;br&gt;&lt;br&gt;✅ Extracted Metrics:&lt;br&gt;Last Trip: - Thu, 29/08/2024 01:58&lt;br&gt;Battery Status: Battery fully charged&lt;br&gt;&lt;br&gt;✅ Extracted Metrics:&lt;br&gt;Cabin Comfort: Not active&lt;br&gt;REMOTE PARKING: Preconditions not fulfilled&lt;br&gt;THEFT ALARM: Interior alarm&lt;br&gt;&lt;br&gt;✅ Extracted Metrics:&lt;br&gt;Roadside Assistance: Report a breakdown&lt;br&gt;DATA SERVICES: Purchase in-car data&lt;br&gt;&lt;br&gt;✅ Extracted Metrics:&lt;br&gt;Roadside Assistance: Report a breakdown&lt;br&gt;DATA SERVICES: Purchase in-car data&lt;br&gt;AUDIALS: Go to Audials&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="pass">
+                <td>Demo_Mode_005</td>
+                <td>Passed</td>
+                <td>Verify My Car Statistics screen</td>
+                <td>5.24</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">Match confidence: 0.9999991655349731&lt;br&gt;Image found. Clicking at (297, 910)&lt;br&gt;****** C:\Users\EBYW5T1\PycharmProjects\PythonProject\resource\Images/Car_Statistics_Screen.png&lt;br&gt;Match confidence: {max_val}&lt;br&gt;✅ My Car Statistics screen visible, Demo_Mode_005 Passed&lt;br&gt;Match confidence: 1.0&lt;br&gt;Image found. Clicking at (73, 314)&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="pass">
+                <td>Demo_Mode_006</td>
+                <td>Passed</td>
+                <td>Verify Navigation Screen UI Elements</td>
+                <td>12.0</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">Match confidence: 0.9942561388015747&lt;br&gt;Image found. Clicking at (539, 2113)&lt;br&gt;****** C:\Users\EBYW5T1\PycharmProjects\PythonProject\resource\Images/Navigation_Allow.png&lt;br&gt;Match confidence: {max_val}&lt;br&gt;Match successful&lt;br&gt;Search image matched&lt;br&gt;Car icon is visible&lt;br&gt;Profile icon is visible&lt;br&gt;Match confidence: 0.9989905953407288&lt;br&gt;Image found. Clicking at (121, 1908)&lt;br&gt;Match successful&lt;br&gt;Satellite traffic screen matched&lt;br&gt;✅ Demo_Mode_006 passed&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="pass">
+                <td>Demo_Mode_007</td>
+                <td>Passed</td>
+                <td>Verify Notification screen</td>
+                <td>4.94</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">Match successful&lt;br&gt;✅ Notification title validated&lt;br&gt;&lt;br&gt;✅ Extracted Metrics:&lt;br&gt;Last Updated: Last updated: Wed, 30 Jul at 23:10&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="pass">
+                <td>Demo_Mode_008</td>
+                <td>Passed</td>
+                <td>Verify Profile screen</td>
+                <td>11.65</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">Match confidence: 0.9999985694885254&lt;br&gt;Image found. Clicking at (973, 2114)&lt;br&gt;✅ Tapped Profile tab&lt;br&gt;Match successful&lt;br&gt;✅ Profile Title is present&lt;br&gt;Match successful&lt;br&gt;✅ Profile User Icon is present&lt;br&gt;Match successful&lt;br&gt;✅ Profile User Name is present&lt;br&gt;Match successful&lt;br&gt;✅ Profile 'My details' tab is present&lt;br&gt;Match confidence: 1.0&lt;br&gt;Image found. Clicking at (543, 1064)&lt;br&gt;✅ Tapped Account&lt;br&gt;Match successful&lt;br&gt;✅ Profile Account screen is present&lt;br&gt;Match confidence: 1.0&lt;br&gt;Image found. Clicking at (901, 1066)&lt;br&gt;✅ Tapped General&lt;br&gt;Match successful&lt;br&gt;✅ Profile General screen is present&lt;br&gt;Match successful&lt;br&gt;✅ Profile Settings icon is present&lt;br&gt;✅ Demo_Mode_008 passed&lt;br&gt;Match confidence: 1.0&lt;br&gt;Image found. Clicking at (171, 1070)&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="pass">
+                <td>Demo_Mode_009</td>
+                <td>Passed</td>
+                <td>Verify Setting screen</td>
+                <td>8.63</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">Match confidence: 0.8948092460632324&lt;br&gt;Image found. Clicking at (1005, 314)&lt;br&gt;Match successful&lt;br&gt;✅ Demo_Mode_009 passed&lt;br&gt;Match confidence: 1.0&lt;br&gt;Image found. Clicking at (73, 314)&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="pass">
+                <td>Demo_Mode_010</td>
+                <td>Passed</td>
+                <td>Verify Add vehicle screen</td>
+                <td>24.39</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">Match confidence: 0.9999975562095642&lt;br&gt;Image found. Clicking at (1006, 696)&lt;br&gt;Match confidence: 0.9999975562095642&lt;br&gt;Image found. Clicking at (1006, 696)&lt;br&gt;Match confidence: 1.0&lt;br&gt;Image found. Clicking at (1006, 696)&lt;br&gt;Match confidence: 0.9999954104423523&lt;br&gt;Image found. Clicking at (1006, 696)&lt;br&gt;Match successful&lt;br&gt;✅ Demo_Mode_010 passed&lt;br&gt;Match confidence: 0.9975165724754333&lt;br&gt;Image found. Clicking at (79, 698)&lt;br&gt;Match confidence: 0.9975205659866333&lt;br&gt;Image found. Clicking at (79, 698)&lt;br&gt;Match confidence: 0.9975188374519348&lt;br&gt;Image found. Clicking at (79, 698)&lt;br&gt;Match confidence: 0.9975188374519348&lt;br&gt;Image found. Clicking at (79, 698)&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="pass">
+                <td>Demo_Mode_011</td>
+                <td>Passed</td>
+                <td>Verify all the screen with Bentley style guide.</td>
+                <td>2.08</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">Match successful&lt;br&gt;Match successful&lt;br&gt;Match successful&lt;br&gt;Match successful&lt;br&gt;Match successful&lt;br&gt;Match successful&lt;br&gt;Match successful&lt;br&gt;✅ All initial UI images validated,Demo_mode_011 Passed&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="pass">
+                <td>Demo_Mode_012</td>
+                <td>Passed</td>
+                <td>Verification of Log out</td>
+                <td>19.09</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">Match confidence: 1.0&lt;br&gt;Image found. Clicking at (973, 2114)&lt;br&gt;Match successful&lt;br&gt;Match confidence: 1.0&lt;br&gt;Image found. Clicking at (901, 1066)&lt;br&gt;Match successful&lt;br&gt;Match confidence: 0.9999990463256836&lt;br&gt;Image found. Clicking at (541, 1656)&lt;br&gt;Match successful&lt;br&gt;✅ Sign in page is visible,Demo_mode_012 Passed&lt;br&gt;****** C:\Users\EBYW5T1\PycharmProjects\PythonProject\resource\Images/My_Bentley_Login_Page.png&lt;br&gt;Match confidence: {max_val}&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="pass">
+                <td>Demo_Mode_013</td>
+                <td>Passed</td>
+                <td>Verification of Log out</td>
+                <td>6.39</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">Match confidence: 1.0&lt;br&gt;Image found. Clicking at (982, 154)&lt;br&gt;Match successful&lt;br&gt;✅ Sign in page is visible,Demo_mode_013 Passed&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+    </table>
+    <script>
+        const coll = document.getElementsByClassName("collapsible");
+        for (let i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                } else {
+                    content.style.display = "block";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

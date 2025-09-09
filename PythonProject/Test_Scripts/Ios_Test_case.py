@@ -8,6 +8,12 @@ UDID = "00008130-0012513918A1401C"
 TEAM_ID = "LDD46J9733"
 BUNDLE_ID = "uk.co.bentley.MyBentley"  # App to launch
 
+# MAC_IP = "192.168.0.31"
+# PORT = 8101
+# UDID = "00008110-0002481A1188401E"
+# TEAM_ID = "DZDAJ9XWDH"
+# BUNDLE_ID = "uk.co.bentley.MyBentley"  # App to launch
+
 # Initialize and start session (app launches automatically)
 ios = IOSController(mac_ip=MAC_IP, port=PORT, udid=UDID, team_id=TEAM_ID, bundle_id=BUNDLE_ID)
 ios.start_session()
@@ -142,68 +148,3 @@ def Demo_Mode_005():
     test_result.end_time = time.time()
     return test_result
 
-def Demo_Mode_006():
-    test_result = TestCaseResult("Demo_Mode_006")
-    test_result.start_time = time.time()
-    test_passed = True
-
-    try:
-        test_result.description = "Verify Navigation screen"
-        # Step 1: Click on Navigation icon
-        ios.click_by_image("ios_images/ios_navigation_icon.png", threshold=0.80)
-        time.sleep(3)
-        # Step 2: Handle "ALLOW" popup
-        if find_icon_in_screen_ios(ios, "ios_Images/ios_Navigation_Allow.png"):
-            ios.click_by_text("ALLOW")
-            time.sleep(3)
-
-        # Step 3: Validate search image
-        if compare_with_expected_crop_ios(ios,"ios_Images/ios_Navigation_Search_Image.png"):
-            test_result.log("Search image matched")
-        else:
-            test_result.log("Search image not matched")
-            test_passed = False
-
-        # Step 4: Validate Car icon
-        if controller.d(resourceId="uk.co.bentley.mybentley:id/tab_vehicle_dashboard").exists:
-            test_result.log("Car icon is visible")
-        else:
-            test_result.log("Car icon is missing")
-            test_passed = False
-
-        # Step 5: Validate Profile icon
-        if controller.d(resourceId="uk.co.bentley.mybentley:id/tab_profile").exists:
-            test_result.log("Profile icon is visible")
-        else:
-            test_result.log("Profile icon is missing")
-            test_passed = False
-
-        # Step 6: Validate Satellite Traffic screen
-        controller.click_by_image("Icons/satellite_icon.png", threshold=0.80)
-        time.sleep(2)
-        if compare_with_expected_crop("Images/Satellite_Traffic_Screen.png"):
-            test_result.log("Satellite traffic screen matched")
-        else:
-            test_result.log("Satellite traffic screen did not match")
-            test_passed = False
-
-        # Step 7: Final result
-        if test_passed:
-            test_result.log("✅ Demo_Mode_006 passed")
-            test_result.status = "Passed"
-        else:
-            test_result.log("❌ Demo_Mode_006 failed")
-            test_result.status = "Failed"
-
-    except Exception as e:
-        test_result.log(f"❌ Unexpected error: {e}")
-        test_result.status = "Failed"
-
-    test_result.end_time = time.time()
-    return test_result
-
-def dummy():
-    sleep(3)
-    ios.take_screenshot("dummy.png")
-
-Demo_Mode_004()

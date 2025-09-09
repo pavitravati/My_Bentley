@@ -421,7 +421,6 @@ def Demo_Mode_013():
     test_result.end_time = time.time()
     return test_result
 
-
 def Profiles_001():
     test_result = TestCaseResult("Profiles_001")
     test_result.description = "Accessing Profile screen via My Bentley App"
@@ -608,7 +607,6 @@ def Profiles_004():
     return test_result
 
 # Removes the car from app so need someone who can add back quickly to finish this one
-# This is what has lead to the vehicle removed from app issue
 def Profiles_005():
     test_result = TestCaseResult("Profiles_005")
     test_result.description = ("Verify Changing the PIN")
@@ -661,6 +659,8 @@ def Profile_006():
         test_result.log_step("Terms and Usage screen is present", ok)
         test_passed &= ok
 
+
+
     except Exception as e:
         test_result.log_step(f"Unexpected error: {e}", False)
         test_result.status = "Error"
@@ -711,7 +711,6 @@ def Profile_006():
 #
     # Final summary
 #test_result.finalize()
-
 
 # def Check_Vehicle_Status(test_result, doorClosed = True, locked = True):
 #     controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -1120,8 +1119,4 @@ def Remote_Lock_Unlock017():
 # def dummy():
     #controller.take_screenshot("dashboard.png")
     #controller.click_by_image("Icons/discover_my_bentley_icon.png", threshold=0.80)
-    #compare_with_expected_crop("Images/Demo_Greetings.png")
 
-# dummy()
-
-# controller.take_screenshot("temp.png")

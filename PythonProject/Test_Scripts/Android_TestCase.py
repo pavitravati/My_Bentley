@@ -522,6 +522,120 @@ def Profiles_002():
     test_result.end_time = time.time()
     return test_result
 
+######################################################################
+
+def Profiles_003():
+    test_result = TestCaseResult("Profiles_003")
+    test_result.description = ("Verify Password Resetting")
+    test_result.start_time = time.time()
+
+    try:
+        controller.click_by_image("Icons/Profile_Account_Icon.png")
+        sleep(2)
+
+        controller.click_text("Reset password")
+        sleep(2)
+        controller.click_by_image("Icons/Reset_Password.png")
+        sleep(2)
+        if compare_with_expected_crop("Images/Email_Confirmation.png"):
+            test_result.log_step("Reset password email sent", True)
+            test_result.log("✅ Profiles_003 passed")
+        else:
+            test_result.log_step("Error: Reset password email failed", False)
+            test_result.log("❌ Profiles_003 failed")
+            test_result.status = "Failed"
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+        test_result.status = "Error"
+
+    test_result.end_time = time.time()
+    return test_result
+
+# some of the text in this test case is not the same as my app version
+# need resource id of back button
+def Profiles_004():
+    test_result = TestCaseResult("Profiles_004")
+    test_result.description = ("Verify Changing the PIN")
+    test_result.start_time = time.time()
+    current_pin = "0000"
+
+    try:
+        if compare_with_expected_crop("Icons/email_reset_x.png"):
+            controller.click_by_image("Icons/email_reset_x.png")
+            sleep(2)
+            controller.click_by_image("Icons/back_icon.png")
+            sleep(2)
+        controller.click_text("PIN")
+        sleep(2)
+
+        controller.click_text("Change PIN")
+        sleep(2)
+        controller.click_text("Old PIN")
+        sleep(2)
+        controller.enter_pin(current_pin)
+        sleep(2)
+        controller.click_text("New PIN")
+        sleep(2)
+        controller.enter_pin("1234")
+        controller.click_text("Enter new PIN again")
+        sleep(2)
+        controller.enter_pin("1234")
+        sleep(2)
+        controller.click_text("CHANGE PIN")
+
+        sleep(1)
+        if compare_with_expected_crop("Images/PIN_Confirmation.png"):
+            test_result.log_step("PIN changed", True)
+            test_result.log("✅ Profiles_004 passed")
+        else:
+            sleep(2)
+            ok = controller.click_text("Cancel")
+            if ok:
+                test_result.log_step("Connection failed", False)
+            test_result.log_step("PIN not changed", False)
+            test_result.log("❌ Profiles_003 failed")
+            test_result.status = "Failed"
+            sleep(1)
+            controller.click(110,110) # find out the resource id for the back button and replace with that
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+        test_result.status = "Error"
+
+    test_result.end_time = time.time()
+    return test_result
+
+# Removes the car from app so need someone who can add back quickly to finish this one
+def Profiles_005():
+    test_result = TestCaseResult("Profiles_005")
+    test_result.description = ("Verify Changing the PIN")
+    test_result.start_time = time.time()
+
+    try:
+        controller.click_text("Forgotten your PIN?")
+        sleep(2)
+
+        controller.click_text("New PIN")
+        sleep(2)
+        controller.enter_pin("1234")
+        sleep(2)
+        controller.click_text("Enter new PIN again")
+        sleep(2)
+        controller.enter_pin("1234")
+        sleep(2)
+
+        controller.click_text("RESET PIN")
+        sleep(2)
+        controller.click_text("Confirm")
+        # need to be in vehicle to finish, so I can reset primary user
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+        test_result.status = "Error"
+
+####################################################################################
+
 def Profile_006():
     test_result = TestCaseResult("Profiles_002")
     test_result.description = "Verify My Details in Profile screen"
@@ -544,8 +658,6 @@ def Profile_006():
         ok = compare_with_expected_crop("Images/Bentley_Terms_Usage.png")
         test_result.log_step("Terms and Usage screen is present", ok)
         test_passed &= ok
-
-
 
     except Exception as e:
         test_result.log_step(f"Unexpected error: {e}", False)
@@ -598,9 +710,411 @@ def Profile_006():
     # Final summary
 #test_result.finalize()
 
-def dummy():
-    #controller.take_screenshot("Terms.png")
-    #controller.click_by_image("Icons/discover_my_bentley_icon.png", threshold=0.80)
-    compare_with_expected_crop("Images/Demo_Greetings.png")
+# def Check_Vehicle_Status(test_result, doorClosed = True, locked = True):
+#     controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+#     controller.swipe_up()
+#     metrics = controller.extract_dashboard_metrics()
+#     if metrics["Doors"] == "Closed":
+#         test_result.log_step("Doors closed", doorClosed)
+#     elif metrics["Doors"] == "Open":
+#         test_result.log_step("Doors open", not doorClosed)
+#     else:
+#         test_result.log_step("Error: Can't determine if doors are open/closed", False)
+#     controller.swipe_down()
+#
+#     lock = compare_with_expected_crop("Images/Vehicle_Locked.png")
+#     unlocked = compare_with_expected_crop("Images/Vehicle_Unlocked.png")
+#     if lock:
+#         test_result.log_step("Vehicle locked", locked)
+#     elif unlocked:
+#         test_result.log_step("Vehicle unlocked", not locked)
+#     else:
+#         test_result.log_step("Error: Can't determine if vehicle is locked/unlocked", False)
 
+
+# For now pre-conditions such as locked/unlocked and doors open/closed only check by tester in car,
+# plan to implement checking what the app thinks, and if what the tester sees match
+# This would prevent errors in the sensors detecting doors/lock failing tests despite not being what is being tested
+# Need to ask if this is wanted
+
+def Remote_Lock_Unlock001():
+    test_result = TestCaseResult("Remote_Lock_Unlock001")
+    test_result.description = "Access Lock & Unlock from App"
+    test_result.start_time = time.time()
+    test_passed = True  # ✅ Initialize test flag
+
+    try:
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        if (compare_with_expected_crop("Icons/Remote_Lock.png")):
+            test_result.log_step("Lock button visible", True)
+        else:
+            test_result.log_step("Lock button not visible", False)
+            test_passed = False
+
+        if (compare_with_expected_crop("Icons/Remote_Unlock.png")):
+            test_result.log_step("Unlock button visible", True)
+        else:
+            test_result.log_step("Unlock button not visible", False)
+            test_passed = False
+
+        if (test_passed):
+            test_result.log("✅ Remote_Lock_Unlock_001 passed")
+        else:
+            test_result.log("❌ Remote_Lock_Unlock_001 failed")
+            test_result.status = "Failed"
+
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+        test_result.status = "Error"
+
+    test_result.end_time = time.time()
+    return test_result
+
+def Remote_Lock_Unlock002():
+    test_result = TestCaseResult("Remote_Lock_Unlock002")
+    test_result.description = "Verify Remote Unlock functionality"
+    test_result.start_time = time.time()
+
+    input("All doors are closed, Vehicle is locked\nPress Enter to proceed...")
+
+    try:
+        controller.click_by_image("Icons/unlock_Icon.png", threshold=0.80)
+        sleep(2)
+        controller.enter_pin("1234")
+
+        # do in vehicle and test that it does everything correctly
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+        test_result.status = "Error"
+
+    test_result.end_time = time.time()
+    return test_result
+
+def Remote_Lock_Unlock003():
+    test_result = TestCaseResult("Remote_Lock_Unlock003")
+    test_result.description = "Verify Remote Lock functionality"
+    test_result.start_time = time.time()
+
+    input("All doors are closed, Vehicle is unlocked\nPress Enter to proceed...")
+
+    try:
+        # if compare_with_expected_crop("Icons/Vehicle_Unlocked.png"):
+        #     controller.swipe_up()
+        #     metrics = controller.extract_dashboard_metrics()
+        #     controller.swipe_down()
+        #     if metrics["Doors"] != "Closed":
+        #         test_result.log_step("Doors Open", False)
+        #         test_result.status = "Failed"
+        #         test_result.end_time = time.time()
+        #         return test_result
+        # else:
+        #     test_result.log_step("Vehicle not locked", False)
+        #     test_result.status = "Failed"
+        #     test_result.end_time = time.time()
+        #     return test_result
+
+        controller.click_by_image("Icons/lock_icon.png", threshold=0.80)
+        sleep(2)
+        controller.enter_pin("1234")
+
+        # do in vehicle and test that it does everything correctly
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+        test_result.status = "Error"
+
+    test_result.end_time = time.time()
+    return test_result
+
+def Remote_Lock_Unlock004():
+    test_result = TestCaseResult("Remote_Lock_Unlock004")
+    test_result.description = "Verify Remote Lock, Ignition on"
+    test_result.start_time = time.time()
+
+    input("All doors are closed, Vehicle is unlocked, Ignition is on\nPress Enter to proceed...")
+
+    try:
+        controller.click_by_image("Icons/lock_icon.png", threshold=0.80)
+        sleep(2)
+        controller.enter_pin("1234")
+
+        # do in vehicle and test that it does everything correctly
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+        test_result.status = "Error"
+
+    test_result.end_time = time.time()
+    return test_result
+
+def Remote_Lock_Unlock005():
+    test_result = TestCaseResult("Remote_Lock_Unlock005")
+    test_result.description = "Verify Remote Unlock, Ignition off"
+    test_result.start_time = time.time()
+
+    input("All doors are closed, Vehicle is locked, Ignition is on\nPress Enter to proceed...")
+
+    try:
+        controller.click_by_image("Icons/unlock_icon.png", threshold=0.80)
+        sleep(2)
+        controller.enter_pin("1234")
+
+        # do in vehicle and test that it does everything correctly
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+        test_result.status = "Error"
+
+    test_result.end_time = time.time()
+    return test_result
+
+def Remote_Lock_Unlock006():
+    test_result = TestCaseResult("Remote_Lock_Unlock006")
+    test_result.description = "Verify Remote Lock, Driver door open"
+    test_result.start_time = time.time()
+
+    input("Driver door open rest closed, Vehicle is unlocked, Ignition is off\nPress Enter to proceed...")
+
+    try:
+        controller.click_by_image("Icons/lock_icon.png", threshold=0.80)
+        sleep(2)
+        controller.enter_pin("1234")
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+        test_result.status = "Error"
+
+    test_result.end_time = time.time()
+    return test_result
+
+def Remote_Lock_Unlock007():
+    test_result = TestCaseResult("Remote_Lock_Unlock007")
+    test_result.description = "Verify Remote lock, Any door/trunk is open"
+    test_result.start_time = time.time()
+
+    input("A door/bonnet is open other than driver door, Vehicle is unlocked, Ignition is on\nPress Enter to proceed...")
+
+    try:
+        controller.click_by_image("Icons/lock_icon.png", threshold=0.80)
+        sleep(2)
+        controller.enter_pin("1234")
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+        test_result.status = "Error"
+
+    test_result.end_time = time.time()
+    return test_result
+
+def Remote_Lock_Unlock008():
+    test_result = TestCaseResult("Remote_Lock_Unlock008")
+    test_result.description = "Access to Remote Lock/Unlock history"
+    test_result.start_time = time.time()
+
+    try:
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        controller.click_by_image("Icons/Notification_icon.png", threshold=0.80)
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+
+    test_result.end_time = time.time()
+    return test_result
+
+def Remote_Lock_Unlock009():
+    test_result = TestCaseResult("Remote_Lock_Unlock009")
+    test_result.description = "Verify Remote Unlock functionality"
+    test_result.start_time = time.time()
+
+    input("All doors are closed, Vehicle is unlocked, Ignition is off\nPress Enter to proceed...")
+
+    try:
+        latency_time = time.time()
+        controller.click_by_image("Icons/lock_icon.png", threshold=0.80)
+        sleep(2)
+        controller.enter_pin("1234")
+        # Need to know if completion is logged by tester via input or using the app indication
+        latency_time = time.time() - latency_time
+
+        if latency_time < 40:
+            test_result.log_step(f"Latency time: {latency_time}", True)
+            test_result.log("✅ Remote_Lock_Unlock_001 passed")
+        else:
+            test_result.log_step(f"Latency time: {latency_time}", False)
+            test_result.log("❌ Remote_Lock_Unlock_009 failed")
+            test_result.status = "Failed"
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+        test_result.status = "Error"
+
+    test_result.end_time = time.time()
+    return test_result
+
+def Remote_Lock_Unlock010():
+    test_result = TestCaseResult("Remote_Lock_Unlock010")
+    test_result.description = "Verify Remote Locked, vehicle locked"
+    test_result.start_time = time.time()
+
+    input("All doors are closed, Vehicle is locked, Ignition is off\nPress Enter to proceed...")
+
+    try:
+        controller.click_by_image("Icons/lock_icon.png", threshold=0.80)
+        sleep(2)
+        controller.enter_pin("1234")
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+        test_result.status = "Error"
+
+    test_result.end_time = time.time()
+    return test_result
+
+def Remote_Lock_Unlock011():
+    test_result = TestCaseResult("Remote_Lock_Unlock011")
+    test_result.description = "Verify Remote Unlock, vehicle unlocked"
+    test_result.start_time = time.time()
+
+    input("All doors are closed, Vehicle is unlocked, Ignition is off\nPress Enter to proceed...")
+
+    try:
+        controller.click_by_image("Icons/unlocked_icon.png", threshold=0.80)
+        sleep(2)
+        controller.enter_pin("1234")
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+
+    test_result.end_time = time.time()
+    return test_result
+
+def Remote_Lock_Unlock012():
+    test_result = TestCaseResult("Remote_Lock_Unlock012")
+    test_result.description = "Verify Remote Lock timeout, no network connection"
+    test_result.start_time = time.time()
+
+    input("All doors are closed, Vehicle is unlocked, Ignition is off, Disconnect vehicle from netowrk/flight mode on app\nPress Enter to proceed...")
+
+    try:
+        controller.click_by_image("Icons/lock_icon.png", threshold=0.80)
+        sleep(2)
+        controller.enter_pin("1234")
+        sleep(120) # make it so that 120 ish is where it terminates the test as a fail, and checks up to that point, prevents waiting 120 if it shows success after 10
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+
+    test_result.end_time = time.time()
+    return test_result
+
+def Remote_Lock_Unlock013():
+    test_result = TestCaseResult("Remote_Lock_Unlock013")
+    test_result.description = "Verify Remote Lock, Fob keys left inside vehicle"
+    test_result.start_time = time.time()
+
+    input("Vehicle is unlocked, Ignition is off, Fob key inside vehicle\nPress Enter to proceed...")
+
+    try:
+        controller.click_by_image("Icons/lock_icon.png", threshold=0.80)
+        sleep(2)
+        controller.enter_pin("1234")
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+
+    test_result.end_time = time.time()
+    return test_result
+
+def Remote_Lock_Unlock014():
+    test_result = TestCaseResult("Remote_Lock_Unlock014")
+    test_result.description = "Verify Remote Unlock, Fob keys left inside vehicle"
+    test_result.start_time = time.time()
+
+    input("Vehicle is locked, Ignition is off, Fob key inside vehicle\nPress Enter to proceed...")
+
+    try:
+        controller.click_by_image("Icons/unlock_icon.png", threshold=0.80)
+        sleep(2)
+        controller.enter_pin("1234")
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+        test_result.status = "Error"
+
+    test_result.end_time = time.time()
+    return test_result
+
+def Remote_Lock_Unlock015():
+    test_result = TestCaseResult("Remote_Lock_Unlock015")
+    test_result.description = "Verify Remote Unlock functionality"
+    test_result.start_time = time.time()
+
+    input("Vehicle is unlocked, Ignition is off\nPress Enter to proceed...")
+
+    try:
+        pass
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+        test_result.status = "Error"
+
+    test_result.end_time = time.time()
+    return test_result
+
+def Remote_Lock_Unlock016():
+    test_result = TestCaseResult("Remote_Lock_Unlock016")
+    test_result.description = "Verify Remote Lock/Unlock, Privacy mode enabled"
+    test_result.start_time = time.time()
+
+    try:
+        sleep(60)
+        controller.swipe_down()
+        if compare_with_expected_crop("Remote_Lock_Unavailable.png"):
+            test_result.log_step("Remote Lock disabled", True)
+            if not controller.click_by_image("Icons/Remote_Lock_Unavailable_icon.png"):
+                test_result.log("✅ Remote_Lock_Unlock_016 passed")
+                test_result.end_time = time.time()
+                return test_result
+
+        test_result.log("❌ Remote_Lock_Unlock_016 failed")
+        test_result.status = "Failed"
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+        test_result.status = "Error"
+
+    test_result.end_time = time.time()
+    return test_result
+
+def Remote_Lock_Unlock017():
+    test_result = TestCaseResult("Remote_Lock_Unlock017")
+    test_result.description = "Verify Remote Lock/Unlock, Privacy mode disabled"
+    test_result.start_time = time.time()
+
+    try:
+        sleep(60)
+        controller.swipe_down()
+        if compare_with_expected_crop("Remote_Lock_Available.png"):
+            test_result.log_step("Remote Lock Enabled", True)
+            if controller.click_by_image("Icons/lock_icon.png"):
+                test_result.log("✅ Remote_Lock_Unlock_017 passed")
+                test_result.end_time = time.time()
+                return test_result
+
+        test_result.log("❌ Remote_Lock_Unlock_017 failed")
+        test_result.status = "Failed"
+
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+        test_result.status = "Error"
+
+    test_result.end_time = time.time()
+    return test_result
+
+# def dummy():
+    #controller.take_screenshot("dashboard.png")
+    #controller.click_by_image("Icons/discover_my_bentley_icon.png", threshold=0.80)
 

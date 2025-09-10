@@ -2,7 +2,7 @@ from time import sleep
 from PythonProject.common_utils.ios_image_comparision import *
 from PythonProject.common_utils.test_result_tracker import TestCaseResult
 
-MAC_IP = "192.168.1.4"
+MAC_IP = "192.168.1.5"
 PORT = 8101
 UDID = "00008130-0012513918A1401C"
 TEAM_ID = "LDD46J9733"
@@ -89,6 +89,14 @@ def Demo_Mode_003():
             test_result.log_step(" Demo Mode 003 Fail", False)
         ios.extract_dashboard_metrics_Overview()
 
+        for _ in range(2):
+            ios.swipe("up")
+            sleep(3)
+            ios.extract_dashboard_metrics_Overview()
+
+        for _ in range(2):
+            ios.swipe("down")
+            sleep(2)
     except Exception as e:
         test_result.log_step(f"Unexpected error: {e}", False)
 
@@ -121,6 +129,7 @@ def Demo_Mode_004():
         for _ in range(2):
             ios.swipe("down")
             sleep(2)
+        #ios.click_by_resource_id("uk.co.bentley.mybentley:id/frameLayout_content_container_bottom_navigation")
     except Exception as e:
         test_result.log_step(f"Unexpected error: {e}", False)
 
@@ -148,3 +157,21 @@ def Demo_Mode_005():
     test_result.end_time = time.time()
     return test_result
 
+def Demo_Mode_006():
+    test_result = TestCaseResult("Demo_Mode_006")
+    test_result.description = "Click bottom navigation on iOS"
+    test_result.start_time = time.time()
+
+    try:
+        if ios.click_by_accessibility_id("BottomNavigation"):  # replace with real id
+            test_result.log_step("Successfully clicked bottom navigation", True)
+        else:
+            test_result.log_step("Failed to click bottom navigation", False)
+
+    except Exception as e:
+        test_result.log_step(f"Unexpected error: {e}", False)
+
+    test_result.end_time = time.time()
+    return test_result
+
+Demo_Mode_006()

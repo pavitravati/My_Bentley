@@ -1114,7 +1114,5 @@ def Remote_Lock_Unlock017():
     test_result.end_time = time.time()
     return test_result
 
-# def dummy():
-    #controller.take_screenshot("dashboard.png")
-    #controller.click_by_image("Icons/discover_my_bentley_icon.png", threshold=0.80)
+
 

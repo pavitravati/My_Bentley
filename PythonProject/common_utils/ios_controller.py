@@ -42,6 +42,19 @@ class IOSController:
         except Exception as e:
             print(f"Failed to launch app {bundle_id}: {e}")
 
+    def click_by_accessibility_id(self, locator):
+        """
+        Generic click using iOS accessibility id (preferred).
+        """
+        try:
+            element = self.driver.find_element("accessibility id", locator)
+            element.click()
+            print(f"✅ Clicked element by accessibility id: {locator}")
+            return True
+        except Exception as e:
+            print(f"❌ Could not click element by accessibility id {locator}: {e}")
+            return False
+
     def get_resource_path(self, filename):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         project_root = os.path.abspath(os.path.join(base_dir, ".."))

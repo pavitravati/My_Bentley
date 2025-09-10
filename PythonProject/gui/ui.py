@@ -1,9 +1,9 @@
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout,
     QTableWidget, QTableWidgetItem, QLabel, QStyledItemDelegate,
-    QStatusBar, QToolBar, QSizePolicy, QCheckBox, QPushButton
+    QStatusBar, QToolBar, QSizePolicy, QCheckBox, QPushButton, QHBoxLayout
 )
-from PySide6.QtGui import QFont, QAction, QBrush, QColor
+from PySide6.QtGui import QFont, QAction, QBrush, QColor, QPixmap, QCursor
 from PySide6.QtCore import Qt, QTimer
 from excel import testCases, services
 from PIL import Image
@@ -35,14 +35,30 @@ class TestCaseTablePage(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(30, 30, 30, 30)
 
+        top_layout = QHBoxLayout()
+        top_layout.setContentsMargins(0, 40, 0, 20)
+
         title = QLabel("Remote Lock/Unlock")
-        title.setFont(QFont("Arial", 20, QFont.Bold))
+        title.setFont(QFont("Arial", 25, QFont.Bold))
         title.setStyleSheet("margin-left: 20px; margin-bottom: 20px;")
-        layout.addWidget(title)
+        top_layout.addWidget(title)
+
+        top_layout.addStretch()
+
+        logo = QLabel()
+        # logo.setPixmap(QPixmap(os.path.join(directory, 'images', 'bentleylogo.png')))
+        logo.setPixmap(QPixmap('bentleylogo.png'))
+        logo.setScaledContents(True)  # Make it scale to its QLabel size
+        logo.setMaximumSize(135, 50)  # Adjust as needed to avoid large empty space
+        logo.setStyleSheet("margin-right: 20px;")
+        top_layout.addWidget(logo)
+
+        layout.addLayout(top_layout)
 
         main_button = QPushButton("Begin Automated Test")
-        main_button.setStyleSheet("margin-bottom: 20px;")
+        main_button.setStyleSheet("margin-bottom: 20px; margin-top: 20px; font-size: 16px; height: 30px; background-color: #394d45; color: white;")
         main_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        main_button.setCursor(Qt.PointingHandCursor)
         main_button.clicked.connect(self.simulate_test)
         layout.addWidget(main_button)
 
@@ -69,7 +85,6 @@ class TestCaseTablePage(QWidget):
         for row in range(self.table.rowCount()):
             self.table.setRowHeight(row, 100)
 
-        font = QFont("Arial", 9)
         header_font = QFont("Arial", 8)
         header_font.setBold(True)
         self.table.horizontalHeader().setFont(header_font)
@@ -104,6 +119,7 @@ class TestCaseTablePage(QWidget):
                 action_button.setEnabled(False)  # Initially disabled
                 action_button.setStyleSheet("margin-top: 2px; margin-right: 10px;")
                 action_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+                action_button.setCursor(Qt.PointingHandCursor)
                 action_button.clicked.connect(lambda _, r=row: self.precondition_button_clicked(r))
 
                 def update_button_state():
@@ -240,7 +256,9 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(TestCaseTablePage())
 
         toolbar = QToolBar("Services")
+        toolbar.setMovable(False)
         self.addToolBar(toolbar)
+        toolbar.setStyleSheet("background-color: #394d45; color: white;")
 
         for service in services:
             button_action = QAction(service, self)

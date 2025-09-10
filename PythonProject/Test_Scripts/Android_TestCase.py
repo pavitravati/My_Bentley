@@ -659,6 +659,8 @@ def Profile_006():
         test_result.log_step("Terms and Usage screen is present", ok)
         test_passed &= ok
 
+
+
     except Exception as e:
         test_result.log_step(f"Unexpected error: {e}", False)
         test_result.status = "Error"

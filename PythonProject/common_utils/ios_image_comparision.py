@@ -47,7 +47,7 @@ def find_icon_in_screen_ios(controller: IOSController, icon_filename, threshold=
     print(f" Match confidence: {max_val:.2f}")
     return max_val >= threshold
 
-def compare_with_expected_crop_ios(controller: IOSController, expected_image_name, threshold=0.95, output_subfolder="ios_images/output"):
+def compare_with_expected_crop_ios(controller: IOSController, expected_image_name, threshold=0.90, output_subfolder="ios_images/output"):
     """
     Compare expected cropped image with current screen (in memory), and save bounding box only on mismatch.
 

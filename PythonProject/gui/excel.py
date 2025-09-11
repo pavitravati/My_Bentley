@@ -1,41 +1,70 @@
-import pandas as pd
+# WILL COMPLETE ONCE HAVE ACCESS TO CLUU EXPORT AND FORMAT
+# import pandas as pd
+#
+# excel_file = "Android_MY26_BY634_SQ_Remote_Services_EUR_Full.xlsm"
+# sheet_names = pd.ExcelFile(excel_file).sheet_names
+# Services = {}
+#
+# ignore_sheets = ["Dashboard", "ChartBox", "Change_History"]
+# correct_sheet = "RemoteLockUnlock"
+# ignore_columns = ["TC ID", "Test Priority", "Overall Effort (in Mins)", "Effort in mins", "Actual Result", "No Of Observations", "Defect IDs/Comments", "Test Result"]
+# for sheet in sheet_names:
+#     # if sheet not in ignore_sheets:
+#     if sheet == correct_sheet:
+#         row = 3
+#         Services[sheet] = {}
+#         df = pd.read_excel(excel_file, sheet_name=sheet)
+#         current_service = []
+#         while True:
+#             column = 1
+#             if row == df.shape[0]:
+#                 break
+#             current_row = {}
+#             for i in range(8):
+#                 column += 1
+#                 header = df.iat[2,column]
+#                 if header == "Pre-Condition":
+#                     if not pd.isna(df.iat[row,column]):
+#                         text = df.iat[row,column]
+#                         result = text.replace("• ", "")
+#                         result = result.split("\n")
+#                         current_row[header] = result
+#                     else:
+#                         current_row[header] = []
+#                 elif header == "Expected Result":
+#                     result_list = df.iat[row, column].split("\n")
+#                     for idx in range(len(result_list)):
+#                         if result_list[idx][0].isdigit():
+#                             result_list[idx] = result_list[idx][3:]
+#                     current_row[header] = result_list
+#                 elif header not in ignore_columns and not pd.isna(header):
+#                     if header == "Test Case Title":
+#                         header = "Test Case Description"
+#                     else:
+#                         current_row[header] = df.iat[row, column]
+#             current_service.append(current_row)
+#             row += 1
+#         Services[sheet] = current_service
 
-excel_file = "Android_MY26_BY634_SQ_Remote_Services_EUR_Full.xlsm"
-sheet_names = pd.ExcelFile(excel_file).sheet_names
-
-Services = {}
-
-ignore_sheets = ["Dashboard", "ChartBox", "Change_History"]
-ignore_columns = ["TC ID", "Test Priority", "Overall Effort (in Mins)", "Effort in mins", "Actual Result", "No Of Observations", "Defect IDs/Comments", "Test Result"]
-for sheet in sheet_names:
-    if sheet not in ignore_sheets:
-        row = 3
-        Services[sheet] = {}
-        df = pd.read_excel(excel_file, sheet_name=sheet)
-        current_service = []
-        while True:
-            column = 1
-            if row == df.shape[0]:
-                break
-            current_row = {}
-            for i in range(8):
-                column += 1
-                header = df.iat[2,column]
-                if header not in ignore_columns and not pd.isna(header):
-                    if header == "Test Case Title":
-                        header = "Test Case Description"
-                    current_row[header] = df.iat[row, column]
-            current_service.append(current_row)
-            row += 1
-        Services[sheet] = current_service
-
-
-print(Services)
-
+# Remote Lock Unlock test cases while waiting on bringing them all in from the sheets
 testCases = [
     { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Access Remote Lock & Unlock service Mobile App", "Pre-Condition" : [], "Action" : ["Scroll up/down and search for Lock and Unlock button"], "Expected Result" : ["Lock and Unlock button are visible with respect to current lock status of the vehicle"] },
-    { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Verify Remote Unlock", "Pre-Condition" : [], "Action" : ["Tap on Unlock button", "Enter PIN"], "Expected Result" : ["The action should perform and Door disarming alarm should be played", "App should be notified with an appropriate message", "The status of the lock should be updated", "Push notification received in app"] },
-    { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Verify Remote Lock", "Pre-Condition" : ["All Doors are closed", "Vehicle is unlocked"], "Action" : ["Tap on Lock button", "Enter SPIN"], "Expected Result" : ["The action should perform and Door arming alarm should be played", "App should be notified with an appropriate message", "The status of the lock should be updated", "Push notification received in app"] }
+    { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Verify Remote Unlock", "Pre-Condition" : ["All Doors are closed", "Vehicle is locked"], "Action" : ["Tap on Unlock button", "Enter PIN"], "Expected Result" : ["The action should perform and Door disarming alarm should be played", "App should be notified with an appropriate message", "The status of the lock should be updated", "Push notification received in app"] },
+    { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Verify Remote Lock", "Pre-Condition" : ["All Doors are closed", "Vehicle is unlocked"], "Action" : ["Tap on Lock button", "Enter SPIN"], "Expected Result" : ["The action should perform and Door arming alarm should be played", "App should be notified with an appropriate message", "The status of the lock should be updated", "Push notification received in app"] },
+    { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Verify the Remote Lock functionality when Ignition is ON", "Pre-Condition" : ["All Doors are closed", "Vehicle is unlocked", "Ignition is ON"], "Action" : ["Tap on 'Lock' button --> Enter SPIN"], "Expected Result" : ["The action should performed and rejected by vehicle", "App should be notified with an appropriate  message (e.g. response as 'Unable to Lock Vehicle, Please switch Off the Ignition' [relevant message])", "Lock status should not be changed in app", "Push notification should be received in the app"] },
+    { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Verify the Remote Unlock functionality when Ignition is ON", "Pre-Condition" : ["All Doors are closed", "Vehicle is locked", "Ignition is ON"], "Action" : ["Tap on 'Unlock' button --> Enter SPIN "], "Expected Result" : ["The action should performed and rejected by vehicle", "App should be notified with an appropriate  message (e.g. response as 'Unable to Lock Vehicle, Please switch Off the Ignition' [relevant message])", "Lock status should not be changed in app", "Push notification should be received in the app"] },
+    { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Verify the Remote Lock functionality when Driver Door is opened", "Pre-Condition" : ["Driver door open but other doors closed", "Vehicle is unlocked", "Ignition is OFF"], "Action" : ["Tap on 'Lock' button --> Enter SPIN"], "Expected Result" : ["The action should performed and rejected by vehicle", "App should be notified with an appropriate  message (e.g. response as 'Unable to Lock Vehicle, Driver's door is opened'  [relevant message])", "Lock status should not be changed in app", "Push notification should be received in the app"] },
+    { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Verify the Remote Lock functionality when Any door or trunk is opened", "Pre-Condition" : ["A door/bonnet is open other than the driver door", "Vehicle is unlocked", "Ignition is OFF"], "Action" : ["Tap on 'Lock' button --> Enter SPIN "], "Expected Result" : ["The action should performed and Door arming alarm should be played", "App should be notified with an appropriate  message (e.g. response as 'Vehicle is partially locked'  [relevant message])", "The status of the lock should be updated simultaneously", "Push notification should be received in the app"] },
+    { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Access to Remote Lock/unlock history  ", "Pre-Condition" : [], "Action" : ["Go to Notifications"], "Expected Result" : ["Lock/unlock history should be visible with correct timestamps"] },
+    { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Verify the Remote Lock/Unlock latency time (Service Round Trip Time)", "Pre-Condition" : ["All Doors are closed", "Vehicle is unlocked", "Ignition is OFF"], "Action" : ["Tap on 'Lock' button --> Enter SPIN"], "Expected Result" : ["The action should performed successfully and complete in 40 seconds."] },
+    { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Verify the Remote Lock functionality when vehicle is already locked", "Pre-Condition" : ["All Doors are closed", "Vehicle is locked", "Ignition is OFF"], "Action" : ["Tap on 'Lock' button --> Enter SPIN"], "Expected Result" : ["The action should performed and get response with an appropriate  message (e.g. response as 'Vehicle is already locked / Vehicle locked'  [relevant message])", "Push notification should be received in the app"] },
+    { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Verify the Remote Unlock functionality when vehicle is already unlocked", "Pre-Condition" : ["All Doors are closed", "Vehicle is unlocked", "Ignition is OFF"], "Action" : ["Tap on 'Unlock' button --> Enter SPIN"], "Expected Result" : ["The action should performed and get response with an appropriate  message (e.g. response as 'Vehicle is already unlocked / Vehicle unlocked'  [relevant message])", "Push notification should be received in the app"] },
+    { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Verify the Remote Lock functionality timeout when vehicle is not connected to network", "Pre-Condition" : ["All Doors are closed", "Disconnect the vehicle from network or Activate flight mode on mobile", "Vehicle is locked", "Ignition is OFF"], "Action" : ["Tap on 'Lock' button --> Enter SPIN"], "Expected Result" : ["The action should be terminated (timeout) after 2 minutes", "App should be notified with an appropriate  message (e.g. response as 'Vehicle unreachable'  [relevant message])", "Push notification should be received in the app"] },
+    { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Verify Remote Lock functionality when Fob Keys are left inside the vehicle ", "Pre-Condition" : ["Keep the Fob Key inside the vehicle", "Vehicle is unlocked", "Ignition is OFF"], "Action" : ["Tap on 'Lock' button --> Enter SPIN"], "Expected Result" : ["The action should performed and Door arming alarm should be played", "App should be notified with an appropriate  message (e.g. response as 'Vehicle is successfully locked'  [relevant message])", "The status of the lock should be updated simultaneously", "Push notification should be received in the app"] },
+    { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Verify Remote Unlock functionality when Fob Keys are left inside the vehicle ", "Pre-Condition" : ["Keep the Fob Key inside the vehicle", "Vehicle is locked", "Ignition is OFF"], "Action" : ["Tap on 'Unlock' button --> Enter SPIN"], "Expected Result" : ["The action should performed and Door disarming alarm should be played", "App should be notified with an appropriate  message (e.g. response as 'Vehicle is successfully unlocked'  [relevant message])", "The status of the lock should be updated simultaneously"] },
+    { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Verify Remote Lock functionality when Vehicle is locked by Fob Keys ", "Pre-Condition" : ["Vehicle is unlocked", "Ignition is OFF"], "Action" : ["Tap on 'Lock' button --> Enter SPIN"], "Expected Result" : ["The action should performed and Door arming alarm should be played", "App should be notified with an appropriate  message (e.g. response as 'Vehicle is successfully locked'  [relevant message])", "The status of the lock should be updated simultaneously", "Push notification should be received in the app"] },
+    { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Access to Remote Lock/unlock functionalities when Privacy mode is ON", "Pre-Condition" : ["Privacy Mode is ON in HMI"], "Action" : ["Scroll up/down and check the status of the Lock and Unlock services."], "Expected Result" : ["The Remote locking service should be disabled(Greyed out)", "Lock and Unlock button should not be accessible."] },
+    { "Region" : "EUR, NAR, CHN", "Test Case Description" : "Access to Remote Lock/unlock functionalities when Privacy mode is Off ", "Pre-Condition" : ["Privacy Mode is OFF in HMI"], "Action" : ["Scroll up/down and check the status of the Lock and Unlock services."], "Expected Result" : ["The Remote locking service should be enabled", "Lock and Unlock button should be accessible."] },
 ]
 
 services = ['DemoMode', 'Customer_Enrollment', 'App_registration_Pages-IDK', 'Add_VIN', 'MyBentleyLogin',

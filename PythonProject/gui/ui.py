@@ -101,10 +101,10 @@ class TestCaseTablePage(QWidget):
             self.table.setItem(row, 1, make_item(case["Test Case Description"]))
 
             # Does not work so need to improve logic to have the checkboxes work in precondition column
-            precondition_widget = QWidget()
             precondition_layout = QVBoxLayout()
             precondition_layout.setContentsMargins(0, 0, 0, 0)
             precondition_layout.setSpacing(5)
+            precondition_widget = QWidget()
             checkboxes = []
             for precondition in case["Pre-Condition"]:
                 checkbox = QCheckBox(precondition)
@@ -163,7 +163,7 @@ class TestCaseTablePage(QWidget):
         total_width = self.table.viewport().width()
 
         # Percentages are how much of the screen the column takes up
-        percentages = [0.07, 0.33, 0.18, 0.31, 0.46, 0.07, 0.07, 0.07]
+        percentages = [0.04, 0.3, 0.24, 0.31, 0.46, 0.07, 0.07, 0.07]
         for col, percent in enumerate(percentages):
             width = int(total_width * percent)
             self.table.setColumnWidth(col, width)

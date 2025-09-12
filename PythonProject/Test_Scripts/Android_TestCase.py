@@ -1116,5 +1116,5 @@ def Remote_Lock_Unlock017():
     test_result.end_time = time.time()
     return test_result
 
-
+Demo_Mode_005()
 

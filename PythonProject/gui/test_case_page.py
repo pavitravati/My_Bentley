@@ -1,29 +1,15 @@
 from PySide6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout,
-    QTableWidget, QTableWidgetItem, QLabel, QStyledItemDelegate,
-    QToolBar, QSizePolicy, QCheckBox, QPushButton, QHBoxLayout, QTextEdit
+    QWidget, QVBoxLayout, QTableWidget, QLabel, QSizePolicy,
+    QCheckBox, QPushButton, QHBoxLayout, QTextEdit
 )
-from PySide6.QtGui import QFont, QAction, QPixmap
+from PySide6.QtGui import QFont, QPixmap
 from PySide6.QtCore import Qt, QTimer
-from excel import testCases, services
-from PythonProject.Test_Scripts.Android.all_tests import *
+from excel import testCases
+from PythonProject.Test_Scripts.Android.Android_TestCase import *
 from PythonProject.core.log_emitter import log_emitter
 from PythonProject.Test_Scripts.Android.RemoteLockTemp import Remote_Lock_Unlock001
-import sys
-
-# Class that allows for padding to be added to items
-class PaddingDelegate(QStyledItemDelegate):
-    def __init__(self, left=10, top=0, right=0, bottom=0, parent=None):
-        super().__init__(parent)
-        self.left = left
-        self.top = top
-        self.right = right
-        self.bottom = bottom
-
-    # Applies the padding to the item
-    def initStyleOption(self, option, index):
-        super().initStyleOption(option, index)
-        option.rect.adjust(self.left, self.top, -self.right, -self.bottom)
+from utils import make_item
+from widgets import PaddingDelegate
 
 class TestCaseTablePage(QWidget):
     def __init__(self, parent=None):
@@ -199,46 +185,3 @@ class TestCaseTablePage(QWidget):
 
     def append_log(self, message):
         self.log_view.append(message)
-
-# Class of the Main window where the table is placed
-class MainWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-
-        self.setWindowTitle("Test Case Viewer")
-        self.setStyleSheet("background-color: white;")
-
-        # Set the test case table as the central widget
-        self.setCentralWidget(TestCaseTablePage())
-
-        # Adds toolbar to the top which is how you would move through different services
-        toolbar = QToolBar("Services")
-        toolbar.setMovable(False)
-        self.addToolBar(toolbar)
-        toolbar.setStyleSheet("background-color: #394d45; color: white;")
-
-        # Adds each service to the toolbar
-        for service in services:
-            button_action = QAction(service, self)
-            button_action.setStatusTip(f"{service} button")
-            button_action.triggered.connect(self.toolbar_button_clicked)
-            button_action.setCheckable(True)
-            toolbar.addAction(button_action)
-
-    # Currently indicates if toolbar is interacted with
-    def toolbar_button_clicked(self, s):
-        print("click", s)
-
-# Used to create the item put into the table with the correct font
-def make_item(text):
-    item = QTableWidgetItem(text)
-    font = QFont("Arial", 9)
-    item.setFont(font)
-    return item
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    app.setStyle("Fusion")
-    window = MainWindow()
-    window.showMaximized()
-    sys.exit(app.exec())

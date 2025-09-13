@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QToolBar
 )
-from PySide6.QtGui import QAction
+from PySide6.QtGui import QAction, QActionGroup
 from excel import services
 from test_case_page import TestCaseTablePage
 import sys
@@ -14,26 +14,30 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Test Case Viewer")
         self.setStyleSheet("background-color: white;")
 
-        # Set the test case table as the central widget
-        self.setCentralWidget(TestCaseTablePage())
-
         # Adds toolbar to the top which is how you would move through different services
         toolbar = QToolBar("Services")
         toolbar.setMovable(False)
         self.addToolBar(toolbar)
         toolbar.setStyleSheet("background-color: #394d45; color: white;")
 
+        action_group = QActionGroup(self)
+        action_group.setExclusive(True)
+
         # Adds each service to the toolbar
         for service in services:
-            button_action = QAction(service, self)
-            button_action.setStatusTip(f"{service} button")
-            button_action.triggered.connect(self.toolbar_button_clicked)
-            button_action.setCheckable(True)
-            toolbar.addAction(button_action)
+            action = QAction(service, self)
+            action.setCheckable(True)
+            action.triggered.connect(lambda s=False, svc=service: self.toolbar_button_clicked(s, svc))
+            toolbar.addAction(action)
+            action_group.addAction(action)
+
+        self.setCentralWidget(TestCaseTablePage("DemoMode"))
 
     # Currently indicates if toolbar is interacted with
-    def toolbar_button_clicked(self, s):
-        print("click", s)
+    def toolbar_button_clicked(self, s, service):
+        self.service = service
+        # Set the test case table as the central widget
+        self.setCentralWidget(TestCaseTablePage(service))
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

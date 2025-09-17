@@ -4,17 +4,19 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QFont, QPixmap
 from PySide6.QtCore import Qt, QTimer
-from excel import *
+from excel import load_data
 from PythonProject.Test_Scripts.Android.all_tests import *
 from PythonProject.core.log_emitter import log_emitter
 from PythonProject.Test_Scripts.Android.RemoteLockTemp import Remote_Lock_Unlock001
 from utils import make_item
 from widgets import PaddingDelegate
 
-testcase_map = {
-    "DemoMode": DemoMode_testCases,
-    "RemoteLockUnlock": RemoteLockUnlock_testCases
-}
+# testcase_map = {
+#     "DemoMode": DemoMode_testCases,
+#     "RemoteLockUnlock": RemoteLockUnlock_testCases
+# }
+testcase_map = load_data()
+
 class TestCaseTablePage(QWidget):
     def __init__(self, service="DemoMode", parent=None):
         super().__init__(parent)
@@ -62,6 +64,7 @@ class TestCaseTablePage(QWidget):
         self.table.setHorizontalHeaderLabels(["Region", "Test Case Description", "Pre-Condition", "Action", "Expected Result", "Duration", "Result", "Error"])
         self.table.setRowCount(len(testcase_map[service]))
         self.table.verticalHeader().setDefaultSectionSize(100)
+        self.table.setWordWrap(True)
         self.table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.table.setAlternatingRowColors(True)
         self.table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -87,6 +90,9 @@ class TestCaseTablePage(QWidget):
             precondition_layout.setContentsMargins(0, 0, 0, 0)
             precondition_layout.setSpacing(5)
             precondition_widget = QWidget()
+            precondition_widget.setObjectName("preconditionWidget")
+            precondition_widget.setStyleSheet("#preconditionWidget { background: transparent; }")
+
             # Stores all the checkboxes for that cell
             checkboxes = []
 
@@ -94,6 +100,7 @@ class TestCaseTablePage(QWidget):
             for precondition in case["Pre-Condition"]:
                 checkbox = QCheckBox(precondition)
                 checkbox.setChecked(False)
+                checkbox.setCursor(Qt.PointingHandCursor)
                 checkbox.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
                 checkboxes.append(checkbox)
                 precondition_layout.addWidget(checkbox)
@@ -160,7 +167,8 @@ class TestCaseTablePage(QWidget):
         # Adds the table to the main layout
         layout.addWidget(self.table)
         # Waits for table to be added and then adjusts the column widths
-        QTimer.singleShot(0, self.adjust_column_widths)
+        QTimer.singleShot(0, self.final_adjust_layout)
+
 
     # Adjusts column widths roughly based on screen size
     def adjust_column_widths(self):
@@ -169,10 +177,25 @@ class TestCaseTablePage(QWidget):
 
         # Percentages are how much of the screen the column takes up
         # percentages = [0.04, 0.3, 0.24, 0.31, 0.46, 0.07, 0.07, 0.07]
-        percentages = [0.09, 0.39, 0.3, 0.4, 0.5, 0.09, 0.09, 0.09]
+        # percentages = [0.09, 0.39, 0.3, 0.4, 0.5, 0.09, 0.09, 0.09]
+        percentages = [0.13, 0.59, 0.49, 0.59, 0.79, 0.13, 0.13, 0.13]
         for col, percent in enumerate(percentages):
             width = int(total_width * percent)
             self.table.setColumnWidth(col, width)
+
+    def final_adjust_layout(self):
+        self.adjust_column_widths()
+        self.table.resizeRowsToContents()
+
+        min_height = 80
+        padding = 10  # Extra height buffer
+
+        for row in range(self.table.rowCount()):
+            current_height = self.table.rowHeight(row)
+            if current_height < min_height:
+                self.table.setRowHeight(row, min_height)
+            else:
+                self.table.setRowHeight(row, current_height + padding)
 
     # When app is working this runs the testcase for that row. Build on this to show results/process
     def precondition_button_clicked(self, row):

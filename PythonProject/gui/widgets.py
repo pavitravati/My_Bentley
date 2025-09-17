@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (
 
 # Class that allows for padding to be added to items
 class PaddingDelegate(QStyledItemDelegate):
-    def __init__(self, left=10, top=0, right=0, bottom=0, parent=None):
+    def __init__(self, left=10, top=20, right=0, bottom=20, parent=None):
         super().__init__(parent)
         self.left = left
         self.top = top

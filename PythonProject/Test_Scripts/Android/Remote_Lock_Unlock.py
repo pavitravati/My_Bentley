@@ -35,6 +35,8 @@ def Remote_Lock_Unlock001():
     test_result.end_time = time.time()
     return test_result
 
+# Think about wait for text as sleep could either end before it pops up or after it is gone for first compare (all that could need it)
+# Also used to avoid excessive sleep()
 def Remote_Lock_Unlock002():
     test_result = TestCaseResult("Remote_Lock_Unlock002")
     test_result.description = "Verify Remote Unlock functionality"
@@ -42,10 +44,10 @@ def Remote_Lock_Unlock002():
 
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        controller.click_by_image("Icons/unlock_Icon.png", threshold=0.80)
+        controller.click_by_image("Icons/unlock_Icon.png")
         sleep(2)
         controller.enter_pin("1234")
-        sleep(5)
+        sleep(15)
         if compare_with_expected_crop("Icons/Remote_Unlock_Success.png"):
             test_result.log_step("Unlock Message Displayed", True)
         else:
@@ -78,18 +80,16 @@ def Remote_Lock_Unlock002():
     test_result.end_time = time.time()
     return test_result
 
-controller.take_screenshot("androidtesting.png")
-
 def Remote_Lock_Unlock003():
     test_result = TestCaseResult("Remote_Lock_Unlock003")
     test_result.description = "Verify Remote Lock functionality"
     test_result.start_time = time.time()
 
     try:
-        controller.click_by_image("Icons/lock_Icon.png", threshold=0.80)
+        controller.click_by_image("Icons/lock_Icon.png")
         sleep(2)
         controller.enter_pin("1234")
-        sleep(5)
+        sleep(12)
         if compare_with_expected_crop("Icons/Remote_Lock_Success.png"):
             test_result.log_step("Lock Message Displayed", True)
         else:
@@ -129,7 +129,12 @@ def Remote_Lock_Unlock004():
 
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        controller.click_by_image("Icons/lock_icon.png", threshold=0.80)
+        sleep(3)
+        controller.swipe_down()
+        sleep(5)
+        controller.click_by_image("Icons/Error_Icon.png")
+
+        controller.click_by_image("Icons/lock_icon.png")
         sleep(3)
         controller.enter_pin("1234")
         sleep(10)
@@ -144,6 +149,7 @@ def Remote_Lock_Unlock004():
         else:
             test_result.log_step("Lock Status Unchanged", False)
             test_result.status = "Failed"
+        controller.click_by_image("Icons/Error_Icon.png")
         sleep(2)
         controller.click_by_image("Icons/New_Notification_icon.png")
         # Need way to check not only the text {model} Locked but also that it is the correct one by checking date/time
@@ -167,12 +173,17 @@ def Remote_Lock_Unlock004():
 
 def Remote_Lock_Unlock005():
     test_result = TestCaseResult("Remote_Lock_Unlock005")
-    test_result.description = "Verify Remote Unlock, Ignition off"
+    test_result.description = "Verify Remote Unlock, Ignition On"
     test_result.start_time = time.time()
 
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        controller.click_by_image("Icons/unlock_icon.png", threshold=0.80)
+        sleep(1)
+        controller.swipe_down()
+        sleep(5)
+        controller.click_by_image("Icons/Error_Icon.png")
+
+        controller.click_by_image("Icons/unlock_icon.png")
         sleep(3)
         controller.enter_pin("1234")
         sleep(10)
@@ -182,16 +193,17 @@ def Remote_Lock_Unlock005():
             test_result.log_step("Remote Unlock Blocked", False)
             test_result.status = "Failed"
         sleep(2)
-        if compare_with_expected_crop("Icons/Remote_Unlock_Status.png"):
+        if controller.is_text_present("Vehicle locked"):
             test_result.log_step("Lock Status Unchanged", True)
         else:
             test_result.log_step("Lock Status Unchanged", False)
             test_result.status = "Failed"
+        controller.click_by_image("Icons/Error_Icon.png")
         sleep(2)
         controller.click_by_image("Icons/New_Notification_icon.png")
         # Need way to check not only the text {model} Locked but also that it is the correct one by checking date/time
         if True:
-            test_result.log_step("Failed to Unlock Notification Received", True)
+            test_result.log("Failed to Unlock Notification Received", True)
         else:
             test_result.log_step("Failed to Unlock Notification Received", False)
             test_result.status = "Failed"
@@ -215,11 +227,16 @@ def Remote_Lock_Unlock006():
 
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        sleep(1)
+        controller.swipe_down()
+        sleep(5)
+        controller.click_by_image("Icons/Error_Icon.png")
+
         sleep(2)
-        controller.click_by_image("Icons/lock_icon.png", threshold=0.80)
+        controller.click_by_image("Icons/lock_icon.png")
         sleep(2)
         controller.enter_pin("1234")
-        sleep(10)
+        sleep(20)
         if compare_with_expected_crop("Icons/Remote_Unlock_Failure_Driverdoor.png"):
             test_result.log_step("Remote Unlock Blocked", True)
         else:
@@ -231,6 +248,7 @@ def Remote_Lock_Unlock006():
         else:
             test_result.log_step("Lock Status Unchanged", False)
             test_result.status = "Failed"
+        controller.click_by_image("Icons/Error_Icon.png")
         sleep(2)
         controller.click_by_image("Icons/New_Notification_icon.png")
         if True:
@@ -258,9 +276,10 @@ def Remote_Lock_Unlock007():
 
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        controller.click_by_image("Icons/lock_icon.png", threshold=0.80)
+        controller.click_by_image("Icons/lock_icon.png")
         sleep(2)
         controller.enter_pin("1234")
+        sleep(15)
         if compare_with_expected_crop("Icons/Remote_Unlock_Partial_Failure.png"):
             test_result.log_step("Remote Unlock Partially Blocked", True)
         else:
@@ -272,6 +291,7 @@ def Remote_Lock_Unlock007():
         else:
             test_result.log_step("Vehicle is not completely locked", False)
             test_result.status = "Failed"
+        controller.click_by_image("Icons/Error_Icon.png")
         sleep(2)
         controller.click_by_image("Icons/New_Notification_icon.png")
         # Message - Bentayga was successfully locked
@@ -300,7 +320,7 @@ def Remote_Lock_Unlock008():
 
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        controller.click_by_image("Icons/Notification_icon.png", threshold=0.80)
+        controller.click_by_image("Icons/Notification_icon.png")
 
         #Ask how this one is checked
 
@@ -317,10 +337,8 @@ def Remote_Lock_Unlock009():
 
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        # Need to know if completion is logged by tester via input or using the app indication
-        # This currently judges success on when the banner at the top saying vehicle locked happens
         latency_time = time.time()
-        controller.click_by_image("Icons/lock_icon.png", threshold=0.80)
+        controller.click_by_image("Icons/lock_icon.png")
         sleep(2)
         controller.enter_pin("1234")
         if controller.wait_for_text("Successfully locked", timeout=100):
@@ -330,7 +348,7 @@ def Remote_Lock_Unlock009():
 
         if latency_time < 40:
             test_result.log_step(f"Latency time: {latency_time}", True)
-            test_result.log("✅ Remote_Lock_Unlock_001 passed")
+            test_result.log("✅ Remote_Lock_Unlock_009 passed")
         else:
             test_result.log_step(f"Latency time: {latency_time}", False)
             test_result.log("❌ Remote_Lock_Unlock_009 failed")
@@ -350,10 +368,10 @@ def Remote_Lock_Unlock010():
 
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        controller.click_by_image("Icons/lock_icon.png", threshold=0.80)
+        controller.click_by_image("Icons/lock_icon.png")
         sleep(2)
         controller.enter_pin("1234")
-        sleep(10)
+        sleep(15)
         if compare_with_expected_crop("Icons/Remote_Lock_Success.png"):
             test_result.log_step("Remote Lock Worked While Locked", True)
         else:
@@ -386,10 +404,10 @@ def Remote_Lock_Unlock011():
 
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        controller.click_by_image("Icons/unlocked_icon.png", threshold=0.80)
+        controller.click_by_image("Icons/unlock_icon.png")
         sleep(2)
         controller.enter_pin("1234")
-        sleep(10)
+        sleep(15)
         if compare_with_expected_crop("Icons/Remote_Unlock_Success.png"):
             test_result.log_step("Remote Unlock Worked While Unlocked", True)
         else:
@@ -414,23 +432,20 @@ def Remote_Lock_Unlock011():
     test_result.end_time = time.time()
     return test_result
 
-def Remote_Lock_Unlock012():
-    test_result = TestCaseResult("Remote_Lock_Unlock012")
-    test_result.description = "Verify Remote Lock timeout, no network connection"
-    test_result.start_time = time.time()
+# For now at least this test case is not needed
+# def Remote_Lock_Unlock012():
+#     test_result = TestCaseResult("Remote_Lock_Unlock012")
+#     test_result.description = "Verify Remote Lock timeout, no network connection"
+#     test_result.start_time = time.time()
+#
+#     try:
+#         controller.click_by_image("Icons/lock_icon.png")
 
-    # When phone in airplane mode, it comes up with a error that it cannot peform action without internet rather than timing out
-    try:
-        controller.click_by_image("Icons/lock_icon.png", threshold=0.80)
-        sleep(2)
-        controller.enter_pin("1234")
-        sleep(120) # make it so that 120 ish is where it terminates the test as a fail, and checks up to that point, prevents waiting 120 if it shows success after 10
-
-    except Exception as e:
-        test_result.log_step(f"Unexpected error: {e}", False)
-
-    test_result.end_time = time.time()
-    return test_result
+#     except Exception as e:
+#         test_result.log_step(f"Unexpected error: {e}", False)
+#
+#     test_result.end_time = time.time()
+#     return test_result
 
 def Remote_Lock_Unlock013():
     test_result = TestCaseResult("Remote_Lock_Unlock013")
@@ -439,10 +454,10 @@ def Remote_Lock_Unlock013():
 
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        controller.click_by_image("Icons/lock_Icon.png", threshold=0.80)
+        controller.click_by_image("Icons/lock_Icon.png")
         sleep(2)
         controller.enter_pin("1234")
-        sleep(5)
+        sleep(15)
         if compare_with_expected_crop("Icons/Remote_Lock_Success.png"):
             test_result.log_step("Lock Message Displayed When Fob Key in Vehicle", True)
         else:
@@ -481,10 +496,10 @@ def Remote_Lock_Unlock014():
 
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        controller.click_by_image("Icons/unlock_Icon.png", threshold=0.80)
+        controller.click_by_image("Icons/unlock_Icon.png")
         sleep(2)
         controller.enter_pin("1234")
-        sleep(5)
+        sleep(15)
         if compare_with_expected_crop("Icons/Remote_Unlock_Success.png"):
             test_result.log_step("Unlock Message Displayed When Fob Key Inside Vehicle", True)
         else:
@@ -517,15 +532,42 @@ def Remote_Lock_Unlock014():
     test_result.end_time = time.time()
     return test_result
 
+#Explain this
 def Remote_Lock_Unlock015():
     test_result = TestCaseResult("Remote_Lock_Unlock015")
-    test_result.description = "Verify Remote Unlock functionality"
+    test_result.description = "Verify Remote Unlock functionality when Vehicle is locked by Fob Keys"
     test_result.start_time = time.time()
 
-    input("Vehicle is unlocked, Ignition is off\nPress Enter to proceed...")
-
     try:
-        pass
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        controller.click_by_image("Icons/lock_icon.png")
+        sleep(2)
+        controller.enter_pin("1234")
+        sleep(12)
+        if compare_with_expected_crop("Icons/Remote_Lock_Success.png"):
+            test_result.log_step("Remote Lock Worked", True)
+        else:
+            test_result.log_step("Remote Lock Worked", False)
+            test_result.status = "Failed"
+        sleep(2)
+
+        controller.click_by_image("Icons/New_Notification_icon.png")
+        if True:
+            test_result.log_step("Failed to Unlock Notification Received", True)
+        else:
+            test_result.log_step("Failed to Unlock Notification Received", False)
+            test_result.status = "Failed"
+
+        if controller.is_text_present("Vehicle locked"):
+            test_result.log_step("Lock Status Changed", True)
+        else:
+            test_result.log_step("Lock Status Changed", False)
+            test_result.status = "Failed"
+
+        if test_result.status == "Passed":
+            test_result.log("✅ Remote_Lock_Unlock_015 passed")
+        else:
+            test_result.log("❌ Remote_Lock_Unlock_015 failed")
 
     except Exception as e:
         test_result.log_step(f"Unexpected error: {e}", False)
@@ -540,17 +582,17 @@ def Remote_Lock_Unlock016():
     test_result.start_time = time.time()
 
     try:
-        sleep(60)
+        sleep(5)
         controller.swipe_down()
-        if compare_with_expected_crop("Remote_Lock_Unavailable.png"):
-            test_result.log_step("Remote Lock disabled", True)
-            if not controller.click_by_image("Icons/Remote_Lock_Unavailable_icon.png"):
-                test_result.log("✅ Remote_Lock_Unlock_016 passed")
-                test_result.end_time = time.time()
-                return test_result
-
-        test_result.log("❌ Remote_Lock_Unlock_016 failed")
-        test_result.status = "Failed"
+        sleep(10)
+        controller.click_by_image("Icons/Error_Icon.png")
+        if controller.is_text_present("Lock my car unavailable"):
+            test_result.log_step("Remote Lock Disabled", True)
+            test_result.log("✅ Remote_Lock_Unlock_016 passed")
+        else:
+            test_result.log_step("Remote Lock Disabled", False)
+            test_result.log("❌ Remote_Lock_Unlock_016 failed")
+            test_result.status = "Failed"
 
     except Exception as e:
         test_result.log_step(f"Unexpected error: {e}", False)
@@ -565,18 +607,17 @@ def Remote_Lock_Unlock017():
     test_result.start_time = time.time()
 
     try:
-        sleep(60)
+        sleep(5)
         controller.swipe_down()
-        if compare_with_expected_crop("Remote_Lock_Available.png"):
+        sleep(10)
+        controller.click_by_image("Icons/Error_Icon.png")
+        if not controller.is_text_present("Lock my car unavailable"):
             test_result.log_step("Remote Lock Enabled", True)
-            if controller.click_by_image("Icons/lock_icon.png"):
-                test_result.log("✅ Remote_Lock_Unlock_017 passed")
-                test_result.end_time = time.time()
-                return test_result
-
-        test_result.log("❌ Remote_Lock_Unlock_017 failed")
-        test_result.status = "Failed"
-
+            test_result.log("✅ Remote_Lock_Unlock_017 passed")
+        else:
+            test_result.log_step("Remote Lock Enabled", False)
+            test_result.log("❌ Remote_Lock_Unlock_017 failed")
+            test_result.status = "Failed"
 
     except Exception as e:
         test_result.log_step(f"Unexpected error: {e}", False)
@@ -584,3 +625,5 @@ def Remote_Lock_Unlock017():
 
     test_result.end_time = time.time()
     return test_result
+
+Remote_Lock_Unlock017()

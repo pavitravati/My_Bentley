@@ -105,6 +105,7 @@ def Profiles_002():
     return test_result
 
 ######################################################################
+# Have not finished my ones for this as these are the ones that disconect and break the app
 
 def Profiles_003():
     test_result = TestCaseResult("Profiles_003")

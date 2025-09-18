@@ -1,15 +1,15 @@
 from time import sleep
 from PythonProject.common_utils.android_image_comparision import *
-from PythonProject.common_utils.test_result_tracker import TestCaseResult
 from PythonProject.common_utils.android_controller import *
 from PythonProject.core.log_emitter import log_emitter
 
 
 # Made a copy of the demo mode testcases to try and get them connected to the ui
-
 def log(msg):
     log_emitter.log_signal.emit(msg)
 
+# if a testcase fails/error need something that can get it to a state for the next test case because the aim is for
+# each one to run into the other so one failing could disrupt that flow
 def fail_reload():
     controller.launch_app("uk.co.bentley.mybentley")
     sleep(2)
@@ -121,35 +121,24 @@ def Demo_Mode_004():
         log(f"⚠️ - Unexpected error: {e}")
 
 def Demo_Mode_005():
-    test_result = TestCaseResult("Demo_Mode_005")
-    test_result.description = "Verify My Car Statistics screen"
-    test_result.start_time = time.time()
-
     try:
-        controller.click_by_image("Icons/my_car_statistics.png", threshold=0.80)
+        controller.click_by_image("Icons/my_car_statistics.png")
         sleep(3)
         if find_icon_in_screen("Images/Car_Statistics_Screen.png"):
-            test_result.log_step("My Car Statistics screen visible, Demo_Mode_005 Passed", True)
+            log("✅ - My Car Statistics screen visible, Demo_Mode_005 Passed")
         else:
-            test_result.log_step("Demo_Mode_005 Fail", False)
+            log("❌ - My Car Statistics screen not visible, Demo_Mode_005 Fail")
 
-        controller.click_by_image("Icons/back_icon.png", threshold=0.80)
+        controller.click_by_image("Icons/back_icon.png")
 
     except Exception as e:
-        test_result.log_step(f"Unexpected error: {e}", False)
-
-    test_result.end_time = time.time()
-    return test_result
+        log(f"⚠️ - Unexpected error: {e}")
 
 def Demo_Mode_006():
-    test_result = TestCaseResult("Demo_Mode_006")
-    test_result.start_time = time.time()
     test_passed = True
-
     try:
-        test_result.description = "Verify Navigation Screen UI Elements"
         # Step 1: Click on Navigation icon
-        controller.click_by_image("Icons/navigation_icon.png", threshold=0.80)
+        controller.click_by_image("Icons/navigation_icon.png")
         time.sleep(3)
 
         # Step 2: Handle "ALLOW" popup
@@ -159,195 +148,200 @@ def Demo_Mode_006():
 
         # Step 3: Validate search image
         if compare_with_expected_crop("Images/Navigation_Search_Image.png"):
-            test_result.log("Search image matched")
+            log("Search image matched - ✅")
         else:
-            test_result.log("Search image not matched")
+            log("Search image not matched - ❌")
             test_passed = False
 
         # Step 4: Validate Car icon
         if controller.d(resourceId="uk.co.bentley.mybentley:id/tab_vehicle_dashboard").exists:
-            test_result.log("Car icon is visible")
+            log("Car icon is visible - ✅")
         else:
-            test_result.log("Car icon is missing")
+            log("Car icon is missing - ❌")
             test_passed = False
 
         # Step 5: Validate Profile icon
         if controller.d(resourceId="uk.co.bentley.mybentley:id/tab_profile").exists:
-            test_result.log("Profile icon is visible")
+            log("Profile icon is visible - ✅")
         else:
-            test_result.log("Profile icon is missing")
+            log("Profile icon is missing - ❌")
             test_passed = False
 
         # Step 6: Validate Satellite Traffic screen
-        controller.click_by_image("Icons/satellite_icon.png", threshold=0.80)
+        controller.click_by_image("Icons/satellite_icon.png")
         time.sleep(2)
         if compare_with_expected_crop("Images/Satellite_Traffic_Screen.png"):
-            test_result.log("Satellite traffic screen matched")
+            log("Satellite traffic screen matched - ✅")
         else:
-            test_result.log("Satellite traffic screen did not match")
+            log("Satellite traffic screen did not match - ❌")
             test_passed = False
 
         # Step 7: Final result
         if test_passed:
-            test_result.log("✅ Demo_Mode_006 passed")
-            test_result.status = "Passed"
+            log("✅ - Demo_Mode_006 passed")
         else:
-            test_result.log("❌ Demo_Mode_006 failed")
-            test_result.status = "Failed"
+            log("❌ - Demo_Mode_006 failed")
 
     except Exception as e:
-        test_result.log(f"❌ Unexpected error: {e}")
-        test_result.status = "Failed"
-
-    test_result.end_time = time.time()
-    return test_result
+        log(f"⚠️ - Unexpected error: {e}")
 
 def Demo_Mode_007():
-    test_result = TestCaseResult("Demo_Mode_007")
-    test_result.description = "Verify Notification screen"
-    test_result.start_time = time.time()
-
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_messages")
         sleep(3)
-        result = compare_with_expected_crop("Images/Notification_Title.png")
-        test_result.log_step("Notification title validated", result)
+        if compare_with_expected_crop("Images/Notification_Title.png"):
+            log("✅ - Notification title validated")
+        else:
+            log("❌ - Notification title not validated")
 
         controller.extract_dashboard_metrics()
 
-    except Exception as e:
-        test_result.log_step(f"Unexpected error: {e}", False)
+        metrics = []
+        if metrics:
+            log("✅ - Extracted Metrics:")
+            for metric, stat in metrics:
+                log(f"{metric}: {stat}")
+        else:
+            log("❌ - No Metrics extracted")
 
-    test_result.end_time = time.time()
-    return test_result
+    except Exception as e:
+        log(f"⚠️ - Unexpected error: {e}")
 
 def Demo_Mode_008():
-    test_result = TestCaseResult("Demo_Mode_008")
-    test_result.description = "Verify Profile screen"
-    test_result.start_time = time.time()
     test_passed = True
-
     try:
         # (Optional) keep a screenshot if you want – but not required for validation
         # controller.take_screenshot("profilescreen.png")
 
         # 1) Open Profile tab
-        ok = controller.click_by_image("Icons/Profile_Icon.png", threshold=0.80)
-        test_result.log_step("Tapped Profile tab", ok)
+        ok = controller.click_by_image("Icons/Profile_Icon.png")
+        if ok:
+            log("✅ - Tapped Profile tab")
         if not ok:
+            log("❌ - Profile tab not tapped")
             test_passed = False
         time.sleep(2)
 
         # 2) Validate Profile screen header/title
         ok = compare_with_expected_crop("Images/Profile_Screen.png")
-        test_result.log_step("Profile Title is present", ok)
-        test_passed &= ok
+        if ok:
+            log("Profile Title is present - ✅")
+        if not ok:
+            log("Profile Title is not present - ❌")
+            test_passed = False
 
         # 3) Validate user avatar/icon
         ok = compare_with_expected_crop("Images/Profile_Screen_User_Icon.png")
-        test_result.log_step("Profile User Icon is present", ok)
-        test_passed &= ok
+        if ok:
+            log("Profile User Icon is present - ✅")
+        if not ok:
+            log("Profile User Icon is not present - ❌")
+            test_passed = False
 
         # 4) Validate user name
         ok = compare_with_expected_crop("Images/Profile_Screen_User_Name.png")
-        test_result.log_step("Profile User Name is present", ok)
-        test_passed &= ok
+        if ok:
+            log("Profile User Name is present - ✅")
+        if not ok:
+            log("Profile User Name is not present - ❌")
+            test_passed = False
+
 
         # 5) Validate 'My details' tab
         ok = compare_with_expected_crop("Images/Profile_Screen_MyDetails_Tab.png")  # ensure exact filename
-        test_result.log_step("Profile 'My details' tab is present", ok)
-        test_passed &= ok
+        if ok:
+            log("Profile 'My details' tab is present - ✅")
+        if not ok:
+            log("Profile 'My details' tab is not present - ❌")
+            test_passed = False
 
         # 6) Navigate to Account
-        ok = controller.click_by_image("Icons/Profile_Account_Icon.png", threshold=0.80)
-        test_result.log_step("Tapped Account", ok)
-        test_passed &= ok
+        ok = controller.click_by_image("Icons/Profile_Account_Icon.png")
+        if ok:
+            log("Tapped Account - ✅")
+        if not ok:
+            log("Account not tapped - ❌")
+            test_passed = False
         time.sleep(2)
 
         ok = compare_with_expected_crop("Images/Profile_Account_Screen.png")
-        test_result.log_step("Profile Account screen is present", ok)
-        test_passed &= ok
+        if ok:
+            log("Profile Account screen is present - ✅")
+        if not ok:
+            log("Profile Account screen is not present - ❌")
+            test_passed = False
 
         # 7) Navigate to General
-        ok = controller.click_by_image("Icons/Profile_General_Icon.png", threshold=0.80)
-        test_result.log_step("Tapped General", ok)
-        test_passed &= ok
+        ok = controller.click_by_image("Icons/Profile_General_Icon.png")
+        if ok:
+            log("Tapped General - ✅")
+        if not ok:
+            log("General not tapped - ❌")
+            test_passed = False
         time.sleep(2)
 
         ok = compare_with_expected_crop("Images/Profile_General_Screen.png")
-        test_result.log_step("Profile General screen is present", ok)
-        test_passed &= ok
+        if ok:
+            log("Profile General screen is present - ✅")
+        if not ok:
+            log("Profile General screen is not present - ❌")
+            test_passed = False
 
         # 8) Settings icon visible on Profile (if expected on this screen)
         ok = compare_with_expected_crop("Images/Profile_Screen_Setting_Icon.png")
-        test_result.log_step("Profile Settings icon is present", ok)
-        test_passed &= ok
+        if ok:
+            log("Profile Settings icon is present - ✅")
+        if not ok:
+            log("Profile Settings icon is not present - ❌")
+            test_passed = False
 
         # Final status (kept for readability in the report)
         if test_passed:
-            test_result.log("✅ Demo_Mode_008 passed")
-            test_result.status = "Passed"
+            log("✅ - Demo_Mode_008 passed")
         else:
-            test_result.log("❌ Demo_Mode_008 failed")
-            test_result.status = "Failed"
+            log("❌ - Demo_Mode_008 failed")
 
         #Come back to my details tab in profile screen
-        controller.click_by_image("Icons/Profile_Mydetails_Icon.png", threshold=0.80)
+        controller.click_by_image("Icons/Profile_Mydetails_Icon.png")
 
     except Exception as e:
-        test_result.log_step(f"Unexpected error: {e}", False)
-
-    test_result.end_time = time.time()
-    return test_result
+        log(f"⚠️ - Unexpected error: {e}")
 
 def Demo_Mode_009():
-    test_result = TestCaseResult("Demo_Mode_009")
-    test_result.description = "Verify Setting screen"
-    test_result.start_time = time.time()
     try:
         #Click on setting icon in profile screen
-        controller.click_by_image("Icons/Profile_Screen_Setting_Icon.png", threshold=0.80)
+        controller.click_by_image("Icons/Profile_Screen_Setting_Icon.png")
         sleep(2)
         if compare_with_expected_crop("Images/Setting_Screen.png"):
-            test_result.log_step("Demo_Mode_009 passed", True)
+            log("✅ - Demo_Mode_009 passed")
         else:
-            test_result.log_step("Setting Screen options are not present, Demo_Mode_009 Failed", False)
+            log("❌ - Setting Screen options are not present, Demo_Mode_008 failed")
 
-        controller.click_by_image("Icons/back_icon.png", threshold=0.80)
+        controller.click_by_image("Icons/back_icon.png")
         sleep(2)
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         sleep(2)
-    except Exception as e:
-        test_result.log_step(f"Unexpected error: {e}", False)
 
-    test_result.end_time = time.time()
-    return test_result
+    except Exception as e:
+        log(f"⚠️ - Unexpected error: {e}")
 
 def Demo_Mode_010():
-    test_result = TestCaseResult("Demo_Mode_010")
-    test_result.description = "Verify Add vehicle screen"
-    test_result.start_time = time.time()
     try:
         for _ in range(4):
-            controller.click_by_image("Icons/Homescreen_Right_Arrow.png", threshold=0.80)
+            controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
             sleep(2)
         if compare_with_expected_crop("Images/Add_Vehicle_Information_Screen.png"):
-            test_result.log_step("Demo_Mode_010 passed", True)
+            log("✅ - Demo_Mode_010 passed")
         else:
-            test_result.log_step("Vehicle info Screen options are not present, Demo_Mode_010 Failed", False)
+            log("❌ - Vehicle info Screen options are not present, Demo_Mode_010 Failed")
         for _ in range(4):
-            controller.click_by_image("Icons/Homescreen_Left_Arrow.png", threshold=0.80)
+            controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
             sleep(2)
-    except Exception as e:
-        test_result.log_step(f"Unexpected error: {e}", False)
 
-    test_result.end_time = time.time()
-    return test_result
+    except Exception as e:
+        log(f"⚠️ - Unexpected error: {e}")
 
 def Demo_Mode_011():
-    test_result = TestCaseResult("Demo_Mode_011")
-    test_result.description = "Verify all the screen with Bentley style guide."
-    test_result.start_time = time.time()
     try:
         images = [
             "Images/My_Bentley_Demo_Mode_Page.png",
@@ -360,55 +354,50 @@ def Demo_Mode_011():
         ]
 
         if all(compare_with_expected_crop(img) for img in images):
-            test_result.log_step("All initial UI images validated,Demo_mode_011 Passed", True)
+            log("✅ - All initial UI images validated, Demo_mode_011 Passed")
         else:
-            test_result.log_step("Demo_mode_011 Fail", False)
-    except Exception as e:
-        test_result.log_step(f"Unexpected error: {e}", False)
+            log("❌ - Demo_Mode_011 Failed")
+            for img in images:
+                log(f"{img[7:]} - {"✅" if compare_with_expected_crop(img) else "❌"}")
 
-    test_result.end_time = time.time()
-    return test_result
+    except Exception as e:
+        log(f"⚠️ - Unexpected error: {e}")
 
 def Demo_Mode_012():
-    test_result = TestCaseResult("Demo_Mode_012")
-    test_result.description = ("Verification of Log out")
-    test_result.start_time = time.time()
     try:
-        controller.click_by_image("Icons/Profile_Icon.png", threshold=0.80)
+        controller.click_by_image("Icons/Profile_Icon.png")
         sleep(2)
         compare_with_expected_crop("Images/Profile_Screen.png")
-        controller.click_by_image("Icons/Profile_General_Icon.png", threshold=0.80)
+        controller.click_by_image("Icons/Profile_General_Icon.png")
         sleep(2)
         compare_with_expected_crop("Images/Profile_General_Screen.png")
-        controller.click_by_image("Icons/Profile_Logout_Icon.png", threshold=0.80)
+        if controller.click_by_image("Icons/Profile_Logout_Icon.png"):
+            log("✅ - Demo mode exiting")
+        else:
+            log("❌ - Demo mode not exiting")
         sleep(5)
         if compare_with_expected_crop("Images/My_Bentley_Login_Page.png"):
-            test_result.log_step("Sign in page is visible,Demo_mode_012 Passed", True)
+            log("✅ - Sign in page is visible, Demo_mode_012 Passed")
         else:
-            test_result.log_step("Demo_mode_012 Fail", False)
+            log("❌ - Demo_mode_012 Fail")
 
         find_icon_in_screen("Images/My_Bentley_Login_Page.png")
         controller.click_text("DISCOVER MY BENTLEY")
         sleep(5)
-    except Exception as e:
-        test_result.log_step(f"Unexpected error: {e}", False)
 
-    test_result.end_time = time.time()
-    return test_result
+    except Exception as e:
+        log(f"⚠️ - Unexpected error: {e}")
 
 def Demo_Mode_013():
-    test_result = TestCaseResult("Demo_Mode_013")
-    test_result.description = ("Verification of Log out")
-    test_result.start_time = time.time()
     try:
-        controller.click_by_image("Icons/logout_icon.png", threshold=0.80)
+        if controller.click_by_image("Icons/logout_icon.png"):
+            log("✅ - Demo mode exiting")
+        else:
+            log("❌ - Demo mode not exiting")
         sleep(5)
         if compare_with_expected_crop("Images/My_Bentley_Login_Page.png"):
-            test_result.log_step("Sign in page is visible,Demo_mode_013 Passed", True)
+            log("✅ - Sign in page is visible,Demo_mode_013 Passed")
         else:
-            test_result.log_step("Demo_mode_013 Fail", False)
+            log("❌ - Demo_mode_013 Fail")
     except Exception as e:
-        test_result.log_step(f"Unexpected error: {e}", False)
-
-    test_result.end_time = time.time()
-    return test_result
+        log(f"⚠️ - Unexpected error: {e}")

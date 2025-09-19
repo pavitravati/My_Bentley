@@ -303,12 +303,17 @@ def DemoMode_008():
 
         #Come back to my details tab in profile screen
         controller.click_by_image("Icons/Profile_Mydetails_Icon.png")
+        sleep(2)
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        sleep(2)
 
     except Exception as e:
         log(f"⚠️ - Unexpected error: {e}")
 
 def DemoMode_009():
     try:
+        controller.click_by_image("Icons/Profile_Icon.png", threshold=0.80)
+        sleep(2)
         #Click on setting icon in profile screen
         controller.click_by_image("Icons/Profile_Screen_Setting_Icon.png")
         sleep(2)

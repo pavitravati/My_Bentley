@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Test Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f7f7f7; padding: 20px; }
+        h1 { color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #333; color: white; }
+        .pass { background-color: #c8e6c9; }
+        .fail { background-color: #ffcdd2; }
+        .log-block { margin-top: 5px; font-family: monospace; background: #f1f1f1; padding: 10px; border: 1px solid #ccc; white-space: pre-wrap; }
+        .collapsible {
+            background-color: #eee;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+        }
+        .active, .collapsible:hover { background-color: #ccc; }
+        .content {
+            padding: 0 18px;
+            display: none;
+            overflow: hidden;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Test Report</h1>
+    <p>Generated on: 2025-09-19 16:52:45</p>
+    <table>
+        <tr>
+            <th>Test Case</th>
+            <th>Status</th>
+            <th>Description</th>
+            <th>Duration</th>
+            <th>Logs</th>
+        </tr>
+
+            <tr class="fail">
+                <td>Demo_Mode_001</td>
+                <td>Failed</td>
+                <td>Accessing Demo mode</td>
+                <td>4.07</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block"> Match confidence: 1.00&lt;br&gt;Clicked element with text: DISCOVER MY BENTLEY&lt;br&gt; Match confidence: 0.81&lt;br&gt;❌ Dashboard screen not detected, Demo_Mode_001 Failed&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="pass">
+                <td>Demo_Mode_002</td>
+                <td>Passed</td>
+                <td>Verify Demo Mode content</td>
+                <td>13.56</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block"> Match confidence: 0.78&lt;br&gt;📸 Screenshot saved at C:\Users\EBYW5T1\PycharmProjects\My_Bentley\PythonProject\resource\ios_screen.png&lt;br&gt;🔎 Match Confidence: 1.00&lt;br&gt;Found image at: (1100, 227), tapping at center: (366, 75)&lt;br&gt; Tap at (366, 75)&lt;br&gt;Clicked element with text: DISCOVER MY BENTLEY&lt;br&gt; Match confidence: 1.00&lt;br&gt;✅ Demo_Mode_002 passed&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="pass">
+                <td>Demo_Mode_003</td>
+                <td>Passed</td>
+                <td>Verify Dashboard content</td>
+                <td>56.17</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block"> SSIM Score: 1.0000&lt;br&gt; Match successful&lt;br&gt; SSIM Score: 1.0000&lt;br&gt; Match successful&lt;br&gt; SSIM Score: 1.0000&lt;br&gt; Match successful&lt;br&gt; SSIM Score: 1.0000&lt;br&gt; Match successful&lt;br&gt; SSIM Score: 1.0000&lt;br&gt; Match successful&lt;br&gt; SSIM Score: 0.9572&lt;br&gt; Match successful&lt;br&gt; SSIM Score: 1.0000&lt;br&gt; Match successful&lt;br&gt;✅ All initial UI images validated, Demo Mode 003 passed&lt;br&gt;&lt;br&gt;✅ Extracted Metrics:&lt;br&gt;Mileage: 6,954 km&lt;br&gt;Lights: Off&lt;br&gt;Fuel: 709 km&lt;br&gt;Boot: Open&lt;br&gt;Bonnet: Closed&lt;br&gt;Doors: Left front Open)&lt;br&gt;Windows: Left front Closed)&lt;br&gt;Oil Level: 90.0%&lt;br&gt;Oil Change: due in 270 d, 12,070 km&lt;br&gt;Cluster Warnings: No warnings&lt;br&gt; Swipe up completed&lt;br&gt;&lt;br&gt;✅ Extracted Metrics:&lt;br&gt;Mileage: 6,954 km&lt;br&gt;Lights: Off&lt;br&gt;Fuel: 709 km&lt;br&gt;Boot: Open&lt;br&gt;Bonnet: Closed&lt;br&gt;Doors: Left front Open)&lt;br&gt;Windows: Left front Closed)&lt;br&gt;Oil Level: 90.0%&lt;br&gt;Oil Change: due in 270 d, 12,070 km&lt;br&gt;Cluster Warnings: No warnings&lt;br&gt; Swipe up completed&lt;br&gt;&lt;br&gt;✅ Extracted Metrics:&lt;br&gt;Mileage: 6,954 km&lt;br&gt;Lights: Off&lt;br&gt;Fuel: 709 km&lt;br&gt;Boot: Open&lt;br&gt;Bonnet: Closed&lt;br&gt;Doors: Left front Open)&lt;br&gt;Windows: Left front Closed)&lt;br&gt;Oil Level: 90.0%&lt;br&gt;Oil Change: due in 270 d, 12,070 km&lt;br&gt;Cluster Warnings: No warnings&lt;br&gt; Swipe down completed&lt;br&gt; Swipe down completed&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="fail">
+                <td>Demo_Mode_004</td>
+                <td>Failed</td>
+                <td>Verify Car Remote screen</td>
+                <td>24.41</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">📸 Screenshot saved at C:\Users\EBYW5T1\PycharmProjects\My_Bentley\PythonProject\resource\ios_screen.png&lt;br&gt;🔎 Match Confidence: 1.00&lt;br&gt;Found image at: (353, 2376), tapping at center: (117, 792)&lt;br&gt; Tap at (117, 792)&lt;br&gt; Match confidence: 0.50&lt;br&gt;❌ Demo_Mode_004 Fail&lt;br&gt;&lt;br&gt;✅ Extracted Car Statistics:&lt;br&gt;Last Trip: Last trip - Th, 29/08/2024 1:58 AM&lt;br&gt;&lt;br&gt;✅ Extracted Battery Charge:&lt;br&gt;Battery Status: Battery fully charged&lt;br&gt;&lt;br&gt;✅ Extracted Cabin Comfort:&lt;br&gt;Cabin Comfort: Not active&lt;br&gt; Swipe up completed&lt;br&gt;&lt;br&gt;✅ Extracted Remote Parking:&lt;br&gt;Remote Parking: Preconditions not fulfilled&lt;br&gt;&lt;br&gt;✅ Extracted Theft Alarm:&lt;br&gt;Theft Alarm: Interior alarm&lt;br&gt;&lt;br&gt;✅ Extracted Roadside Assistance:&lt;br&gt;Roadside Assistance: Report a breakdown&lt;br&gt; Swipe up completed&lt;br&gt;&lt;br&gt;✅ Extracted Data Services:&lt;br&gt;Data Services: Purchase in-car data&lt;br&gt; Swipe down completed&lt;br&gt; Swipe down completed&lt;br&gt;📸 Screenshot saved at C:\Users\EBYW5T1\PycharmProjects\My_Bentley\PythonProject\resource\ios_screen.png&lt;br&gt;🔎 Match Confidence: 1.00&lt;br&gt;Found image at: (116, 2378), tapping at center: (38, 792)&lt;br&gt; Tap at (38, 792)&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="fail">
+                <td>Demo_Mode_005</td>
+                <td>Failed</td>
+                <td>Verify My Car Statistics screen</td>
+                <td>4.17</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">📸 Screenshot saved at C:\Users\EBYW5T1\PycharmProjects\My_Bentley\PythonProject\resource\ios_screen.png&lt;br&gt;🔎 Match Confidence: 1.00&lt;br&gt;Found image at: (353, 2376), tapping at center: (117, 792)&lt;br&gt; Tap at (117, 792)&lt;br&gt;❌ Unexpected error:  Could not find or click element with text 'MY CAR STATISTICS': Message: unable to find an element using 'accessibility id', value 'MY CAR STATISTICS'; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception&lt;br&gt;&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="fail">
+                <td>Demo_Mode_006</td>
+                <td>Failed</td>
+                <td>Verify Navigation Screen UI Elements</td>
+                <td>5.61</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">📸 Screenshot saved at C:\Users\EBYW5T1\PycharmProjects\My_Bentley\PythonProject\resource\ios_screen.png&lt;br&gt;🔎 Match Confidence: 1.00&lt;br&gt;Found image at: (589, 2374), tapping at center: (196, 791)&lt;br&gt; Tap at (196, 791)&lt;br&gt; Match confidence: 1.00&lt;br&gt;❌ Unexpected error:  Could not find or click element with text 'ALLOW': Message: unable to find an element using 'accessibility id', value 'ALLOW'; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception&lt;br&gt;&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="fail">
+                <td>Demo_Mode_007</td>
+                <td>Failed</td>
+                <td>Verify Notification screen</td>
+                <td>5.89</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">✅ Clicked element using accessibility_id: Notifications&lt;br&gt; SSIM Score: 0.3706&lt;br&gt; Mismatch - diff saved at: C:\Users\EBYW5T1\PycharmProjects\My_Bentley\PythonProject\resource\ios_images/output\match_box_ios_Images/ios_Notification_Title.png&lt;br&gt;❌ Notification title validated&lt;br&gt;&lt;br&gt;✅ Extracted Last Updated:&lt;br&gt;Last updated: Last updated: 19/09 at 9:22 PM&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="fail">
+                <td>Demo_Mode_008</td>
+                <td>Failed</td>
+                <td>Verify Profile screen</td>
+                <td>10.07</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">✅ Clicked element using accessibility_id: Profile&lt;br&gt; SSIM Score: 0.6367&lt;br&gt; Mismatch - diff saved at: C:\Users\EBYW5T1\PycharmProjects\My_Bentley\PythonProject\resource\ios_images/output\match_box_ios_Images/ios_Profile_Screen.png&lt;br&gt;❌ Profile Title is present&lt;br&gt; SSIM Score: 0.9057&lt;br&gt; Match successful&lt;br&gt;✅ Profile User Icon is present&lt;br&gt; SSIM Score: 1.0000&lt;br&gt; Match successful&lt;br&gt;✅ Profile User Name is present&lt;br&gt; SSIM Score: 1.0000&lt;br&gt; Match successful&lt;br&gt;✅ Profile 'My details' tab is present&lt;br&gt;Clicked element with text: Account&lt;br&gt; SSIM Score: 1.0000&lt;br&gt; Match successful&lt;br&gt;✅ Profile Account screen is present&lt;br&gt;Clicked element with text: General&lt;br&gt; SSIM Score: 1.0000&lt;br&gt; Match successful&lt;br&gt;✅ Profile General screen is present&lt;br&gt; SSIM Score: 0.6435&lt;br&gt; Mismatch - diff saved at: C:\Users\EBYW5T1\PycharmProjects\My_Bentley\PythonProject\resource\ios_images/output\match_box_ios_Images/ios_Profile_Screen_Setting_Icon.png&lt;br&gt;❌ Profile Settings icon is present&lt;br&gt;❌ Demo_Mode_008 failed&lt;br&gt;Clicked element with text: My Details&lt;br&gt;📸 Screenshot saved at C:\Users\EBYW5T1\PycharmProjects\My_Bentley\PythonProject\resource\ios_screen.png&lt;br&gt;🔎 Match Confidence: 1.00&lt;br&gt;Found image at: (116, 2378), tapping at center: (38, 792)&lt;br&gt; Tap at (38, 792)&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="fail">
+                <td>Demo_Mode_009</td>
+                <td>Failed</td>
+                <td>Verify Setting screen</td>
+                <td>4.32</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">✅ Clicked element using accessibility_id: Profile&lt;br&gt;📸 Screenshot saved at C:\Users\EBYW5T1\PycharmProjects\My_Bentley\PythonProject\resource\ios_screen.png&lt;br&gt;🔎 Match Confidence: 0.71&lt;br&gt;❌ Unexpected error: Image match failed. Confidence 0.71 &lt; threshold 0.8&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="fail">
+                <td>Demo_Mode_010</td>
+                <td>Failed</td>
+                <td>Verify Add vehicle screen</td>
+                <td>0.52</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">📸 Screenshot saved at C:\Users\EBYW5T1\PycharmProjects\My_Bentley\PythonProject\resource\ios_screen.png&lt;br&gt;🔎 Match Confidence: 0.49&lt;br&gt;❌ Unexpected error: Image match failed. Confidence 0.49 &lt; threshold 0.8&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="fail">
+                <td>Demo_Mode_011</td>
+                <td>Failed</td>
+                <td>Verify all the screen with Bentley style guide.</td>
+                <td>0.44</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block"> SSIM Score: 0.8732&lt;br&gt; Mismatch - diff saved at: C:\Users\EBYW5T1\PycharmProjects\My_Bentley\PythonProject\resource\ios_images/output\match_box_ios_Images/ios_My_Bentley_Demo_Mode_Page.png&lt;br&gt;❌ Demo_mode_011 Fail&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="pass">
+                <td>Demo_Mode_012</td>
+                <td>Passed</td>
+                <td>Verification of Log out</td>
+                <td>19.63</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">✅ Clicked element using accessibility_id: Profile&lt;br&gt; SSIM Score: 0.6367&lt;br&gt; Mismatch - diff saved at: C:\Users\EBYW5T1\PycharmProjects\My_Bentley\PythonProject\resource\ios_images/output\match_box_ios_Images/ios_Profile_Screen.png&lt;br&gt;Clicked element with text: General&lt;br&gt; SSIM Score: 1.0000&lt;br&gt; Match successful&lt;br&gt;Clicked element with text: Log out&lt;br&gt; SSIM Score: 1.0000&lt;br&gt; Match successful&lt;br&gt;✅ Sign in page is visible,Demo_mode_012 Passed&lt;br&gt; Match confidence: 1.00&lt;br&gt;Clicked element with text: DISCOVER MY BENTLEY&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+            <tr class="fail">
+                <td>Demo_Mode_013</td>
+                <td>Failed</td>
+                <td>Verification of Log out</td>
+                <td>0.57</td>
+                <td>
+                    <button class="collapsible">View Logs</button>
+                    <div class="content"><div class="log-block">📸 Screenshot saved at C:\Users\EBYW5T1\PycharmProjects\My_Bentley\PythonProject\resource\ios_screen.png&lt;br&gt;🔎 Match Confidence: 0.79&lt;br&gt;❌ Unexpected error: Image match failed. Confidence 0.79 &lt; threshold 0.8&lt;br&gt;</div></div>
+                </td>
+            </tr>
+            
+    </table>
+    <script>
+        const coll = document.getElementsByClassName("collapsible");
+        for (let i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                } else {
+                    content.style.display = "block";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

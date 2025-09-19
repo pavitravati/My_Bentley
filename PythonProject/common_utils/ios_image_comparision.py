@@ -3,6 +3,8 @@ import os
 import cv2
 import time
 from PythonProject.common_utils.ios_controller import IOSController
+from appium.webdriver.common.appiumby import AppiumBy
+from selenium.common.exceptions import NoSuchElementException
 
 def find_icon_in_screen_ios(controller: IOSController, icon_filename, threshold=0.9):
     """
@@ -59,7 +61,7 @@ def compare_with_expected_crop_ios(controller: IOSController, expected_image_nam
     """
 
     # Step 1: Load expected image
-    expected_image_path = controller.get_resource_path(os.path.join("ios_images", expected_image_name))
+    expected_image_path = controller.get_resource_path(os.path.join(expected_image_name))
     expected = cv2.imread(expected_image_path, cv2.IMREAD_GRAYSCALE)
     if expected is None:
         print(f" Could not load expected image: {expected_image_path}")
@@ -111,3 +113,5 @@ def compare_with_expected_crop_ios(controller: IOSController, expected_image_nam
     # Step 7: Success
     print(" Match successful")
     return True
+
+

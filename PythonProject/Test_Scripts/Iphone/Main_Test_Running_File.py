@@ -1,5 +1,5 @@
 from PythonProject.common_utils.html_test_report import *
-from PythonProject.Test_Scripts.Android.Android_TestCase import *
+from PythonProject.Test_Scripts.Iphone.Ios_Test_case import *
 from PythonProject.common_utils.test_result_tracker import run_test_with_logs
 
 all_tests = [

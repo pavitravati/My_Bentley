@@ -415,3 +415,6 @@ def Demo_Mode_013():
 
     test_result.end_time = time.time()
     return test_result
+
+def DemoTest():
+    print("DemoTest")

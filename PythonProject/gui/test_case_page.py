@@ -4,16 +4,19 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QFont, QPixmap
 from PySide6.QtCore import Qt, QTimer
-from excel import testCases
-from PythonProject.Test_Scripts.Android.Android_TestCase import *
+from excel import load_data
+from PythonProject.Test_Scripts.Android.all_tests import *
 from PythonProject.core.log_emitter import log_emitter
 from PythonProject.Test_Scripts.Android.RemoteLockTemp import Remote_Lock_Unlock001
 from utils import make_item
 from widgets import PaddingDelegate
 
+testcase_map = load_data()
+
 class TestCaseTablePage(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, service="DemoMode", parent=None):
         super().__init__(parent)
+        self.service = service
         log_emitter.log_signal.connect(self.append_log)
 
         # Adds a vertical layout for the window and sets the padding around it
@@ -25,7 +28,7 @@ class TestCaseTablePage(QWidget):
         top_layout.setContentsMargins(0, 40, 0, 20)
 
         # Creates title and adds to the horizontal layout
-        title = QLabel("Remote Lock/Unlock")
+        title = QLabel(service)
         title.setFont(QFont("Arial", 25, QFont.Bold))
         title.setStyleSheet("margin-left: 20px; margin-bottom: 20px;")
         top_layout.addWidget(title)
@@ -36,8 +39,8 @@ class TestCaseTablePage(QWidget):
         # Creates logo item and adds to the horizontal layout
         logo = QLabel()
         logo.setPixmap(QPixmap('images/bentleylogo.png'))
-        logo.setScaledContents(True)  # Make it scale to its QLabel size
-        logo.setMaximumSize(135, 50)  # Adjust as needed to avoid large empty space
+        logo.setScaledContents(True)
+        logo.setMaximumSize(135, 50)
         logo.setStyleSheet("margin-right: 20px;")
         top_layout.addWidget(logo)
 
@@ -49,15 +52,16 @@ class TestCaseTablePage(QWidget):
         main_button.setStyleSheet("margin-bottom: 20px; margin-top: 20px; font-size: 16px; height: 30px; background-color: #394d45; color: white;")
         main_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         main_button.setCursor(Qt.PointingHandCursor)
-        # main_button.clicked.connect(self.simulate_test)
+        main_button.clicked.connect(self.main_button_clicked)
         layout.addWidget(main_button)
 
         # Create the table with 8 columns and the rows needed for all test cases
         self.table = QTableWidget()
         self.table.setColumnCount(8)
         self.table.setHorizontalHeaderLabels(["Region", "Test Case Description", "Pre-Condition", "Action", "Expected Result", "Duration", "Result", "Error"])
-        self.table.setRowCount(len(testCases))
+        self.table.setRowCount(len(testcase_map[service]))
         self.table.verticalHeader().setDefaultSectionSize(100)
+        self.table.setWordWrap(True)
         self.table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.table.setAlternatingRowColors(True)
         self.table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -76,6 +80,49 @@ class TestCaseTablePage(QWidget):
         self.table.horizontalHeader().setFont(header_font)
         self.table.verticalHeader().setFont(header_font)
 
+        def create_wrapped_checkbox(text: str) -> QWidget:
+            checkbox = QCheckBox()
+            checkbox.setCursor(Qt.PointingHandCursor)
+            checkbox.setText("")  # Keep it empty
+
+            # Add this line to explicitly style the indicator
+            checkbox.setStyleSheet("""
+                QCheckBox::indicator {
+                    width: 13px;
+                    height: 13px;
+                    border: 1px solid black;
+                    background-color: white;
+                }
+                QCheckBox::indicator:checked {
+                    background-color: #51645c; /* A simple blue background for the tick */
+                    image: url("images/check.svg"); /* Or use a base64 encoded image */
+                }
+            """)
+
+            label = QLabel(text)
+            label.setWordWrap(True)
+            label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+            label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+            layout = QHBoxLayout()
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.setSpacing(5)
+            layout.addWidget(checkbox)
+            layout.addWidget(label)
+
+            container = QWidget()
+            container.setLayout(layout)
+            container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+
+            # 👇 Make background transparent
+            container.setStyleSheet("background: transparent;")
+            checkbox.show()
+
+            # 👇 For easy state checking later
+            container.checkbox = checkbox
+
+            return container
+
         # Adds checkboxes and allows for them to control the test case
         def create_precondition_widget(case, row):
             # Creates the layout for the cell
@@ -83,16 +130,16 @@ class TestCaseTablePage(QWidget):
             precondition_layout.setContentsMargins(0, 0, 0, 0)
             precondition_layout.setSpacing(5)
             precondition_widget = QWidget()
+            precondition_widget.setObjectName("preconditionWidget")
+            precondition_widget.setStyleSheet("#preconditionWidget { background: transparent; }")
+
             # Stores all the checkboxes for that cell
             checkboxes = []
 
-            # Loops through the preconditions creating a checkbox for each one
             for precondition in case["Pre-Condition"]:
-                checkbox = QCheckBox(precondition)
-                checkbox.setChecked(False)
-                checkbox.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-                checkboxes.append(checkbox)
-                precondition_layout.addWidget(checkbox)
+                wrapped_checkbox = create_wrapped_checkbox(precondition)
+                precondition_layout.addWidget(wrapped_checkbox)
+                checkboxes.append(wrapped_checkbox.checkbox)  # keep references to actual checkboxes
 
             # If the test case has a precondition adds a button
             if len(case["Pre-Condition"]) > 0:
@@ -122,7 +169,7 @@ class TestCaseTablePage(QWidget):
             return precondition_widget
 
         # Loops through the table adding items to the correct cells
-        for row, case in enumerate(testCases):
+        for row, case in enumerate(testcase_map[service]):
             # In column 0,1,3,4 the data from the test case in Region column is added to that column in the table
             self.table.setItem(row, 0, make_item(case["Region"]))
             self.table.setItem(row, 1, make_item(case["Test Case Description"]))
@@ -139,6 +186,7 @@ class TestCaseTablePage(QWidget):
             self.table.setItem(row, 5, make_item(""))
             self.table.setItem(row, 6, make_item(""))
             self.table.setItem(row, 7, make_item(""))
+            self.table.setWordWrap(True)
 
         # Centres the text in the following columns
         centre_columns = [0, 1, 5, 6, 7]
@@ -153,35 +201,49 @@ class TestCaseTablePage(QWidget):
         for col in range(3):
             self.table.setItemDelegateForColumn(col+2, delegate)
 
-        self.log_view = QTextEdit()
-        self.log_view.setReadOnly(True)
-        layout.addWidget(self.log_view)
-
         # Adds the table to the main layout
         layout.addWidget(self.table)
         # Waits for table to be added and then adjusts the column widths
-        QTimer.singleShot(0, self.adjust_column_widths)
+        QTimer.singleShot(0, self.final_adjust_layout)
+
 
     # Adjusts column widths roughly based on screen size
     def adjust_column_widths(self):
-        # Gets the width of the users screen
-        total_width = self.table.viewport().width()
-
-        # Percentages are how much of the screen the column takes up
-        percentages = [0.04, 0.3, 0.24, 0.31, 0.46, 0.07, 0.07, 0.07]
-        for col, percent in enumerate(percentages):
-            width = int(total_width * percent)
+        col_widths = [60, 350, 395, 420, 420, 60, 60, 55]
+        logical_dpi = self.logicalDpiX()
+        for col, col_width in enumerate(col_widths):
+            width = int(col_width * logical_dpi/96)
             self.table.setColumnWidth(col, width)
+
+    def final_adjust_layout(self):
+        self.adjust_column_widths()
+        self.table.resizeRowsToContents()
+
+        padding = 50
+
+        for row in range(self.table.rowCount()):
+            current_height = self.table.rowHeight(row)
+            self.table.setRowHeight(row, current_height + padding)
+
+    def main_button_clicked(self):
+        # for row in range(self.table.rowCount()):
+        for row in range(1, self.table.rowCount()+1):
+            func_name = f"DemoMode_0{f"0{row}" if row < 10 else f"{row}"}"
+            func = globals().get(func_name)
+            if func:
+                func()
+            else:
+                print(f"No function named {func_name}")
 
     # When app is working this runs the testcase for that row. Build on this to show results/process
     def precondition_button_clicked(self, row):
         # checking = 1
         # print(f"Execute button clicked for row {checking}")
-        # func_name = f"Remote_Lock_Unlock00{checking}"
+        # if checking < 10:
+        #     func_name = f"{self.service}_00{checking}"
+        # else:
+        #     func_name = f"{self.service}_0{checking}"
         # func = globals().get(func_name)
         # if func:
         #     func()
         Remote_Lock_Unlock001()
-
-    def append_log(self, message):
-        self.log_view.append(message)

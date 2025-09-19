@@ -203,7 +203,7 @@ def Remote_Lock_Unlock005():
         controller.click_by_image("Icons/New_Notification_icon.png")
         # Need way to check not only the text {model} Locked but also that it is the correct one by checking date/time
         if True:
-            test_result.log("Failed to Unlock Notification Received", True)
+            test_result.log_step("Failed to Unlock Notification Received", True)
         else:
             test_result.log_step("Failed to Unlock Notification Received", False)
             test_result.status = "Failed"
@@ -625,5 +625,3 @@ def Remote_Lock_Unlock017():
 
     test_result.end_time = time.time()
     return test_result
-
-Remote_Lock_Unlock017()

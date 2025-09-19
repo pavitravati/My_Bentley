@@ -21,7 +21,7 @@ def fail_reload():
         sleep(5)
         controller.click_text("DISCOVER MY BENTLEY")
 
-def Demo_Mode_001():
+def DemoMode_001():
     try:
         controller.launch_app("uk.co.bentley.mybentley")
         sleep(2)
@@ -47,7 +47,7 @@ def Demo_Mode_001():
     except Exception as e:
         log(f"⚠️ - Unexpected error: {e}")
 
-def Demo_Mode_002():
+def DemoMode_002():
     try:
         if find_icon_in_screen("Images/My_Bentley_Demo_Mode_Page.png"):
             log("✅ - Demo mode dashboard visible,Demo_Mode_002 Passed")
@@ -56,7 +56,7 @@ def Demo_Mode_002():
     except Exception as e:
         log(f"⚠️ - Unexpected error: {e}")
 
-def Demo_Mode_003():
+def DemoMode_003():
     try:
         images = [
             "Images/My_Bentley_Demo_Mode_Page.png",
@@ -93,7 +93,7 @@ def Demo_Mode_003():
     except Exception as e:
         log(f"⚠️ - Unexpected error: {e}")
 
-def Demo_Mode_004():
+def DemoMode_004():
     try:
         controller.click_by_image("Icons/windows_icon.png")
         sleep(3)
@@ -120,7 +120,7 @@ def Demo_Mode_004():
     except Exception as e:
         log(f"⚠️ - Unexpected error: {e}")
 
-def Demo_Mode_005():
+def DemoMode_005():
     try:
         controller.click_by_image("Icons/my_car_statistics.png")
         sleep(3)
@@ -134,7 +134,7 @@ def Demo_Mode_005():
     except Exception as e:
         log(f"⚠️ - Unexpected error: {e}")
 
-def Demo_Mode_006():
+def DemoMode_006():
     test_passed = True
     try:
         # Step 1: Click on Navigation icon
@@ -185,7 +185,7 @@ def Demo_Mode_006():
     except Exception as e:
         log(f"⚠️ - Unexpected error: {e}")
 
-def Demo_Mode_007():
+def DemoMode_007():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_messages")
         sleep(3)
@@ -207,7 +207,7 @@ def Demo_Mode_007():
     except Exception as e:
         log(f"⚠️ - Unexpected error: {e}")
 
-def Demo_Mode_008():
+def DemoMode_008():
     test_passed = True
     try:
         # (Optional) keep a screenshot if you want – but not required for validation
@@ -307,7 +307,7 @@ def Demo_Mode_008():
     except Exception as e:
         log(f"⚠️ - Unexpected error: {e}")
 
-def Demo_Mode_009():
+def DemoMode_009():
     try:
         #Click on setting icon in profile screen
         controller.click_by_image("Icons/Profile_Screen_Setting_Icon.png")
@@ -325,7 +325,7 @@ def Demo_Mode_009():
     except Exception as e:
         log(f"⚠️ - Unexpected error: {e}")
 
-def Demo_Mode_010():
+def DemoMode_010():
     try:
         for _ in range(4):
             controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
@@ -341,7 +341,7 @@ def Demo_Mode_010():
     except Exception as e:
         log(f"⚠️ - Unexpected error: {e}")
 
-def Demo_Mode_011():
+def DemoMode_011():
     try:
         images = [
             "Images/My_Bentley_Demo_Mode_Page.png",
@@ -363,7 +363,7 @@ def Demo_Mode_011():
     except Exception as e:
         log(f"⚠️ - Unexpected error: {e}")
 
-def Demo_Mode_012():
+def DemoMode_012():
     try:
         controller.click_by_image("Icons/Profile_Icon.png")
         sleep(2)
@@ -388,7 +388,7 @@ def Demo_Mode_012():
     except Exception as e:
         log(f"⚠️ - Unexpected error: {e}")
 
-def Demo_Mode_013():
+def DemoMode_013():
     try:
         if controller.click_by_image("Icons/logout_icon.png"):
             log("✅ - Demo mode exiting")

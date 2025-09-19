@@ -221,8 +221,6 @@ def Demo_Mode_007():
     test_result.end_time = time.time()
     return test_result
 
-Demo_Mode_007()
-
 def Demo_Mode_008():
     test_result = TestCaseResult("Demo_Mode_008")
     test_result.description = "Verify Profile screen"
@@ -414,3 +412,6 @@ def Demo_Mode_013():
 
     test_result.end_time = time.time()
     return test_result
+
+def DemoTest():
+    print("DemoTest")

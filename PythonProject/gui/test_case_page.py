@@ -3,13 +3,14 @@ from PySide6.QtWidgets import (
     QCheckBox, QPushButton, QHBoxLayout, QTextEdit
 )
 from PySide6.QtGui import QFont, QPixmap
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import Qt, QTimer, QObject, Signal, Slot, QThread
 from excel import load_data
-from PythonProject.Test_Scripts.Android.all_tests import *
-from PythonProject.core.log_emitter import log_emitter
-from PythonProject.Test_Scripts.Android.RemoteLockTemp import Remote_Lock_Unlock001
+from Test_Scripts.Android.all_tests import *
+from core.log_emitter import log_emitter
+from Test_Scripts.Android.RemoteLockTemp import Remote_Lock_Unlock001
 from utils import make_item
 from widgets import PaddingDelegate
+from test_worker import TestRunnerWorker
 
 testcase_map = load_data()
 
@@ -17,7 +18,8 @@ class TestCaseTablePage(QWidget):
     def __init__(self, service="DemoMode", parent=None):
         super().__init__(parent)
         self.service = service
-        log_emitter.log_signal.connect(self.append_log)
+        self.log_history = []
+        log_emitter.log_signal.connect(self.handle_log)
 
         # Adds a vertical layout for the window and sets the padding around it
         layout = QVBoxLayout(self)
@@ -94,8 +96,8 @@ class TestCaseTablePage(QWidget):
                     background-color: white;
                 }
                 QCheckBox::indicator:checked {
-                    background-color: #51645c; /* A simple blue background for the tick */
-                    image: url("images/check.svg"); /* Or use a base64 encoded image */
+                    background-color: #51645c;
+                    image: url("images/check.svg");
                 }
             """)
 
@@ -226,14 +228,27 @@ class TestCaseTablePage(QWidget):
             self.table.setRowHeight(row, current_height + padding)
 
     def main_button_clicked(self):
-        # for row in range(self.table.rowCount()):
-        for row in range(1, self.table.rowCount()+1):
-            func_name = f"DemoMode_0{f"0{row}" if row < 10 else f"{row}"}"
-            func = globals().get(func_name)
-            if func:
-                func()
-            else:
-                print(f"No function named {func_name}")
+        # Disable button so user can't spam clicks
+        self.sender().setEnabled(False)
+
+        self.thread = QThread()
+        self.worker = TestRunnerWorker(self.service, self.table.rowCount(), globals())
+        self.worker.moveToThread(self.thread)
+
+        # Connect signals
+        self.thread.started.connect(self.worker.run)
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+
+        self.worker.progress.connect(self.update_progress)
+
+        self.thread.finished.connect(lambda: self.sender().setEnabled(True))  # Re-enable button
+
+        self.thread.start()
+
+    def update_progress(self, row):
+        print(f"Completed test row: {row}")
 
     # When app is working this runs the testcase for that row. Build on this to show results/process
     def precondition_button_clicked(self, row):
@@ -247,3 +262,8 @@ class TestCaseTablePage(QWidget):
         # if func:
         #     func()
         Remote_Lock_Unlock001()
+
+    def handle_log(self, message: str):
+        # Save the log
+        self.log_history.append(message)
+        print(message)

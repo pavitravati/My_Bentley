@@ -1,7 +1,12 @@
-from appium import webdriver
+
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from appium.options.ios import XCUITestOptions
 from appium import webdriver
+from appium.webdriver.common.appiumby import AppiumBy
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from appium.webdriver.common.appiumby import AppiumBy
 import time
 import os
 import cv2
@@ -42,18 +47,39 @@ class IOSController:
         except Exception as e:
             print(f"Failed to launch app {bundle_id}: {e}")
 
-    def click_by_accessibility_id(self, locator):
+    def click_element(self, accessibility_id=None, xpath=None):
         """
-        Generic click using iOS accessibility id (preferred).
+        Clicks an iOS element if visible.
+
+        Args:
+            accessibility_id: Accessibility id of the element (preferred)
+            xpath: XPath of the element (fallback)
+
+        Returns:
+            True if clicked, False if not found
         """
         try:
-            element = self.driver.find_element("accessibility id", locator)
-            element.click()
-            print(f"✅ Clicked element by accessibility id: {locator}")
-            return True
-        except Exception as e:
-            print(f"❌ Could not click element by accessibility id {locator}: {e}")
-            return False
+            if accessibility_id:
+                elem = self.driver.find_element("accessibility id", accessibility_id)
+                if elem.is_displayed():
+                    elem.click()
+                    print(f"✅ Clicked element via accessibility id: {accessibility_id}")
+                    return True
+        except NoSuchElementException:
+            pass
+
+        try:
+            if xpath:
+                elem = self.driver.find_element("xpath", xpath)
+                if elem.is_displayed():
+                    elem.click()
+                    print(f"✅ Clicked element via XPath: {xpath}")
+                    return True
+        except NoSuchElementException:
+            pass
+
+        print("❌ Element not found")
+        return False
 
     def get_resource_path(self, filename):
         base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -406,6 +432,75 @@ class IOSController:
             print("⚠️ No Data Services info found.")
 
         return metrics
+
+    def extract_last_updated(self):
+        details = {}
+        try:
+            xml_source = self.driver.page_source
+
+            import xml.etree.ElementTree as ET
+            root = ET.fromstring(xml_source)
+
+            for elem in root.iter("XCUIElementTypeStaticText"):
+                # Get all relevant attributes
+                value = elem.attrib.get("value", "")
+                name = elem.attrib.get("name", "")
+                label = elem.attrib.get("label", "")
+
+                # Normalize spaces and lowercase for comparison
+                combined = " ".join([value, name, label]).replace("\u202F", " ").lower()
+
+                if "last updated" in combined:
+                    # Pick whichever attribute is non-empty
+                    details["Last updated"] = value or label or name
+                    break
+
+        except Exception as e:
+            print(f"⚠️ Could not extract 'Last updated': {e}")
+
+        if details:
+            print("\n✅ Extracted Last Updated:")
+            for k, v in details.items():
+                print(f"{k}: {v}")
+        else:
+            print("⚠️ No 'Last updated' info found.")
+
+        return details
+
+    def click_element_generic(self, locator_type, locator_value, timeout=10):
+        """
+        Generic function to click an element on iOS.
+
+        Args:
+            locator_type: 'accessibility_id' or 'xpath'
+            locator_value: the value of the locator
+            timeout: max wait time in seconds
+
+        Returns:
+            True if clicked successfully, False otherwise
+        """
+        if not self.driver:
+            raise RuntimeError("Driver not initialized. Call start_session() first.")
+
+        try:
+            if locator_type.lower() == "accessibility_id":
+                element = WebDriverWait(self.driver, timeout).until(
+                    EC.element_to_be_clickable((AppiumBy.ACCESSIBILITY_ID, locator_value))
+                )
+            elif locator_type.lower() == "xpath":
+                element = WebDriverWait(self.driver, timeout).until(
+                    EC.element_to_be_clickable((AppiumBy.XPATH, locator_value))
+                )
+            else:
+                raise ValueError(f"Unsupported locator type: {locator_type}")
+
+            element.click()
+            print(f"✅ Clicked element using {locator_type}: {locator_value}")
+            return True
+
+        except Exception as e:
+            print(f"❌ Failed to click element using {locator_type}: {locator_value}. Error: {e}")
+            return False
 
     def quit(self):
         if self.driver:

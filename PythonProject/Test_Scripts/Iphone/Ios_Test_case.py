@@ -1,25 +1,39 @@
 from time import sleep
-from PythonProject.common_utils.android_image_comparision import *
+from PythonProject.common_utils.ios_image_comparision import *
 from PythonProject.common_utils.test_result_tracker import TestCaseResult
-from PythonProject.common_utils.android_controller import *
+
+MAC_IP = "192.168.1.5"
+PORT = 8101
+UDID = "00008130-0012513918A1401C"
+TEAM_ID = "LDD46J9733"
+BUNDLE_ID = "uk.co.bentley.MyBentley"  # App to launch
+
+# MAC_IP = "192.168.0.31"
+# PORT = 8101
+# UDID = "00008110-0002481A1188401E"
+# TEAM_ID = "DZDAJ9XWDH"
+# BUNDLE_ID = "uk.co.bentley.MyBentley"  # App to launch
+
+# Initialize and start session (app launches automatically)
+ios = IOSController(mac_ip=MAC_IP, port=PORT, udid=UDID, team_id=TEAM_ID, bundle_id=BUNDLE_ID)
+ios.start_session()
+
 
 def Demo_Mode_001():
     test_result = TestCaseResult("Demo_Mode_001")
     test_result.description = "Accessing Demo mode"
     test_result.start_time = time.time()
-
     try:
-        controller.launch_app("uk.co.bentley.mybentley")
-        sleep(2)
-
-        if find_icon_in_screen("Images/My_Bentley_Login_Page.png"):
-            controller.click_text("DISCOVER MY BENTLEY")
+        if  find_icon_in_screen_ios(ios, "ios_Images/ios_My_Bentley_Login_Page.png"):
+            ios.click_by_text("DISCOVER MY BENTLEY")
+            sleep(2)
         else:
-            controller.click_by_image("Icons/logout_icon.png", threshold=0.80)
+            ios.click_by_image("ios_Icons/ios_Logout_Icon.png")
             sleep(5)
-            controller.click_text("DISCOVER MY BENTLEY")
+            ios.click_by_text("DISCOVER MY BENTLEY")
+            sleep(5)
 
-        if find_icon_in_screen("Images/My_Bentley_Demo_Mode_Page.png"):
+        if find_icon_in_screen_ios(ios,"ios_Images/ios_My_Bentley_Demo_Mode_Page.png"):
             test_result.log_step("Demo_Mode_001 passed", True)
         else:
             test_result.log_step("Dashboard screen not detected, Demo_Mode_001 Failed", False)
@@ -34,25 +48,22 @@ def Demo_Mode_002():
     test_result = TestCaseResult("Demo_Mode_002")
     test_result.description = "Verify Demo Mode content"
     test_result.start_time = time.time()
-
     try:
-        controller.launch_app("uk.co.bentley.mybentley")
-        sleep(2)
-
-        if find_icon_in_screen("Images/My_Bentley_Login_Page.png"):
-            controller.click_text("DISCOVER MY BENTLEY")
+        if find_icon_in_screen_ios(ios, "ios_Images/ios_My_Bentley_Login_Page.png"):
+            ios.click_by_text("DISCOVER MY BENTLEY")
+            sleep(2)
         else:
-            controller.click_by_image("Icons/logout_icon.png", threshold=0.80)
+            ios.click_by_image("ios_Icons/ios_Logout_Icon.png")
             sleep(5)
-            controller.click_text("DISCOVER MY BENTLEY")
+            ios.click_by_text("DISCOVER MY BENTLEY")
+            sleep(5)
 
-        if find_icon_in_screen("Images/My_Bentley_Demo_Mode_Page.png"):
-            test_result.log_step("Demo mode dashboard visible,Demo_Mode_002 passed", True)
+        if find_icon_in_screen_ios(ios, "ios_Images/ios_My_Bentley_Demo_Mode_Page.png"):
+            test_result.log_step("Demo_Mode_002 passed", True)
         else:
-            test_result.log_step("Dashboard screen not detected, Demo_Mode_002 fail", False)
+            test_result.log_step("Dashboard screen not detected, Demo_Mode_002 Failed", False)
     except Exception as e:
         test_result.log_step(f"Unexpected error: {e}", False)
-
     test_result.end_time = time.time()
     return test_result
 
@@ -63,30 +74,29 @@ def Demo_Mode_003():
 
     try:
         images = [
-            "Images/My_Bentley_Demo_Mode_Page.png",
-            "Images/Demo_Vehicle_Image.png",
-            "Images/Demo_Greetings.png",
-            "Images/Demo_Lock_Button.png",
-            "Images/Demo_Unlock_Button.png",
-            "Images/Demo_Vehicle_Last_Contact.png",
-            "Images/Demo_Vehicle_Name.png"
+            "ios_Images/ios_My_Bentley_Demo_Mode_Page.png",
+            "ios_Images/ios_Demo_Vehicle_Image.png",
+            "ios_Images/ios_Demo_Greeting_Message.png",
+            "ios_Images/ios_Demo_Lock_Button.png",
+            "ios_Images/ios_Demo_Unlock_Button.png",
+            "ios_Images/ios_Demo_Last_Contact_Details.png",
+            "ios_Images/ios_Demo_Vehicle_Name.png"
         ]
 
-        if all(compare_with_expected_crop(img) for img in images):
+        if all(compare_with_expected_crop_ios(ios,img) for img in images):
             test_result.log_step("All initial UI images validated, Demo Mode 003 passed", True)
         else:
             test_result.log_step(" Demo Mode 003 Fail", False)
-
+        ios.extract_dashboard_metrics_Overview()
 
         for _ in range(2):
-            controller.swipe_up()
+            ios.swipe("up")
             sleep(3)
-            controller.extract_dashboard_metrics()
+            ios.extract_dashboard_metrics_Overview()
 
         for _ in range(2):
-            controller.swipe_down()
+            ios.swipe("down")
             sleep(2)
-
     except Exception as e:
         test_result.log_step(f"Unexpected error: {e}", False)
 
@@ -99,21 +109,27 @@ def Demo_Mode_004():
     test_result.start_time = time.time()
 
     try:
-        controller.click_by_image("Icons/windows_icon.png", threshold=0.80)
+        ios.click_by_image("ios_Icons/ios_Windows_Icon.png", threshold=0.80)
         sleep(3)
-        if find_icon_in_screen("Images/Demo_Mode_Car_Remote_Screen.png"):
+        if find_icon_in_screen_ios(ios,"ios_Images/ios_Demo_Mode_Car_Remote_Screen.png"):
             test_result.log_step("Car Remote screen visible, Demo_Mode_004 Passed",True)
         else:
             test_result.log_step("Demo_Mode_004 Fail", False)
-        for _ in range(4):
-            controller.extract_dashboard_metrics()
-            controller.swipe_up()
-            sleep(2)
+
+        ios.extract_car_statistics()
+        ios.extract_battery_charge()
+        ios.extract_cabin_comfort()
+        ios.swipe("up")
+        ios.extract_remote_parking()
+        ios.extract_theft_alarm()
+        ios.extract_roadside_assistance()
+        ios.swipe("up")
+        ios.extract_data_services()
 
         for _ in range(2):
-            controller.swipe_down()
+            ios.swipe("down")
             sleep(2)
-
+        ios.click_by_image("ios_Icons/ios_Home.png", threshold=0.80)
     except Exception as e:
         test_result.log_step(f"Unexpected error: {e}", False)
 
@@ -126,14 +142,18 @@ def Demo_Mode_005():
     test_result.start_time = time.time()
 
     try:
-        controller.click_by_image("Icons/my_car_statistics.png", threshold=0.80)
+        ios.click_by_image("ios_Icons/ios_Windows_Icon.png", threshold=0.80)
+        sleep(2)
+        ios.click_by_text("MY CAR STATISTICS")
         sleep(3)
-        if find_icon_in_screen("Images/Car_Statistics_Screen.png"):
+        if find_icon_in_screen_ios(ios,"ios_Images/ios_Mycar_Statistics.png"):
             test_result.log_step("My Car Statistics screen visible, Demo_Mode_005 Passed", True)
         else:
             test_result.log_step("Demo_Mode_005 Fail", False)
 
-        controller.click_by_image("Icons/back_icon.png", threshold=0.80)
+        ios.click_by_image("ios_Icons/ios_Back_Icon.png", threshold=0.80)
+        sleep(2)
+        ios.click_by_image("ios_Icons/ios_Home.png", threshold=0.80)
 
     except Exception as e:
         test_result.log_step(f"Unexpected error: {e}", False)
@@ -149,39 +169,39 @@ def Demo_Mode_006():
     try:
         test_result.description = "Verify Navigation Screen UI Elements"
         # Step 1: Click on Navigation icon
-        controller.click_by_image("Icons/navigation_icon.png", threshold=0.80)
+        ios.click_by_image("ios_Icons/ios_Navigation_Icon.png", threshold=0.80)
         time.sleep(3)
 
         # Step 2: Handle "ALLOW" popup
-        if find_icon_in_screen("Images/Navigation_Allow.png"):
-            controller.click_text("ALLOW")
+        if find_icon_in_screen_ios(ios, "ios_Images/ios_Navigation_Allow.png"):
+            ios.click_by_text("ALLOW")
             time.sleep(3)
 
         # Step 3: Validate search image
-        if compare_with_expected_crop("Images/Navigation_Search_Image.png"):
+        if compare_with_expected_crop_ios(ios,"ios_Images/ios_Navigation_Search.png"):
             test_result.log("Search image matched")
         else:
             test_result.log("Search image not matched")
             test_passed = False
 
         # Step 4: Validate Car icon
-        if controller.d(resourceId="uk.co.bentley.mybentley:id/tab_vehicle_dashboard").exists:
-            test_result.log("Car icon is visible")
+        if compare_with_expected_crop_ios(ios,"ios_Images/ios_Navigation_Car_Icon.png"):
+            test_result.log("Car image matched")
         else:
-            test_result.log("Car icon is missing")
+            test_result.log("Car image not matched")
             test_passed = False
 
         # Step 5: Validate Profile icon
-        if controller.d(resourceId="uk.co.bentley.mybentley:id/tab_profile").exists:
-            test_result.log("Profile icon is visible")
+        if compare_with_expected_crop_ios(ios, "ios_Images/ios_Navigation_User_Icon.png"):
+            test_result.log("User image matched")
         else:
-            test_result.log("Profile icon is missing")
+            test_result.log("User image not matched")
             test_passed = False
 
         # Step 6: Validate Satellite Traffic screen
-        controller.click_by_image("Icons/satellite_icon.png", threshold=0.80)
+        ios.click_by_image("ios_Icons/ios_Navigation_Satellite_icon.png", threshold=0.80)
         time.sleep(2)
-        if compare_with_expected_crop("Images/Satellite_Traffic_Screen.png"):
+        if compare_with_expected_crop_ios(ios,"ios_Images/ios_Satellite_Traffic_Screen.png"):
             test_result.log("Satellite traffic screen matched")
         else:
             test_result.log("Satellite traffic screen did not match")
@@ -202,18 +222,18 @@ def Demo_Mode_006():
     test_result.end_time = time.time()
     return test_result
 
+
 def Demo_Mode_007():
     test_result = TestCaseResult("Demo_Mode_007")
     test_result.description = "Verify Notification screen"
     test_result.start_time = time.time()
 
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_messages")
+        ios.click_element_generic("accessibility_id", "Notifications")
         sleep(3)
-        result = compare_with_expected_crop("Images/Notification_Title.png")
+        result = compare_with_expected_crop_ios(ios,"ios_Images/ios_Notification_Title.png")
         test_result.log_step("Notification title validated", result)
-
-        controller.extract_dashboard_metrics()
+        ios.extract_last_updated()
 
     except Exception as e:
         test_result.log_step(f"Unexpected error: {e}", False)
@@ -228,58 +248,45 @@ def Demo_Mode_008():
     test_passed = True
 
     try:
-        # (Optional) keep a screenshot if you want – but not required for validation
-        # controller.take_screenshot("profilescreen.png")
-
         # 1) Open Profile tab
-        ok = controller.click_by_image("Icons/Profile_Icon.png", threshold=0.80)
-        test_result.log_step("Tapped Profile tab", ok)
-        if not ok:
-            test_passed = False
-        time.sleep(2)
+        ios.click_element_generic("accessibility_id", "Profile")
 
         # 2) Validate Profile screen header/title
-        ok = compare_with_expected_crop("Images/Profile_Screen.png")
+        ok = compare_with_expected_crop_ios(ios,"ios_Images/ios_Profile_Screen.png")
         test_result.log_step("Profile Title is present", ok)
         test_passed &= ok
 
         # 3) Validate user avatar/icon
-        ok = compare_with_expected_crop("Images/Profile_Screen_User_Icon.png")
+        ok = compare_with_expected_crop_ios(ios,"ios_Images/ios_Profile_Screen_User_Icon.png")
         test_result.log_step("Profile User Icon is present", ok)
         test_passed &= ok
 
         # 4) Validate user name
-        ok = compare_with_expected_crop("Images/Profile_Screen_User_Name.png")
+        ok = compare_with_expected_crop_ios(ios,"ios_Images/ios_Profile_Screen_User_Name.png")
         test_result.log_step("Profile User Name is present", ok)
         test_passed &= ok
 
         # 5) Validate 'My details' tab
-        ok = compare_with_expected_crop("Images/Profile_Screen_MyDetails_Tab.png")  # ensure exact filename
+        ok = compare_with_expected_crop_ios(ios,"ios_Images/ios_Profile_Screen_MyDetails_Tab.png")  # ensure exact filename
         test_result.log_step("Profile 'My details' tab is present", ok)
         test_passed &= ok
 
         # 6) Navigate to Account
-        ok = controller.click_by_image("Icons/Profile_Account_Icon.png", threshold=0.80)
-        test_result.log_step("Tapped Account", ok)
-        test_passed &= ok
-        time.sleep(2)
+        ios.click_by_text("Account")
 
-        ok = compare_with_expected_crop("Images/Profile_Account_Screen.png")
+        ok = compare_with_expected_crop_ios(ios,"ios_Images/ios_Profile_Account_Screen.png")
         test_result.log_step("Profile Account screen is present", ok)
         test_passed &= ok
 
         # 7) Navigate to General
-        ok = controller.click_by_image("Icons/Profile_General_Icon.png", threshold=0.80)
-        test_result.log_step("Tapped General", ok)
-        test_passed &= ok
-        time.sleep(2)
+        ios.click_by_text("General")
 
-        ok = compare_with_expected_crop("Images/Profile_General_Screen.png")
+        ok = compare_with_expected_crop_ios(ios,"ios_Images/ios_Profile_General_Screen.png")
         test_result.log_step("Profile General screen is present", ok)
         test_passed &= ok
 
         # 8) Settings icon visible on Profile (if expected on this screen)
-        ok = compare_with_expected_crop("Images/Profile_Screen_Setting_Icon.png")
+        ok = compare_with_expected_crop_ios(ios,"ios_Images/ios_Profile_Screen_Setting_Icon.png")
         test_result.log_step("Profile Settings icon is present", ok)
         test_passed &= ok
 
@@ -292,7 +299,9 @@ def Demo_Mode_008():
             test_result.status = "Failed"
 
         #Come back to my details tab in profile screen
-        controller.click_by_image("Icons/Profile_Mydetails_Icon.png", threshold=0.80)
+        ios.click_by_text("My Details")
+        sleep(2)
+        ios.click_by_image("ios_Icons/ios_Home.png", threshold=0.80)
 
     except Exception as e:
         test_result.log_step(f"Unexpected error: {e}", False)
@@ -305,17 +314,20 @@ def Demo_Mode_009():
     test_result.description = "Verify Setting screen"
     test_result.start_time = time.time()
     try:
-        #Click on setting icon in profile screen
-        controller.click_by_image("Icons/Profile_Screen_Setting_Icon.png", threshold=0.80)
+        # 1) Open Profile tab
+        ios.click_element_generic("accessibility_id", "Profile")
         sleep(2)
-        if compare_with_expected_crop("Images/Setting_Screen.png"):
+        #Click on setting icon in profile screen
+        ios.click_by_image("ios_Icons/ios_Profile_Screen_Setting_Icon.png", threshold=0.80)
+        sleep(2)
+        if compare_with_expected_crop_ios(ios,"ios_Images/ios_Setting_Screen.png"):
             test_result.log_step("Demo_Mode_009 passed", True)
         else:
             test_result.log_step("Setting Screen options are not present, Demo_Mode_009 Failed", False)
 
-        controller.click_by_image("Icons/back_icon.png", threshold=0.80)
+        ios.click_by_image("ios_Icons/ios_Back_Icon.png", threshold=0.80)
         sleep(2)
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        ios.click_by_image("ios_Icons/ios_Home.png", threshold=0.80)
         sleep(2)
     except Exception as e:
         test_result.log_step(f"Unexpected error: {e}", False)
@@ -329,14 +341,14 @@ def Demo_Mode_010():
     test_result.start_time = time.time()
     try:
         for _ in range(4):
-            controller.click_by_image("Icons/Homescreen_Right_Arrow.png", threshold=0.80)
+            ios.click_by_image("ios_Icons/ios_Homescreen_Right_Arrow.png", threshold=0.80)
             sleep(2)
-        if compare_with_expected_crop("Images/Add_Vehicle_Information_Screen.png"):
+        if compare_with_expected_crop_ios(ios,"ios_Images/ios_Add_Vehicle_Information_Screen.png"):
             test_result.log_step("Demo_Mode_010 passed", True)
         else:
             test_result.log_step("Vehicle info Screen options are not present, Demo_Mode_010 Failed", False)
         for _ in range(4):
-            controller.click_by_image("Icons/Homescreen_Left_Arrow.png", threshold=0.80)
+            ios.click_by_image("ios_Icons/ios_Homescreen_Left_Arrow.png", threshold=0.80)
             sleep(2)
     except Exception as e:
         test_result.log_step(f"Unexpected error: {e}", False)
@@ -350,16 +362,15 @@ def Demo_Mode_011():
     test_result.start_time = time.time()
     try:
         images = [
-            "Images/My_Bentley_Demo_Mode_Page.png",
-            "Images/Demo_Vehicle_Image.png",
-            "Images/Demo_Greetings.png",
-            "Images/Demo_Lock_Button.png",
-            "Images/Demo_Unlock_Button.png",
-            "Images/Demo_Vehicle_Last_Contact.png",
-            "Images/Demo_Vehicle_Name.png"
+            "ios_Images/ios_My_Bentley_Demo_Mode_Page.png",
+            "ios_Images/ios_Demo_Vehicle_Image.png",
+            "ios_Images/ios_Demo_Greeting_Message.png",
+            "ios_Images/ios_Demo_Lock_Button.png",
+            "ios_Images/ios_Demo_Unlock_Button.png",
+            "ios_Images/ios_Demo_Last_Contact_Details.png",
+            "ios_Images/ios_Demo_Vehicle_Name.png"
         ]
-
-        if all(compare_with_expected_crop(img) for img in images):
+        if all(compare_with_expected_crop_ios(ios, img) for img in images):
             test_result.log_step("All initial UI images validated,Demo_mode_011 Passed", True)
         else:
             test_result.log_step("Demo_mode_011 Fail", False)
@@ -374,21 +385,21 @@ def Demo_Mode_012():
     test_result.description = ("Verification of Log out")
     test_result.start_time = time.time()
     try:
-        controller.click_by_image("Icons/Profile_Icon.png", threshold=0.80)
+        ios.click_element_generic("accessibility_id", "Profile")
         sleep(2)
-        compare_with_expected_crop("Images/Profile_Screen.png")
-        controller.click_by_image("Icons/Profile_General_Icon.png", threshold=0.80)
+        compare_with_expected_crop_ios(ios,"ios_Images/ios_Profile_Screen.png")
+        ios.click_by_text("General")
         sleep(2)
-        compare_with_expected_crop("Images/Profile_General_Screen.png")
-        controller.click_by_image("Icons/Profile_Logout_Icon.png", threshold=0.80)
+        compare_with_expected_crop_ios(ios,"ios_Images/ios_Profile_General_Screen.png")
+        ios.click_by_text("Log out")
         sleep(5)
-        if compare_with_expected_crop("Images/My_Bentley_Login_Page.png"):
+        if compare_with_expected_crop_ios(ios,"ios_Images/ios_My_Bentley_Login_Page.png"):
             test_result.log_step("Sign in page is visible,Demo_mode_012 Passed", True)
         else:
             test_result.log_step("Demo_mode_012 Fail", False)
 
-        find_icon_in_screen("Images/My_Bentley_Login_Page.png")
-        controller.click_text("DISCOVER MY BENTLEY")
+        find_icon_in_screen_ios(ios,"ios_Images/ios_My_Bentley_Login_Page.png")
+        ios.click_by_text("DISCOVER MY BENTLEY")
         sleep(5)
     except Exception as e:
         test_result.log_step(f"Unexpected error: {e}", False)
@@ -401,9 +412,9 @@ def Demo_Mode_013():
     test_result.description = ("Verification of Log out")
     test_result.start_time = time.time()
     try:
-        controller.click_by_image("Icons/logout_icon.png", threshold=0.80)
+        ios.click_by_image("ios_Icons/ios_Logout_Icon.png")
         sleep(5)
-        if compare_with_expected_crop("Images/My_Bentley_Login_Page.png"):
+        if compare_with_expected_crop_ios(ios,"ios_Images/ios_My_Bentley_Login_Page.png"):
             test_result.log_step("Sign in page is visible,Demo_mode_013 Passed", True)
         else:
             test_result.log_step("Demo_mode_013 Fail", False)
@@ -413,5 +424,10 @@ def Demo_Mode_013():
     test_result.end_time = time.time()
     return test_result
 
-def DemoTest():
-    print("DemoTest")
+def dummy():
+    sleep(3)
+    ios.take_screenshot("dummy.png")
+
+
+
+Demo_Mode_013()

@@ -1,7 +1,7 @@
 from time import sleep
-from PythonProject.common_utils.android_image_comparision import *
-from PythonProject.common_utils.android_controller import *
-from PythonProject.core.log_emitter import log_emitter
+from common_utils.android_image_comparision import *
+from common_utils.android_controller import *
+from core.log_emitter import log_emitter
 
 
 # Made a copy of the demo mode testcases to try and get them connected to the ui
@@ -79,7 +79,9 @@ def DemoMode_003():
         for _ in range(2):
             controller.swipe_up()
             sleep(3)
-            metrics += controller.extract_dashboard_metrics()
+            extracted = controller.extract_dashboard_metrics()  # dict
+            metrics.extend(extracted.items())
+            # metrics += controller.extract_dashboard_metrics()
 
         if metrics:
             log("Extracted Metrics:")
@@ -104,7 +106,9 @@ def DemoMode_004():
 
         metrics = []
         for _ in range(4):
-            metrics += controller.extract_dashboard_metrics()
+            extracted = controller.extract_dashboard_metrics()  # dict
+            metrics.extend(extracted.items())
+            # metrics += controller.extract_dashboard_metrics()
             controller.swipe_up()
             sleep(2)
 

@@ -1,7 +1,7 @@
 from time import sleep
-from PythonProject.common_utils.android_image_comparision import *
-from PythonProject.core.log_emitter import log_emitter
-from PythonProject.common_utils.android_controller import *
+from common_utils.android_image_comparision import *
+from core.log_emitter import log_emitter
+from common_utils.android_controller import *
 
 # Made a copy of the demo mode testcases to try and get them connected to the ui
 def log(msg):

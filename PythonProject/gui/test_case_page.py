@@ -2,15 +2,16 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QTableWidget, QLabel, QSizePolicy,
     QCheckBox, QPushButton, QHBoxLayout, QTextEdit
 )
-from PySide6.QtGui import QFont, QPixmap
+from PySide6.QtGui import QFont, QPixmap, QColor, QBrush
 from PySide6.QtCore import Qt, QTimer, QObject, Signal, Slot, QThread
 from excel import load_data
 from Test_Scripts.Android.all_tests import *
 from core.log_emitter import log_emitter
-from Test_Scripts.Android.RemoteLockTemp import Remote_Lock_Unlock001
 from utils import make_item
 from widgets import PaddingDelegate
 from test_worker import TestRunnerWorker
+from error_page import ErrorPage
+from pathlib import Path
 
 testcase_map = load_data()
 
@@ -18,7 +19,8 @@ class TestCaseTablePage(QWidget):
     def __init__(self, service="DemoMode", parent=None):
         super().__init__(parent)
         self.service = service
-        self.log_history = []
+        self.log_history = {}
+        self.current_row = None
         log_emitter.log_signal.connect(self.handle_log)
 
         # Adds a vertical layout for the window and sets the padding around it
@@ -40,9 +42,12 @@ class TestCaseTablePage(QWidget):
 
         # Creates logo item and adds to the horizontal layout
         logo = QLabel()
-        logo.setPixmap(QPixmap('images/bentleylogo.png'))
+        img_path = Path(__file__).parent / "images" / "bentleylogo.png"
+        pixmap = QPixmap(str(img_path))
+        logo.setPixmap(pixmap)
+        # logo.setPixmap(QPixmap('images/bentleylogo.png'))
         logo.setScaledContents(True)
-        logo.setMaximumSize(135, 50)
+        logo.setMaximumSize(162, 60)
         logo.setStyleSheet("margin-right: 20px;")
         top_layout.addWidget(logo)
 
@@ -228,7 +233,6 @@ class TestCaseTablePage(QWidget):
             self.table.setRowHeight(row, current_height + padding)
 
     def main_button_clicked(self):
-        # Disable button so user can't spam clicks
         self.sender().setEnabled(False)
 
         self.thread = QThread()
@@ -241,6 +245,9 @@ class TestCaseTablePage(QWidget):
         self.worker.finished.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
 
+        self.worker.current_row.connect(self.set_current_row)
+        self.worker.row_finished.connect(self.on_row_finished)
+
         self.worker.progress.connect(self.update_progress)
 
         self.thread.finished.connect(lambda: self.sender().setEnabled(True))  # Re-enable button
@@ -251,7 +258,7 @@ class TestCaseTablePage(QWidget):
         print(f"Completed test row: {row}")
 
     # When app is working this runs the testcase for that row. Build on this to show results/process
-    def precondition_button_clicked(self, row):
+    # def precondition_button_clicked(self, row):
         # checking = 1
         # print(f"Execute button clicked for row {checking}")
         # if checking < 10:
@@ -261,9 +268,90 @@ class TestCaseTablePage(QWidget):
         # func = globals().get(func_name)
         # if func:
         #     func()
-        Remote_Lock_Unlock001()
+
 
     def handle_log(self, message: str):
-        # Save the log
-        self.log_history.append(message)
+        try:
+            self.log_history[self.current_row].append(message)
+        except:
+            self.log_history[self.current_row] = [message]
         print(message)
+
+    @Slot(int)
+    def set_current_row(self, row: int):
+        self.current_row = row
+
+    def on_row_finished(self, row: int):
+        colors = []
+
+        for i in range(len(self.log_history[row])):
+            colors.append('green') if self.log_history[row][i][0] == '✅' else colors.append('red') if self.log_history[row][i][0] == '❌' else colors.append('yellow') if self.log_history[row][i][0] == '⚠' else None
+
+        result_cell = self.table.item(row-1, 6)
+        if 'red' in colors or 'yellow' in colors:
+            error_btn = QPushButton("Error")
+            error_btn.setCursor(Qt.PointingHandCursor)
+            error_btn.clicked.connect(lambda checked: self.open_test_case_detail(row))
+            self.table.setCellWidget(row-1, 7, error_btn)
+
+            result_cell.setText("Failed")
+            result_cell.setForeground(QBrush(QColor("white")))
+            result_cell.setBackground(QColor("red"))
+        else:
+            result_cell.setText("Passed")
+            result_cell.setForeground(QBrush(QColor("white")))
+            result_cell.setBackground(QColor("green"))
+
+
+        action_item = self.table.item(row-1, 3)
+        action_text = action_item.text()
+        action_lines = action_text.split("\n")
+        action_colors = colors[:len(action_lines)]
+        action_item.setText("")
+
+        action_html = []
+        for i, line in enumerate(action_lines):
+            if 'yellow' in colors:
+                color = '#F6BE00'
+            else:
+                color = action_colors[i]
+            escaped_line = line.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+            action_html.append(f'<span style="color:{color}">{escaped_line}</span>')
+        action_html_text = "<br>".join(action_html)
+
+        action_label = QLabel()
+        action_label.setTextFormat(Qt.RichText)
+        action_label.setWordWrap(True)
+        action_label.setStyleSheet("background: transparent;")
+        action_label.setText(action_html_text)
+
+        self.table.setCellWidget(row-1, 3, action_label)
+
+        expected_item = self.table.item(row-1, 4)
+        expected_text = expected_item.text()
+        expected_lines = expected_text.split("\n")
+        expected_colors = colors[:len(expected_lines)]
+        expected_item.setText("")
+
+        expected_html = []
+        for i, line in enumerate(expected_lines):
+            if 'yellow' in colors:
+                color = '#F6BE00'
+            else:
+                color = expected_colors[i]
+            escaped_line = line.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+            expected_html.append(f'<span style="color:{color}">{escaped_line}</span>')
+        expected_html_text = "<br>".join(expected_html)
+
+        expected_label = QLabel()
+        expected_label.setTextFormat(Qt.RichText)
+        expected_label.setWordWrap(True)
+        expected_label.setStyleSheet("background: transparent;")
+        expected_label.setText(expected_html_text)
+
+        self.table.setCellWidget(row-1, 4, expected_label)
+
+    def open_test_case_detail(self, row):
+        self.error_window = ErrorPage(title=f"{self.service}-0{f"0{row}" if row < 10 else f"{row}"}",
+                                       logs=self.log_history[row], images=[r'C:\Users\EBYDWYS\pycharmproject\My_Bentley\PythonProject\resource\addvehicle.png', r'C:\Users\EBYDWYS\pycharmproject\My_Bentley\PythonProject\resource\android_demo.png', r'C:\Users\EBYDWYS\pycharmproject\My_Bentley\PythonProject\resource\reset_password.png'])
+        self.error_window.show()

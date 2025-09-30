@@ -1,7 +1,7 @@
 from time import sleep
-from PythonProject.common_utils.android_image_comparision import *
-from PythonProject.common_utils.test_result_tracker import TestCaseResult
-from PythonProject.common_utils.android_controller import *
+from common_utils.android_image_comparision import *
+from common_utils.test_result_tracker import TestCaseResult
+from common_utils.android_controller import *
 
 def Remote_Lock_Unlock001():
     test_result = TestCaseResult("Remote_Lock_Unlock001")

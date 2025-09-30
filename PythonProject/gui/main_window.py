@@ -33,10 +33,8 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(TestCaseTablePage("DemoMode"))
 
-    # Currently indicates if toolbar is interacted with
     def toolbar_button_clicked(self, s, service):
         self.service = service
-        # Set the test case table as the central widget
         self.setCentralWidget(TestCaseTablePage(service))
 
 if __name__ == "__main__":

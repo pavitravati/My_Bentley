@@ -1,17 +1,18 @@
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QTableWidget, QLabel, QSizePolicy,
-    QCheckBox, QPushButton, QHBoxLayout, QTextEdit
+    QCheckBox, QPushButton, QHBoxLayout
 )
 from PySide6.QtGui import QFont, QPixmap, QColor, QBrush
-from PySide6.QtCore import Qt, QTimer, QObject, Signal, Slot, QThread
+from PySide6.QtCore import Qt, QTimer, Slot, QThread
 from excel import load_data
-from Test_Scripts.Android.all_tests import *
 from core.log_emitter import log_emitter
 from utils import make_item
 from widgets import PaddingDelegate
 from test_worker import TestRunnerWorker
 from error_page import ErrorPage
 from pathlib import Path
+import os
+import glob
 
 testcase_map = load_data()
 
@@ -250,8 +251,6 @@ class TestCaseTablePage(QWidget):
 
         self.worker.progress.connect(self.update_progress)
 
-        self.thread.finished.connect(lambda: self.sender().setEnabled(True))  # Re-enable button
-
         self.thread.start()
 
     def update_progress(self, row):
@@ -268,7 +267,6 @@ class TestCaseTablePage(QWidget):
         # func = globals().get(func_name)
         # if func:
         #     func()
-
 
     def handle_log(self, message: str):
         try:
@@ -314,7 +312,11 @@ class TestCaseTablePage(QWidget):
             if 'yellow' in colors:
                 color = '#F6BE00'
             else:
-                color = action_colors[i]
+                try:
+                    color = action_colors[i]
+                except IndexError:
+                    color = action_colors[-1]
+                # color = action_colors[i]
             escaped_line = line.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
             action_html.append(f'<span style="color:{color}">{escaped_line}</span>')
         action_html_text = "<br>".join(action_html)
@@ -330,7 +332,7 @@ class TestCaseTablePage(QWidget):
         expected_item = self.table.item(row-1, 4)
         expected_text = expected_item.text()
         expected_lines = expected_text.split("\n")
-        expected_colors = colors[:len(expected_lines)]
+        expected_colors = colors[len(expected_lines)-1:]
         expected_item.setText("")
 
         expected_html = []
@@ -338,7 +340,14 @@ class TestCaseTablePage(QWidget):
             if 'yellow' in colors:
                 color = '#F6BE00'
             else:
-                color = expected_colors[i]
+                try:
+                    color = expected_colors[i]
+                except IndexError:
+                    try:
+                        color = expected_colors[-1]
+                    except IndexError:
+                        color = action_colors[-1]
+                # color = expected_colors[i]
             escaped_line = line.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
             expected_html.append(f'<span style="color:{color}">{escaped_line}</span>')
         expected_html_text = "<br>".join(expected_html)
@@ -351,7 +360,21 @@ class TestCaseTablePage(QWidget):
 
         self.table.setCellWidget(row-1, 4, expected_label)
 
+    # Need to pass the service name and check that aswell as row so that it works if multiple services have been tested in one running
     def open_test_case_detail(self, row):
-        self.error_window = ErrorPage(title=f"{self.service}-0{f"0{row}" if row < 10 else f"{row}"}",
-                                       logs=self.log_history[row], images=[r'C:\Users\EBYDWYS\pycharmproject\My_Bentley\PythonProject\resource\addvehicle.png', r'C:\Users\EBYDWYS\pycharmproject\My_Bentley\PythonProject\resource\android_demo.png', r'C:\Users\EBYDWYS\pycharmproject\My_Bentley\PythonProject\resource\reset_password.png'])
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        image_dir = os.path.join(base_dir, "fail_images")
+        image_paths = []
+        row_num = f"0{row}" if row < 10 else f"{row}"
+
+        for file_path in glob.glob(os.path.join(image_dir, "*.png")):
+            print(file_path)
+            filename = os.path.basename(file_path)
+            if row_num in filename:
+                image_paths.append(file_path)
+
+        print(image_paths)
+
+        self.error_window = ErrorPage(title=f"{self.service}-0{row_num}",
+                                      logs=self.log_history[row], images=image_paths)
         self.error_window.show()

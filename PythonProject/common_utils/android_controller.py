@@ -59,6 +59,15 @@ class DeviceController:
         self.d.screenshot(full_path)
         return full_path
 
+    def take_fail_screenshot(self, filename):
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.abspath(os.path.join(base_dir, ".."))
+        fail_dir = os.path.join(project_root, "gui", "fail_images")
+        os.makedirs(fail_dir, exist_ok=True)
+        full_path = os.path.join(fail_dir, filename)
+        self.d.screenshot(full_path)
+        return full_path
+
     def swipe(self, start_x, start_y, end_x, end_y, duration=0.2):
         """Swipe from one point to another."""
         self.d.swipe(start_x, start_y, end_x, end_y, duration=duration)

@@ -49,6 +49,7 @@ class ErrorPage(QWidget):
         logs_combined = "\n".join(logs)
 
         self.log_textbox.setPlainText(logs_combined)
+        self.log_textbox.setFont(QFont("Arial", 12))
 
         detail_layout.addWidget(self.log_textbox)
 
@@ -57,6 +58,8 @@ class ErrorPage(QWidget):
 
         container = QWidget()
         images_layout = QHBoxLayout(container)
+        images_layout.setSpacing(5)  # space between widgets
+        images_layout.setContentsMargins(20, 0, 20, 0)  # remove extra layout margins
 
         for img_path_str in images:
             img_path = Path(img_path_str)
@@ -66,8 +69,7 @@ class ErrorPage(QWidget):
                 continue
 
             label = QLabel()
-            label.setPixmap(pixmap.scaled(150, 150, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-            label.setFixedSize(150, 150)
+            label.setPixmap(pixmap.scaled(500, 500, Qt.KeepAspectRatio, Qt.SmoothTransformation))
             label.setStyleSheet("margin: 5px;")
             images_layout.addWidget(label)
 

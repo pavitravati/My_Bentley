@@ -79,7 +79,9 @@ def DemoMode_003():
         for _ in range(2):
             controller.swipe_up()
             sleep(3)
-            metrics += controller.extract_dashboard_metrics()
+            extracted = controller.extract_dashboard_metrics()  # dict
+            metrics.extend(extracted.items())
+            # metrics += controller.extract_dashboard_metrics()
 
         if metrics:
             log("Extracted Metrics:")
@@ -104,7 +106,8 @@ def DemoMode_004():
 
         metrics = []
         for _ in range(4):
-            metrics += controller.extract_dashboard_metrics()
+            extracted = controller.extract_dashboard_metrics()  # dict
+            metrics.extend(extracted.items())
             controller.swipe_up()
             sleep(2)
 
@@ -406,3 +409,5 @@ def DemoMode_013():
             log("❌ - Demo_mode_013 Fail")
     except Exception as e:
         log(f"⚠️ - Unexpected error: {e}")
+
+DemoMode_003()

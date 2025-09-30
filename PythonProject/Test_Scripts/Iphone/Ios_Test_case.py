@@ -2,31 +2,29 @@ from time import sleep
 from PythonProject.common_utils.ios_image_comparision import *
 from PythonProject.common_utils.test_result_tracker import TestCaseResult
 
-MAC_IP = "192.168.1.5"
-PORT = 8101
-UDID = "00008130-0012513918A1401C"
-TEAM_ID = "LDD46J9733"
-BUNDLE_ID = "uk.co.bentley.MyBentley"  # App to launch
+# iOS session details
+ios = IOSController(
+    mac_ip="192.168.1.5",
+    port=8101,
+    udid="00008130-0012513918A1401C",
+    team_id="LDD46J9733",
+    bundle_id="uk.co.bentley.MyBentley"
+)
 
-# MAC_IP = "192.168.0.31"
-# PORT = 8101
-# UDID = "00008110-0002481A1188401E"
-# TEAM_ID = "DZDAJ9XWDH"
-# BUNDLE_ID = "uk.co.bentley.MyBentley"  # App to launch
-
-# Initialize and start session (app launches automatically)
-ios = IOSController(mac_ip=MAC_IP, port=PORT, udid=UDID, team_id=TEAM_ID, bundle_id=BUNDLE_ID)
+# Start single session
 ios.start_session()
+# ---------------------------
+# Demo Mode Test Cases (iOS)
+# ---------------------------
 
-
-def Demo_Mode_001():
+def Demo_Mode_001(ios):
     test_result = TestCaseResult("Demo_Mode_001")
     test_result.description = "Accessing Demo mode"
     test_result.start_time = time.time()
     try:
         if  find_icon_in_screen_ios(ios, "ios_Images/ios_My_Bentley_Login_Page.png"):
             ios.click_by_text("DISCOVER MY BENTLEY")
-            sleep(2)
+            sleep(5)
         else:
             ios.click_by_image("ios_Icons/ios_Logout_Icon.png")
             sleep(5)
@@ -44,7 +42,7 @@ def Demo_Mode_001():
     test_result.end_time = time.time()
     return test_result
 
-def Demo_Mode_002():
+def Demo_Mode_002(ios):
     test_result = TestCaseResult("Demo_Mode_002")
     test_result.description = "Verify Demo Mode content"
     test_result.start_time = time.time()
@@ -67,7 +65,7 @@ def Demo_Mode_002():
     test_result.end_time = time.time()
     return test_result
 
-def Demo_Mode_003():
+def Demo_Mode_003(ios):
     test_result = TestCaseResult("Demo_Mode_003")
     test_result.description = "Verify Dashboard content"
     test_result.start_time = time.time()
@@ -103,7 +101,7 @@ def Demo_Mode_003():
     test_result.end_time = time.time()
     return test_result
 
-def Demo_Mode_004():
+def Demo_Mode_004(ios):
     test_result = TestCaseResult("Demo_Mode_004")
     test_result.description = "Verify Car Remote screen"
     test_result.start_time = time.time()
@@ -136,7 +134,7 @@ def Demo_Mode_004():
     test_result.end_time = time.time()
     return test_result
 
-def Demo_Mode_005():
+def Demo_Mode_005(ios):
     test_result = TestCaseResult("Demo_Mode_005")
     test_result.description = "Verify My Car Statistics screen"
     test_result.start_time = time.time()
@@ -161,7 +159,7 @@ def Demo_Mode_005():
     test_result.end_time = time.time()
     return test_result
 
-def Demo_Mode_006():
+def Demo_Mode_006(ios):
     test_result = TestCaseResult("Demo_Mode_006")
     test_result.start_time = time.time()
     test_passed = True
@@ -174,7 +172,7 @@ def Demo_Mode_006():
 
         # Step 2: Handle "ALLOW" popup
         if find_icon_in_screen_ios(ios, "ios_Images/ios_Navigation_Allow.png"):
-            ios.click_by_text("ALLOW")
+            ios.click_by_image("ios_Images/ios_Navigation_Allow.png", threshold=0.80)
             time.sleep(3)
 
         # Step 3: Validate search image
@@ -223,7 +221,7 @@ def Demo_Mode_006():
     return test_result
 
 
-def Demo_Mode_007():
+def Demo_Mode_007(ios):
     test_result = TestCaseResult("Demo_Mode_007")
     test_result.description = "Verify Notification screen"
     test_result.start_time = time.time()
@@ -241,7 +239,7 @@ def Demo_Mode_007():
     test_result.end_time = time.time()
     return test_result
 
-def Demo_Mode_008():
+def Demo_Mode_008(ios):
     test_result = TestCaseResult("Demo_Mode_008")
     test_result.description = "Verify Profile screen"
     test_result.start_time = time.time()
@@ -309,7 +307,7 @@ def Demo_Mode_008():
     test_result.end_time = time.time()
     return test_result
 
-def Demo_Mode_009():
+def Demo_Mode_009(ios):
     test_result = TestCaseResult("Demo_Mode_009")
     test_result.description = "Verify Setting screen"
     test_result.start_time = time.time()
@@ -335,7 +333,7 @@ def Demo_Mode_009():
     test_result.end_time = time.time()
     return test_result
 
-def Demo_Mode_010():
+def Demo_Mode_010(ios):
     test_result = TestCaseResult("Demo_Mode_010")
     test_result.description = "Verify Add vehicle screen"
     test_result.start_time = time.time()
@@ -356,7 +354,7 @@ def Demo_Mode_010():
     test_result.end_time = time.time()
     return test_result
 
-def Demo_Mode_011():
+def Demo_Mode_011(ios):
     test_result = TestCaseResult("Demo_Mode_011")
     test_result.description = "Verify all the screen with Bentley style guide."
     test_result.start_time = time.time()
@@ -380,7 +378,7 @@ def Demo_Mode_011():
     test_result.end_time = time.time()
     return test_result
 
-def Demo_Mode_012():
+def Demo_Mode_012(ios):
     test_result = TestCaseResult("Demo_Mode_012")
     test_result.description = ("Verification of Log out")
     test_result.start_time = time.time()
@@ -407,7 +405,7 @@ def Demo_Mode_012():
     test_result.end_time = time.time()
     return test_result
 
-def Demo_Mode_013():
+def Demo_Mode_013(ios):
     test_result = TestCaseResult("Demo_Mode_013")
     test_result.description = ("Verification of Log out")
     test_result.start_time = time.time()
@@ -424,10 +422,4 @@ def Demo_Mode_013():
     test_result.end_time = time.time()
     return test_result
 
-def dummy():
-    sleep(3)
-    ios.take_screenshot("dummy.png")
-
-
-
-Demo_Mode_013()
+Demo_Mode_001(ios)

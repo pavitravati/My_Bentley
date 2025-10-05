@@ -41,9 +41,24 @@ class DeviceController:
         """Wait until text appears on screen."""
         return self.d(text=text).wait(timeout=timeout)
 
+    def wait_for_text_and_click(self, text, timeout=20):
+        if self.wait_for_text(text, timeout=timeout):
+            if self.d(text=text).exists:
+                self.d(text=text).click()
+                time.sleep(0.5)
+                return True
+            else:
+                print(f"Text '{text}' not found.")
+                return False
+        else:
+            return False
+
     def is_text_present(self, text):
         """Check if the given text is present on screen."""
         return self.d(text=text).exists
+
+    def count_text(self,text):
+        return len(self.d(text=text))
 
     def launch_app(self, package_name):
         self.d.app_start(package_name)
@@ -111,7 +126,7 @@ class DeviceController:
         template_path = self.get_resource_path(image_path)
 
         if not os.path.exists(template_path):
-            #print(f" Image file not found: {template_path}")
+            print(f" Image file not found: {template_path}")
             return False
 
         screenshot_path = self.take_screenshot("temp.png")  # Make sure this returns the path
@@ -161,6 +176,16 @@ class DeviceController:
         os.system(f"adb shell input text {pin}")
         if press_enter:
             os.system("adb shell input keyevent 66")
+
+    def enter_text(self, text: str, press_enter: bool = True):
+        os.system(f"adb shell input text {text}")
+        if press_enter:
+            os.system("adb shell input keyevent 66")
+
+    def clear_text(self, num_chars: int = 100):
+        for _ in range(num_chars):
+            os.system("adb shell input keyevent 67")  # KEYCODE_DEL
+
 
     def extract_dashboard_metrics(self):
         metrics = {}
@@ -311,6 +336,94 @@ class DeviceController:
             print("⚠️ No metrics found on screen.")
 
         return metrics
+
+    def extract_all_license_dates(self):
+        licenses = {}
+
+        try:
+            label = "Green traffic light prediction"
+            license_value = self.d(text=label).sibling(className="android.widget.TextView", instance=1)
+            if license_value.exists:
+                licenses[label] = f"{license_value.get_text()}"
+
+            label = "My Bentley in-car services"
+            license_value = self.d(text=label).sibling(className="android.widget.TextView", instance=1)
+            if license_value.exists:
+                licenses[label] = f"{license_value.get_text()}"
+
+            label = "My Bentley remote services"
+            license_value = self.d(text=label).sibling(className="android.widget.TextView", instance=1)
+            if license_value.exists:
+                licenses[label] = f"{license_value.get_text()}"
+
+            label = "Private e-Call"
+            license_value = self.d(text=label).sibling(className="android.widget.TextView", instance=1)
+            if license_value.exists:
+                licenses[label] = f"{license_value.get_text()}"
+
+            label = "Roadside assistance call"
+            license_value = self.d(text=label).sibling(className="android.widget.TextView", instance=1)
+            if license_value.exists:
+                licenses[label] = f"{license_value.get_text()}"
+
+        except Exception as e:
+            print(f"❌ Error while extracting 'Last updated': {e}")
+
+        if licenses:
+            print("\n✅ Extracted Licenses:")
+            for k, v in licenses.items():
+                print(f"{k}: {v}")
+        else:
+            print("⚠️ No licenses found on screen.")
+
+        return licenses
+
+    def extract_license_date(self):
+        try:
+            label = "License is valid until"
+            license_value = self.d(text=label).sibling(className="android.widget.TextView", instance=1)
+            if license_value.exists:
+                return license_value.get_text()
+
+        except Exception as e:
+            print(f"❌ Error while extracting license date: {e}")
+
+    def extract_license_services(self):
+        try:
+            services = []
+            # Find the scrollable container
+            container = self.d(scrollable=True)
+            if not container.exists:
+                return []
+
+            # Get only textviews inside that container
+            nodes = container.child(className="android.widget.TextView")
+
+            found_services_header = False
+            for node in nodes:
+                text = node.get_text().strip()
+                if text == "SERVICES":
+                    found_services_header = True
+                    continue
+
+                if found_services_header and text:
+                    services.append(text)
+
+            return services
+
+        except Exception as e:
+            print(f"❌ Error while extracting license services: {e}")
+            return []
+
+        except Exception as e:
+            print(f"❌ Error while extracting services: {e}")
+            return []
+
+    def dump_ui(self, filename="ui_dump.xml"):
+        xml = self.d.dump_hierarchy()
+        with open(filename, "w", encoding="utf-8") as f:
+            f.write(xml)
+        print(f"Dumped UI to {filename}")
 
     def extract_profile_details(self):
         details = {}

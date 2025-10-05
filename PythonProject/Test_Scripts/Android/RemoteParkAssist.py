@@ -1,158 +1,333 @@
+from time import sleep
+from common_utils.android_image_comparision import *
+from common_utils.android_controller import *
+from core.log_emitter import log_emitter
+
+def log(msg):
+    log_emitter.log_signal.emit(msg)
+
+def fail_log(msg, num):
+    log(f"{msg}")
+    controller.take_fail_screenshot(f"Nickname_{msg}_{num}.png")
+
+def error_log(e, num):
+    log(f"⚠️ - Unexpected error: {e}")
+    controller.take_fail_screenshot(f"Nickname_{e}_{num}.png")
+
 def RemoteParkAssist_001():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "001")
 
 def RemoteParkAssist_002():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "002")
 
 def RemoteParkAssist_003():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "003")
 
 def RemoteParkAssist_004():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "004")
 
 def RemoteParkAssist_005():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "005")
 
 def RemoteParkAssist_006():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "006")
 
 def RemoteParkAssist_007():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "007")
 
 def RemoteParkAssist_008():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "008")
 
 def RemoteParkAssist_009():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "009")
 
 def RemoteParkAssist_010():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "010")
 
 def RemoteParkAssist_011():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "011")
 
 def RemoteParkAssist_012():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "012")
 
 def RemoteParkAssist_013():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "013")
 
 def RemoteParkAssist_014():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "014")
 
 def RemoteParkAssist_015():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "015")
 
 def RemoteParkAssist_016():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "016")
 
 def RemoteParkAssist_017():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "017")
 
 def RemoteParkAssist_018():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "018")
 
 def RemoteParkAssist_019():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "019")
 
 def RemoteParkAssist_020():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "020")
 
 def RemoteParkAssist_021():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "021")
 
 def RemoteParkAssist_022():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "022")
 
 def RemoteParkAssist_023():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "023")
 
 def RemoteParkAssist_024():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "024")
 
 def RemoteParkAssist_025():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "025")
 
 def RemoteParkAssist_026():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "026")
 
 def RemoteParkAssist_027():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "027")
 
 def RemoteParkAssist_028():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "028")
 
 def RemoteParkAssist_029():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "029")
 
 def RemoteParkAssist_030():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "030")
 
 def RemoteParkAssist_031():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "031")
 
 def RemoteParkAssist_032():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "032")
 
 def RemoteParkAssist_033():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "033")
 
 def RemoteParkAssist_034():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "034")
 
 def RemoteParkAssist_035():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "035")
 
 def RemoteParkAssist_036():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "036")
 
 def RemoteParkAssist_037():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "037")
 
 def RemoteParkAssist_038():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "038")
 
 def RemoteParkAssist_039():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "039")
 
 def RemoteParkAssist_040():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "040")
 
 def RemoteParkAssist_041():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "041")
 
 def RemoteParkAssist_042():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "042")
 
 def RemoteParkAssist_043():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "043")
 
 def RemoteParkAssist_044():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "044")
 
 def RemoteParkAssist_045():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "045")
 
 def RemoteParkAssist_046():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "046")
 
 def RemoteParkAssist_047():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "047")
 
 def RemoteParkAssist_048():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "048")
 
 def RemoteParkAssist_049():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "049")
 
 def RemoteParkAssist_050():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "050")
 
 def RemoteParkAssist_051():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "051")
 
 def RemoteParkAssist_052():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "052")
 
 def RemoteParkAssist_053():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "053")

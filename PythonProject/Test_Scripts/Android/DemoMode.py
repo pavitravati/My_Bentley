@@ -34,7 +34,7 @@ def DemoMode_001():
             else:
                 fail_log("❌ - Demo Mode link not found", "001")
 
-        sleep(2)
+        sleep(1)
         if find_icon_in_screen("Images/My_Bentley_Demo_Mode_Page.png"):
             log("✅ - Demo Mode Launched successfully, Demo_Mode_001 Passed")
         else:
@@ -81,7 +81,6 @@ def DemoMode_003():
         metrics = []
         for _ in range(2):
             controller.swipe_up()
-            sleep(3)
             extracted = controller.extract_dashboard_metrics()
             metrics.extend(extracted.items())
 
@@ -94,7 +93,6 @@ def DemoMode_003():
 
         for _ in range(2):
             controller.swipe_down()
-            sleep(2)
 
     except Exception as e:
         error_log(e, "003")
@@ -102,7 +100,7 @@ def DemoMode_003():
 def DemoMode_004():
     try:
         controller.click_by_image("Icons/windows_icon.png")
-        sleep(3)
+        sleep(1)
         if find_icon_in_screen("Images/Demo_Mode_Car_Remote_Screen.png"):
             log("✅ - Car Remote screen visible")
             log("✅ - Demo_Mode_004 Passed")
@@ -115,7 +113,6 @@ def DemoMode_004():
             extracted = controller.extract_dashboard_metrics()
             metrics.extend(extracted.items())
             controller.swipe_up()
-            sleep(2)
 
         if metrics:
             log("✅ - Extracted Metrics:")
@@ -126,21 +123,25 @@ def DemoMode_004():
 
         for _ in range(2):
             controller.swipe_down()
-            sleep(2)
+
+        controller.click_by_image("Icons/home_icon.png")
 
     except Exception as e:
         error_log(e, "004")
 
 def DemoMode_005():
     try:
+        controller.click_by_image("Icons/windows_icon.png")
+        sleep(1)
         controller.click_by_image("Icons/my_car_statistics.png")
-        sleep(3)
+        sleep(1)
         if find_icon_in_screen("Images/Car_Statistics_Screen.png"):
             log("✅ - My Car Statistics screen visible, Demo_Mode_005 Passed")
         else:
             fail_log("❌ - My Car Statistics screen not visible, Demo_Mode_005 Failed", "005")
 
         controller.click_by_image("Icons/back_icon.png")
+        controller.click_by_image("Icons/home_icon.png")
 
     except Exception as e:
         error_log(e, "005")
@@ -150,12 +151,12 @@ def DemoMode_006():
     try:
         # Step 1: Click on Navigation icon
         controller.click_by_image("Icons/navigation_icon.png")
-        time.sleep(3)
+        time.sleep(1)
 
         # Step 2: Handle "ALLOW" popup
         if find_icon_in_screen("Images/Navigation_Allow.png"):
             controller.click_text("ALLOW")
-            time.sleep(3)
+            time.sleep(1)
 
         # Step 3: Validate search image
         if compare_with_expected_crop("Images/Navigation_Search_Image.png"):
@@ -180,7 +181,7 @@ def DemoMode_006():
 
         # Step 6: Validate Satellite Traffic screen
         controller.click_by_image("Icons/satellite_icon.png")
-        time.sleep(2)
+        time.sleep(1)
         if compare_with_expected_crop("Images/Satellite_Traffic_Screen.png"):
             log("Satellite traffic screen matched - ✅")
         else:
@@ -193,6 +194,8 @@ def DemoMode_006():
         else:
             log("❌ - Demo_Mode_006 failed")
 
+        controller.click_by_image("Icons/home_icon.png")
+
     except Exception as e:
         error_log(e, "006")
 
@@ -200,21 +203,23 @@ def DemoMode_007():
     try:
         controller.click_by_image("Icons/New_Notification_icon.png")
         controller.click_by_image("Icons/Notification_icon.png")
-        sleep(3)
+        sleep(1)
         if compare_with_expected_crop("Images/Notification_Title.png"):
             log("✅ - Notification title validated")
         else:
             fail_log("❌ - Notification title not validated", "007")
 
-        controller.extract_dashboard_metrics()
+        # sleep(1)
+        metrics = controller.extract_dashboard_metrics()
 
-        metrics = []
         if metrics:
             log("✅ - Extracted Metrics:")
-            for metric, stat in metrics:
+            for metric, stat in metrics.items():
                 log(f"{metric}: {stat}")
         else:
             fail_log("❌ - No Metrics extracted", "007")
+
+        controller.click_by_image("Icons/home_icon.png")
 
     except Exception as e:
         error_log(e, "007")
@@ -229,7 +234,7 @@ def DemoMode_008():
         if not ok:
             fail_log("❌ - Profile tab not tapped", "008")
             test_passed = False
-        time.sleep(2)
+        time.sleep(1)
 
         # 2) Validate Profile screen header/title
         ok = compare_with_expected_crop("Images/Profile_Screen.png")
@@ -271,7 +276,7 @@ def DemoMode_008():
         if not ok:
             fail_log("Account not tapped - ❌", "008")
             test_passed = False
-        time.sleep(2)
+        time.sleep(1)
 
         ok = compare_with_expected_crop("Images/Profile_Account_Screen.png")
         if ok:
@@ -287,7 +292,7 @@ def DemoMode_008():
         if not ok:
             fail_log("General not tapped - ❌", "008")
             test_passed = False
-        time.sleep(2)
+        time.sleep(1)
 
         ok = compare_with_expected_crop("Images/Profile_General_Screen.png")
         if ok:
@@ -312,29 +317,27 @@ def DemoMode_008():
 
         #Come back to my details tab in profile screen
         controller.click_by_image("Icons/Profile_Mydetails_Icon.png")
-        sleep(2)
+        sleep(1)
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        sleep(2)
 
     except Exception as e:
         error_log(e, "008")
 
 def DemoMode_009():
     try:
-        controller.click_by_image("Icons/Profile_Icon.png", threshold=0.80)
-        sleep(2)
+        controller.click_by_image("Icons/Profile_Icon.png")
+        sleep(1)
         #Click on setting icon in profile screen
         controller.click_by_image("Icons/Profile_Screen_Setting_Icon.png")
-        sleep(2)
+        sleep(1)
         if compare_with_expected_crop("Images/Setting_Screen.png"):
             log("✅ - Demo_Mode_009 passed")
         else:
             fail_log("❌ - Setting Screen options are not present, Demo_Mode_008 failed", "009")
 
         controller.click_by_image("Icons/back_icon.png")
-        sleep(2)
+        sleep(1)
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        sleep(2)
 
     except Exception as e:
         error_log(e, "009")
@@ -343,14 +346,15 @@ def DemoMode_010():
     try:
         for _ in range(4):
             controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
-            sleep(2)
+            sleep(0.2)
         if compare_with_expected_crop("Images/Add_Vehicle_Information_Screen.png"):
             log("✅ - Demo_Mode_010 passed")
         else:
             fail_log("❌ - Vehicle info Screen options are not present, Demo_Mode_010 Failed", "010")
         for _ in range(4):
             controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
-            sleep(2)
+
+        controller.click_by_image("Icons/home_icon.png")
 
     except Exception as e:
         error_log(e, "010")
@@ -383,16 +387,17 @@ def DemoMode_011():
 def DemoMode_012():
     try:
         controller.click_by_image("Icons/Profile_Icon.png")
-        sleep(2)
+        sleep(1)
         compare_with_expected_crop("Images/Profile_Screen.png")
         controller.click_by_image("Icons/Profile_General_Icon.png")
-        sleep(2)
+        sleep(1)
         compare_with_expected_crop("Images/Profile_General_Screen.png")
         if controller.click_by_image("Icons/Profile_Logout_Icon.png"):
             log("✅ - Demo mode exiting")
         else:
             fail_log("❌ - Demo mode not exiting", "012")
-        sleep(5)
+        print(123)
+        sleep(1)
         if compare_with_expected_crop("Images/My_Bentley_Login_Page.png"):
             log("✅ - Sign in page is visible, Demo_mode_012 Passed")
         else:
@@ -400,7 +405,7 @@ def DemoMode_012():
 
         find_icon_in_screen("Images/My_Bentley_Login_Page.png")
         controller.click_text("DISCOVER MY BENTLEY")
-        sleep(5)
+        sleep(1)
 
     except Exception as e:
         error_log(e, "012")
@@ -411,7 +416,7 @@ def DemoMode_013():
             log("✅ - Demo mode exiting")
         else:
             fail_log("❌ - Demo mode not exiting", "013")
-        sleep(5)
+        sleep(1)
         if compare_with_expected_crop("Images/My_Bentley_Login_Page.png"):
             log("✅ - Sign in page is visible,Demo_mode_013 Passed")
         else:

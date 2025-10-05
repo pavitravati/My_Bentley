@@ -49,7 +49,7 @@ class ErrorPage(QWidget):
         logs_combined = "\n".join(logs)
 
         self.log_textbox.setPlainText(logs_combined)
-        self.log_textbox.setFont(QFont("Arial", 12))
+        self.log_textbox.setFont(QFont("Arial", 13))
 
         detail_layout.addWidget(self.log_textbox)
 
@@ -69,7 +69,11 @@ class ErrorPage(QWidget):
                 continue
 
             label = QLabel()
-            label.setPixmap(pixmap.scaled(500, 500, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+
+            screen = QApplication.primaryScreen()
+            screen_height = screen.availableGeometry().height()
+            target_size = int(screen_height * 0.45)
+            label.setPixmap(pixmap.scaled(target_size, target_size, Qt.KeepAspectRatio, Qt.SmoothTransformation))
             label.setStyleSheet("margin: 5px;")
             images_layout.addWidget(label)
 

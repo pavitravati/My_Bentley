@@ -8,31 +8,31 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"Nickname_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"RoadsideAssistanceCallApp_{msg}_{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Nickname_{e}_{num}.png")
+    controller.take_fail_screenshot(f"RoadsideAssistanceCallApp_{e}_{num}.png")
 
-def RoadsideAssistanceCall_001():
+def RoadsideAssistanceCallApp_001():
     try:
         pass
     except Exception as e:
         error_log(e, "001")
 
-def RoadsideAssistanceCall_002():
+def RoadsideAssistanceCallApp_002():
     try:
         pass
     except Exception as e:
         error_log(e, "002")
 
-def RoadsideAssistanceCall_003():
+def RoadsideAssistanceCallApp_003():
     try:
         pass
     except Exception as e:
         error_log(e, "003")
 
-def RoadsideAssistanceCall_004():
+def RoadsideAssistanceCallApp_004():
     try:
         pass
     except Exception as e:

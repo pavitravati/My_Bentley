@@ -14,6 +14,7 @@ def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
     controller.take_fail_screenshot(f"MyBentleyAppLogin_{e}_{num}.png")
 
+# This is very dodgy if the phone is slow/slow internet
 def MyBentleyAppLogin_001():
     try:
         controller.launch_app("uk.co.bentley.mybentley")
@@ -23,20 +24,19 @@ def MyBentleyAppLogin_001():
             log("✅ - Login button clicked")
         else:
             fail_log("❌ - Login button not clicked", "001")
-        sleep(5)
 
-        if compare_with_expected_crop("Icons/bentley_login_logo.png"):
-            email = "20601@gqm.anonaddy.com"
+        if controller.wait_for_text("WELCOME", 30):
+            # add the spaces(%s) so that if first chars get cut off it still works
+            email = "%s%s%s%s%s%s%s%stestdrive@gqm.anonaddy.com"
             controller.enter_text(email)
             sleep(5)
             password = "Password1!"
             controller.enter_text(password)
             log("✅ - Email and Password entered")
         else:
-            fail_log("❌ - Email and Password not entered", "002")
-        sleep(5)
+            fail_log("❌ - Email and Password not entered", "001")
 
-        if compare_with_expected_crop("Images/My_Bentley_Dashboard.png"):
+        if controller.wait_for_text("DASHBOARD"):
             log("✅ - Dashboard screen not launched, MyBentleyAppLogin_001 Passed")
         else:
             fail_log("❌ - Dashboard screen not launched, MyBentleyAppLogin_001 Failed", "001")
@@ -90,7 +90,7 @@ def MyBentleyAppLogin_003():
             log("✅ - Logged out of account")
         else:
             fail_log("❌ - Not logged out of account", "003")
-        sleep(2)
+        sleep(5)
 
         if compare_with_expected_crop("Icons/login_register_icon.png"):
             log("✅ - Signup page displayed, MyBentleyAppLogin_003 Passed")
@@ -98,4 +98,4 @@ def MyBentleyAppLogin_003():
             fail_log("❌ - Signup page not displayed, MyBentleyAppLogin_003 Failed", "003")
 
     except Exception as e:
-        error_log(e, "002")
+        error_log(e, "003")

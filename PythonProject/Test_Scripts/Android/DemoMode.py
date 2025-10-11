@@ -10,11 +10,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"Demo_Mode_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"DemoMode_{msg}_{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Demo_Mode_{e}_{num}.png")
+    controller.take_fail_screenshot(f"DemoMode_{e}_{num}.png")
 
 def DemoMode_001():
     try:

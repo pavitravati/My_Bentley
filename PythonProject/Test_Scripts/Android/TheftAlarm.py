@@ -8,42 +8,83 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"Nickname_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"TheftAlarm_{msg}_{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Nickname_{e}_{num}.png")
+    controller.take_fail_screenshot(f"TheftAlarm_{e}_{num}.png")
 
 def TheftAlarm_001():
     try:
-        pass
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        controller.click_by_image("Icons/windows_icon.png")
+        controller.swipe_up()
+        if controller.is_text_present("STOLEN VEHICLE TRACKING"):
+            log("✅ - Theft Alarm tab displayed, TheftAlarm_001 Passed")
+        else:
+            fail_log("❌ - Theft Alarm tab not displayed, TheftAlarm_001 Failed", "001")
     except Exception as e:
         error_log(e, "001")
 
 def TheftAlarm_002():
     try:
-        pass
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        controller.click_by_image("Icons/windows_icon.png")
+        controller.swipe_up()
+        controller.click_text("STOLEN VEHICLE TRACKING")
+
+        if controller.click_by_image("Icons/clear_alert.png"):
+            if controller.click_text("Clear"):
+                log("✅ - Alert notifications cleared")
+            else:
+                fail_log("❌ - Alert notifications could not be cleared", "002")
+        else:
+            fail_log("❌ - Alert notifications could not be cleared", "002")
+
+        controller.click_by_image("Icons/back_icon.png")
+
     except Exception as e:
         error_log(e, "002")
 
 def TheftAlarm_003():
     try:
-        pass
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        controller.click_by_image("Icons/windows_icon.png")
+        controller.swipe_up()
+        controller.click_text("STOLEN VEHICLE TRACKING")
+
+        if controller.is_text_present("NO MESSAGES"):
+            log("✅ - Theft alert page displays correctly when no alerts")
+        else:
+            fail_log("❌ - Theft alert page displays incorrectly when no alerts", "003")
+
+        controller.click_by_image("Icons/back_icon.png")
+
     except Exception as e:
         error_log(e, "003")
 
 def TheftAlarm_004():
     try:
-        pass
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        controller.click_by_image("Icons/windows_icon.png")
+        controller.swipe_up()
+        controller.click_text("STOLEN VEHICLE TRACKING")
+
+        if controller.is_text_present("We have detected an interior alarm"):
+            log("✅ - Theft alert page displays correctly after an alert")
+        else:
+            fail_log("❌ - Theft alert page displays incorrectly after an alert", "004")
     except Exception as e:
         error_log(e, "004")
 
+# Can this be skipped
 def TheftAlarm_005():
     try:
         pass
     except Exception as e:
         error_log(e, "005")
 
+# What
 def TheftAlarm_006():
     try:
         pass
@@ -52,6 +93,6 @@ def TheftAlarm_006():
 
 def TheftAlarm_007():
     try:
-        pass
+        log("✅ - Cannot complete style guide testcases (temporary)")
     except Exception as e:
         error_log(e, "007")

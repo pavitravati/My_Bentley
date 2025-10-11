@@ -54,7 +54,14 @@ class TestRunnerWorker(QObject):
                 self._resume = False
                 self._mutex.unlock()
 
-            func_name = f"{self.service}_{row:03d}"
+            if "(" in self.service or ")" in self.service:
+                fixed_function_name = self.service.replace("(","").replace(")","")
+            else:
+                fixed_function_name = self.service
+
+            print(fixed_function_name)
+
+            func_name = f"{fixed_function_name}_{row:03d}"
             func = getattr(self.module, func_name, None)
 
             if func:

@@ -41,7 +41,7 @@ class DeviceController:
         """Wait until text appears on screen."""
         return self.d(text=text).wait(timeout=timeout)
 
-    def wait_for_text_and_click(self, text, timeout=20):
+    def wait_for_text_and_click(self, text, timeout=10):
         if self.wait_for_text(text, timeout=timeout):
             if self.d(text=text).exists:
                 self.d(text=text).click()
@@ -415,9 +415,114 @@ class DeviceController:
             print(f"❌ Error while extracting license services: {e}")
             return []
 
+    def extract_status(self, status_id):
+        try:
+            status = self.d(resourceId=status_id)
+            if status.exists and status.info.get("visibleToUser", False):
+                return True
+            else:
+                return False
+
         except Exception as e:
-            print(f"❌ Error while extracting services: {e}")
-            return []
+            return False
+
+    def extract_doors_status(self):
+        door_status = {}
+        try:
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_info_left_front_vsr_metrics_car_item").exists:
+                left_front = self.d(resourceId="uk.co.bentley.mybentley:id/textView_info_left_front_vsr_metrics_car_item").get_text()
+                door_status["front left"] = left_front
+
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_info_right_front_vsr_metrics_car_item").exists:
+                right_front = self.d(resourceId="uk.co.bentley.mybentley:id/textView_info_right_front_vsr_metrics_car_item").get_text()
+                door_status["front right"] = right_front
+
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_info_left_rear_vsr_metrics_car_item").exists:
+                left_rear = self.d(resourceId="uk.co.bentley.mybentley:id/textView_info_left_rear_vsr_metrics_car_item").get_text()
+                door_status["rear left"] = left_rear
+
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_info_right_rear_vsr_metrics_car_item").exists:
+                right_rear = self.d(resourceId="uk.co.bentley.mybentley:id/textView_info_right_rear_vsr_metrics_car_item").get_text()
+                door_status["rear right"] = right_rear
+
+        except Exception as e:
+            print(f"❌ Error while extracting fuel details: {e}")
+
+        return door_status
+
+    def extract_window_status(self):
+        window_status = {}
+        try:
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_info_left_front_vsr_metrics_car_item").exists:
+                left_front = self.d(resourceId="uk.co.bentley.mybentley:id/textView_info_left_front_vsr_metrics_car_item").get_text()
+                window_status["front left"] = left_front
+
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_info_right_front_vsr_metrics_car_item").exists:
+                right_front = self.d(resourceId="uk.co.bentley.mybentley:id/textView_info_right_front_vsr_metrics_car_item").get_text()
+                window_status["front right"] = right_front
+
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_info_left_rear_vsr_metrics_car_item").exists:
+                left_rear = self.d(resourceId="uk.co.bentley.mybentley:id/textView_info_left_rear_vsr_metrics_car_item").get_text()
+                window_status["rear left"] = left_rear
+
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_info_right_rear_vsr_metrics_car_item").exists:
+                right_rear = self.d(resourceId="uk.co.bentley.mybentley:id/textView_info_right_rear_vsr_metrics_car_item").get_text()
+                window_status["rear right"] = right_rear
+
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_roof_title_vsr_metrics_car_item").exists:
+                sunroof = self.d(resourceId="uk.co.bentley.mybentley:id/textView_roof_title_vsr_metrics_car_item").get_text()
+                window_status["sunroof"] = sunroof
+
+        except Exception as e:
+            print(f"❌ Error while extracting window details: {e}")
+
+        return window_status
+
+    def extract_boot_bonnet_status(self):
+        boot_bonnet_status = {}
+        try:
+            if self.d(text="Boot").exists:
+                value = self.d(text="Boot").sibling(className="android.widget.TextView", instance=1)
+                if value.exists:
+                    boot_bonnet_status["Boot"] = value.get_text()
+
+            if self.d(text="Bonnet").exists:
+                value = self.d(text="Bonnet").sibling(className="android.widget.TextView", instance=1)
+                if value.exists:
+                    boot_bonnet_status["Bonnet"] = value.get_text()
+
+            return boot_bonnet_status
+
+        except Exception as e:
+            print(f"❌ Error while extracting boot/bonnet details: {e}")
+
+    def extract_service_status(self):
+        service_status = {}
+        try:
+            if self.d(text="Oil level").exists:
+                value = self.d(text="Oil level").sibling(className="android.widget.TextView", instance=1)
+                if value.exists:
+                    service_status["Oil level"] = value.get_text()
+
+            if self.d(text="Oil change").exists:
+                value = self.d(text="Oil change").sibling(className="android.widget.TextView", instance=1)
+                if value.exists:
+                    service_status["Oil change"] = value.get_text()
+
+            if self.d(text="Service").exists:
+                value = self.d(text="Service").sibling(className="android.widget.TextView", instance=1)
+                if value.exists:
+                    service_status["Service"] = value.get_text()
+
+            if self.d(text="Cluster warnings").exists:
+                value = self.d(text="Cluster warnings").sibling(className="android.widget.TextView", instance=1)
+                if value.exists:
+                    service_status["Cluster warnings"] = value.get_text()
+
+            return service_status
+
+        except Exception as e:
+            print(f"❌ Error while extracting service status: {e}")
 
     def dump_ui(self, filename="ui_dump.xml"):
         xml = self.d.dump_hierarchy()
@@ -427,7 +532,6 @@ class DeviceController:
 
     def extract_profile_details(self):
         details = {}
-
         try:
             # Last name
             if self.d(text="Last name").exists:
@@ -459,3 +563,62 @@ class DeviceController:
             print("⚠️ No profile details found.")
 
         return details
+
+    def extract_fuel_range_and_level(self, phev=False):
+        fuel_details = {}
+        try:
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_level_vsr_fuel").exists:
+                fuel_percentage = self.d(resourceId="uk.co.bentley.mybentley:id/textView_level_vsr_fuel").get_text()
+                fuel_details["fuel level"] = fuel_percentage
+
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_primary_range_vsr_combined_range").exists:
+                fuel_range = self.d(resourceId="uk.co.bentley.mybentley:id/textView_primary_range_vsr_combined_range").get_text()
+                fuel_details["fuel range"] = fuel_range
+
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_value_vsr_metrics_item").exists:
+                total_mileage = self.d(resourceId="uk.co.bentley.mybentley:id/textView_value_vsr_metrics_item").get_text()
+                fuel_details["total mileage"] = total_mileage
+
+            if phev:
+                try:
+                    fuel_type = self.d(resourceId="uk.co.bentley.mybentley:id/textView_level_vsr_fuel")
+                    if fuel_type.count > 1:
+                        elec_percentage = fuel_type[1].get_text()
+                        fuel_details["elec level"] = elec_percentage
+
+                    if self.d(resourceId="uk.co.bentley.mybentley:id/textView_secondary_range_vsr_combined_range").exists:
+                        elec_range = self.d(resourceId="uk.co.bentley.mybentley:id/textView_secondary_range_vsr_combined_range").get_text()
+                        fuel_details["elec range"] = elec_range
+
+                    if self.d(resourceId="uk.co.bentley.mybentley:id/textView_combined_range_vsr_combined_range").exists:
+                        fuel_range = self.d(resourceId="uk.co.bentley.mybentley:id/textView_combined_range_vsr_combined_range").get_text()
+                        fuel_details["combined range"] = fuel_range
+                except:
+                    pass
+
+        except Exception as e:
+            print(f"❌ Error while extracting fuel details: {e}")
+
+        return fuel_details
+
+    def check_units(self, units):
+        if self.d(resourceId="uk.co.bentley.mybentley:id/textView_combined_range_vsr_combined_range").exists:
+            current_units = self.d(resourceId="uk.co.bentley.mybentley:id/textView_combined_range_vsr_combined_range").get_text()
+            return current_units[-2:] == units
+        return False
+
+    def extract_service_management(self):
+        service_management = []
+        services = ['Theft alert', 'Lock my car', 'Find my car', 'Perimeter alert', 'Speed and curfew alert',
+                    'Valet alert', 'My car status', 'My battery charge', 'My cabin comfort', 'My car statistics',
+                    'Activate heating', 'Remote park assist']
+        try:
+            for _ in range(2):
+                for service in services:
+                    if self.d(text=service).exists and service not in service_management:
+                        service_management.append(service)
+                self.swipe_up()
+        except Exception as e:
+            print("❌ Error while extracting service management details: {e}")
+
+        return service_management

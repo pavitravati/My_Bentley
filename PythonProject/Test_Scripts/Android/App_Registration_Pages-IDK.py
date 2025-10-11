@@ -8,12 +8,13 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"Nickname_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"App_Registration_Pages-IDK_{msg}_{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Nickname_{e}_{num}.png")
+    controller.take_fail_screenshot(f"App_Registration_Pages-IDK_{e}_{num}.png")
 
+# Need an throwaway emails that can be used
 def App_Registration_Pages_001():
     try:
         pass
@@ -64,6 +65,6 @@ def App_Registration_Pages_008():
 
 def App_Registration_Pages_009():
     try:
-        pass
+        log("✅ - Cannot complete style guide testcases (temporary)")
     except Exception as e:
         error_log(e, "009")

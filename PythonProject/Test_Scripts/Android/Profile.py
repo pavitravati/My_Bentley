@@ -1,74 +1,98 @@
 from time import sleep
 from common_utils.android_image_comparision import *
-from common_utils.test_result_tracker import TestCaseResult
 from common_utils.android_controller import *
+from core.log_emitter import log_emitter
+
+def log(msg):
+    log_emitter.log_signal.emit(msg)
+
+def fail_log(msg, num):
+    log(f"{msg}")
+    controller.take_fail_screenshot(f"Profile_{msg}_{num}.png")
+
+def error_log(e, num):
+    log(f"⚠️ - Unexpected error: {e}")
+    controller.take_fail_screenshot(f"Profile_{e}_{num}.png")
 
 def Profiles_001():
-    test_result = TestCaseResult("Profiles_001")
-    test_result.description = "Accessing Profile screen via My Bentley App"
-    test_result.start_time = time.time()
-
     test_passed = True  # ✅ Initialize test flag
-
     try:
         # 1) Open Profile tab
-        ok = controller.click_by_image("Icons/Profile_Icon.png", threshold=0.80)
-        test_result.log_step("Tapped Profile tab", ok)
-        test_passed &= ok
+        if controller.click_by_image("Icons/Profile_Icon.png", threshold=0.80):
+            log("✅ - Tapped Profile tab")
+        else:
+            fail_log("❌ - Tapped Profile tab failed")
+            test_passed = False
         time.sleep(2)
 
         # 2) Validate Profile screen header/title
-        ok = compare_with_expected_crop("Images/Profile_Screen.png")
-        test_result.log_step("Profile Title is present", ok)
-        test_passed &= ok
+        if compare_with_expected_crop("Images/Profile_Screen.png"):
+            log("✅ - Profile Title is present")
+        else:
+            fail_log("❌ - Profile Title is not present", "001")
+            test_passed = False
 
         # 3) Validate user icon
-        ok = compare_with_expected_crop("Images/Profile_Screen_User_Icon.png")
-        test_result.log_step("Profile User Icon is present", ok)
-        test_passed &= ok
+        if compare_with_expected_crop("Images/Profile_Screen_User_Icon.png"):
+            log("✅ - Profile User Icon is present")
+        else:
+            fail_log("❌ - Profile User Icon is not present", "001")
+            test_passed = False
 
         # 4) Validate user name
-        ok = compare_with_expected_crop("Images/Profile_Screen_User_Name.png")
-        test_result.log_step("Profile User Name is present", ok)
-        test_passed &= ok
+        if compare_with_expected_crop("Images/Profile_Screen_User_Name.png"):
+            log("✅ - Profile User Name is present")
+        else:
+            fail_log("❌ - Profile User Name is not present", "001")
+            test_passed = False
 
         # 5) Validate 'My details' tab
-        ok = compare_with_expected_crop("Images/Profile_Screen_MyDetails_Tab.png")
-        test_result.log_step("Profile 'My details' tab is present", ok)
-        test_passed &= ok
+        if compare_with_expected_crop("Images/Profile_Screen_MyDetails_Tab.png"):
+            log("✅ - Profile 'My details' tab is present")
+        else:
+            fail_log("❌ - Profile 'My details' tab is not present", "001")
+            test_passed = False
 
         # 6) Navigate to Account
-        ok = controller.click_by_image("Icons/Profile_Account_Icon.png", threshold=0.80)
-        test_result.log_step("Tapped Account", ok)
-        test_passed &= ok
+        if controller.click_by_image("Icons/Profile_Account_Icon.png", threshold=0.80):
+            log("✅ - Tapped Account")
+        else:
+            fail_log("❌ - Tapped Account failed", "001")
+            test_passed = False
         time.sleep(2)
 
-        ok = compare_with_expected_crop("Images/Profile_Account_Screen.png")
-        test_result.log_step("Profile Account screen is present", ok)
-        test_passed &= ok
+        if compare_with_expected_crop("Images/Profile_Account_Screen.png"):
+            log("✅ - Profile Account screen is present")
+        else:
+            fail_log("❌ - Profile Account screen is not present", "001")
+            test_passed = False
 
         # 7) Navigate to General
-        ok = controller.click_by_image("Icons/Profile_General_Icon.png", threshold=0.80)
-        test_result.log_step("Tapped General", ok)
-        test_passed &= ok
+        if controller.click_by_image("Icons/Profile_General_Icon.png", threshold=0.80):
+            log("✅ - Tapped General")
+        else:
+            fail_log("❌ - Tapped General failed", "001")
+            test_passed = False
         time.sleep(2)
 
-        ok = compare_with_expected_crop("Images/Profile_General_Screen.png")
-        test_result.log_step("Profile General screen is present", ok)
-        test_passed &= ok
+        if compare_with_expected_crop("Images/Profile_General_Screen.png"):
+            log("✅ - Profile General screen is present")
+        else:
+            fail_log("❌ - Profile General screen is not present", "001")
+            test_passed = False
 
         # 8) Settings icon visible
-        ok = compare_with_expected_crop("Images/Profile_Screen_Setting_Icon.png")
-        test_result.log_step("Profile Settings icon is present", ok)
-        test_passed &= ok
+        if compare_with_expected_crop("Images/Profile_Screen_Setting_Icon.png"):
+            log("✅ - Profile Settings icon is present")
+        else:
+            fail_log("❌ - Profile Settings icon is not present", "001")
+            test_passed = False
 
         # Final status
         if test_passed:
-            test_result.log("✅ Profiles_001 passed")
-            test_result.status = "Passed"
+            log("✅ - Profiles_001 passed")
         else:
-            test_result.log("❌ Profiles_001 failed")
-            test_result.status = "Failed"
+            fail_log("❌ - Profiles_001 failed", "001")
 
         # Navigate back to My details tab & dashboard
         controller.click_by_image("Icons/Profile_Mydetails_Icon.png", threshold=0.80)
@@ -77,72 +101,43 @@ def Profiles_001():
         time.sleep(2)
 
     except Exception as e:
-        test_result.log_step(f"Unexpected error: {e}", False)
-        test_result.status = "Error"
-
-
-    test_result.end_time = time.time()
-    return test_result
+        error_log(e, "001")
 
 def Profiles_002():
-    test_result = TestCaseResult("Profiles_002")
-    test_result.description = "Verify My Details in Profile screen"
-    test_result.start_time = time.time()
-    test_passed = True  # ✅ Initialize test flag
     try:
-        ok = controller.click_by_image("Icons/Profile_Icon.png", threshold=0.80)
-        test_result.log_step("Tapped Profile tab", ok)
-        test_passed &= ok
+        if controller.click_by_image("Icons/Profile_Icon.png", threshold=0.80):
+            log("✅ - Tapped Profile tab")
+        else:
+            fail_log("❌ - Tapped Profile tab failed", "002")
         time.sleep(2)
 
         controller.extract_profile_details()
 
     except Exception as e:
-        test_result.log_step(f"Unexpected error: {e}", False)
-        test_result.status = "Error"
-
-    test_result.end_time = time.time()
-    return test_result
-
-######################################################################
-# Have not finished my ones for this as these are the ones that disconect and break the app
+        error_log(e, "002")
 
 def Profiles_003():
-    test_result = TestCaseResult("Profiles_003")
-    test_result.description = ("Verify Password Resetting")
-    test_result.start_time = time.time()
-
     try:
         controller.click_by_image("Icons/Profile_Account_Icon.png")
         sleep(2)
-
         controller.click_text("Reset password")
         sleep(2)
         controller.click_by_image("Icons/Reset_Password.png")
         sleep(2)
         if compare_with_expected_crop("Images/Email_Confirmation.png"):
-            test_result.log_step("Reset password email sent", True)
-            test_result.log("✅ Profiles_003 passed")
+            log("✅ - Reset password email sent")
+            log("✅ - Profiles_003 passed")
         else:
-            test_result.log_step("Error: Reset password email failed", False)
-            test_result.log("❌ Profiles_003 failed")
-            test_result.status = "Failed"
+            fail_log("❌ - Error: Reset password email failed", "003")
+            log("❌ - Profiles_003 failed")
 
     except Exception as e:
-        test_result.log_step(f"Unexpected error: {e}", False)
-        test_result.status = "Error"
-
-    test_result.end_time = time.time()
-    return test_result
+        error_log(e, "002")
 
 # some of the text in this test case is not the same as my app version
 # need resource id of back button
 def Profiles_004():
-    test_result = TestCaseResult("Profiles_004")
-    test_result.description = ("Verify Changing the PIN")
-    test_result.start_time = time.time()
     current_pin = "0000"
-
     try:
         if compare_with_expected_crop("Icons/email_reset_x.png"):
             controller.click_by_image("Icons/email_reset_x.png")
@@ -169,32 +164,21 @@ def Profiles_004():
 
         sleep(1)
         if compare_with_expected_crop("Images/PIN_Confirmation.png"):
-            test_result.log_step("PIN changed", True)
-            test_result.log("✅ Profiles_004 passed")
+            log("✅ - PIN changed")
+            log("✅ - Profiles_004 passed")
         else:
             sleep(2)
-            ok = controller.click_text("Cancel")
-            if ok:
-                test_result.log_step("Connection failed", False)
-            test_result.log_step("PIN not changed", False)
-            test_result.log("❌ Profiles_003 failed")
-            test_result.status = "Failed"
+            if controller.click_text("Cancel"):
+                fail_log("❌ - Connection failed", "004")
+            log("❌ - PIN not changed")
+            log("❌ - Profiles_003 failed")
             sleep(1)
             controller.click(110,110) # find out the resource id for the back button and replace with that
 
     except Exception as e:
-        test_result.log_step(f"Unexpected error: {e}", False)
-        test_result.status = "Error"
+        error_log(e, "004")
 
-    test_result.end_time = time.time()
-    return test_result
-
-# Removes the car from app so need someone who can add back quickly to finish this one
 def Profiles_005():
-    test_result = TestCaseResult("Profiles_005")
-    test_result.description = ("Verify Changing the PIN")
-    test_result.start_time = time.time()
-
     try:
         controller.click_text("Forgotten your PIN?")
         sleep(2)
@@ -214,39 +198,32 @@ def Profiles_005():
         # need to be in vehicle to finish, so I can reset primary user
 
     except Exception as e:
-        test_result.log_step(f"Unexpected error: {e}", False)
-        test_result.status = "Error"
-
-####################################################################################
+        error_log(e, "005")
 
 def Profile_006():
-    test_result = TestCaseResult("Profiles_002")
-    test_result.description = "Verify My Details in Profile screen"
-    test_result.start_time = time.time()
     test_passed = True  # ✅ Initialize test flag
-
     try:
         # 1) Open Profile tab
-        ok = controller.click_by_image("Icons/Profile_Icon.png", threshold=0.80)
-        test_result.log_step("Tapped Profile tab", ok)
-        test_passed &= ok
+        if controller.click_by_image("Icons/Profile_Icon.png", threshold=0.80):
+            log("✅ - Tapped Profile tab")
+        else:
+            fail_log("❌ - Tapped Profile tab failed", "006")
+            test_passed = False
         time.sleep(2)
 
-        ok = controller.click_by_image("Icons/Profile_Account_Icon.png", threshold=0.80)
-        test_result.log_step("Tapped Account", ok)
-        test_passed &= ok
+        if controller.click_by_image("Icons/Profile_Account_Icon.png", threshold=0.80):
+            log("✅ - Tapped Account")
+        else:
+            fail_log("❌ - Tapped Account failed", "006")
+            test_passed = False
         time.sleep(2)
 
         controller.click_text("Bentley ID Terms of Use")
-        ok = compare_with_expected_crop("Images/Bentley_Terms_Usage.png")
-        test_result.log_step("Terms and Usage screen is present", ok)
-        test_passed &= ok
-
-
+        if compare_with_expected_crop("Images/Bentley_Terms_Usage.png"):
+            log("✅ - Terms and Usage screen is present")
+        else:
+            fail_log("❌ - Terms and Usage screen is not present", "006")
+            test_passed = False
 
     except Exception as e:
-        test_result.log_step(f"Unexpected error: {e}", False)
-        test_result.status = "Error"
-
-    test_result.end_time = time.time()
-    return test_result
+        error_log(e, "006")

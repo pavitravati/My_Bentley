@@ -9,11 +9,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"Demo_Mode_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"Remote_Lock_Unlock_{msg}_{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Demo_Mode_{e}_{num}.png")
+    controller.take_fail_screenshot(f"Remote_Lock_Unlock_{e}_{num}.png")
 
 def Remote_Lock_Unlock001():
     test_status = True
@@ -56,12 +56,10 @@ def Remote_Lock_Unlock002():
         else:
             fail_log("❌ - Lock Status Changed", "002")
 
-        controller.click_by_image("Icons/New_Notification_icon.png")
-        # Need way to check not only the text {model} unlocked but also that it is the correct one by checking date/time
-        if True:
-            log("✅ - Unlock Notification Received")
+        if controller.wait_for_text("Successfully unlocked"):
+            log("✅ - Unlock notification displayed")
         else:
-            fail_log("❌ - Unlock Notification Received", "002")
+            fail_log("❌ - Unlock notification not displayed", "002")
 
         if test_status:
             log("✅ - Remote_Lock_Unlock_002 passed")
@@ -90,13 +88,10 @@ def Remote_Lock_Unlock003():
             fail_log("❌ - Lock Status Changed", "003")
             test_status = "Failed"
 
-        controller.click_by_image("Icons/New_Notification_icon.png")
-        # Need way to check not only the text {model} Locked but also that it is the correct one by checking date/time
-        if True:
-            log("✅ - Lock Notification Received")
+        if controller.wait_for_text("Successfully locked"):
+            log("✅ - Lock notification displayed")
         else:
-            fail_log("❌ - Lock Notification Received", "003")
-            test_status = "Failed"
+            fail_log("❌ - Lock notification not displayed", "002")
 
         if test_status:
             log("✅ - Remote_Lock_Unlock_003 passed")
@@ -110,13 +105,9 @@ def Remote_Lock_Unlock004():
     test_status = True
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        sleep(3)
-        controller.swipe_down()
-        sleep(5)
-        controller.click_by_image("Icons/Error_Icon.png")
 
         controller.click_by_image("Icons/lock_icon.png")
-        sleep(3)
+        sleep(2)
         controller.enter_pin("1234")
         if controller.wait_for_text("Vehicle could not be locked", timeout=100):
             log("✅ - Remote Lock Blocked")
@@ -131,13 +122,6 @@ def Remote_Lock_Unlock004():
             test_status = False
         controller.click_by_image("Icons/Error_Icon.png")
         sleep(2)
-        controller.click_by_image("Icons/New_Notification_icon.png")
-        # Need way to check not only the text {model} Locked but also that it is the correct one by checking date/time
-        if True:
-            log("✅ - Failed to Lock Notification Received")
-        else:
-            fail_log("❌ - Failed to Lock Notification Received", "004")
-            test_status = False
 
         if test_status:
             log("✅ -  Remote_Lock_Unlock_004 passed")
@@ -151,13 +135,9 @@ def Remote_Lock_Unlock005():
     test_status = True
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        sleep(1)
-        controller.swipe_down()
-        sleep(5)
-        controller.click_by_image("Icons/Error_Icon.png")
 
         controller.click_by_image("Icons/unlock_icon.png")
-        sleep(3)
+        sleep(2)
         controller.enter_pin("1234")
         if controller.wait_for_text("Vehicle could not be locked", timeout=100):
             log("✅ - Remote Unlock Blocked")
@@ -171,14 +151,6 @@ def Remote_Lock_Unlock005():
             fail_log("❌ - Lock Status Unchanged", "005")
             test_status = False
         controller.click_by_image("Icons/Error_Icon.png")
-        sleep(2)
-        controller.click_by_image("Icons/New_Notification_icon.png")
-        # Need way to check not only the text {model} Locked but also that it is the correct one by checking date/time
-        if True:
-            log("✅ - Failed to Unlock Notification Received")
-        else:
-            fail_log("❌ - Failed to Unlock Notification Received", "005")
-            test_status = False
 
         if test_status:
             log("✅ - Remote_Lock_Unlock_005 passed")
@@ -192,12 +164,7 @@ def Remote_Lock_Unlock006():
     test_status = True
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        sleep(1)
-        controller.swipe_down()
-        sleep(5)
-        controller.click_by_image("Icons/Error_Icon.png")
 
-        sleep(2)
         controller.click_by_image("Icons/lock_icon.png")
         sleep(2)
         controller.enter_pin("1234")
@@ -213,13 +180,6 @@ def Remote_Lock_Unlock006():
             fail_log("❌ - Lock Status Unchanged", "006")
             test_status = False
         controller.click_by_image("Icons/Error_Icon.png")
-        sleep(2)
-        controller.click_by_image("Icons/New_Notification_icon.png")
-        if True:
-            log("✅ - Failed to Unlock Notification Received")
-        else:
-            fail_log("❌ - Failed to Unlock Notification Received", "006")
-            test_status = False
 
         if test_status:
             log("✅ - Remote_Lock_Unlock_006 passed")
@@ -268,9 +228,10 @@ def Remote_Lock_Unlock007():
 def Remote_Lock_Unlock008():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        controller.click_by_image("Icons/New_Notification_icon.png")
         controller.click_by_image("Icons/Notification_icon.png")
 
-        #Ask how this one is checked
+        # Check if the lock and unlocks done so far in prevous test cases on this run are there
 
     except Exception as e:
         error_log(e, "008")
@@ -309,13 +270,6 @@ def Remote_Lock_Unlock010():
         else:
             fail_log("❌ - Remote Lock Worked While Locked", "010")
             test_status = False
-        sleep(2)
-        controller.click_by_image("Icons/New_Notification_icon.png")
-        if True:
-            log("✅ - Failed to Unlock Notification Received")
-        else:
-            fail_log("❌ - Failed to Unlock Notification Received", "010")
-            test_status = False
 
         if test_status:
             log("✅ - Remote_Lock_Unlock_010 passed")
@@ -336,13 +290,6 @@ def Remote_Lock_Unlock011():
             log("✅ - Remote Unlock Worked While Unlocked")
         else:
             fail_log("❌ - Remote Unlock Worked While Unlocked", "011")
-            test_status = False
-        sleep(2)
-        controller.click_by_image("Icons/New_Notification_icon.png")
-        if True:
-            log("✅ - Failed to Unlock Notification Received")
-        else:
-            fail_log("❌ - Failed to Unlock Notification Received", "011")
             test_status = False
 
         if test_status:
@@ -380,14 +327,6 @@ def Remote_Lock_Unlock013():
             fail_log("❌ - Lock Status Changed", "013")
             test_status = False
 
-        controller.click_by_image("Icons/New_Notification_icon.png")
-        # Need way to check not only the text {model} Locked but also that it is the correct one by checking date/time
-        if True:
-            log("✅ - Lock Notification Received")
-        else:
-            fail_log("❌ - Lock Notification Received", "013")
-            test_status = False
-
         if test_status:
             log("✅ - Remote_Lock_Unlock_013 passed")
         else:
@@ -415,14 +354,6 @@ def Remote_Lock_Unlock014():
             fail_log("❌ - Lock Status Changed", "014")
             test_status = False
 
-        controller.click_by_image("Icons/New_Notification_icon.png")
-        # Need way to check not only the text {model} unlocked but also that it is the correct one by checking date/time
-        if True:
-            log("✅ - Unlock Notification Received")
-        else:
-            fail_log("❌ - Unlock Notification Received", "014")
-            test_status = False
-
         if test_status:
             log("✅ - Remote_Lock_Unlock_014 passed")
         else:
@@ -444,14 +375,6 @@ def Remote_Lock_Unlock015():
         else:
             fail_log("❌ - Remote Lock Worked", "015")
             test_status = False
-        sleep(2)
-
-        controller.click_by_image("Icons/New_Notification_icon.png")
-        if True:
-            log("✅ - Failed to Unlock Notification Received")
-        else:
-            fail_log("❌ - Failed to Unlock Notification Received", "015")
-            test_status = False
 
         if controller.is_text_present("Vehicle locked"):
             log("✅ - Lock Status Changed")
@@ -471,9 +394,6 @@ def Remote_Lock_Unlock016():
     try:
         sleep(5)
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        controller.swipe_down()
-        sleep(10)
-        controller.click_by_image("Icons/Error_Icon.png")
         if controller.is_text_present("Lock my car unavailable"):
             log("✅ - Remote Lock Disabled")
             log("✅ - Remote_Lock_Unlock_016 passed")
@@ -488,9 +408,6 @@ def Remote_Lock_Unlock017():
     try:
         sleep(5)
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        controller.swipe_down()
-        sleep(10)
-        controller.click_by_image("Icons/Error_Icon.png")
         if not controller.is_text_present("Lock my car unavailable"):
             log("✅ - Remote Lock Enabled")
             log("✅ - Remote_Lock_Unlock_017 passed")

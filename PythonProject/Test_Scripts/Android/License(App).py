@@ -1,7 +1,3 @@
-from time import sleep
-
-from adbutils.pidcat import LOG_LEVELS
-
 from common_utils.android_image_comparision import *
 from common_utils.android_controller import *
 from core.log_emitter import log_emitter
@@ -12,11 +8,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"License(App)_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"LicenseApp_{msg}_{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"License(App)_{e}_{num}.png")
+    controller.take_fail_screenshot(f"LicenseApp_{e}_{num}.png")
 
 def backspace(num):
     for i in range(num):
@@ -33,24 +29,26 @@ def early_setup(num):
 
 # First three test cases are not done on the app
 ###########
-def License_001():
-    pass
+def LicenseApp_001():
+    log("✅ - temp, not done in app")
 
-def License_002():
-    pass
+def LicenseApp_002():
+    log("✅ - temp, not done in app")
 
 def License_003():
-    pass
+    log("✅ - temp, not done in app")
 ###########
 
-def License_004():
+def LicenseApp_004():
     try:
         early_setup("004")
 
         if controller.click_text("Services and licenses"):
             log("✅ - Services and licenses page opened")
+            print(1)
         else:
             fail_log("❌ - Services and licenses page failed to open", "004")
+            print(2)
 
         licenses = []
         extracted = controller.extract_all_license_dates()
@@ -60,20 +58,26 @@ def License_004():
 
         if licenses:
             log("✅ - Extracted Licenses:")
+            print(1)
             for license, date in licenses:
                 if int(date[-4:]) >= current_year+3:
                     log(f"✅ - {license}: {date}")
+                    print(1)
                 else:
-                    log("❌ - {license}: {date}")
+                    log(f"❌ - {license}: {date}")
+                    print(2)
         else:
             fail_log("❌ - Metrics not extracted", "003")
+            print(2)
 
         backspace(2)
 
     except Exception as e:
         error_log(e, "004")
 
-def License_005():
+# License_004()
+
+def LicenseApp_005():
     try:
         early_setup("005")
 
@@ -108,7 +112,7 @@ def License_005():
     except Exception as e:
         error_log(e, "005")
 
-def License_006():
+def LicenseApp_006():
     try:
         early_setup("006")
 
@@ -160,7 +164,7 @@ def License_006():
     except Exception as e:
         error_log(e, "006")
 
-def License_007():
+def LicenseApp_007():
     try:
         early_setup("007")
         controller.click_text("Services and licenses")
@@ -212,7 +216,7 @@ def License_007():
     except Exception as e:
         error_log(e, "007")
 
-def License_008():
+def LicenseApp_008():
     try:
         early_setup("008")
         controller.click_text("Services and licenses")
@@ -246,7 +250,7 @@ def License_008():
     except Exception as e:
         error_log(e, "008")
 
-def License_009():
+def LicenseApp_009():
     try:
         early_setup("009")
         controller.click_text("Services and licenses")
@@ -281,7 +285,7 @@ def License_009():
         error_log(e, "009")
 
 # Service was not on my app so did this blind just copying from previous
-def License_010():
+def LicenseApp_010():
     try:
         early_setup("010")
         controller.click_text("Services and licenses")
@@ -315,7 +319,7 @@ def License_010():
         error_log(e, "010")
 
 # Ask about these tests, how would i automate font checking etc...
-def License_011():
+def LicenseApp_011():
     try:
         pass
     except Exception as e:

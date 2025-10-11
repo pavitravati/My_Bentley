@@ -8,43 +8,43 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"Nickname_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"PrivacyModeApp_{msg}_{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Nickname_{e}_{num}.png")
+    controller.take_fail_screenshot(f"PrivacyModeApp_{e}_{num}.png")
 
-def PrivacyMode_001():
+def PrivacyModeApp_001():
     try:
         pass
     except Exception as e:
         error_log(e, "001")
 
-def PrivacyMode_002():
+def PrivacyModeApp_002():
     try:
         pass
     except Exception as e:
         error_log(e, "002")
 
-def PrivacyMode_003():
+def PrivacyModeApp_003():
     try:
         pass
     except Exception as e:
         error_log(e, "003")
 
-def PrivacyMode_004():
+def PrivacyModeApp_004():
     try:
         pass
     except Exception as e:
         error_log(e, "004")
 
-def PrivacyMode_005():
+def PrivacyModeApp_005():
     try:
         pass
     except Exception as e:
         error_log(e, "005")
 
-def PrivacyMode_006():
+def PrivacyModeApp_006():
     try:
         pass
     except Exception as e:

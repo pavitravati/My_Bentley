@@ -8,11 +8,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"Nickname_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"PHEV-MyCarStatistics_{msg}_{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Nickname_{e}_{num}.png")
+    controller.take_fail_screenshot(f"PHEV-MyCarStatistics_{e}_{num}.png")
 
 def PHEV_MyCarStatistics_001():
     try:

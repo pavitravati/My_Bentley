@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTextEdit, QScrollArea, QPushButton
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTextEdit, QScrollArea, QPushButton, QToolButton, QSizePolicy
 from PySide6.QtGui import QFont, QPixmap
 from PySide6.QtCore import Qt
 from pathlib import Path
@@ -48,16 +48,49 @@ class ServiceReport(QWidget):
         container_layout = QHBoxLayout()
 
         # Add all testcases so that they can all be viewed
-        testcase_layout = QVBoxLayout()
+        testcase_scroll = QScrollArea()
+        testcase_scroll.setWidgetResizable(True)
+        testcase_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        testcase_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        testcase_scroll.setFixedWidth(340)
+        testcase_scroll.setStyleSheet("""
+            QScrollArea {
+                border: none;
+                background: transparent;
+            }
+            QScrollBar:vertical {
+                background: transparent;
+                width: 10px;   
+                margin: 0px 5px 0px 0px;
+                border-radius: 5px;
+            }
+        """)
+
+        # container that holds buttons
+        testcase_container = QWidget()
+        testcase_layout = QVBoxLayout(testcase_container)
+        testcase_layout.setAlignment(Qt.AlignTop)
+
         for row, case in enumerate(testcase_map[service_title]):
             result = '✅'
-            for i in range(len(logs[row+1])):
-                if logs[row+1][i][0] == '❌':
+            for i in range(len(logs[row + 1])):
+                if logs[row + 1][i][0] == '❌':
                     result = '❌'
-            btn = QPushButton(f"{service_title}_0{f"0{row+1}" if row+1 < 10 else f"{row+1}"} - {result}")
-            btn.setCursor(Qt.PointingHandCursor)
-            btn.setStyleSheet("font-size: 12px; height: 25px; width: 200px; background-color: #394d45; color: white;")
-            row_logs = logs[row+1]
+                    break
+
+            btn = QToolButton()
+            btn.setText(case['Test Case Description'])
+            btn.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+            btn.setFixedWidth(320)  # 👈 keep same as before
+            btn.setFixedHeight(45)
+            btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Minimum)
+
+            if result == '✅':
+                btn.setStyleSheet("background-color: #394d45; font-size: 12px; color: white;")
+            else:
+                btn.setStyleSheet("background-color: #7d232b; font-size: 12px; color: white;")
+
+            row_logs = logs[row + 1]
             logs_combined = "\n".join(row_logs)
             btn.clicked.connect(
                 lambda checked, s=service_title, c=case, l=logs_combined, r=row + 1:
@@ -65,7 +98,9 @@ class ServiceReport(QWidget):
             )
             testcase_layout.addWidget(btn)
 
-        container_layout.addLayout(testcase_layout)
+        testcase_scroll.setWidget(testcase_container)
+
+        container_layout.addWidget(testcase_scroll)
 
         detail_layout = QVBoxLayout()
 

@@ -58,24 +58,38 @@ class ErrorPage(QWidget):
 
         container = QWidget()
         images_layout = QHBoxLayout(container)
-        images_layout.setSpacing(5)  # space between widgets
-        images_layout.setContentsMargins(20, 0, 20, 0)  # remove extra layout margins
+        images_layout.setSpacing(5)
+        images_layout.setContentsMargins(20, 0, 20, 0)
 
         for img_path_str in images:
+            internal_container = QWidget()
+            # May need changing to work on laptop and monitor
+            internal_container.setFixedWidth(280)
+            error_image = QVBoxLayout(internal_container)
+
+
             img_path = Path(img_path_str)
             pixmap = QPixmap(str(img_path))
             if pixmap.isNull():
                 print(f"Failed to load image: {img_path}")
                 continue
 
-            label = QLabel()
+            img_label = QLabel()
+            img_text = img_path_str.split(" - ")[1].split("_")[0]
+            img_label.setText(img_text)
+            img_label.setFont(QFont("Arial", 12))
+            img_label.setWordWrap(True)
+            error_image.addWidget(img_label)
+
+            image_display = QLabel()
 
             screen = QApplication.primaryScreen()
             screen_height = screen.availableGeometry().height()
             target_size = int(screen_height * 0.45)
-            label.setPixmap(pixmap.scaled(target_size, target_size, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-            label.setStyleSheet("margin: 5px;")
-            images_layout.addWidget(label)
+            image_display.setPixmap(pixmap.scaled(target_size, target_size, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+            image_display.setStyleSheet("margin: 5px;")
+            error_image.addWidget(image_display)
+            images_layout.addWidget(internal_container)
 
         scroll_area.setWidget(container)
 

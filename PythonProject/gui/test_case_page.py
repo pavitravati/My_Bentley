@@ -10,6 +10,7 @@ from utils import make_item
 from widgets import PaddingDelegate
 from test_worker import TestRunnerWorker
 from error_page import ErrorPage
+from metric_page import MetricPage
 from service_report import ServiceReport
 from pathlib import Path
 import os
@@ -84,8 +85,8 @@ class TestCaseTablePage(QWidget):
 
         # Create the table with 8 columns and the rows needed for all test cases
         self.table = QTableWidget()
-        self.table.setColumnCount(8)
-        self.table.setHorizontalHeaderLabels(["Region", "Test Case Description", "Pre-Condition", "Action", "Expected Result", "Duration", "Result", "Error"])
+        self.table.setColumnCount(7)
+        self.table.setHorizontalHeaderLabels(["Test Case Description", "Pre-Condition", "Action", "Expected Result", "Duration", "Result", "Details"])
         self.table.setRowCount(len(testcase_map[service]))
         self.table.verticalHeader().setDefaultSectionSize(100)
         self.table.setWordWrap(True)
@@ -198,25 +199,24 @@ class TestCaseTablePage(QWidget):
         # Loops through the table adding items to the correct cells
         for row, case in enumerate(testcase_map[service]):
             # In column 0,1,3,4 the data from the test case in Region column is added to that column in the table
-            self.table.setItem(row, 0, make_item(case["Region"]))
-            self.table.setItem(row, 1, make_item(case["Test Case Description"]))
+            self.table.setItem(row, 0, make_item(case["Test Case Description"]))
 
             # Adds the checkbox and buttons to the precondition column
             precondition_widget = create_precondition_widget(case, row)
-            self.table.setCellWidget(row, 2, precondition_widget)
+            self.table.setCellWidget(row, 1, precondition_widget)
 
             action_string = "\n".join(str(task) for task in case["Action"])
-            self.table.setItem(row, 3, make_item(action_string))
+            self.table.setItem(row, 2, make_item(action_string))
             expected_string = "\n".join(str(task) for task in case["Expected Result"])
-            self.table.setItem(row, 4, make_item(expected_string))
+            self.table.setItem(row, 3, make_item(expected_string))
             # Last three columns are saved for data from the tests after completion
+            self.table.setItem(row, 4, make_item(""))
             self.table.setItem(row, 5, make_item(""))
             self.table.setItem(row, 6, make_item(""))
-            self.table.setItem(row, 7, make_item(""))
             self.table.setWordWrap(True)
 
         # Centres the text in the following columns
-        centre_columns = [0, 1, 5, 6, 7]
+        centre_columns = [0, 4, 5, 6]
         for row in range(self.table.rowCount()):
             for col in centre_columns:
                 item = self.table.item(row, col)
@@ -226,7 +226,7 @@ class TestCaseTablePage(QWidget):
         # Adds padding to certain columns
         delegate = PaddingDelegate()
         for col in range(3):
-            self.table.setItemDelegateForColumn(col+2, delegate)
+            self.table.setItemDelegateForColumn(col+1, delegate)
 
         # Adds the table to the main layout
         layout.addWidget(self.table)
@@ -269,11 +269,9 @@ class TestCaseTablePage(QWidget):
         available_width -= 90
 
         if available_width < 1500:
-            multi = 1.95
-            proportions = [0.04, 0.20, 0.20, 0.20, 0.22, 0.05, 0.06, 0.05]
+            proportions = [0.21, 0.21, 0.21, 0.23, 0.05, 0.06, 0.05]
         else:
-            multi = 3
-            proportions = [0.03, 0.22, 0.22, 0.22, 0.22, 0.03, 0.03, 0.03]
+            proportions = [0.22, 0.23, 0.23, 0.23, 0.03, 0.03, 0.03]
 
         total = sum(proportions)
         proportions = [p / total for p in proportions]
@@ -350,20 +348,29 @@ class TestCaseTablePage(QWidget):
             duration_str = f"{mins:02d}:{secs:02d}"
 
             # put it into column 5 ("Duration")
-            duration_item = self.table.item(row - 1, 5)
+            duration_item = self.table.item(row - 1, 4)
             if duration_item:
                 duration_item.setText(duration_str)
                 duration_item.setFont(QFont("Arial", 10))
 
+        metrics = []
         for i in range(len(self.log_history[row])):
-            colors.append('green') if self.log_history[row][i][0] == '✅' else colors.append('red') if self.log_history[row][i][0] == '❌' else colors.append('yellow') if self.log_history[row][i][0] == '⚠' else None
+            symbol = self.log_history[row][i][0]
+            if symbol == '✅':
+                colors.append('green')
+            elif symbol == '❌':
+                colors.append('red')
+            elif symbol == '⚠':
+                colors.append('yellow')
+            else:
+                metrics.append(self.log_history[row][i])
 
-        result_cell = self.table.item(row-1, 6)
+        result_cell = self.table.item(row-1, 5)
         if 'red' in colors or 'yellow' in colors:
             error_btn = QPushButton("Error")
             error_btn.setCursor(Qt.PointingHandCursor)
             error_btn.clicked.connect(lambda checked: self.open_test_case_detail(row))
-            self.table.setCellWidget(row-1, 7, error_btn)
+            self.table.setCellWidget(row-1, 6, error_btn)
 
             result_cell.setText("Failed")
             result_cell.setForeground(QBrush(QColor("white")))
@@ -372,9 +379,13 @@ class TestCaseTablePage(QWidget):
             result_cell.setText("Passed")
             result_cell.setForeground(QBrush(QColor("white")))
             result_cell.setBackground(QColor("green"))
+            if metrics:
+                metric_btn = QPushButton("Metrics")
+                metric_btn.setCursor(Qt.PointingHandCursor)
+                metric_btn.clicked.connect(lambda checked: self.open_test_case_metrics(row, metrics))
+                self.table.setCellWidget(row - 1, 6, metric_btn)
 
-
-        action_item = self.table.item(row-1, 3)
+        action_item = self.table.item(row-1, 2)
         action_text = action_item.text()
         action_lines = action_text.split("\n")
         action_colors = colors[:len(action_lines)]
@@ -400,9 +411,9 @@ class TestCaseTablePage(QWidget):
         action_label.setStyleSheet("background: transparent;")
         action_label.setText(action_html_text)
 
-        self.table.setCellWidget(row-1, 3, action_label)
+        self.table.setCellWidget(row-1, 2, action_label)
 
-        expected_item = self.table.item(row-1, 4)
+        expected_item = self.table.item(row-1, 3)
         expected_text = expected_item.text()
         expected_lines = expected_text.split("\n")
         expected_colors = colors[len(expected_lines)-1:]
@@ -431,7 +442,7 @@ class TestCaseTablePage(QWidget):
         expected_label.setStyleSheet("background: transparent;")
         expected_label.setText(expected_html_text)
 
-        self.table.setCellWidget(row-1, 4, expected_label)
+        self.table.setCellWidget(row-1, 3, expected_label)
 
     # Need to update so that it checks by row and by service
     def open_test_case_detail(self, row):
@@ -445,15 +456,23 @@ class TestCaseTablePage(QWidget):
             if row_num in filename:
                 image_paths.append(file_path)
 
-        self.error_window = ErrorPage(title=f"{self.service}-0{row_num}",
+        test_title = self.table.item(row, 0).text()
+
+        self.error_window = ErrorPage(title=test_title,
                                       logs=self.log_history[row], images=image_paths)
         self.error_window.show()
+
+    def open_test_case_metrics(self, row, metrics):
+        test_title = self.table.item(row, 0).text()
+
+        self.metric_window = MetricPage(title=test_title, logs=metrics)
+        self.metric_window.show()
 
     def on_need_precondition(self, row):
         # Highlight row / notify user if you like
         print(f"⚠️ Waiting for preconditions at row {row}")
         # Optionally: flash the Run Testcase button
-        precondition_widget = self.table.cellWidget(row - 1, 2)
+        precondition_widget = self.table.cellWidget(row - 1, 1)
         if precondition_widget:
             for child in precondition_widget.findChildren(QPushButton):
                 if child.text() == "Run Testcase":
@@ -466,7 +485,7 @@ class TestCaseTablePage(QWidget):
             self.worker.resume()
 
         # optionally disable the button after pressing
-        precondition_widget = self.table.cellWidget(row, 2)
+        precondition_widget = self.table.cellWidget(row, 1)
         if precondition_widget:
             for child in precondition_widget.findChildren(QPushButton):
                 if child.text() == "Run Testcase":

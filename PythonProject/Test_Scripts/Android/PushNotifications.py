@@ -1,7 +1,7 @@
 from time import sleep
 from common_utils.android_image_comparision import *
 from common_utils.android_controller import *
-from core.log_emitter import log_emitter, LogEmitter
+from core.log_emitter import log_emitter
 
 
 def log(msg):
@@ -9,11 +9,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"PushNotifications_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"PushNotifications-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"PushNotifications_{e}_{num}.png")
+    controller.take_fail_screenshot(f"PushNotifications-{e}-{num}.png")
 
 def identify_car():
 

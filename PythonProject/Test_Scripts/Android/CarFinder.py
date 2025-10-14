@@ -8,11 +8,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"CarFinder_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"CarFinder-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"CarFinder_{e}_{num}.png")
+    controller.take_fail_screenshot(f"CarFinder-{e}-{num}.png")
 
 def CarFinder_001():
     try:

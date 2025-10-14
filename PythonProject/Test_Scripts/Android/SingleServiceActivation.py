@@ -8,11 +8,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"SingleServiceActivation_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"SingleServiceActivation-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"SingleServiceActivation_{e}_{num}.png")
+    controller.take_fail_screenshot(f"SingleServiceActivation-{e}-{num}.png")
 
 def SingleServiceActivation_001():
     try:
@@ -25,13 +25,13 @@ def SingleServiceActivation_001():
         if service_management:
             # At least the three services that show for all regions and cars
             if len(service_management) > 2:
-                print("✅ - Services extracted from service management page")
+                log("✅ - Services extracted from service management page")
             else:
-                print("❌ - Some general services missing")
+                fail_log("❌ - Some general services missing")
             for service in service_management:
-                print(f"{service} displayed")
+                log(f"{service} displayed")
         else:
-            print("❌ - Could not extract services from service management page", "001")
+            fail_log("❌ - Could not extract services from service management page", "001")
 
         controller.click_by_image("Icons/back_icon.png")
         controller.click_by_image("Icons/back_icon.png")
@@ -139,6 +139,7 @@ def SingleServiceActivation_004():
             log("✅ - Car status successfully disabled")
         else:
             fail_log("❌ - Car status failed to disable", "004")
+        controller.swipe_down()
 
         controller.click_by_image("Icons/info_btn.png")
         controller.click_text("Service Management")
@@ -156,7 +157,6 @@ def SingleServiceActivation_004():
             log("✅ - Car status successfully enabled")
         else:
             fail_log("❌ - Car status failed to be enabled", "004")
-        controller.swipe_down()
         controller.swipe_down()
 
     except Exception as e:

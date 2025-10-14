@@ -8,11 +8,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"AudialsApp_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"AudialsApp-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Nickname_{e}_{num}.png")
+    controller.take_fail_screenshot(f"Nickname-{e}-{num}.png")
 
 def AudialsApp_001():
     try:
@@ -28,10 +28,14 @@ def AudialsApp_001():
             fail_log("❌ - Audials section not clicked", "001")
 
         controller.click_text("OK")
-        if controller.click_text("audials.com"):
-            log("✅ - Redirected to Audials.com, Audials_001 Passed")
+        if controller.is_text_present("audials.com"):
+            log("✅ - Redirected to Audials.com")
         else:
-            fail_log("❌ - Failed to redirect to Audials.com, Audials_001 Failed", "001")
+            fail_log("❌ - Failed to redirect to Audials.com", "001")
+
+        controller.press_home()
+        controller.launch_app("uk.co.bentley.mybentley")
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "001")

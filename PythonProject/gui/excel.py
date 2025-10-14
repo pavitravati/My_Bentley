@@ -30,9 +30,6 @@ def load_data():
                 for cell in col:
                     if isinstance(cell.value, str):
                         cell.value = cell.value.replace("\"", "'")
-                        cell.value = re.sub(r'(^|\n)\d+\. ', r'\1', cell.value)
-                        cell.value = re.sub(r'(\n)[a-zA-Z]\.', ',', cell.value)
-                        cell.value = re.sub('• ', '', cell.value)
                         while "\n\n" in cell.value:
                             cell.value = cell.value.replace("\n\n", "\n")
 
@@ -89,6 +86,5 @@ def load_data():
             test_case_list.append(test_case)
 
         TestCases[sheet] = test_case_list
-
 
     return TestCases

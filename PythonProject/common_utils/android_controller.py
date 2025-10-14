@@ -346,12 +346,12 @@ class DeviceController:
             if license_value.exists:
                 licenses[label] = f"{license_value.get_text()}"
 
-            label = "My Bentley in-car services"
+            label = "MyBentley in-car services"
             license_value = self.d(text=label).sibling(className="android.widget.TextView", instance=1)
             if license_value.exists:
                 licenses[label] = f"{license_value.get_text()}"
 
-            label = "My Bentley remote services"
+            label = "MyBentley remote services"
             license_value = self.d(text=label).sibling(className="android.widget.TextView", instance=1)
             if license_value.exists:
                 licenses[label] = f"{license_value.get_text()}"

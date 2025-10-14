@@ -9,11 +9,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"VehicleStatusReport_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"VehicleStatusReport-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"VehicleStatusReport_{e}_{num}.png")
+    controller.take_fail_screenshot(f"VehicleStatusReport-{e}-{num}.png")
 
 def identify_car():
     if compare_with_expected_crop("Icons/Bentayga.png"):
@@ -29,6 +29,15 @@ def identify_car():
 
     return car
 
+def change_units(units):
+    controller.click_by_image("Icons/Profile_Icon.png")
+    controller.click_by_image("Icons/Profile_Screen_Setting_Icon.png")
+    controller.click_text("Units")
+    controller.click_text(units)
+    controller.click_by_image("Icons/back_icon.png")
+    controller.click_by_image("Icons/back_icon.png")
+    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+
 def VehicleStatusReport_001():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -39,9 +48,9 @@ def VehicleStatusReport_001():
 
         controller.swipe_up()
         if controller.is_text_present("Fuel range"):
-            log("✅ - Status report is displayed, VehicleStatusReport_001 Passed")
+            log("✅ - Status report is displayed")
         else:
-            fail_log("❌ - Status report is not displayed, VehicleStatusReport_001 Failed", "001")
+            fail_log("❌ - Status report is not displayed", "001")
 
         controller.swipe_down()
         controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
@@ -63,34 +72,36 @@ def VehicleStatusReport_002():
         car_name = identify_car()
         if controller.is_text_present("DASHBOARD"):
             log("✅ - Dashboard page opened, and status information is displayed")
-            log("Screen title displayed") if controller.is_text_present("DASHBOARD") else fail_log("❌ - Screen title not displayed", "002")
-            log("Vehicle image displayed") if car_name != '' else fail_log("❌ - Vehicle image not displayed", "002")
+            log("✅ - Screen title displayed") if controller.is_text_present("DASHBOARD") else fail_log("❌ - Screen title not displayed", "002")
+            log("✅ - Vehicle image displayed") if car_name != '' else fail_log("❌ - Vehicle image not displayed", "002")
             info_btn = True if controller.click_by_image("Icons/info_btn.png") else False
             controller.click_by_image("Icons/back_icon.png")
-            log("Info icon displayed") if info_btn else fail_log("❌ - Info icon not displayed", "002")
+            log("✅ - Info icon displayed") if info_btn else fail_log("❌ - Info icon not displayed", "002")
             now = datetime.now()
             current_date = f"{now.strftime('%A')} {now.day} {now.strftime('%B')}"
-            log("Greeting message and date displayed") if compare_with_expected_crop("Icons/good.png") and controller.is_text_present(current_date) else fail_log("❌ - Greeting message and date not displayed", "002")
-            log("Vehicle name displayed") if controller.is_text_present(car_name.upper()) else fail_log("❌ - Vehicle name not displayed", "002")
-            log("Last vehicle contact displayed") if compare_with_expected_crop("Icons/Last_vehicle_contact.png") else fail_log("❌ - Last vehicle contact displayed", "002")
-            log("Remote Lock/Unlock button displayed") if compare_with_expected_crop("Icons/Remote_Lock.png") else fail_log("❌ - Remote Lock/Unlock button not displayed", "002")
-            log("Vehicle lock status displayed") if controller.is_text_present("Vehicle unlocked") or controller.is_text_present("Vehicle locked") else fail_log("❌ - Vehicle lock status not displayed", "002")
+            log("✅ - Greeting message and date displayed") if compare_with_expected_crop("Icons/good.png") and controller.is_text_present(current_date) else fail_log("❌ - Greeting message and date not displayed", "002")
+            log("✅ - Vehicle name displayed") if controller.is_text_present(car_name.upper()) else fail_log("❌ - Vehicle name not displayed", "002")
+            log("✅ - Last vehicle contact displayed") if compare_with_expected_crop("Icons/Last_vehicle_contact.png") else fail_log("❌ - Last vehicle contact displayed", "002")
+            log("✅ - Remote Lock/Unlock button displayed") if compare_with_expected_crop("Icons/Remote_Lock.png") else fail_log("❌ - Remote Lock/Unlock button not displayed", "002")
+            log("✅ - Vehicle lock status displayed") if controller.is_text_present("Vehicle unlocked") or controller.is_text_present("Vehicle locked") else fail_log("❌ - Vehicle lock status not displayed", "002")
             controller.swipe_up()
-            log("Combined range section displayed") if controller.is_text_present("Combined range") else fail_log("❌ - Combined range section not displayed", "002")
+            log("✅ - Combined range section displayed") if controller.is_text_present("Combined range") else fail_log("❌ - Combined range section not displayed", "002")
             mileage_results = controller.extract_fuel_range_and_level(True)
-            log(f"Mileage metrics displayed: {mileage_results}") if len(mileage_results) == 3 or len(mileage_results) == 6 else fail_log(f"❌ - Mileage metrics not displayed: {mileage_results}", "002")
-            log("Side lights status displayed") if controller.d(text="Lights").exists else fail_log("❌ - Side lights status displayed", "002")
-            log("Door status section displayed") if controller.is_text_present("Doors") else fail_log("❌ - Combined range section not displayed", "002")
+            log(f"✅ - Mileage metrics displayed: {mileage_results}") if len(mileage_results) == 3 or len(mileage_results) == 6 else fail_log(f"❌ - Mileage metrics not displayed: {mileage_results}", "002")
+            log("✅ - Side lights status displayed") if controller.d(text="Lights").exists else fail_log("❌ - Side lights status displayed", "002")
+            log("✅ - Door status section displayed") if controller.is_text_present("Doors") else fail_log("❌ - Combined range section not displayed", "002")
             door_results = controller.extract_doors_status()
-            log(f"Door status displayed: {door_results}") if len(door_results) == 4 else fail_log(f"❌ - Door status not displayed: {door_results}", "002")
+            log(f"✅ - Door status displayed: {door_results}") if len(door_results) == 4 else fail_log(f"❌ - Door status not displayed: {door_results}", "002")
             boot_results = controller.extract_boot_bonnet_status()
-            log(f"Boot and Bonnet status displayed: {boot_results}") if len(boot_results) == 2 else fail_log(f"❌ - Boot and Bonnet status not displayed: {boot_results}", "002")
+            log(f"✅ - Boot and Bonnet status displayed: {boot_results}") if len(boot_results) == 2 else fail_log(f"❌ - Boot and Bonnet status not displayed: {boot_results}", "002")
             controller.swipe_up()
-            log("Window status section displayed") if controller.is_text_present("Windows") else fail_log("❌ - Window status not displayed", "002")
+            log("✅ - Window status section displayed") if controller.is_text_present("Windows") else fail_log("❌ - Window status not displayed", "002")
             window_results = controller.extract_window_status()
-            log(f"Window status displayed: {window_results}") if len(window_results) >= 4 else fail_log(f"❌ - Window status not displayed: {window_results}", "002")
+            log(f"✅ - Window status displayed: {window_results}") if len(window_results) >= 4 else fail_log(f"❌ - Window status not displayed: {window_results}", "002")
             service_status = controller.extract_service_status()
-            log(f"Service status displayed: {service_status}") if len(service_status) == 4 else fail_log(f"❌ - Service status not displayed: {service_status}", "002")
+            log(f"✅ - Service status displayed: {service_status}") if len(service_status) == 4 else fail_log(f"❌ - Service status not displayed: {service_status}", "002")
+            controller.swipe_down()
+            controller.swipe_down()
         else:
             fail_log("❌ - Dashboard page not opened, and status information is not displayed", "002")
 
@@ -118,6 +129,9 @@ def VehicleStatusReport_003():
 
         for key, value in metrics.items():
             log(f"{key} : {value}")
+
+        controller.swipe_down()
+        controller.swipe_down()
 
     except Exception as e:
         error_log(e, "003")
@@ -152,6 +166,9 @@ def VehicleStatusReport_005():
         for key, value in metrics.items():
             log(f"{key} : {value}")
 
+        controller.swipe_down()
+        controller.swipe_down()
+
     except Exception as e:
         error_log(e, "005")
 
@@ -178,6 +195,9 @@ def VehicleStatusReport_006():
 
         for key, value in metrics.items():
             log(f"{key} : {value}")
+
+        controller.swipe_down()
+        controller.swipe_down()
 
     except Exception as e:
         error_log(e, "006")
@@ -206,13 +226,16 @@ def VehicleStatusReport_007():
         for key, value in metrics.items():
             log(f"{key} : {value}")
 
+        controller.swipe_down()
+        controller.swipe_down()
+
     except Exception as e:
         error_log(e, "007")
 
 def VehicleStatusReport_008():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        # sleep(45)
+        sleep(45)
         controller.swipe_down()
 
         if controller.wait_for_text("Data successfully updated"):
@@ -232,6 +255,7 @@ def VehicleStatusReport_008():
 
         except Exception as e:
             error_log(e, "008")
+
         controller.swipe_down()
 
     except Exception as e:
@@ -290,16 +314,6 @@ def VehicleStatusReport_010():
 
     except Exception as e:
         error_log(e, "010")
-
-def change_units(units):
-    controller.click_by_image("Icons/Profile_Icon.png")
-    controller.click_by_image("Icons/Profile_Screen_Setting_Icon.png")
-    controller.click_text("Units")
-    controller.click_text(units)
-    controller.click_by_image("Icons/back_icon.png")
-    controller.click_by_image("Icons/back_icon.png")
-    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-
 
 def VehicleStatusReport_011():
     try:
@@ -451,8 +465,6 @@ def VehicleStatusReport_016():
                 log(f"Front Co Passenger door: {door_details['front left']}")
                 log(f"Rear Left door: {door_details['rear left']}")
                 log(f"Rear right door: {door_details['rear right']}")
-
-            controller.swipe_down()
 
         except Exception as e:
             error_log(e, "016")

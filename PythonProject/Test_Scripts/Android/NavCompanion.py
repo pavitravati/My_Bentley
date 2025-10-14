@@ -8,11 +8,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"NavCompanion_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"NavCompanion-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"NavCompanion_{e}_{num}.png")
+    controller.take_fail_screenshot(f"NavCompanion-{e}-{num}.png")
 
 def NavCompanion_001():
     try:
@@ -26,10 +26,8 @@ def NavCompanion_001():
 
         if controller.is_text_present("NAVIGATION"):
             log("✅ - Navigation screen launched")
-            log("✅ - Screen title displayed")
         else:
             fail_log("❌ - Navigation screen not launched", "001")
-            log("❌ - Screen title not displayed")
 
         if compare_with_expected_crop("Images/Navigation_Search_Image.png"):
             log("✅ - Search Window displayed")
@@ -59,9 +57,9 @@ def NavCompanion_001():
             if controller.is_text_present("Satellite") and controller.is_text_present("Show real time traffic data"):
                 log("✅ - Option to enable 'Satellite' and 'Real time traffic' displayed")
             else:
-                fail_log("❌ - Option to enable 'Satellite' and 'Real time traffic' not displayed")
+                fail_log("❌ - Option to enable 'Satellite' and 'Real time traffic' not displayed", "001")
         else:
-            fail_log("❌ - Option to enable 'Satellite' and 'Real time traffic' not displayed")
+            fail_log("❌ - Option to enable 'Satellite' and 'Real time traffic' not displayed", "001")
 
     except Exception as e:
         error_log(e, "001")
@@ -88,7 +86,6 @@ def NavCompanion_003():
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/navigation_icon.png")
         controller.click_by_image("Images/Navigation_Allow.png")
-
 
     except Exception as e:
         error_log(e, "003")

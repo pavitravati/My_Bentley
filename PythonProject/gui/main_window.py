@@ -4,8 +4,9 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QAction, QActionGroup
 from excel import services
 from test_case_page import TestCaseTablePage
+from home_page import HomePage
 import sys
-import os, glob, atexit
+import os, glob
 
 def cleanup_images():
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -39,11 +40,17 @@ class MainWindow(QMainWindow):
             toolbar.addAction(action)
             action_group.addAction(action)
 
-        self.setCentralWidget(TestCaseTablePage("DemoMode"))
+        self.setCentralWidget(HomePage(self))
 
     def toolbar_button_clicked(self, s, service):
         self.service = service
-        self.setCentralWidget(TestCaseTablePage(service))
+        self.setCentralWidget(TestCaseTablePage(self, service))
+
+    def show_homepage(self):
+        self.setCentralWidget(HomePage(self))
+
+    def show_test_cases(self, service):
+        self.setCentralWidget(TestCaseTablePage(self, service))
 
 
 if __name__ == "__main__":
@@ -89,7 +96,6 @@ if __name__ == "__main__":
     }
     QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
         background: none;
-    }
     """
     app.setStyleSheet(scrollbar_style)
     app.setStyle("Fusion")

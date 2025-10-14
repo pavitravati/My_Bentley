@@ -8,11 +8,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"TheftAlarm_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"TheftAlarm-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"TheftAlarm_{e}_{num}.png")
+    controller.take_fail_screenshot(f"TheftAlarm-{e}-{num}.png")
 
 def TheftAlarm_001():
     try:
@@ -20,9 +20,10 @@ def TheftAlarm_001():
         controller.click_by_image("Icons/windows_icon.png")
         controller.swipe_up()
         if controller.is_text_present("STOLEN VEHICLE TRACKING"):
-            log("✅ - Theft Alarm tab displayed, TheftAlarm_001 Passed")
+            log("✅ - Theft Alarm tab displayed")
         else:
-            fail_log("❌ - Theft Alarm tab not displayed, TheftAlarm_001 Failed", "001")
+            fail_log("❌ - Theft Alarm tab not displayed", "001")
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "001")
 
@@ -42,6 +43,7 @@ def TheftAlarm_002():
             fail_log("❌ - Alert notifications could not be cleared", "002")
 
         controller.click_by_image("Icons/back_icon.png")
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "002")
@@ -59,6 +61,7 @@ def TheftAlarm_003():
             fail_log("❌ - Theft alert page displays incorrectly when no alerts", "003")
 
         controller.click_by_image("Icons/back_icon.png")
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "003")
@@ -74,6 +77,10 @@ def TheftAlarm_004():
             log("✅ - Theft alert page displays correctly after an alert")
         else:
             fail_log("❌ - Theft alert page displays incorrectly after an alert", "004")
+
+        controller.click_by_image("Icons/back_icon.png")
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+
     except Exception as e:
         error_log(e, "004")
 

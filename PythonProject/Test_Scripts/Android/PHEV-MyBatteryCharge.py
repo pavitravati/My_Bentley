@@ -8,11 +8,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"PHEV-MyBatteryCharge_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"PHEV-MyBatteryCharge-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"PHEV-MyBatteryCharge_{e}_{num}.png")
+    controller.take_fail_screenshot(f"PHEV-MyBatteryCharge-{e}-{num}.png")
 
 def PHEV_MyBatteryCharge_001():
     try:

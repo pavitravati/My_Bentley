@@ -10,11 +10,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"Nickname_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"Nickname-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Nickname_{e}_{num}.png")
+    controller.take_fail_screenshot(f"Nickname-{e}-{num}.png")
 
 def identify_car():
     if compare_with_expected_crop("Icons/Bentayga.png"):
@@ -48,12 +48,11 @@ def Nickname_001():
         controller.click_by_image("Icons/info_btn.png")
 
         if controller.count_text(text=car_name) == 2 and controller.is_text_present("Vehicle name") and controller.is_text_present("Model"):
-            log("✅ - Default vehicle details displayed, Nickname_001 Passed")
-            log("✅ - Nickname_001 Passed")
+            log("✅ - Default vehicle details displayed")
         else:
-            fail_log("❌ - Default vehicle details not displayed, Nickname_001 Failed", "001")
+            fail_log("❌ - Default vehicle details not displayed", "001")
 
-        controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
+        controller.click_by_image("Icons/back_icon.png")
 
     except Exception as e:
         error_log(e, "001")
@@ -64,10 +63,9 @@ def Nickname_002():
         car_name = identify_car().upper()
 
         if controller.is_text_present(car_name):
-            log("✅ - Default vehicle name displayed, Nickname_002 Passed")
-            print(123)
+            log("✅ - Default vehicle name displayed")
         else:
-            fail_log("❌ - Default vehicle name not displayed, Nickname_002 Failed", "002")
+            fail_log("❌ - Default vehicle name not displayed", "002")
 
     except Exception as e:
         error_log(e, "002")
@@ -92,20 +90,20 @@ def Nickname_003():
         controller.enter_text(f"{car_name}123")
         controller.swipe_down()
         if compare_with_expected_crop("Icons/save_enabled.png"):
-            log("✅ - Save button is present and disabled when name edited, Nickname_003 Passed")
+            log("✅ - Save button is present and disabled when name edited")
         else:
-            fail_log("❌ - Save button is not present or disabled when name edited, Nickname_003 Failed", "003")
+            fail_log("❌ - Save button is not present or disabled when name edited", "003")
 
-        controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
-        controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
+        controller.click_by_image("Icons/back_icon.png")
+        controller.click_by_image("Icons/back_icon.png")
 
     except Exception as e:
         error_log(e, "003")
 
 def Nickname_004():
     try:
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         car_name = identify_car()
-
         nickname_page("004")
 
         controller.enter_text(f"{car_name}123")
@@ -114,41 +112,41 @@ def Nickname_004():
         if controller.click_by_image("Icons/save_enabled.png"):
             log("✅ - Nickname edited successfully")
             sleep(5)
-            controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
+            controller.click_by_image("Icons/back_icon.png")
             controller.swipe_down()
         else:
             fail_log("❌ - Nickname edited unsuccessfully", "004")
             controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
             controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
 
-        if controller.is_text_present(f"{car_name}123"):
-            log("✅ - Nickname displayed successfully, Nickname_004 Passed")
+        if controller.wait_for_text(f"{car_name}123"):
+            log("✅ - Nickname displayed successfully")
         else:
-            fail_log("❌ - Nickname displayed unsuccessfully, Nickname_004 Failed", "004")
+            fail_log("❌ - Nickname displayed unsuccessfully", "004")
 
     except Exception as e:
         error_log(e, "004")
 
 def Nickname_005():
     try:
-
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         nickname_page("005")
-
         controller.swipe_down()
 
         if compare_with_expected_crop("Icons/save_disabled.png"):
-            log("✅ - Save button is present and disabled when name unedited, Nickname_005 Passed")
+            log("✅ - Save button is present and disabled when name unedited")
         else:
-            fail_log("❌ - Save button is not present or disabled when name unedited, Nickname_005 Failed", "005")
+            fail_log("❌ - Save button is not present or disabled when name unedited", "005")
 
-        controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
-        controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
+        controller.click_by_image("Icons/back_icon.png")
+        controller.click_by_image("Icons/back_icon.png")
 
     except Exception as e:
         error_log(e, "005")
 
 def Nickname_006():
     try:
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         nickname_page("006")
         controller.clear_text(19)
         controller.enter_text("testingnickname1234")
@@ -161,20 +159,24 @@ def Nickname_006():
             fail_log("❌ - 19 Character nickname edited unsuccessfully", "006")
             controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
 
-        controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
+        controller.click_by_image("Icons/back_icon.png")
         controller.swipe_down()
         sleep(3)
 
         if controller.is_text_present("testingnickname1234"):
-            log("✅ - 19 Character nickname displayed successfully, Nickname_006 Passed")
+            log("✅ - 19 Character nickname displayed successfully")
         else:
-            fail_log("❌ - 19 Character nickname displayed unsuccessfully, Nickname_006 Failed", "006")
+            fail_log("❌ - 19 Character nickname displayed unsuccessfully", "006")
+
+        controller.click_by_image("Icons/back_icon.png")
+        controller.click_by_image("Icons/back_icon.png")
 
     except Exception as e:
         error_log(e, "006")
 
 def Nickname_007():
     try:
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         nickname_page("007")
 
         controller.clear_text(19)
@@ -188,20 +190,21 @@ def Nickname_007():
             fail_log("❌ - Special character nickname edited unsuccessfully", "007")
             controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
 
-        controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
+        controller.click_by_image("Icons/back_icon.png")
         controller.swipe_down()
         sleep(3)
 
         if controller.is_text_present("!?#£✅❌"):
-            log("✅ - Special character nickname displayed successfully, Nickname_007 Passed")
+            log("✅ - Special character nickname displayed successfully")
         else:
-            fail_log("❌ - Special character nickname displayed unsuccessfully, Nickname_007 Failed", "007")
+            fail_log("❌ - Special character nickname displayed unsuccessfully", "007")
 
     except Exception as e:
         error_log(e, "007")
 
 def Nickname_008():
     try:
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         nickname_page("008")
 
         controller.clear_text(19)
@@ -209,19 +212,21 @@ def Nickname_008():
         controller.swipe_down()
 
         if compare_with_expected_crop("Icons/save_disabled.png"):
-            log("✅ - Save disabled for nickname with space, Nickname_008 Passed")
+            log("✅ - Save disabled for nickname with space")
             sleep(5)
         elif compare_with_expected_crop("Icons/save_enabled.png"):
-            fail_log("❌ - Save disabled for nickname with space, Nickname_008 Failed", "008")
+            fail_log("❌ - Save disabled for nickname with space", "008")
 
-        controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
-        controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
+        controller.click_by_image("Icons/back_icon.png")
+        controller.click_by_image("Icons/back_icon.png")
+
 
     except Exception as e:
         error_log(e, "008")
 
 def Nickname_009():
     try:
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         car_name = identify_car()
 
         nickname_page("009")
@@ -235,7 +240,7 @@ def Nickname_009():
             fail_log("❌ - Nickname edited unsuccessfully", "009")
         sleep(5)
 
-        controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
+        controller.click_by_image("Icons/back_icon.png")
         controller.click_by_image("Icons/Profile_Icon.png")
         controller.click_text("General")
         if controller.click_text("Log out"):
@@ -263,9 +268,11 @@ def Nickname_009():
 
         controller.click_by_image("Icons/info_btn.png")
         if controller.is_text_present(f"{car_name}123"):
-            log("✅ - Nickname displayed in vehicle details screen successfully, Nickname_009 Passed")
+            log("✅ - Nickname displayed in vehicle details screen successfully")
         else:
-            fail_log("❌ - Nickname displayed in vehicle details screen unsuccessfully, Nickname_009 Failed", "009")
+            fail_log("❌ - Nickname displayed in vehicle details screen unsuccessfully", "009")
+
+        controller.click_by_image("Icons/back_icon.png")
 
     except Exception as e:
         error_log(e, "009")

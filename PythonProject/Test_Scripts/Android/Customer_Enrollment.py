@@ -8,11 +8,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"Customer_Enrollment_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"Customer_Enrollment-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Customer_Enrollment_{e}_{num}.png")
+    controller.take_fail_screenshot(f"Customer_Enrollment-{e}-{num}.png")
 
 # Obsolete?
 def Customer_Enrollment_001():

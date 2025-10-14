@@ -134,9 +134,7 @@ class ServiceReport(QWidget):
 
         layout.addLayout(container_layout)
 
-    # also
-    def on_test_clicked(self, test_name, test_case, logs_combined, row):
-        print(f"Clicked test case: {test_name} {test_case}")
+    def on_test_clicked(self, test_case, logs_combined, row):
         self.log_textbox.append(test_case['Test Case Description'])
         self.log_textbox.setPlainText(logs_combined)
 
@@ -157,19 +155,38 @@ class ServiceReport(QWidget):
                 image_paths.append(file_path)
 
         for img_path_str in image_paths:
+            internal_container = QWidget()
+            # May need changing to work on laptop and monitor
+            internal_container.setFixedWidth(280)
+            report_image = QVBoxLayout(internal_container)
+
             img_path = Path(img_path_str)
             pixmap = QPixmap(str(img_path))
             if pixmap.isNull():
                 print(f"Failed to load image: {img_path}")
                 continue
 
-            label = QLabel()
+            img_label = QLabel()
+            img_text = img_path_str.split(" - ")
+            if '❌' in img_text[0]:
+                img_text = img_text[1].split("-")[0]
+            else:
+                img_text = img_text[0].split("-")[1].replace('_', ' ').replace('.png', '')
+            img_label.setText(img_text)
+            img_label.setFont(QFont("Arial", 12))
+            img_label.setWordWrap(True)
+            report_image.addWidget(img_label)
+
+            image_display = QLabel()
+
             screen_size = QApplication.primaryScreen().size()
             available_width = screen_size.width()
             if available_width > 1500:
-                img_size = 450
+                img_size = 410
             else:
-                img_size = 300
-            label.setPixmap(pixmap.scaled(img_size, img_size, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-            label.setStyleSheet("margin: 5px;")
-            self.images_layout.addWidget(label)
+                img_size = 260
+            image_display.setPixmap(pixmap.scaled(img_size, img_size, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+            image_display.setStyleSheet("margin: 5px;")
+
+            report_image.addWidget(image_display)
+            self.images_layout.addWidget(internal_container)

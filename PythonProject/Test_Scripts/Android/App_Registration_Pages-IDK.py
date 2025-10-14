@@ -8,11 +8,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"App_Registration_Pages-IDK_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"App_Registration_Pages-IDK-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"App_Registration_Pages-IDK_{e}_{num}.png")
+    controller.take_fail_screenshot(f"App_Registration_Pages-IDK-{e}-{num}.png")
 
 # Need an throwaway emails that can be used
 def App_Registration_Pages_001():

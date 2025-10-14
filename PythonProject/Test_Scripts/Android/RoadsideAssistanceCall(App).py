@@ -8,11 +8,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"RoadsideAssistanceCallApp_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"RoadsideAssistanceCallApp-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"RoadsideAssistanceCallApp_{e}_{num}.png")
+    controller.take_fail_screenshot(f"RoadsideAssistanceCallApp-{e}-{num}.png")
 
 def RoadsideAssistanceCallApp_001():
     try:

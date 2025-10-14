@@ -1,6 +1,7 @@
 from time import sleep
 from common_utils.android_image_comparision import *
 from common_utils.android_controller import *
+v
 from core.log_emitter import log_emitter
 
 def log(msg):
@@ -8,28 +9,26 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"Notifications_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"Notifications-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Notifications_{e}_{num}.png")
+    controller.take_fail_screenshot(f"Notifications-{e}-{num}.png")
 
 def Notifications_001():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         if controller.click_by_image("Icons/New_Notification_icon.png") or controller.click_by_image("Icons/Notification_icon.png"):
             log("✅ - Notification page launched")
-            log("✅ - Verifying content displayed on Notification page")
         else:
             fail_log("❌ - Notification page not launched", "001")
-            fail_log("❌ - Cannot verify content displayed on Notification page", "001")
 
         if controller.is_text_present("NOTIFICATIONS"):
             log("✅ - Notification title displayed")
         else:
             fail_log("❌ - Notification title not displayed", "001")
 
-        if controller.is_text_present("Actions") or controller.is_text_present("Alerts"):
+        if controller.is_text_present("Actions") and controller.is_text_present("Alerts"):
             log("✅ - Actions & Alerts tab displayed")
         else:
             fail_log("❌ - Actions & Alerts tab not displayed", "001")
@@ -38,6 +37,8 @@ def Notifications_001():
             log("✅ - Last updated displayed")
         else:
             fail_log("❌ - Last updated not displayed", "001")
+
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "001")
@@ -71,6 +72,7 @@ def Notifications_003():
         else:
             fail_log("❌ - Notifications are not displayed correctly", "003")
 
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "003")
@@ -86,6 +88,9 @@ def Notifications_004():
             pass
         else:
             fail_log("❌ - There are no notifications displayed to check the format", "004")
+
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+
     except Exception as e:
         error_log(e, "004")
 

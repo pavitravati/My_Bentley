@@ -75,7 +75,11 @@ class ErrorPage(QWidget):
                 continue
 
             img_label = QLabel()
-            img_text = img_path_str.split(" - ")[1].split("_")[0]
+            img_text = img_path_str.split(" - ")
+            if '❌' in img_text[0]:
+                img_text = img_text[1].split("-")[0]
+            else:
+                img_text = img_text[0].split("-")[1].replace('_', ' ').replace('.png', '')
             img_label.setText(img_text)
             img_label.setFont(QFont("Arial", 12))
             img_label.setWordWrap(True)

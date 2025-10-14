@@ -2,10 +2,11 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QTableWidget, QLabel, QSizePolicy,
     QCheckBox, QPushButton, QHBoxLayout, QApplication, QHeaderView
 )
-from PySide6.QtGui import QFont, QPixmap, QColor, QBrush
-from PySide6.QtCore import Qt, QTimer, Slot, QThread
+from PySide6.QtGui import QFont, QPixmap, QColor, QBrush, QIcon
+from PySide6.QtCore import Qt, QTimer, Slot, QThread, QSize
 from excel import load_data
 from core.log_emitter import log_emitter
+from gui.home_page import HomePage
 from utils import make_item
 from widgets import PaddingDelegate
 from test_worker import TestRunnerWorker
@@ -20,13 +21,14 @@ from PySide6.QtCore import QTime
 testcase_map = load_data()
 
 class TestCaseTablePage(QWidget):
-    def __init__(self, service="DemoMode", parent=None):
+    def __init__(self, main_window, service="DemoMode", parent=None):
         super().__init__(parent)
         self.service = service
         self.log_history = {}
         self.current_row = None
         log_emitter.log_signal.connect(self.handle_log)
         self.test_start_times = {}
+        self.main_window = main_window
 
         # Adds a vertical layout for the window and sets the padding around it
         layout = QVBoxLayout(self)
@@ -36,10 +38,33 @@ class TestCaseTablePage(QWidget):
         top_layout = QHBoxLayout()
         top_layout.setContentsMargins(0, 40, 0, 20)
 
+        home_btn = QPushButton()
+        homeimg = Path(__file__).parent / "images" / "homebtn.png"
+        home_btn.setIcon(QIcon(str(homeimg)))
+        home_btn.setCursor(Qt.PointingHandCursor)
+        home_btn.setIconSize(QSize(40, 40))
+        home_btn.setIconSize(QSize(50, 50))
+        home_btn.clicked.connect(self.home_button_clicked)
+        home_btn.setStyleSheet("""
+            QPushButton {
+                border: none;
+                background: #394d45;
+                border-radius: 20px;
+                width: 70px;
+                height: 70px;
+                margin-left: 20px
+            }
+            QPushButton:hover {
+                background-color: #323c38;
+                border-radius: 20px;
+            }
+        """)
+        top_layout.addWidget(home_btn)
+
         # Creates title and adds to the horizontal layout
         title = QLabel(service)
         title.setFont(QFont("Arial", 25, QFont.Bold))
-        title.setStyleSheet("margin-left: 20px; margin-bottom: 20px;")
+        title.setStyleSheet("margin-left: 20px; margin-bottom: 20px; padding-top: 25px;")
         top_layout.addWidget(title)
 
         # Adds a space between the title and logo
@@ -50,7 +75,6 @@ class TestCaseTablePage(QWidget):
         img_path = Path(__file__).parent / "images" / "bentleylogo.png"
         pixmap = QPixmap(str(img_path))
         logo.setPixmap(pixmap)
-        # logo.setPixmap(QPixmap('images/bentleylogo.png'))
         logo.setScaledContents(True)
         logo.setMaximumSize(162, 60)
         logo.setStyleSheet("margin-right: 20px;")
@@ -87,6 +111,7 @@ class TestCaseTablePage(QWidget):
         self.table = QTableWidget()
         self.table.setColumnCount(7)
         self.table.setHorizontalHeaderLabels(["Test Case Description", "Pre-Condition", "Action", "Expected Result", "Duration", "Result", "Details"])
+        self.table.verticalHeader().setVisible(False)
         self.table.setRowCount(len(testcase_map[service]))
         self.table.verticalHeader().setDefaultSectionSize(100)
         self.table.setWordWrap(True)
@@ -266,12 +291,12 @@ class TestCaseTablePage(QWidget):
     def adjust_column_widths(self):
         screen_size = QApplication.primaryScreen().size()
         available_width = screen_size.width()
-        available_width -= 90
+        available_width -= 75
 
         if available_width < 1500:
-            proportions = [0.21, 0.21, 0.21, 0.23, 0.05, 0.06, 0.05]
+            proportions = [0.21, 0.21, 0.21, 0.21, 0.06, 0.06, 0.06]
         else:
-            proportions = [0.22, 0.23, 0.23, 0.23, 0.03, 0.03, 0.03]
+            proportions = [0.22, 0.22, 0.22, 0.22, 0.04, 0.04, 0.04]
 
         total = sum(proportions)
         proportions = [p / total for p in proportions]
@@ -366,7 +391,7 @@ class TestCaseTablePage(QWidget):
                 metrics.append(self.log_history[row][i])
 
         result_cell = self.table.item(row-1, 5)
-        if 'red' in colors or 'yellow' in colors:
+        if 'red' in colors:
             error_btn = QPushButton("Error")
             error_btn.setCursor(Qt.PointingHandCursor)
             error_btn.clicked.connect(lambda checked: self.open_test_case_detail(row))
@@ -375,74 +400,30 @@ class TestCaseTablePage(QWidget):
             result_cell.setText("Failed")
             result_cell.setForeground(QBrush(QColor("white")))
             result_cell.setBackground(QColor("red"))
+
+            self.table.item(row-1, 2).setForeground(QBrush(QColor("red")))
+            self.table.item(row-1, 3).setForeground(QBrush(QColor("red")))
+        elif 'yellow' in colors:
+            error_btn = QPushButton("Error")
+            error_btn.setCursor(Qt.PointingHandCursor)
+            error_btn.clicked.connect(lambda checked: self.open_test_case_detail(row))
+            self.table.setCellWidget(row-1, 6, error_btn)
+
+            result_cell.setText("Error")
+            result_cell.setBackground(QColor("#F6BE00"))
+            self.table.item(row-1, 2).setForeground(QBrush(QColor("#F6BE00")))
+            self.table.item(row-1, 3).setForeground(QBrush(QColor("#F6BE00")))
         else:
             result_cell.setText("Passed")
             result_cell.setForeground(QBrush(QColor("white")))
             result_cell.setBackground(QColor("green"))
+            self.table.item(row-1, 2).setForeground(QBrush(QColor("green")))
+            self.table.item(row-1, 3).setForeground(QBrush(QColor("green")))
             if metrics:
                 metric_btn = QPushButton("Metrics")
                 metric_btn.setCursor(Qt.PointingHandCursor)
                 metric_btn.clicked.connect(lambda checked: self.open_test_case_metrics(row, metrics))
                 self.table.setCellWidget(row - 1, 6, metric_btn)
-
-        action_item = self.table.item(row-1, 2)
-        action_text = action_item.text()
-        action_lines = action_text.split("\n")
-        action_colors = colors[:len(action_lines)]
-        action_item.setText("")
-
-        action_html = []
-        for i, line in enumerate(action_lines):
-            if 'yellow' in colors:
-                color = '#F6BE00'
-            else:
-                try:
-                    color = action_colors[i]
-                except IndexError:
-                    color = action_colors[-1]
-                # color = action_colors[i]
-            escaped_line = line.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-            action_html.append(f'<span style="color:{color}">{escaped_line}</span>')
-        action_html_text = "<br>".join(action_html)
-
-        action_label = QLabel()
-        action_label.setTextFormat(Qt.RichText)
-        action_label.setWordWrap(True)
-        action_label.setStyleSheet("background: transparent;")
-        action_label.setText(action_html_text)
-
-        self.table.setCellWidget(row-1, 2, action_label)
-
-        expected_item = self.table.item(row-1, 3)
-        expected_text = expected_item.text()
-        expected_lines = expected_text.split("\n")
-        expected_colors = colors[len(expected_lines)-1:]
-        expected_item.setText("")
-
-        expected_html = []
-        for i, line in enumerate(expected_lines):
-            if 'yellow' in colors:
-                color = '#F6BE00'
-            else:
-                try:
-                    color = expected_colors[i]
-                except IndexError:
-                    try:
-                        color = expected_colors[-1]
-                    except IndexError:
-                        color = action_colors[-1]
-                # color = expected_colors[i]
-            escaped_line = line.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-            expected_html.append(f'<span style="color:{color}">{escaped_line}</span>')
-        expected_html_text = "<br>".join(expected_html)
-
-        expected_label = QLabel()
-        expected_label.setTextFormat(Qt.RichText)
-        expected_label.setWordWrap(True)
-        expected_label.setStyleSheet("background: transparent;")
-        expected_label.setText(expected_html_text)
-
-        self.table.setCellWidget(row-1, 3, expected_label)
 
     # Need to update so that it checks by row and by service
     def open_test_case_detail(self, row):
@@ -490,3 +471,6 @@ class TestCaseTablePage(QWidget):
             for child in precondition_widget.findChildren(QPushButton):
                 if child.text() == "Run Testcase":
                     child.setEnabled(False)
+
+    def home_button_clicked(self):
+        self.main_window.show_homepage()

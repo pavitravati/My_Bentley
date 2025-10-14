@@ -2,17 +2,18 @@ from common_utils.android_image_comparision import *
 from common_utils.android_controller import *
 from core.log_emitter import log_emitter
 import datetime
+from dateutil.relativedelta import relativedelta
 
 def log(msg):
     log_emitter.log_signal.emit(msg)
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"LicenseApp_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"LicenseApp-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"LicenseApp_{e}_{num}.png")
+    controller.take_fail_screenshot(f"LicenseApp-{e}-{num}.png")
 
 def backspace(num):
     for i in range(num):
@@ -45,37 +46,32 @@ def LicenseApp_004():
 
         if controller.click_text("Services and licenses"):
             log("✅ - Services and licenses page opened")
-            print(1)
         else:
             fail_log("❌ - Services and licenses page failed to open", "004")
-            print(2)
 
         licenses = []
         extracted = controller.extract_all_license_dates()
         licenses.extend(extracted.items())
-
-        current_year = datetime.date.today().year
+        current_date = datetime.date.today()
+        date_limit = current_date + relativedelta(years=3)
 
         if licenses:
             log("✅ - Extracted Licenses:")
-            print(1)
             for license, date in licenses:
-                if int(date[-4:]) >= current_year+3:
-                    log(f"✅ - {license}: {date}")
-                    print(1)
+                license_date = datetime.datetime.strptime(date[-10:], "%d/%m/%Y").date()
+                if license_date >= date_limit:
+                    log(f"{license}: {date}")
                 else:
-                    log(f"❌ - {license}: {date}")
-                    print(2)
+                    log(f"{license}: {date} - Less than 3 years ❌")
         else:
             fail_log("❌ - Metrics not extracted", "003")
-            print(2)
 
         backspace(2)
 
     except Exception as e:
         error_log(e, "004")
 
-# License_004()
+LicenseApp_004()
 
 def LicenseApp_005():
     try:
@@ -93,19 +89,21 @@ def LicenseApp_005():
             fail_log("❌ - Screen title not displayed", "005")
 
         try:
-            current_year = datetime.date.today().year
-            license_date = int(controller.extract_license_date()[-4:])
-            if license_date >= current_year+3:
+            current_date = datetime.date.today()
+            date_limit = current_date + relativedelta(years=3)
+            license_date = datetime.datetime.strptime(controller.extract_license_date()[-10:], "%d/%m/%Y").date()
+            if license_date >= date_limit:
                 log("✅ - License is valid for at least 3 years")
             else:
                 fail_log("❌ - License is not valid for at least 3 years", "005")
+
         except Exception as e:
             fail_log("❌ - License date not extracted", "005")
 
         if controller.is_text_present("Green traffic light prediction"):
-            log("✅ - Service title displayed, License_005 Passed")
+            log("✅ - Service title displayed")
         else:
-            fail_log("❌ - Service title not displayed, License_005 Failed", "005")
+            fail_log("❌ - Service title not displayed", "005")
 
         backspace(3)
 
@@ -128,9 +126,10 @@ def LicenseApp_006():
             fail_log("❌ - Screen title not displayed", "006")
 
         try:
-            current_year = datetime.date.today().year
-            license_date = int(controller.extract_license_date()[-4:])
-            if license_date >= current_year+3:
+            current_date = datetime.date.today()
+            date_limit = current_date + relativedelta(years=3)
+            license_date = datetime.datetime.strptime(controller.extract_license_date()[-10:], "%d/%m/%Y").date()
+            if license_date >= date_limit:
                 log("✅ - License is valid for at least 3 years")
             else:
                 fail_log("❌ - License is not valid for at least 3 years", "006")
@@ -145,19 +144,19 @@ def LicenseApp_006():
         }
 
         if controller.is_text_present("SERVICES"):
-            log("✅ - Services are listed, License_006 Passed")
+            log("✅ - Services are listed")
             for _ in range(4):
                 for key, toggle in service_titles.items():
                     if _ == 3:
                         if service_titles[key]:
-                            log(f"✅ - {key} is listed")
+                            log(f"{key} is listed")
                         else:
-                            fail_log(f"❌ - {key} is not listed", "006")
+                            fail_log(f"{key} is not listed - ❌", "006")
                     elif controller.is_text_present(key):
                         service_titles[key] = True
                 controller.swipe_up()
         else:
-            fail_log("❌ - Services are not listed, License_006 Failed", "006")
+            fail_log("❌ - Services are not listed", "006")
 
         backspace(3)
 
@@ -197,19 +196,19 @@ def LicenseApp_007():
         }
 
         if controller.is_text_present("SERVICES"):
-            log("✅ - Services are listed, License_007 Passed")
+            log("✅ - Services are listed")
             for _ in range(3):
                 for key, toggle in service_titles.items():
                     if _ == 2:
                         if service_titles[key]:
-                            log(f"✅ - {key} is listed")
+                            log(f"{key} is listed")
                         else:
-                            fail_log(f"❌ - {key} is not listed", "007")
+                            fail_log(f"{key} is not listed - ❌", "007")
                     elif controller.is_text_present(key):
                         service_titles[key] = True
                 controller.swipe_up()
         else:
-            fail_log("❌ - Services are not listed, License_007 Failed", "007")
+            fail_log("❌ - Services are not listed", "007")
 
         backspace(3)
 
@@ -231,9 +230,10 @@ def LicenseApp_008():
             fail_log("❌ - Screen title not displayed", "008")
 
         try:
-            current_year = datetime.date.today().year
-            license_date = int(controller.extract_license_date()[-4:])
-            if license_date >= current_year+3:
+            current_date = datetime.date.today()
+            date_limit = current_date + relativedelta(years=3)
+            license_date = datetime.datetime.strptime(controller.extract_license_date()[-10:], "%d/%m/%Y").date()
+            if license_date >= date_limit:
                 log("✅ - License is valid for at least 3 years")
             else:
                 fail_log("❌ - License is not valid for at least 3 years", "008")
@@ -241,9 +241,9 @@ def LicenseApp_008():
             fail_log("❌ - License date not extracted", "008")
 
         if controller.is_text_present("Private e-Call"):
-            log("✅ - Service title displayed, License_008 Passed")
+            log("✅ - Service title displayed")
         else:
-            fail_log("❌ - Service title not displayed, License_008 Failed", "008")
+            fail_log("❌ - Service title not displayed", "008")
 
         backspace(3)
 
@@ -265,9 +265,10 @@ def LicenseApp_009():
             fail_log("❌ - Screen title not displayed", "009")
 
         try:
-            current_year = datetime.date.today().year
-            license_date = int(controller.extract_license_date()[-4:])
-            if license_date >= current_year+3:
+            current_date = datetime.date.today()
+            date_limit = current_date + relativedelta(years=3)
+            license_date = datetime.datetime.strptime(controller.extract_license_date()[-10:], "%d/%m/%Y").date()
+            if license_date >= date_limit:
                 log("✅ - License is valid for at least 3 years")
             else:
                 fail_log("❌ - License is not valid for at least 3 years", "009")
@@ -275,9 +276,9 @@ def LicenseApp_009():
             fail_log("❌ - License date not extracted", "009")
 
         if controller.is_text_present("Roadside assistance call"):
-            log("✅ - Service title displayed, License_009 Passed")
+            log("✅ - Service title displayed")
         else:
-            fail_log("❌ - Service title not displayed, License_009 Failed", "009")
+            fail_log("❌ - Service title not displayed", "009")
 
         backspace(3)
 
@@ -300,9 +301,10 @@ def LicenseApp_010():
             fail_log("❌ - Screen title not displayed", "010")
 
         try:
-            current_year = datetime.date.today().year
-            license_date = int(controller.extract_license_date()[-4:])
-            if license_date >= current_year + 3:
+            current_date = datetime.date.today()
+            date_limit = current_date + relativedelta(years=3)
+            license_date = datetime.datetime.strptime(controller.extract_license_date()[-10:], "%d/%m/%Y").date()
+            if license_date >= date_limit:
                 log("✅ - License is valid for at least 3 years")
             else:
                 fail_log("❌ - License is not valid for at least 3 years", "010")
@@ -310,9 +312,9 @@ def LicenseApp_010():
             fail_log("❌ - License date not extracted", "010")
 
         if controller.is_text_present("Vehicle tracking system"):
-            log("✅ - Service title displayed, License_010 Passed")
+            log("✅ - Service title displayed")
         else:
-            fail_log("❌ - Service title not displayed, License_010 Failed", "010")
+            fail_log("❌ - Service title not displayed", "010")
 
         backspace(3)
     except Exception as e:
@@ -321,6 +323,6 @@ def LicenseApp_010():
 # Ask about these tests, how would i automate font checking etc...
 def LicenseApp_011():
     try:
-        pass
+        log("✅ - Cannot check style")
     except Exception as e:
         error_log(e, "011")

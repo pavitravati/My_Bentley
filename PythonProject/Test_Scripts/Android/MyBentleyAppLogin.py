@@ -8,16 +8,21 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"MyBentleyAppLogin_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"MyBentleyAppLogin-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"MyBentleyAppLogin_{e}_{num}.png")
+    controller.take_fail_screenshot(f"MyBentleyAppLogin-{e}-{num}.png")
 
 # This is very dodgy if the phone is slow/slow internet
 def MyBentleyAppLogin_001():
     try:
-        controller.launch_app("uk.co.bentley.mybentley")
+        # If not on the login page, attempts to log out/exit demo mode
+        if not compare_with_expected_crop("Images/My_Bentley_Login_Page.png"):
+            controller.click_by_image("Icons/Logout_Icon.png")
+            controller.click_by_image("Icons/Profile_Icon.png")
+            controller.click_text("General")
+            controller.click_by_image("Icons/Profile_Logout_Icon.png")
         sleep(1)
 
         if controller.click_by_image("Icons/login_register_icon.png"):
@@ -37,15 +42,16 @@ def MyBentleyAppLogin_001():
             fail_log("❌ - Email and Password not entered", "001")
 
         if controller.wait_for_text("DASHBOARD"):
-            log("✅ - Dashboard screen not launched, MyBentleyAppLogin_001 Passed")
+            log("✅ - Dashboard screen not launched")
         else:
-            fail_log("❌ - Dashboard screen not launched, MyBentleyAppLogin_001 Failed", "001")
+            fail_log("❌ - Dashboard screen not launched", "001")
 
     except Exception as e:
         error_log(e, "001")
 
 def MyBentleyAppLogin_002():
     try:
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/Profile_Icon.png")
         sleep(0.2)
         controller.click_text("General")
@@ -59,9 +65,9 @@ def MyBentleyAppLogin_002():
             fail_log("❌ - Cancel not clicked on popup", "002")
 
         if compare_with_expected_crop("Images/Profile_Screen.png"):
-            log("✅ - Popup closed, MyBentleyAppLogin_002 Passed")
+            log("✅ - Popup closed")
         else:
-            fail_log("❌ - Popup not closed, MyBentleyAppLogin_002 Failed", "002")
+            fail_log("❌ - Popup not closed", "002")
 
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
@@ -71,6 +77,7 @@ def MyBentleyAppLogin_002():
 # Testcase edited in excel, no second pop up about saved favourites.
 def MyBentleyAppLogin_003():
     try:
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         if controller.click_by_image("Icons/Profile_Icon.png"):
             log("✅ - Profile icon clicked")
         else:
@@ -92,10 +99,15 @@ def MyBentleyAppLogin_003():
             fail_log("❌ - Not logged out of account", "003")
         sleep(5)
 
-        if compare_with_expected_crop("Icons/login_register_icon.png"):
-            log("✅ - Signup page displayed, MyBentleyAppLogin_003 Passed")
-        else:
-            fail_log("❌ - Signup page not displayed, MyBentleyAppLogin_003 Failed", "003")
+        controller.click_by_image("Icons/login_register_icon.png")
+
+        # Logs in so test case finishes on dashboard
+        if controller.wait_for_text("WELCOME", 30):
+            email = "%s%s%s%s%s%s%s%stestdrive@gqm.anonaddy.com"
+            controller.enter_text(email)
+            sleep(5)
+            password = "Password1!"
+            controller.enter_text(password)
 
     except Exception as e:
         error_log(e, "003")

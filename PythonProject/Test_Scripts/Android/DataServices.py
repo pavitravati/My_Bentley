@@ -8,12 +8,13 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"DataServices_{msg}_{num}.png")
+    controller.take_fail_screenshot(f"DataServices-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"DataServices_{e}_{num}.png")
+    controller.take_fail_screenshot(f"DataServices-{e}-{num}.png")
 
+# Make sure this works using better wifi as it struggles on bad wifi
 def DataServices_001():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -23,6 +24,7 @@ def DataServices_001():
         controller.click_text("DATA SERVICES")
         if controller.click_text("VISIT STORE"):
             log("✅ - Bentley Support Centre web launched")
+            controller.wait_for_text_and_click("AGREE TO ALL")
         else:
             fail_log("❌ - Bentley Support Centre web not launched", "001")
         sleep(5)
@@ -34,6 +36,10 @@ def DataServices_001():
             log("✅ - Data Service Provider web launched")
         else:
             fail_log("❌ - Data Service Provider web not launched", "001")
+
+        controller.press_home()
+        controller.launch_app("uk.co.bentley.mybentley")
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "001")

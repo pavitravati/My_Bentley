@@ -366,6 +366,11 @@ class DeviceController:
             if license_value.exists:
                 licenses[label] = f"{license_value.get_text()}"
 
+            label = "Vehicle tracking system"
+            license_value = self.d(text=label).sibling(className="android.widget.TextView", instance=1)
+            if license_value.exists:
+                licenses[label] = f"{license_value.get_text()}"
+
         except Exception as e:
             print(f"❌ Error while extracting 'Last updated': {e}")
 
@@ -619,6 +624,35 @@ class DeviceController:
                         service_management.append(service)
                 self.swipe_up()
         except Exception as e:
-            print("❌ Error while extracting service management details: {e}")
+            print(f"❌ Error while extracting service management details: {e}")
 
         return service_management
+
+    def extract_navigation_vehicle(self):
+        nav_vehicle = {}
+        try:
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_fragment_vehicle_poi_detail_card_title").exists:
+                Model_name = self.d(resourceId="uk.co.bentley.mybentley:id/textView_fragment_vehicle_poi_detail_card_title").get_text()
+                nav_vehicle["model name"] = Model_name
+
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_fragment_vehicle_poi_detail_card_address").exists:
+                vehicle_address = self.d(resourceId="uk.co.bentley.mybentley:id/textView_fragment_vehicle_poi_detail_card_address").get_text()
+                nav_vehicle["vehicle address"] = vehicle_address
+
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_fragment_vehicle_poi_detail_card_distance_to_vehicle").exists:
+                distance = self.d(resourceId="uk.co.bentley.mybentley:id/textView_fragment_vehicle_poi_detail_card_distance_to_vehicle").get_text()
+                nav_vehicle["distance to vehicle"] = distance
+
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_combustion_range_value_vsr_combined_range_bottom_sheet").exists:
+                fuel_range = self.d(resourceId="uk.co.bentley.mybentley:id/textView_combustion_range_value_vsr_combined_range_bottom_sheet").get_text()
+                nav_vehicle["fuel range"] = fuel_range
+
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_electric_range_value_vsr_combined_range_bottom_sheet").exists:
+                elec_range = self.d(resourceId="uk.co.bentley.mybentley:id/textView_electric_range_value_vsr_combined_range_bottom_sheet").get_text()
+                nav_vehicle["electric range"] = elec_range
+
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_fragment_vehicle_poi_detail_card_parking_time").exists:
+                parked_for = self.d(resourceId="uk.co.bentley.mybentley:id/textView_fragment_vehicle_poi_detail_card_parking_time").get_text()
+                nav_vehicle["parked for"] = parked_for
+        except Exception as e:
+            print(f"❌ Error while extracting vehicle details: {e}")

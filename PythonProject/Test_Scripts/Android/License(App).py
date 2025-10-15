@@ -1,5 +1,4 @@
 from common_utils.android_image_comparision import *
-from common_utils.android_controller import *
 from core.log_emitter import log_emitter
 import datetime
 from dateutil.relativedelta import relativedelta

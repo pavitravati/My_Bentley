@@ -33,7 +33,7 @@ def Remote_Lock_Unlock001():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         if (compare_with_expected_crop("Icons/Remote_Lock.png")):
-            log("✅ -  button visible")
+            log("✅ - button visible")
         else:
             fail_log("❌ - Lock button not visible", "001")
 

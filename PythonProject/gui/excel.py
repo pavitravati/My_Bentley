@@ -1,7 +1,7 @@
 import pandas as pd
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
-import re
+import sys
 import os
 
 services = ['DemoMode', 'Customer_Enrollment', 'App_Registration_Pages-IDK', 'Add_VIN', 'MyBentleyAppLogin',
@@ -10,9 +10,16 @@ services = ['DemoMode', 'Customer_Enrollment', 'App_Registration_Pages-IDK', 'Ad
             'DataServices', 'TheftAlarm', 'Audials(App)', 'CarFinder', 'NavCompanion', 'Notifications',
             'Profiles', 'TextStrings', 'PrivacyMode(App)', 'RemoteParkAssist', 'VehicleTrackingSystem']
 
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except AttributeError:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
 def load_data():
     # Cleans the data so it can be easily added
-    source_path = os.path.join(os.getcwd(), "gui\\Android_MY26_BY636_SQ_Remote_Services_EUR_Full - test.xlsx")
+    source_path = resource_path("gui/Android_MY26_BY636_SQ_Remote_Services_EUR_Full - test.xlsx")
     workbook = load_workbook(source_path)
 
     skip_columns = ["A", "B", "D", "E", "G"]

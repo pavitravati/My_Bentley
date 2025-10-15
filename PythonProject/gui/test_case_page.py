@@ -6,16 +6,15 @@ from PySide6.QtGui import QFont, QPixmap, QColor, QBrush, QIcon
 from PySide6.QtCore import Qt, QTimer, Slot, QThread, QSize
 from excel import load_data
 from core.log_emitter import log_emitter
-from gui.home_page import HomePage
 from utils import make_item
 from widgets import PaddingDelegate
 from test_worker import TestRunnerWorker
 from error_page import ErrorPage
 from metric_page import MetricPage
 from service_report import ServiceReport
-from pathlib import Path
 import os
 import glob
+from excel import resource_path
 from PySide6.QtCore import QTime
 
 testcase_map = load_data()
@@ -39,8 +38,10 @@ class TestCaseTablePage(QWidget):
         top_layout.setContentsMargins(0, 40, 0, 20)
 
         home_btn = QPushButton()
-        homeimg = Path(__file__).parent / "images" / "homebtn.png"
-        home_btn.setIcon(QIcon(str(homeimg)))
+        # homeimg = Path(__file__).parent / "images" / "homebtn.png"
+        # home_btn.setIcon(QIcon(str(homeimg)))
+        img_path = resource_path("gui/images/homebtn.png")
+        home_btn.setIcon(QIcon(img_path))
         home_btn.setCursor(Qt.PointingHandCursor)
         home_btn.setIconSize(QSize(40, 40))
         home_btn.setIconSize(QSize(50, 50))
@@ -72,8 +73,10 @@ class TestCaseTablePage(QWidget):
 
         # Creates logo item and adds to the horizontal layout
         logo = QLabel()
-        img_path = Path(__file__).parent / "images" / "bentleylogo.png"
-        pixmap = QPixmap(str(img_path))
+        # img_path = Path(__file__).parent / "images" / "bentleylogo.png"
+        # pixmap = QPixmap(str(img_path))
+        img_path = resource_path("gui/images/bentleylogo.png")
+        pixmap = QPixmap(img_path)
         logo.setPixmap(pixmap)
         logo.setScaledContents(True)
         logo.setMaximumSize(162, 60)

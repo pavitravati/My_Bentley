@@ -1,7 +1,7 @@
-from time import sleep
 from common_utils.android_image_comparision import *
-from common_utils.android_controller import *
 from core.log_emitter import log_emitter
+import datetime
+from dateutil.relativedelta import relativedelta
 
 def log(msg):
     log_emitter.log_signal.emit(msg)
@@ -16,22 +16,60 @@ def error_log(e, num):
 
 def VehicleTrackingSystem_001():
     try:
-        pass
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        controller.click_by_image("Icons/info_btn.png")
+        controller.click_text("Services and licenses")
+
+        extracted = controller.extract_all_license_dates()
+        current_date = datetime.date.today()
+        date_limit = current_date + relativedelta(years=3)
+
+        if extracted['Vehicle tracking system']:
+            log("✅ - Licenses extracted")
+            license_date = datetime.datetime.strptime(extracted['Vehicle tracking system'][-10:], "%d/%m/%Y").date()
+            if license_date >= date_limit:
+                log("✅ - Vehicle tracking system license has a valid date")
+            else:
+                fail_log("❌ - Vehicle tracking system license does not have a valid date", "001")
+        else:
+            fail_log("❌ - Failed to extract licenses", "001")
+
+        controller.click_by_image("Icons/back_btn.png")
+        controller.click_by_image("Icons/back_btn.png")
+
     except Exception as e:
         error_log(e, "001")
 
 def VehicleTrackingSystem_002():
     try:
-        pass
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        controller.click_by_image("Icons/info_btn.png")
+        controller.click_text("Services and licenses")
+        extracted = controller.extract_all_license_dates()
+
+        if extracted['Vehicle tracking system']:
+            log("✅ - Licenses extracted")
+            if extracted['Vehicle tracking system']:
+                fail_log("❌ - Vehicle tracking system license is displayed", "002")
+            else:
+                log("✅ - Vehicle tracking system license is not displayed")
+        else:
+            fail_log("❌ - Failed to extract licenses", "002")
+
+        controller.click_by_image("Icons/back_btn.png")
+        controller.click_by_image("Icons/back_btn.png")
+
     except Exception as e:
         error_log(e, "002")
 
+# Cannot find the VTS under car remote
 def VehicleTrackingSystem_003():
     try:
         pass
     except Exception as e:
         error_log(e, "003")
 
+# Cannot find the VTS under car remote
 def VehicleTrackingSystem_004():
     try:
         pass

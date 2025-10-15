@@ -24,6 +24,7 @@ def DemoMode_001():
             controller.click_by_image("Icons/Profile_Icon.png")
             controller.click_text("General")
             controller.click_by_image("Icons/Profile_Logout_Icon.png")
+            controller.click_text("Log out")
         sleep(1)
 
         if controller.click_text("DISCOVER MY BENTLEY"):

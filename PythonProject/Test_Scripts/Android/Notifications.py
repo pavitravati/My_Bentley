@@ -1,6 +1,5 @@
-from time import sleep
 from common_utils.android_image_comparision import *
-from common_utils.android_controller import *
+
 v
 from core.log_emitter import log_emitter
 

@@ -81,7 +81,7 @@ class ServiceReport(QWidget):
             btn = QToolButton()
             btn.setText(case['Test Case Description'])
             btn.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-            btn.setFixedWidth(320)  # 👈 keep same as before
+            btn.setFixedWidth(320)
             btn.setFixedHeight(45)
             btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Minimum)
 
@@ -93,8 +93,8 @@ class ServiceReport(QWidget):
             row_logs = logs[row + 1]
             logs_combined = "\n".join(row_logs)
             btn.clicked.connect(
-                lambda checked, s=service_title, c=case, l=logs_combined, r=row + 1:
-                self.on_test_clicked(s, c, l, r)
+                lambda checked, c=case, l=logs_combined, r=row + 1:
+                self.on_test_clicked(c, l, r)
             )
             testcase_layout.addWidget(btn)
 

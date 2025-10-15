@@ -1,12 +1,11 @@
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QTableWidget, QLabel, QCheckBox, QPushButton, QHBoxLayout,
-    QHeaderView, QTableWidgetItem, QFrame, QLineEdit, QSizePolicy
+    QHeaderView, QTableWidgetItem, QFrame, QLineEdit, QSizePolicy, QApplication
 )
 from PySide6.QtGui import QFont, QPixmap, QCursor
 from excel import services
 from PySide6.QtCore import Qt, Signal
-from utils import make_item
-from pathlib import Path
+from excel import resource_path
 
 class ClickableLabel(QLabel):
     clicked = Signal()
@@ -21,6 +20,12 @@ class HomePage(QWidget):
     def __init__(self, main_window, parent=None):
         super().__init__(parent)
         self.main_window = main_window
+        QApplication.primaryScreen().size().width()
+        if QApplication.primaryScreen().size().width() > 1500:
+            self.screen = 'Monitor'
+        else:
+            self.screen = 'Laptop'
+
         # Adds a vertical layout for the window and sets the padding around it
         layout = QVBoxLayout(self)
         layout.setContentsMargins(30, 30, 30, 30)
@@ -40,8 +45,10 @@ class HomePage(QWidget):
 
         # Creates logo item and adds to the horizontal layout
         logo = QLabel()
-        img_path = Path(__file__).parent / "images" / "bentleylogo.png"
-        pixmap = QPixmap(str(img_path))
+        # img_path = Path(__file__).parent / "images" / "bentleylogo.png"
+        # pixmap = QPixmap(str(img_path))
+        img_path = resource_path("gui/images/bentleylogo.png")
+        pixmap = QPixmap(img_path)
         logo.setPixmap(pixmap)
         logo.setScaledContents(True)
         logo.setMaximumSize(162, 60)
@@ -52,8 +59,12 @@ class HomePage(QWidget):
         layout.addLayout(top_layout)
 
         main_container_widget = QWidget()
-        main_container_widget.setFixedHeight(650)
-        main_container_widget.setFixedWidth(1500)
+        if self.screen == 'Monitor':
+            main_container_widget.setFixedHeight(650)
+            main_container_widget.setFixedWidth(1500)
+        else:
+            main_container_widget.setFixedWidth(950)
+            main_container_widget.setFixedHeight(410)
         main_container = QHBoxLayout(main_container_widget)
         main_container_widget.setObjectName("mainContainer")
         main_container_widget.setStyleSheet("""
@@ -73,13 +84,17 @@ class HomePage(QWidget):
                 background-color: #f3f6f5;
             }
         """)
-        left_side.setContentsMargins(40, 40, 0, 40)
+        left_side.setContentsMargins(40, 20, 20, 40)
 
 
         testcase_table = QTableWidget()
         testcase_table.setColumnCount(2)
-        testcase_table.setColumnWidth(0, 300)
-        testcase_table.setColumnWidth(1, 75)
+        if self.screen == 'Monitor':
+            testcase_table.setColumnWidth(0, 300)
+            testcase_table.setColumnWidth(1, 75)
+        else:
+            testcase_table.setColumnWidth(0, 190)
+            testcase_table.setColumnWidth(1, 75)
         testcase_table.setHorizontalHeaderLabels(["Service", "Run"])
         header = testcase_table.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.Fixed)
@@ -88,11 +103,15 @@ class HomePage(QWidget):
         testcase_table.setRowCount(len(services))
         testcase_table.setWordWrap(True)
         testcase_table.setEditTriggers(QTableWidget.NoEditTriggers)
-        testcase_table.setMaximumWidth(395)  # example fixed width
+        if self.screen == 'Monitor':
+            testcase_table.setFixedWidth(395)
+            testcase_table.setFixedHeight(560)
+        else:
+            testcase_table.setFixedWidth(280)
+            testcase_table.setFixedHeight(354)
         testcase_table.setStyleSheet("""
                     QTableWidget {
                         background-color: white;
-                        border: 2px solid #394d45;
                         gridline-color: #dcdcdc;
                         font-size: 14px;
                         color: #25312c;
@@ -173,14 +192,20 @@ class HomePage(QWidget):
         main_container.addWidget(left_widget)
 
         middle_side = QVBoxLayout()
-        middle_side.setContentsMargins(30, 15, 75, 15)
+        if self.screen == 'Monitor':
+            middle_side.setContentsMargins(30, 15, 75, 15)
+        else:
+            middle_side.setContentsMargins(35, 15, 15, 15)
         middle_container = QWidget()
         middle_container.setLayout(middle_side)
         middle_container.setStyleSheet("""
             background: transparent;
         """)
         credentials_frame = QFrame()
-        credentials_frame.setFixedSize(400, 560)
+        if self.screen == 'Monitor':
+            credentials_frame.setFixedSize(400, 560)
+        else:
+            credentials_frame.setFixedSize(265, 354)
         credentials_frame.setStyleSheet("""
                     QFrame {
                         border: 2px solid #394d45;
@@ -197,6 +222,7 @@ class HomePage(QWidget):
                         color: white;
                         font-size: 16px;
                         font-weight: bold;
+                        margin-top: 2px;
                     }
                     QPushButton:hover {
                         background-color: #25312c;
@@ -210,7 +236,6 @@ class HomePage(QWidget):
                         color: #25312c;
                         font-size: 14px;
                         height: 35px;
-                        margin-top: 20px;
                     }
                     QLineEdit:focus {
                         border: 2px solid #51645c;
@@ -232,21 +257,25 @@ class HomePage(QWidget):
 
         self.name_input = QLineEdit()
         self.name_input.setPlaceholderText("Name")
+        self.name_input.setStyleSheet("margin-bottom: 5px;")
 
         self.email_input = QLineEdit()
         self.email_input.setPlaceholderText("Email")
+        self.email_input.setStyleSheet("margin-bottom: 5px;")
 
         self.password_input = QLineEdit()
         self.password_input.setPlaceholderText("Password")
+        self.password_input.setStyleSheet("margin-bottom: 5px;")
 
         self.pin_input = QLineEdit()
         self.pin_input.setPlaceholderText("PIN")
+        self.pin_input.setStyleSheet("margin-bottom: 5px;")
 
         form_layout.addWidget(self.name_input)
         form_layout.addWidget(self.email_input)
         form_layout.addWidget(self.password_input)
         form_layout.addWidget(self.pin_input)
-        form_layout.setContentsMargins(30, 30, 30, 30)  # 👈 Adds even padding inside the frame
+        form_layout.setContentsMargins(30, 30, 30, 30)
 
         platform_layout = QHBoxLayout()
         platform_layout.setSpacing(10)
@@ -256,7 +285,7 @@ class HomePage(QWidget):
         self.ios_btn = QPushButton("iOS")
 
         for btn in (self.android_btn, self.ios_btn):
-            btn.setFixedSize(120, 35)
+            btn.setFixedSize(140, 45) if self.screen == 'Monitor' else btn.setFixedSize(85, 30)
             btn.setCursor(Qt.PointingHandCursor)
             btn.setCheckable(True)
             btn.setStyleSheet("""
@@ -267,7 +296,6 @@ class HomePage(QWidget):
                     color: #394d45;
                     font-weight: bold;
                     font-size: 12px;
-                    
                 }
                 QPushButton:checked {
                     background-color: #394d45;
@@ -290,7 +318,7 @@ class HomePage(QWidget):
         main_container.addWidget(middle_container)
 
         right_side = QVBoxLayout()
-        right_side.setContentsMargins(30, 15, 30, 15)
+        right_side.setContentsMargins(30, 15 if self.screen == 'Monitor' else 12, 30, 15)
         right_container = QWidget()
         right_container.setLayout(right_side)
         right_container.setStyleSheet("""
@@ -298,7 +326,10 @@ class HomePage(QWidget):
         """)
 
         run_frame = QFrame()
-        run_frame.setFixedSize(400, 130)
+        if self.screen == 'Monitor':
+            run_frame.setFixedSize(400, 130)
+        else:
+            run_frame.setFixedSize(253, 82)
         run_frame.setStyleSheet("""
             QFrame {
                 border: 2px solid #394d45;
@@ -325,7 +356,7 @@ class HomePage(QWidget):
         run_btn = QPushButton("Run")
         run_btn.setCursor(Qt.PointingHandCursor)
 
-        btn_layout = QVBoxLayout()   # or QHBoxLayout if you want them side by side
+        btn_layout = QVBoxLayout()
         btn_layout.addWidget(run_btn)
         btn_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         btn_layout.setSpacing(30)
@@ -334,7 +365,10 @@ class HomePage(QWidget):
         run_frame.setLayout(btn_layout)
 
         result_frame = QFrame()
-        result_frame.setFixedSize(400, 400)
+        if self.screen == 'Monitor':
+            result_frame.setFixedSize(400, 400)
+        else:
+            result_frame.setFixedSize(253, 270)
         result_frame.setStyleSheet("""
                     QFrame {
                         border: 2px solid #394d45;
@@ -351,9 +385,6 @@ class HomePage(QWidget):
                         border-radius: 10px;
                         padding: 6px 10px;
                         color: white;
-                    }
-                    #android_btn {
-                        margin: 100px
                     }
                     QPushButton:hover {
                         background-color: #25312c;
@@ -374,6 +405,9 @@ class HomePage(QWidget):
         result_btn.setCursor(Qt.PointingHandCursor)
         export_btn = QPushButton("Export")
         export_btn.setCursor(Qt.PointingHandCursor)
+        if self.screen == 'Laptop':
+            result_btn.setFixedHeight(30)
+            export_btn.setFixedHeight(30)
 
         result_btn_layout = QVBoxLayout()
         result_btn_layout.addWidget(tests_run)
@@ -382,7 +416,7 @@ class HomePage(QWidget):
         result_btn_layout.addWidget(result_btn)
         result_btn_layout.addWidget(export_btn)
         result_btn_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        result_btn_layout.setSpacing(30)
+        result_btn_layout.setSpacing(30 if self.screen == 'Monitor' else 15)
         result_btn_layout.setContentsMargins(10, 10, 10, 10)
         result_frame.setLayout(result_btn_layout)
 

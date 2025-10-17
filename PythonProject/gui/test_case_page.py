@@ -1,25 +1,33 @@
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QTableWidget, QLabel, QSizePolicy,
-    QCheckBox, QPushButton, QHBoxLayout, QTextEdit
+    QCheckBox, QPushButton, QHBoxLayout, QApplication, QHeaderView
 )
-from PySide6.QtGui import QFont, QPixmap
-from PySide6.QtCore import Qt, QTimer, QObject, Signal, Slot, QThread
+from PySide6.QtGui import QFont, QPixmap, QColor, QBrush, QIcon
+from PySide6.QtCore import Qt, QTimer, Slot, QThread, QSize
 from excel import load_data
-from Test_Scripts.Android.all_tests import *
 from core.log_emitter import log_emitter
-from Test_Scripts.Android.RemoteLockTemp import Remote_Lock_Unlock001
 from utils import make_item
 from widgets import PaddingDelegate
 from test_worker import TestRunnerWorker
+from error_page import ErrorPage
+from metric_page import MetricPage
+from service_report import ServiceReport
+import os
+import glob
+from excel import resource_path
+from PySide6.QtCore import QTime
 
 testcase_map = load_data()
 
 class TestCaseTablePage(QWidget):
-    def __init__(self, service="DemoMode", parent=None):
+    def __init__(self, main_window, service="DemoMode", parent=None):
         super().__init__(parent)
         self.service = service
-        self.log_history = []
+        self.log_history = {}
+        self.current_row = None
         log_emitter.log_signal.connect(self.handle_log)
+        self.test_start_times = {}
+        self.main_window = main_window
 
         # Adds a vertical layout for the window and sets the padding around it
         layout = QVBoxLayout(self)
@@ -29,10 +37,35 @@ class TestCaseTablePage(QWidget):
         top_layout = QHBoxLayout()
         top_layout.setContentsMargins(0, 40, 0, 20)
 
+        home_btn = QPushButton()
+        # homeimg = Path(__file__).parent / "images" / "homebtn.png"
+        # home_btn.setIcon(QIcon(str(homeimg)))
+        img_path = resource_path("gui/images/homebtn.png")
+        home_btn.setIcon(QIcon(img_path))
+        home_btn.setCursor(Qt.PointingHandCursor)
+        home_btn.setIconSize(QSize(40, 40))
+        home_btn.setIconSize(QSize(50, 50))
+        home_btn.clicked.connect(self.home_button_clicked)
+        home_btn.setStyleSheet("""
+            QPushButton {
+                border: none;
+                background: #394d45;
+                border-radius: 20px;
+                width: 70px;
+                height: 70px;
+                margin-left: 20px
+            }
+            QPushButton:hover {
+                background-color: #323c38;
+                border-radius: 20px;
+            }
+        """)
+        top_layout.addWidget(home_btn)
+
         # Creates title and adds to the horizontal layout
         title = QLabel(service)
         title.setFont(QFont("Arial", 25, QFont.Bold))
-        title.setStyleSheet("margin-left: 20px; margin-bottom: 20px;")
+        title.setStyleSheet("margin-left: 20px; margin-bottom: 20px; padding-top: 25px;")
         top_layout.addWidget(title)
 
         # Adds a space between the title and logo
@@ -40,9 +73,13 @@ class TestCaseTablePage(QWidget):
 
         # Creates logo item and adds to the horizontal layout
         logo = QLabel()
-        logo.setPixmap(QPixmap('images/bentleylogo.png'))
+        # img_path = Path(__file__).parent / "images" / "bentleylogo.png"
+        # pixmap = QPixmap(str(img_path))
+        img_path = resource_path("gui/images/bentleylogo.png")
+        pixmap = QPixmap(img_path)
+        logo.setPixmap(pixmap)
         logo.setScaledContents(True)
-        logo.setMaximumSize(135, 50)
+        logo.setMaximumSize(162, 60)
         logo.setStyleSheet("margin-right: 20px;")
         top_layout.addWidget(logo)
 
@@ -51,7 +88,23 @@ class TestCaseTablePage(QWidget):
 
         # Creates the button that will begin the automated test and adds to main layout
         main_button = QPushButton("Begin Automated Test")
-        main_button.setStyleSheet("margin-bottom: 20px; margin-top: 20px; font-size: 16px; height: 30px; background-color: #394d45; color: white;")
+        main_button.setStyleSheet("""
+            QPushButton {
+                margin-top: 20px;
+                margin-bottom: 20px;
+                font-size: 16px;
+                height: 30px;
+                background-color: #394d45;
+                color: white;
+            }
+            QPushButton:disabled {
+                background-color: #859990; 
+                color: #cccccc;      
+            }
+            QPushButton:hover {
+                background-color: #323c38;
+            }
+        """)
         main_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         main_button.setCursor(Qt.PointingHandCursor)
         main_button.clicked.connect(self.main_button_clicked)
@@ -59,8 +112,9 @@ class TestCaseTablePage(QWidget):
 
         # Create the table with 8 columns and the rows needed for all test cases
         self.table = QTableWidget()
-        self.table.setColumnCount(8)
-        self.table.setHorizontalHeaderLabels(["Region", "Test Case Description", "Pre-Condition", "Action", "Expected Result", "Duration", "Result", "Error"])
+        self.table.setColumnCount(7)
+        self.table.setHorizontalHeaderLabels(["Test Case Description", "Pre-Condition", "Action", "Expected Result", "Duration", "Result", "Details"])
+        self.table.verticalHeader().setVisible(False)
         self.table.setRowCount(len(testcase_map[service]))
         self.table.verticalHeader().setDefaultSectionSize(100)
         self.table.setWordWrap(True)
@@ -173,25 +227,24 @@ class TestCaseTablePage(QWidget):
         # Loops through the table adding items to the correct cells
         for row, case in enumerate(testcase_map[service]):
             # In column 0,1,3,4 the data from the test case in Region column is added to that column in the table
-            self.table.setItem(row, 0, make_item(case["Region"]))
-            self.table.setItem(row, 1, make_item(case["Test Case Description"]))
+            self.table.setItem(row, 0, make_item(case["Test Case Description"]))
 
             # Adds the checkbox and buttons to the precondition column
             precondition_widget = create_precondition_widget(case, row)
-            self.table.setCellWidget(row, 2, precondition_widget)
+            self.table.setCellWidget(row, 1, precondition_widget)
 
             action_string = "\n".join(str(task) for task in case["Action"])
-            self.table.setItem(row, 3, make_item(action_string))
+            self.table.setItem(row, 2, make_item(action_string))
             expected_string = "\n".join(str(task) for task in case["Expected Result"])
-            self.table.setItem(row, 4, make_item(expected_string))
+            self.table.setItem(row, 3, make_item(expected_string))
             # Last three columns are saved for data from the tests after completion
+            self.table.setItem(row, 4, make_item(""))
             self.table.setItem(row, 5, make_item(""))
             self.table.setItem(row, 6, make_item(""))
-            self.table.setItem(row, 7, make_item(""))
             self.table.setWordWrap(True)
 
         # Centres the text in the following columns
-        centre_columns = [0, 1, 5, 6, 7]
+        centre_columns = [0, 4, 5, 6]
         for row in range(self.table.rowCount()):
             for col in centre_columns:
                 item = self.table.item(row, col)
@@ -201,21 +254,62 @@ class TestCaseTablePage(QWidget):
         # Adds padding to certain columns
         delegate = PaddingDelegate()
         for col in range(3):
-            self.table.setItemDelegateForColumn(col+2, delegate)
+            self.table.setItemDelegateForColumn(col+1, delegate)
 
         # Adds the table to the main layout
         layout.addWidget(self.table)
         # Waits for table to be added and then adjusts the column widths
         QTimer.singleShot(0, self.final_adjust_layout)
 
+        self.results_btn = QPushButton("Show results")
+        self.results_btn.setVisible(False)
+        self.results_btn.setCursor(Qt.PointingHandCursor)
+        self.results_btn.setStyleSheet("margin-top: 20px; font-size: 16px; height: 30px; background-color: #394d45; color: white;")
+        self.results_btn.setStyleSheet("""
+            QPushButton {
+                margin-top: 20px;
+                font-size: 16px;
+                height: 30px;
+                background-color: #394d45;
+                color: white;
+            }
+            QPushButton:disabled {
+                background-color: #859990; 
+                color: #cccccc;      
+            }
+            QPushButton:hover {
+                background-color: #323c38;
+            }
+        """)
+        self.results_btn.clicked.connect(lambda checked: self.testing_click())
+        layout.addWidget(self.results_btn)
 
-    # Adjusts column widths roughly based on screen size
+    def generate_results(self):
+        self.results_btn.setVisible(True)
+
+    def testing_click(self):
+        self.service_report = ServiceReport(service_title=f"{self.service}", logs=self.log_history)
+        self.service_report.show()
+
     def adjust_column_widths(self):
-        col_widths = [60, 350, 395, 420, 420, 60, 60, 55]
-        logical_dpi = self.logicalDpiX()
-        for col, col_width in enumerate(col_widths):
-            width = int(col_width * logical_dpi/96)
-            self.table.setColumnWidth(col, width)
+        screen_size = QApplication.primaryScreen().size()
+        available_width = screen_size.width()
+        available_width -= 75
+
+        if available_width < 1500:
+            proportions = [0.21, 0.21, 0.21, 0.21, 0.06, 0.06, 0.06]
+        else:
+            proportions = [0.22, 0.22, 0.22, 0.22, 0.04, 0.04, 0.04]
+
+        total = sum(proportions)
+        proportions = [p / total for p in proportions]
+
+        for col, prop in enumerate(proportions):
+            self.table.setColumnWidth(col, int(available_width * prop))
+
+        # prevent auto-stretching (each col keeps its proportional size)
+        header = self.table.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.Fixed)
 
     def final_adjust_layout(self):
         self.adjust_column_widths()
@@ -228,42 +322,158 @@ class TestCaseTablePage(QWidget):
             self.table.setRowHeight(row, current_height + padding)
 
     def main_button_clicked(self):
-        # Disable button so user can't spam clicks
-        self.sender().setEnabled(False)
+
+        self.sender().setVisible(False)
 
         self.thread = QThread()
-        self.worker = TestRunnerWorker(self.service, self.table.rowCount(), globals())
+        self.worker = TestRunnerWorker(self.service, self.table.rowCount())
         self.worker.moveToThread(self.thread)
 
         # Connect signals
         self.thread.started.connect(self.worker.run)
         self.worker.finished.connect(self.thread.quit)
         self.worker.finished.connect(self.worker.deleteLater)
+        self.worker.finished.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
+        self.worker.need_precondition.connect(self.on_need_precondition)
+
+        self.worker.current_row.connect(self.set_current_row)
+        self.worker.row_finished.connect(self.on_row_finished)
 
         self.worker.progress.connect(self.update_progress)
 
-        self.thread.finished.connect(lambda: self.sender().setEnabled(True))  # Re-enable button
+        self.worker.finished.connect(self.generate_results)
 
         self.thread.start()
 
     def update_progress(self, row):
         print(f"Completed test row: {row}")
 
-    # When app is working this runs the testcase for that row. Build on this to show results/process
-    def precondition_button_clicked(self, row):
-        # checking = 1
-        # print(f"Execute button clicked for row {checking}")
-        # if checking < 10:
-        #     func_name = f"{self.service}_00{checking}"
-        # else:
-        #     func_name = f"{self.service}_0{checking}"
-        # func = globals().get(func_name)
-        # if func:
-        #     func()
-        Remote_Lock_Unlock001()
-
     def handle_log(self, message: str):
-        # Save the log
-        self.log_history.append(message)
+        try:
+            self.log_history[self.current_row].append(message)
+        except:
+            self.log_history[self.current_row] = [message]
         print(message)
+
+    @Slot(int)
+    def set_current_row(self, row: int):
+        self.current_row = row
+        self.test_start_times[row] = QTime.currentTime()
+
+    def on_row_finished(self, row: int):
+        colors = []
+
+        if row in self.test_start_times:
+            start_time = self.test_start_times[row]
+            end_time = QTime.currentTime()
+            duration_ms = start_time.msecsTo(end_time)
+
+            # convert to mm:ss
+            mins, secs = divmod(duration_ms // 1000, 60)
+            if secs < 1:
+                secs = 1
+            duration_str = f"{mins:02d}:{secs:02d}"
+
+            # put it into column 5 ("Duration")
+            duration_item = self.table.item(row - 1, 4)
+            if duration_item:
+                duration_item.setText(duration_str)
+                duration_item.setFont(QFont("Arial", 10))
+
+        metrics = []
+        for i in range(len(self.log_history[row])):
+            symbol = self.log_history[row][i][0]
+            if symbol == '✅':
+                colors.append('green')
+            elif symbol == '❌':
+                colors.append('red')
+            elif symbol == '⚠':
+                colors.append('yellow')
+            else:
+                metrics.append(self.log_history[row][i])
+
+        result_cell = self.table.item(row-1, 5)
+        if 'red' in colors:
+            error_btn = QPushButton("Error")
+            error_btn.setCursor(Qt.PointingHandCursor)
+            error_btn.clicked.connect(lambda checked: self.open_test_case_detail(row))
+            self.table.setCellWidget(row-1, 6, error_btn)
+
+            result_cell.setText("Failed")
+            result_cell.setForeground(QBrush(QColor("white")))
+            result_cell.setBackground(QColor("red"))
+
+            self.table.item(row-1, 2).setForeground(QBrush(QColor("red")))
+            self.table.item(row-1, 3).setForeground(QBrush(QColor("red")))
+        elif 'yellow' in colors:
+            error_btn = QPushButton("Error")
+            error_btn.setCursor(Qt.PointingHandCursor)
+            error_btn.clicked.connect(lambda checked: self.open_test_case_detail(row))
+            self.table.setCellWidget(row-1, 6, error_btn)
+
+            result_cell.setText("Error")
+            result_cell.setBackground(QColor("#F6BE00"))
+            self.table.item(row-1, 2).setForeground(QBrush(QColor("#F6BE00")))
+            self.table.item(row-1, 3).setForeground(QBrush(QColor("#F6BE00")))
+        else:
+            result_cell.setText("Passed")
+            result_cell.setForeground(QBrush(QColor("white")))
+            result_cell.setBackground(QColor("green"))
+            self.table.item(row-1, 2).setForeground(QBrush(QColor("green")))
+            self.table.item(row-1, 3).setForeground(QBrush(QColor("green")))
+            if metrics:
+                metric_btn = QPushButton("Metrics")
+                metric_btn.setCursor(Qt.PointingHandCursor)
+                metric_btn.clicked.connect(lambda checked: self.open_test_case_metrics(row, metrics))
+                self.table.setCellWidget(row - 1, 6, metric_btn)
+
+    # Need to update so that it checks by row and by service
+    def open_test_case_detail(self, row):
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        image_dir = os.path.join(base_dir, "fail_images")
+        image_paths = []
+        row_num = f"0{row}" if row < 10 else f"{row}"
+
+        for file_path in glob.glob(os.path.join(image_dir, "*.png")):
+            filename = os.path.basename(file_path)
+            if row_num in filename:
+                image_paths.append(file_path)
+
+        test_title = self.table.item(row, 0).text()
+
+        self.error_window = ErrorPage(title=test_title,
+                                      logs=self.log_history[row], images=image_paths)
+        self.error_window.show()
+
+    def open_test_case_metrics(self, row, metrics):
+        test_title = self.table.item(row, 0).text()
+
+        self.metric_window = MetricPage(title=test_title, logs=metrics)
+        self.metric_window.show()
+
+    def on_need_precondition(self, row):
+        # Highlight row / notify user if you like
+        print(f"⚠️ Waiting for preconditions at row {row}")
+        # Optionally: flash the Run Testcase button
+        precondition_widget = self.table.cellWidget(row - 1, 1)
+        if precondition_widget:
+            for child in precondition_widget.findChildren(QPushButton):
+                if child.text() == "Run Testcase":
+                    child.setEnabled(True)
+
+    def precondition_button_clicked(self, row):
+        print(f"✅ Preconditions met for row {row}, resuming test...")
+
+        if hasattr(self, "worker") and self.worker:
+            self.worker.resume()
+
+        # optionally disable the button after pressing
+        precondition_widget = self.table.cellWidget(row, 1)
+        if precondition_widget:
+            for child in precondition_widget.findChildren(QPushButton):
+                if child.text() == "Run Testcase":
+                    child.setEnabled(False)
+
+    def home_button_clicked(self):
+        self.main_window.show_homepage()

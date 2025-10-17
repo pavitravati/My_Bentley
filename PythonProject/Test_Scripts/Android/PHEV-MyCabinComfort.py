@@ -1,77 +1,169 @@
+from common_utils.android_image_comparision import *
+from core.log_emitter import log_emitter
+
+def log(msg):
+    log_emitter.log_signal.emit(msg)
+
+def fail_log(msg, num):
+    log(f"{msg}")
+    controller.take_fail_screenshot(f"PHEV-MyCabinComfort-{msg}-{num}.png")
+
+def error_log(e, num):
+    log(f"⚠️ - Unexpected error: {e}")
+    controller.take_fail_screenshot(f"PHEV-MyCabinComfort-{e}-{num}.png")
+
 def PHEV_MyCabinComfort_001():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "001")
 
 def PHEV_MyCabinComfort_002():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "002")
 
 def PHEV_MyCabinComfort_003():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "003")
 
 def PHEV_MyCabinComfort_004():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "004")
 
 def PHEV_MyCabinComfort_005():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "005")
 
 def PHEV_MyCabinComfort_006():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "006")
 
 def PHEV_MyCabinComfort_007():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "007")
 
 def PHEV_MyCabinComfort_008():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "008")
 
 def PHEV_MyCabinComfort_009():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "009")
 
 def PHEV_MyCabinComfort_010():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "010")
 
 def PHEV_MyCabinComfort_011():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "011")
 
 def PHEV_MyCabinComfort_012():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "012")
 
 def PHEV_MyCabinComfort_013():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "013")
 
 def PHEV_MyCabinComfort_014():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "014")
 
 def PHEV_MyCabinComfort_015():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "015")
 
 def PHEV_MyCabinComfort_016():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "016")
 
 def PHEV_MyCabinComfort_017():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "017")
 
 def PHEV_MyCabinComfort_018():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "018")
 
 def PHEV_MyCabinComfort_019():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "019")
 
 def PHEV_MyCabinComfort_020():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "020")
 
 def PHEV_MyCabinComfort_021():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "021")
 
 def PHEV_MyCabinComfort_022():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "022")
 
 def PHEV_MyCabinComfort_023():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "023")
 
 def PHEV_MyCabinComfort_024():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "024")
 
 def PHEV_MyCabinComfort_025():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "025")
 
 def PHEV_MyCabinComfort_026():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "026")

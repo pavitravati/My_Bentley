@@ -4,7 +4,16 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QAction, QActionGroup
 from excel import services
 from test_case_page import TestCaseTablePage
+from home_page import HomePage
 import sys
+import os, glob
+
+def cleanup_images():
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    image_dir = os.path.join(base_dir, "fail_images")
+
+    for file in glob.glob(os.path.join(image_dir, "*.png")):
+        os.remove(file)
 
 # Class of the Main window where the table is placed
 class MainWindow(QMainWindow):
@@ -31,17 +40,66 @@ class MainWindow(QMainWindow):
             toolbar.addAction(action)
             action_group.addAction(action)
 
-        self.setCentralWidget(TestCaseTablePage("DemoMode"))
+        self.setCentralWidget(HomePage(self))
 
-    # Currently indicates if toolbar is interacted with
     def toolbar_button_clicked(self, s, service):
         self.service = service
-        # Set the test case table as the central widget
-        self.setCentralWidget(TestCaseTablePage(service))
+        self.setCentralWidget(TestCaseTablePage(self, service))
+
+    def show_homepage(self):
+        self.setCentralWidget(HomePage(self))
+
+    def show_test_cases(self, service):
+        self.setCentralWidget(TestCaseTablePage(self, service))
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    scrollbar_style = """
+    QScrollBar:vertical {
+        border: none;
+        background: #2b2b2b;
+        width: 11px;
+        margin: 0px 0px 0px 0px;
+    }
+    QScrollBar::handle:vertical {
+        background: #53665e;
+        min-height: 20px;
+        border-radius: 5px;
+    }
+    QScrollBar::handle:vertical:hover {
+        background: #46534e;
+    }
+    QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+        height: 0px;
+    }
+    QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+        background: none;
+    }
+
+    QScrollBar:horizontal {
+        border: none;
+        background: #blue;
+        height: 11px;
+        margin: 0px 0px 0px 0px;
+    }
+    QScrollBar::handle:horizontal {
+        background: #53665e;
+        min-width: 20px;
+        border-radius: 5px;
+    }
+    QScrollBar::handle:horizontal:hover {
+        background: #46534e;
+    }
+    QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+        width: 0px;
+    }
+    QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+        background: none;
+    """
+    app.setStyleSheet(scrollbar_style)
     app.setStyle("Fusion")
     window = MainWindow()
     window.showMaximized()
+    app.aboutToQuit.connect(cleanup_images)
     sys.exit(app.exec())

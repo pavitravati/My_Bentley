@@ -1,53 +1,121 @@
+from common_utils.android_image_comparision import *
+from core.log_emitter import log_emitter
+
+def log(msg):
+    log_emitter.log_signal.emit(msg)
+
+def fail_log(msg, num):
+    log(f"{msg}")
+    controller.take_fail_screenshot(f"Add_VIN-{msg}-{num}.png")
+
+def error_log(e, num):
+    log(f"⚠️ - Unexpected error: {e}")
+    controller.take_fail_screenshot(f"Add_VIN-{e}-{num}.png")
+
 def Add_VIN_001():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "001")
 
 def Add_VIN_002():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "002")
 
 def Add_VIN_003():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "003")
 
 def Add_VIN_004():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "004")
 
 def Add_VIN_005():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "005")
 
 def Add_VIN_006():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "006")
 
 def Add_VIN_007():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "007")
 
 def Add_VIN_008():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "008")
 
 def Add_VIN_009():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "009")
 
 def Add_VIN_010():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "010")
 
 def Add_VIN_011():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "011")
 
 def Add_VIN_012():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "012")
 
 def Add_VIN_013():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "013")
 
 def Add_VIN_014():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "014")
 
 def Add_VIN_015():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "015")
 
 def Add_VIN_016():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "016")
 
 def Add_VIN_017():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "017")
 
 def Add_VIN_018():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "018")

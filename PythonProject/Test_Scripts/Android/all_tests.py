@@ -1,6 +1,6 @@
-from PythonProject.Test_Scripts.Android.Profile import *
-from PythonProject.Test_Scripts.Android.DemoMode import *
-from PythonProject.Test_Scripts.Android.Remote_Lock_Unlock import *
+from Test_Scripts.Android.Profile import *
+from Test_Scripts.Android.DemoMode import *
+from Test_Scripts.Android.Remote_Lock_Unlock import *
 
 controller = DeviceController()
 d = u2.connect()

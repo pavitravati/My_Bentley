@@ -1,35 +1,85 @@
+from common_utils.android_image_comparision import *
+from core.log_emitter import log_emitter
+
+def log(msg):
+    log_emitter.log_signal.emit(msg)
+
+def fail_log(msg, num):
+    log(f"{msg}")
+    controller.take_fail_screenshot(f"PHEV-MyCarStatistics-{msg}-{num}.png")
+
+def error_log(e, num):
+    log(f"⚠️ - Unexpected error: {e}")
+    controller.take_fail_screenshot(f"PHEV-MyCarStatistics-{e}-{num}.png")
+
 def PHEV_MyCarStatistics_001():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "001")
 
 def PHEV_MyCarStatistics_002():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "002")
 
 def PHEV_MyCarStatistics_003():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "003")
 
 def PHEV_MyCarStatistics_004():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "004")
 
 def PHEV_MyCarStatistics_005():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "005")
 
 def PHEV_MyCarStatistics_006():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "006")
 
 def PHEV_MyCarStatistics_007():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "007")
 
 def PHEV_MyCarStatistics_008():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "008")
 
 def PHEV_MyCarStatistics_009():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "009")
 
 def PHEV_MyCarStatistics_010():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "010")
 
 def PHEV_MyCarStatistics_011():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "011")
 
 def PHEV_MyCarStatistics_012():
-    pass
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "012")

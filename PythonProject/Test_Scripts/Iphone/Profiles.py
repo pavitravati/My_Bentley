@@ -1,7 +1,23 @@
 from time import sleep
-from PythonProject.common_utils.android_image_comparision import *
+from PythonProject.common_utils.ios_image_comparision import *
 from PythonProject.common_utils.test_result_tracker import TestCaseResult
-from PythonProject.common_utils.android_controller import *
+from PythonProject.common_utils.test_result_tracker import TestCaseResult
+
+
+# iOS session details
+ios = IOSController(
+    mac_ip="192.168.1.5",
+    port=8101,
+    udid="00008130-0012513918A1401C",
+    team_id="LDD46J9733",
+    bundle_id="uk.co.bentley.MyBentley"
+)
+
+# Start single session
+ios.start_session()
+# ---------------------------
+# Demo Mode Test Cases (iOS)
+# ---------------------------
 
 def Profiles_001():
     test_result = TestCaseResult("Profiles_001")
@@ -12,57 +28,57 @@ def Profiles_001():
 
     try:
         # 1) Open Profile tab
-        ok = controller.click_by_image("Icons/Profile_Icon.png", threshold=0.80)
+        ok = ios.click_by_image("ios_Icons/ios_Profile_Icon.png", threshold=0.80)
         test_result.log_step("Tapped Profile tab", ok)
         test_passed &= ok
         time.sleep(2)
 
         # 2) Validate Profile screen header/title
-        ok = compare_with_expected_crop("Images/Profile_Screen.png")
+        ok = compare_with_expected_crop_ios(ios, "ios_Images/ios_Profile_Screen.png")
         test_result.log_step("Profile Title is present", ok)
         test_passed &= ok
 
         # 3) Validate user icon
-        ok = compare_with_expected_crop("Images/Profile_Screen_User_Icon.png")
+        ok = compare_with_expected_crop_ios(ios, "ios_Images/ios_Profile_Screen_User_Icon.png")
         test_result.log_step("Profile User Icon is present", ok)
         test_passed &= ok
 
         # 4) Validate user name
-        ok = compare_with_expected_crop("Images/Profile_Screen_User_Name.png")
+        ok = compare_with_expected_crop_ios(ios, "ios_Images/ios_Profile_Screen_User_Name.png")
         test_result.log_step("Profile User Name is present", ok)
         test_passed &= ok
 
         # 5) Validate 'My details' tab
-        ok = compare_with_expected_crop("Images/Profile_Screen_MyDetails_Tab.png")
+        ok = compare_with_expected_crop_ios(ios, "ios_Images/ios_Profile_Screen_MyDetails_Tab.png")
         test_result.log_step("Profile 'My details' tab is present", ok)
         test_passed &= ok
 
         # 6) Navigate to Account
-        ok = controller.click_by_image("Icons/Profile_Account_Icon.png", threshold=0.80)
+        ok = ios.click_by_image("ios_Icons/ios_Profile_Account_Icon.png", threshold=0.80)
         test_result.log_step("Tapped Account", ok)
         test_passed &= ok
         time.sleep(2)
 
-        ok = compare_with_expected_crop("Images/Profile_Account_Screen.png")
+        ok = compare_with_expected_crop_ios(ios, "ios_Images/ios_Profile_Account_Screen.png")
         test_result.log_step("Profile Account screen is present", ok)
         test_passed &= ok
 
         # 7) Navigate to General
-        ok = controller.click_by_image("Icons/Profile_General_Icon.png", threshold=0.80)
+        ok = ios.click_by_image("ios_Icons/ios_Profile_General_Icon.png", threshold=0.80)
         test_result.log_step("Tapped General", ok)
         test_passed &= ok
         time.sleep(2)
 
-        ok = compare_with_expected_crop("Images/Profile_General_Screen.png")
+        ok = compare_with_expected_crop_ios(ios, "ios_Images/ios_Profile_General_Screen.png")
         test_result.log_step("Profile General screen is present", ok)
         test_passed &= ok
 
         # 8) Settings icon visible
-        ok = compare_with_expected_crop("Images/Profile_Screen_Setting_Icon.png")
+        ok = compare_with_expected_crop_ios(ios, "ios_Images/ios_Profile_Screen_Setting_Icon.png")
         test_result.log_step("Profile Settings icon is present", ok)
         test_passed &= ok
 
-        # Final status
+        # ✅ Final test result
         if test_passed:
             test_result.log("✅ Profiles_001 passed")
             test_result.status = "Passed"
@@ -70,18 +86,23 @@ def Profiles_001():
             test_result.log("❌ Profiles_001 failed")
             test_result.status = "Failed"
 
-        # Navigate back to My details tab & dashboard
-        controller.click_by_image("Icons/Profile_Mydetails_Icon.png", threshold=0.80)
-        time.sleep(2)
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        time.sleep(2)
-
     except Exception as e:
-        test_result.log_step(f"Unexpected error: {e}", False)
+        # ❗ Log full traceback for better debugging
+        test_result.log_step(f"Unexpected error: {traceback.format_exc()}", False)
         test_result.status = "Error"
 
+    finally:
+        # Always navigate back to dashboard
+        try:
+            ios.click_by_image("ios_Icons/ios_Profile_Mydetails_Icon.png", threshold=0.80)
+            time.sleep(2)
+            ios.click_by_image("ios_Icons/ios_Home.png", threshold=0.80)
+            time.sleep(2)
+        except Exception as e:
+            test_result.log_step(f"Navigation back failed: {e}", False)
 
-    test_result.end_time = time.time()
+        test_result.end_time = time.time()
+
     return test_result
 
 def Profiles_002():
@@ -94,6 +115,7 @@ def Profiles_002():
         test_result.log_step("Tapped Profile tab", ok)
         test_passed &= ok
         time.sleep(2)
+
         controller.extract_profile_details()
 
     except Exception as e:
@@ -249,3 +271,8 @@ def Profile_006():
 
     test_result.end_time = time.time()
     return test_result
+
+def dummy():
+    ios.take_screenshot("temp.png")
+
+Profiles_001()

@@ -1,6 +1,6 @@
 from PythonProject.common_utils.ios_controller import IOSController
 from PythonProject.common_utils.html_test_report import HTMLTestReport
-from Ios_Test_case import (
+from DemoMode import (
     Demo_Mode_001, Demo_Mode_002, Demo_Mode_003, Demo_Mode_004,
     Demo_Mode_005, Demo_Mode_006, Demo_Mode_007, Demo_Mode_008,
     Demo_Mode_009, Demo_Mode_010, Demo_Mode_011, Demo_Mode_012, Demo_Mode_013

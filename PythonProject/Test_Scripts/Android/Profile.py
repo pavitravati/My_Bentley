@@ -95,7 +95,6 @@ def Profile_002():
         else:
             fail_log("❌ - Tapped Profile tab failed", "002")
         time.sleep(2)
-
         controller.extract_profile_details()
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 

@@ -157,51 +157,62 @@ class IOSController:
             raise RuntimeError(f" Could not find or click element with text '{text}': {e}")
 
     def click_by_image(self, image_filename, threshold=0.8):
-        """Click on the screen by matching an image using OpenCV."""
+        """Click on the screen by matching an image using OpenCV and return True/False."""
+
         if not self.driver:
             raise RuntimeError("Driver not initialized. Call start_session() first.")
 
-        # Save screenshot in resource folder
-        screenshot_filename = "ios_screen.png"
-        self.take_screenshot(screenshot_filename)
-        screenshot_path = self.get_resource_path(screenshot_filename)
-        template_path = self.get_resource_path(image_filename)
+        try:
+            # Save screenshot in resource folder
+            screenshot_filename = "ios_screen.png"
+            self.take_screenshot(screenshot_filename)
+            screenshot_path = self.get_resource_path(screenshot_filename)
+            template_path = self.get_resource_path(image_filename)
 
-        # Load images
-        screen = cv2.imread(screenshot_path)
-        template = cv2.imread(template_path)
+            # Load images
+            screen = cv2.imread(screenshot_path)
+            template = cv2.imread(template_path)
 
-        if screen is None or template is None:
-            raise RuntimeError("Failed to load screenshot or template image.")
+            if screen is None or template is None:
+                raise RuntimeError("Failed to load screenshot or template image.")
 
-        result = cv2.matchTemplate(screen, template, cv2.TM_CCOEFF_NORMED)
-        _, max_val, _, max_loc = cv2.minMaxLoc(result)
+            # Template matching
+            result = cv2.matchTemplate(screen, template, cv2.TM_CCOEFF_NORMED)
+            _, max_val, _, max_loc = cv2.minMaxLoc(result)
 
-        print(f"🔎 Match Confidence: {max_val:.2f}")
-        if max_val < threshold:
-            raise RuntimeError(f"Image match failed. Confidence {max_val:.2f} < threshold {threshold}")
+            print(f"🔎 Match Confidence: {max_val:.2f}")
 
-        # Center of matched region
-        h, w = template.shape[:2]
-        match_x = max_loc[0] + w // 2
-        match_y = max_loc[1] + h // 2
+            if max_val < threshold:
+                print(f"❌ Image match failed. Confidence {max_val:.2f} < threshold {threshold}")
+                return False  # ❗ Return False instead of raising
 
-        # Get actual device size
-        device_size = self.driver.get_window_size()
-        device_width = device_size["width"]
-        device_height = device_size["height"]
+            # Center of matched region
+            h, w = template.shape[:2]
+            match_x = max_loc[0] + w // 2
+            match_y = max_loc[1] + h // 2
 
-        # Get screenshot size
-        screen_height, screen_width = screen.shape[:2]
+            # Get actual device size
+            device_size = self.driver.get_window_size()
+            device_width = device_size["width"]
+            device_height = device_size["height"]
 
-        # Scale to actual device coordinates
-        scale_x = device_width / screen_width
-        scale_y = device_height / screen_height
-        tap_x = int(match_x * scale_x)
-        tap_y = int(match_y * scale_y)
+            # Get screenshot size
+            screen_height, screen_width = screen.shape[:2]
 
-        print(f"Found image at: ({match_x}, {match_y}), tapping at center: ({tap_x}, {tap_y})")
-        self.tap(tap_x, tap_y)
+            # Scale to actual device coordinates
+            scale_x = device_width / screen_width
+            scale_y = device_height / screen_height
+            tap_x = int(match_x * scale_x)
+            tap_y = int(match_y * scale_y)
+
+            print(f"✅ Found image at: ({match_x}, {match_y}), tapping at center: ({tap_x}, {tap_y})")
+            self.tap(tap_x, tap_y)
+
+            return True  # ✅ Success case
+
+        except Exception as e:
+            print(f"⚠️ Error in click_by_image: {e}")
+            return False  # ✅ Always return False on any failure
 
     def extract_dashboard_metrics_Overview(self):
         metrics = {}

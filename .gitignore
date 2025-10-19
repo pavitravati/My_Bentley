@@ -6,6 +6,9 @@ __pycache__/
 .idea/
 PythonProject/resource/Images/output/match_box*.png
 PythonProject/resource/ios_Images/output/match_box_ios_Images/*.png
+PythonProject/build
+PythonProject/dist
+PythonProject/main_window.spec
 
 # Virtual environments
 venv/

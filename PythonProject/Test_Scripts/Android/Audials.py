@@ -6,13 +6,13 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"AudialsApp-{msg}-{num}.png")
+    controller.take_fail_screenshot(f"Audials-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Nickname-{e}-{num}.png")
+    controller.take_fail_screenshot(f"Audials-{e}-{num}.png")
 
-def AudialsApp_001():
+def Audials_001():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
@@ -39,7 +39,7 @@ def AudialsApp_001():
         error_log(e, "001")
 
 # Font checking test
-def AudialsApp_002():
+def Audials_002():
     try:
         log("✅ - Cannot check style")
     except Exception as e:

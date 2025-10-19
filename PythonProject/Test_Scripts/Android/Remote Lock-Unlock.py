@@ -9,11 +9,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"Remote_Lock_Unlock-{msg}-{num}.png")
+    controller.take_fail_screenshot(f"Remote Lock-Unlock-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Remote_Lock_Unlock-{e}-{num}.png")
+    controller.take_fail_screenshot(f"Remote Lock-Unlock-{e}-{num}.png")
 
 def identify_car():
     if compare_with_expected_crop("Icons/Bentayga.png"):
@@ -29,7 +29,7 @@ def identify_car():
 
     return car
 
-def Remote_Lock_Unlock001():
+def Remote_Lock_Unlock_001():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         if (compare_with_expected_crop("Icons/Remote_Lock.png")):
@@ -45,7 +45,7 @@ def Remote_Lock_Unlock001():
     except Exception as e:
         error_log(e, "001")
 
-def Remote_Lock_Unlock002():
+def Remote_Lock_Unlock_002():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/unlock_Icon.png")
@@ -69,7 +69,7 @@ def Remote_Lock_Unlock002():
     except Exception as e:
         error_log(e, "002")
 
-def Remote_Lock_Unlock003():
+def Remote_Lock_Unlock_003():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/lock_Icon.png")
@@ -93,7 +93,7 @@ def Remote_Lock_Unlock003():
     except Exception as e:
         error_log(e, "003")
 
-def Remote_Lock_Unlock004():
+def Remote_Lock_Unlock_004():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
@@ -115,7 +115,7 @@ def Remote_Lock_Unlock004():
     except Exception as e:
         error_log(e, "004")
 
-def Remote_Lock_Unlock005():
+def Remote_Lock_Unlock_005():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
@@ -136,7 +136,7 @@ def Remote_Lock_Unlock005():
     except Exception as e:
         error_log(e, "005")
 
-def Remote_Lock_Unlock006():
+def Remote_Lock_Unlock_006():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
@@ -157,7 +157,7 @@ def Remote_Lock_Unlock006():
     except Exception as e:
         error_log(e, "006")
 
-def Remote_Lock_Unlock007():
+def Remote_Lock_Unlock_007():
     car = identify_car()
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -186,7 +186,7 @@ def Remote_Lock_Unlock007():
     except Exception as e:
         error_log(e, "007")
 
-def Remote_Lock_Unlock008():
+def Remote_Lock_Unlock_008():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/New_Notification_icon.png")
@@ -197,7 +197,7 @@ def Remote_Lock_Unlock008():
     except Exception as e:
         error_log(e, "008")
 
-def Remote_Lock_Unlock009():
+def Remote_Lock_Unlock_009():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         latency_time = time.time()
@@ -217,7 +217,7 @@ def Remote_Lock_Unlock009():
     except Exception as e:
         error_log(e, "009")
 
-def Remote_Lock_Unlock010():
+def Remote_Lock_Unlock_010():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/lock_icon.png")
@@ -231,7 +231,7 @@ def Remote_Lock_Unlock010():
     except Exception as e:
         error_log(e, "010")
 
-def Remote_Lock_Unlock011():
+def Remote_Lock_Unlock_011():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/unlock_icon.png")
@@ -246,14 +246,13 @@ def Remote_Lock_Unlock011():
         error_log(e, "011")
 
 # For now at least this test case is not needed
-# def Remote_Lock_Unlock012():
-#     try:
-#         controller.click_by_image("Icons/lock_icon.png")
+def Remote_Lock_Unlock_012():
+    try:
+        log("✅ - temp, testcase not needed")
+    except Exception as e:
+        log(f"⚠️ - Unexpected error: {e}")
 
-#     except Exception as e:
-#         log(f"⚠️ - Unexpected error: {e}")
-
-def Remote_Lock_Unlock013():
+def Remote_Lock_Unlock_013():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/lock_Icon.png")
@@ -272,7 +271,7 @@ def Remote_Lock_Unlock013():
     except Exception as e:
         error_log(e, "013")
 
-def Remote_Lock_Unlock014():
+def Remote_Lock_Unlock_014():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/unlock_Icon.png")
@@ -292,7 +291,7 @@ def Remote_Lock_Unlock014():
         error_log(e, "014")
 
 #Explain this
-def Remote_Lock_Unlock015():
+def Remote_Lock_Unlock_015():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/lock_icon.png")
@@ -311,7 +310,7 @@ def Remote_Lock_Unlock015():
     except Exception as e:
         error_log(e, "015")
 
-def Remote_Lock_Unlock016():
+def Remote_Lock_Unlock_016():
     try:
         sleep(5)
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -323,7 +322,7 @@ def Remote_Lock_Unlock016():
     except Exception as e:
         error_log(e, "016")
 
-def Remote_Lock_Unlock017():
+def Remote_Lock_Unlock_017():
     try:
         sleep(5)
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -334,3 +333,15 @@ def Remote_Lock_Unlock017():
 
     except Exception as e:
         error_log(e, "017")
+
+def Remote_Lock_Unlock_018():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "018")
+
+def Remote_Lock_Unlock_019():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "019")

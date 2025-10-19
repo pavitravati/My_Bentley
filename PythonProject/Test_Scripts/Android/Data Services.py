@@ -7,14 +7,14 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"DataServices-{msg}-{num}.png")
+    controller.take_fail_screenshot(f"Data Services-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"DataServices-{e}-{num}.png")
+    controller.take_fail_screenshot(f"Data Services-{e}-{num}.png")
 
 # Make sure this works using better wifi as it struggles on bad wifi
-def DataServices_001():
+def Data_Services_001():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
@@ -43,9 +43,26 @@ def DataServices_001():
     except Exception as e:
         error_log(e, "001")
 
-# Test is about style guide
-def DataServices_002():
+def Data_Services_002():
     try:
         pass
     except Exception as e:
         error_log(e, "002")
+
+def Data_Services_003():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "003")
+
+def Data_Services_004():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "004")
+
+def Data_Services_005():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "005")

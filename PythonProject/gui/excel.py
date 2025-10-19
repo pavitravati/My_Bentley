@@ -4,11 +4,18 @@ from openpyxl.utils import get_column_letter
 import sys
 import os
 
-services = ['DemoMode', 'Customer_Enrollment', 'App_Registration_Pages-IDK', 'Add_VIN', 'MyBentleyAppLogin',
-            'Nickname', 'License(App)', 'VehicleStatusReport', 'RemoteLockUnlock', 'SingleServiceActivation',
-            'PHEV-MyCarStatistics', 'PHEV-MyCabinComfort', 'PHEV-MyBatteryCharge', 'RoadsideAssistanceCall(App)',
-            'DataServices', 'TheftAlarm', 'Audials(App)', 'CarFinder', 'NavCompanion', 'Notifications',
-            'Profiles', 'TextStrings', 'PrivacyMode(App)', 'RemoteParkAssist', 'VehicleTrackingSystem']
+services = ['Demo Mode', 'Customer Enrollment', 'Add VIN', 'App Registration Pages', 'App Log in-Log out',
+            'Nickname', 'Services and licenses', 'Vehicle Status Report', 'Remote Lock-Unlock', 'Remote Honk & Flash',
+            'My Car Statistics', 'My Cabin Comfort', 'My Battery Charge', 'Service Management', 'Activate Heating',
+            'Roadside Assistance', 'Data Services', 'My Alerts', 'Theft Alarm', 'Stolen Vehicle Locator', 'Audials',
+            'Car Finder', 'Nav Companion', 'Notifications', 'Push Notifications', 'Profile', 'Localization', 'Privacy Mode',
+            'Remote Park Assist', 'Stolen Vehicle Tracking']
+
+# services = ['DemoMode', 'Customer_Enrollment', 'App_Registration_Pages-IDK', 'Add_VIN', 'MyBentleyAppLogin',
+#             'Nickname', 'License(App)', 'VehicleStatusReport', 'RemoteLockUnlock', 'SingleServiceActivation',
+#             'PHEV-MyCarStatistics', 'PHEV-MyCabinComfort', 'PHEV-MyBatteryCharge', 'RoadsideAssistanceCall(App)',
+#             'DataServices', 'TheftAlarm', 'Audials(App)', 'CarFinder', 'NavCompanion', 'Notifications',
+#             'Profiles', 'TextStrings', 'PrivacyMode(App)', 'RemoteParkAssist', 'VehicleTrackingSystem']
 
 def resource_path(relative_path):
     try:
@@ -18,8 +25,8 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 def load_data():
-    # Cleans the data so it can be easily added
-    source_path = resource_path("gui/Android_MY26_BY636_SQ_Remote_Services_EUR_Full - test.xlsx")
+    # source_path = resource_path("gui/Android_MY26_BY636_SQ_Remote_Services_EUR_Full - test.xlsx")
+    source_path = resource_path("gui/Remote_Services.xlsx")
     workbook = load_workbook(source_path)
 
     skip_columns = ["A", "B", "D", "E", "G"]

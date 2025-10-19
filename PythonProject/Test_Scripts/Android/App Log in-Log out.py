@@ -7,14 +7,14 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"MyBentleyAppLogin-{msg}-{num}.png")
+    controller.take_fail_screenshot(f"App Log in-Log out-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"MyBentleyAppLogin-{e}-{num}.png")
+    controller.take_fail_screenshot(f"App Log in-Log out-{e}-{num}.png")
 
 # This is very dodgy if the phone is slow/slow internet
-def MyBentleyAppLogin_001():
+def App_Log_in_Log_out_001():
     try:
         # If not on the login page, attempts to log out/exit demo mode
         if not compare_with_expected_crop("Images/My_Bentley_Login_Page.png"):
@@ -48,7 +48,7 @@ def MyBentleyAppLogin_001():
     except Exception as e:
         error_log(e, "001")
 
-def MyBentleyAppLogin_002():
+def App_Log_in_Log_out_002():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/Profile_Icon.png")
@@ -74,7 +74,7 @@ def MyBentleyAppLogin_002():
         error_log(e, "002")
 
 # Testcase edited in excel, no second pop up about saved favourites.
-def MyBentleyAppLogin_003():
+def App_Log_in_Log_out_003():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         if controller.click_by_image("Icons/Profile_Icon.png"):
@@ -110,3 +110,27 @@ def MyBentleyAppLogin_003():
 
     except Exception as e:
         error_log(e, "003")
+
+def App_Log_in_Log_out_004():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "004")
+
+def App_Log_in_Log_out_005():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "005")
+
+def App_Log_in_Log_out_006():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "006")
+
+def App_Log_in_Log_out_007():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "007")

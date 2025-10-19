@@ -7,13 +7,13 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"SingleServiceActivation-{msg}-{num}.png")
+    controller.take_fail_screenshot(f"Service Management-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"SingleServiceActivation-{e}-{num}.png")
+    controller.take_fail_screenshot(f"Service Management-{e}-{num}.png")
 
-def SingleServiceActivation_001():
+def Service_Management_001():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/info_btn.png")
@@ -38,7 +38,7 @@ def SingleServiceActivation_001():
     except Exception as e:
         error_log(e, "001")
 
-def SingleServiceActivation_002():
+def Service_Management_002():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/info_btn.png")
@@ -75,7 +75,7 @@ def SingleServiceActivation_002():
     except Exception as e:
         error_log(e, "002")
 
-def SingleServiceActivation_003():
+def Service_Management_003():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/info_btn.png")
@@ -118,7 +118,7 @@ def SingleServiceActivation_003():
     except Exception as e:
         error_log(e, "003")
 
-def SingleServiceActivation_004():
+def Service_Management_004():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/info_btn.png")
@@ -161,7 +161,7 @@ def SingleServiceActivation_004():
     except Exception as e:
         error_log(e, "004")
 
-def SingleServiceActivation_005():
+def Service_Management_005():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/info_btn.png")
@@ -210,7 +210,7 @@ def SingleServiceActivation_005():
     except Exception as e:
         error_log(e, "005")
 
-def SingleServiceActivation_006():
+def Service_Management_006():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/info_btn.png")
@@ -257,25 +257,25 @@ def SingleServiceActivation_006():
     except Exception as e:
         error_log(e, "006")
 
-def SingleServiceActivation_007():
+def Service_Management_007():
     try:
         pass
     except Exception as e:
         error_log(e, "007")
 
-def SingleServiceActivation_008():
+def Service_Management_008():
     try:
         pass
     except Exception as e:
         error_log(e, "008")
 
-def SingleServiceActivation_009():
+def Service_Management_009():
     try:
         pass
     except Exception as e:
         error_log(e, "009")
 
-def SingleServiceActivation_010():
+def Service_Management_010():
     try:
         log("✅ - Cannot complete style guide testcases (temporary)")
     except Exception as e:

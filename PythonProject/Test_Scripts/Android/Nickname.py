@@ -275,3 +275,9 @@ def Nickname_009():
 
     except Exception as e:
         error_log(e, "009")
+
+def Nickname_010():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "010")

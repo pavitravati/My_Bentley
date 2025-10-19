@@ -8,11 +8,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"LicenseApp-{msg}-{num}.png")
+    controller.take_fail_screenshot(f"Services and licenses-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"LicenseApp-{e}-{num}.png")
+    controller.take_fail_screenshot(f"Services and licenses-{e}-{num}.png")
 
 def backspace(num):
     for i in range(num):
@@ -29,17 +29,17 @@ def early_setup(num):
 
 # First three test cases are not done on the app
 ###########
-def LicenseApp_001():
+def Services_and_licenses_001():
     log("✅ - temp, not done in app")
 
-def LicenseApp_002():
+def Services_and_licenses_002():
     log("✅ - temp, not done in app")
 
-def License_003():
+def Services_and_licenses_003():
     log("✅ - temp, not done in app")
 ###########
 
-def LicenseApp_004():
+def Services_and_licenses_004():
     try:
         early_setup("004")
 
@@ -70,9 +70,7 @@ def LicenseApp_004():
     except Exception as e:
         error_log(e, "004")
 
-LicenseApp_004()
-
-def LicenseApp_005():
+def Services_and_licenses_005():
     try:
         early_setup("005")
 
@@ -109,7 +107,7 @@ def LicenseApp_005():
     except Exception as e:
         error_log(e, "005")
 
-def LicenseApp_006():
+def Services_and_licenses_006():
     try:
         early_setup("006")
 
@@ -162,7 +160,7 @@ def LicenseApp_006():
     except Exception as e:
         error_log(e, "006")
 
-def LicenseApp_007():
+def Services_and_licenses_007():
     try:
         early_setup("007")
         controller.click_text("Services and licenses")
@@ -214,7 +212,7 @@ def LicenseApp_007():
     except Exception as e:
         error_log(e, "007")
 
-def LicenseApp_008():
+def Services_and_licenses_008():
     try:
         early_setup("008")
         controller.click_text("Services and licenses")
@@ -249,7 +247,7 @@ def LicenseApp_008():
     except Exception as e:
         error_log(e, "008")
 
-def LicenseApp_009():
+def Services_and_licenses_009():
     try:
         early_setup("009")
         controller.click_text("Services and licenses")
@@ -285,7 +283,7 @@ def LicenseApp_009():
         error_log(e, "009")
 
 # Service was not on my app so did this blind just copying from previous
-def LicenseApp_010():
+def Services_and_licenses_010():
     try:
         early_setup("010")
         controller.click_text("Services and licenses")
@@ -319,9 +317,8 @@ def LicenseApp_010():
     except Exception as e:
         error_log(e, "010")
 
-# Ask about these tests, how would i automate font checking etc...
-def LicenseApp_011():
+def Services_and_licenses_011():
     try:
-        log("✅ - Cannot check style")
+        log("✅ - temp, Cannot check styleguide")
     except Exception as e:
         error_log(e, "011")

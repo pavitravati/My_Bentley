@@ -6,13 +6,13 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"TheftAlarm-{msg}-{num}.png")
+    controller.take_fail_screenshot(f"Theft Alarm-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"TheftAlarm-{e}-{num}.png")
+    controller.take_fail_screenshot(f"Theft Alarm-{e}-{num}.png")
 
-def TheftAlarm_001():
+def Theft_Alarm_001():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
@@ -25,7 +25,7 @@ def TheftAlarm_001():
     except Exception as e:
         error_log(e, "001")
 
-def TheftAlarm_002():
+def Theft_Alarm_002():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
@@ -46,7 +46,7 @@ def TheftAlarm_002():
     except Exception as e:
         error_log(e, "002")
 
-def TheftAlarm_003():
+def Theft_Alarm_003():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
@@ -64,7 +64,7 @@ def TheftAlarm_003():
     except Exception as e:
         error_log(e, "003")
 
-def TheftAlarm_004():
+def Theft_Alarm_004():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
@@ -83,21 +83,39 @@ def TheftAlarm_004():
         error_log(e, "004")
 
 # Can this be skipped
-def TheftAlarm_005():
+def Theft_Alarm_005():
     try:
         pass
     except Exception as e:
         error_log(e, "005")
 
 # What
-def TheftAlarm_006():
+def Theft_Alarm_006():
     try:
         pass
     except Exception as e:
         error_log(e, "006")
 
-def TheftAlarm_007():
+def Theft_Alarm_007():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "007")
+
+def Theft_Alarm_008():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "008")
+
+def Theft_Alarm_009():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "009")
+
+def Theft_Alarm_010():
     try:
         log("✅ - Cannot complete style guide testcases (temporary)")
     except Exception as e:
-        error_log(e, "007")
+        error_log(e, "010")

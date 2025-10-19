@@ -8,11 +8,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"VehicleStatusReport-{msg}-{num}.png")
+    controller.take_fail_screenshot(f"Vehicle Status Report-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"VehicleStatusReport-{e}-{num}.png")
+    controller.take_fail_screenshot(f"Vehicle Status Report-{e}-{num}.png")
 
 def identify_car():
     if compare_with_expected_crop("Icons/Bentayga.png"):
@@ -37,7 +37,7 @@ def change_units(units):
     controller.click_by_image("Icons/back_icon.png")
     controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
-def VehicleStatusReport_001():
+def Vehicle_Status_Report_001():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         if controller.is_text_present("DASHBOARD"):
@@ -65,7 +65,7 @@ def VehicleStatusReport_001():
     except Exception as e:
         error_log(e, "001")
 
-def VehicleStatusReport_002():
+def Vehicle_Status_Report_002():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         car_name = identify_car()
@@ -107,7 +107,7 @@ def VehicleStatusReport_002():
     except Exception as e:
         error_log(e, "002")
 
-def VehicleStatusReport_003():
+def Vehicle_Status_Report_003():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -136,13 +136,13 @@ def VehicleStatusReport_003():
         error_log(e, "003")
 
 # Button does not exist
-def VehicleStatusReport_004():
+def Vehicle_Status_Report_004():
     try:
         log("✅ - temp, button does not exist to test")
     except Exception as e:
         error_log(e, "004")
 
-def VehicleStatusReport_005():
+def Vehicle_Status_Report_005():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         sleep(45)
@@ -171,7 +171,7 @@ def VehicleStatusReport_005():
     except Exception as e:
         error_log(e, "005")
 
-def VehicleStatusReport_006():
+def Vehicle_Status_Report_006():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         sleep(45)
@@ -201,7 +201,7 @@ def VehicleStatusReport_006():
     except Exception as e:
         error_log(e, "006")
 
-def VehicleStatusReport_007():
+def Vehicle_Status_Report_007():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         sleep(45)
@@ -231,7 +231,7 @@ def VehicleStatusReport_007():
     except Exception as e:
         error_log(e, "007")
 
-def VehicleStatusReport_008():
+def Vehicle_Status_Report_008():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         sleep(45)
@@ -260,7 +260,7 @@ def VehicleStatusReport_008():
     except Exception as e:
         error_log(e, "008")
 
-def VehicleStatusReport_009():
+def Vehicle_Status_Report_009():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -289,7 +289,7 @@ def VehicleStatusReport_009():
     except Exception as e:
         error_log(e, "009")
 
-def VehicleStatusReport_010():
+def Vehicle_Status_Report_010():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -314,7 +314,7 @@ def VehicleStatusReport_010():
     except Exception as e:
         error_log(e, "010")
 
-def VehicleStatusReport_011():
+def Vehicle_Status_Report_011():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         change_units("Kilometres")
@@ -329,7 +329,7 @@ def VehicleStatusReport_011():
     except Exception as e:
         error_log(e, "011")
 
-def VehicleStatusReport_012():
+def Vehicle_Status_Report_012():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         change_units("Miles")
@@ -344,7 +344,7 @@ def VehicleStatusReport_012():
     except Exception as e:
         error_log(e, "012")
 
-def VehicleStatusReport_013():
+def Vehicle_Status_Report_013():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -375,7 +375,7 @@ def VehicleStatusReport_013():
     except Exception as e:
         error_log(e, "013")
 
-def VehicleStatusReport_014():
+def Vehicle_Status_Report_014():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -407,7 +407,7 @@ def VehicleStatusReport_014():
     except Exception as e:
         error_log(e, "014")
 
-def VehicleStatusReport_015():
+def Vehicle_Status_Report_015():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -440,7 +440,7 @@ def VehicleStatusReport_015():
     except Exception as e:
         error_log(e, "015")
 
-def VehicleStatusReport_016():
+def Vehicle_Status_Report_016():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -473,7 +473,7 @@ def VehicleStatusReport_016():
     except Exception as e:
         error_log(e, "016")
 
-def VehicleStatusReport_017():
+def Vehicle_Status_Report_017():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -505,7 +505,7 @@ def VehicleStatusReport_017():
     except Exception as e:
         error_log(e, "017")
 
-def VehicleStatusReport_018():
+def Vehicle_Status_Report_018():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -541,7 +541,7 @@ def VehicleStatusReport_018():
     except Exception as e:
         error_log(e, "018")
 
-def VehicleStatusReport_019():
+def Vehicle_Status_Report_019():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -577,7 +577,7 @@ def VehicleStatusReport_019():
     except Exception as e:
         error_log(e, "019")
 
-def VehicleStatusReport_020():
+def Vehicle_Status_Report_020():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -613,7 +613,7 @@ def VehicleStatusReport_020():
     except Exception as e:
         error_log(e, "020")
 
-def VehicleStatusReport_021():
+def Vehicle_Status_Report_021():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -650,7 +650,7 @@ def VehicleStatusReport_021():
     except Exception as e:
         error_log(e, "021")
 
-def VehicleStatusReport_022():
+def Vehicle_Status_Report_022():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -687,7 +687,7 @@ def VehicleStatusReport_022():
     except Exception as e:
         error_log(e, "022")
 
-def VehicleStatusReport_023():
+def Vehicle_Status_Report_023():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -724,7 +724,7 @@ def VehicleStatusReport_023():
     except Exception as e:
         error_log(e, "023")
 
-def VehicleStatusReport_024():
+def Vehicle_Status_Report_024():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -754,7 +754,7 @@ def VehicleStatusReport_024():
     except Exception as e:
         error_log(e, "024")
 
-def VehicleStatusReport_025():
+def Vehicle_Status_Report_025():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -784,7 +784,7 @@ def VehicleStatusReport_025():
     except Exception as e:
         error_log(e, "025")
 
-def VehicleStatusReport_026():
+def Vehicle_Status_Report_026():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -814,7 +814,7 @@ def VehicleStatusReport_026():
     except Exception as e:
         error_log(e, "026")
 
-def VehicleStatusReport_027():
+def Vehicle_Status_Report_027():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -843,7 +843,7 @@ def VehicleStatusReport_027():
     except Exception as e:
         error_log(e, "027")
 
-def VehicleStatusReport_028():
+def Vehicle_Status_Report_028():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -872,7 +872,7 @@ def VehicleStatusReport_028():
     except Exception as e:
             error_log(e, "028")
 
-def VehicleStatusReport_029():
+def Vehicle_Status_Report_029():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -905,7 +905,7 @@ def VehicleStatusReport_029():
     except Exception as e:
         error_log(e, "029")
 
-def VehicleStatusReport_030():
+def Vehicle_Status_Report_030():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -936,7 +936,7 @@ def VehicleStatusReport_030():
         error_log(e, "030")
 
 # No notifications recieved
-def VehicleStatusReport_031():
+def Vehicle_Status_Report_031():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
@@ -952,14 +952,16 @@ def VehicleStatusReport_031():
         error_log(e, "031")
 
 # Could not get it to show the error/notif
-def VehicleStatusReport_032():
+def Vehicle_Status_Report_032():
     try:
         log("✅ - Temp, battery protection mode may be disabled")
     except Exception as e:
         error_log(e, "032")
 
-def VehicleStatusReport_033():
+def Vehicle_Status_Report_033():
     try:
         log("✅ - Temp, battery protection mode may be disabled")
     except Exception as e:
         error_log(e, "033")
+
+# ONLY 32 Test cases now find the wrong one

@@ -6,45 +6,32 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"PrivacyModeApp-{msg}-{num}.png")
+    controller.take_fail_screenshot(f"Roadside Assistance-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"PrivacyModeApp-{e}-{num}.png")
+    controller.take_fail_screenshot(f"Roadside Assistance-{e}-{num}.png")
 
-# Feels redundant
-def PrivacyModeApp_001():
+def Roadside_Assistance_001():
     try:
         pass
     except Exception as e:
         error_log(e, "001")
 
-def PrivacyModeApp_002():
+def Roadside_Assistance_002():
     try:
         pass
     except Exception as e:
         error_log(e, "002")
 
-def PrivacyModeApp_003():
+def Roadside_Assistance_003():
     try:
         pass
     except Exception as e:
         error_log(e, "003")
 
-def PrivacyModeApp_004():
+def Roadside_Assistance_004():
     try:
         pass
     except Exception as e:
         error_log(e, "004")
-
-def PrivacyModeApp_005():
-    try:
-        pass
-    except Exception as e:
-        error_log(e, "005")
-
-def PrivacyModeApp_006():
-    try:
-        log("✅ - temp can't check style guide")
-    except Exception as e:
-        error_log(e, "006")

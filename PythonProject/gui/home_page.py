@@ -312,6 +312,42 @@ class HomePage(QWidget):
         platform_layout.addWidget(self.android_btn)
         platform_layout.addWidget(self.ios_btn)
 
+        vehicle_type_layout = QHBoxLayout()
+        vehicle_type_layout.setSpacing(10)
+        vehicle_type_layout.setAlignment(Qt.AlignCenter)
+
+        self.ice_btn = QPushButton("ICE")
+        self.phev_btn = QPushButton("PHEV")
+
+        for btn in (self.ice_btn, self.phev_btn):
+            btn.setFixedSize(140, 45) if self.screen == 'Monitor' else btn.setFixedSize(85, 30)
+            btn.setCursor(Qt.PointingHandCursor)
+            btn.setCheckable(True)
+            btn.setStyleSheet("""
+                QPushButton {
+                    background-color: #dfe4e2;
+                    border: 2px solid #394d45;
+                    border-radius: 8px;
+                    color: #394d45;
+                    font-weight: bold;
+                    font-size: 12px;
+                }
+                QPushButton:checked {
+                    background-color: #394d45;
+                    color: white;
+                }
+                QPushButton:hover {
+                    background-color: #cfd4d2;
+                }
+            """)
+
+        self.ice_btn.clicked.connect(lambda: self._select_platform("android"))
+        self.phev_btn.clicked.connect(lambda: self._select_platform("ios"))
+
+        vehicle_type_layout.addWidget(self.ice_btn)
+        vehicle_type_layout.addWidget(self.phev_btn)
+
+        form_layout.addLayout(vehicle_type_layout)
         form_layout.addLayout(platform_layout)
 
         middle_side.addWidget(credentials_frame)

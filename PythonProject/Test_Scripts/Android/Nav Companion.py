@@ -6,13 +6,13 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"NavCompanion-{msg}-{num}.png")
+    controller.take_fail_screenshot(f"Nav Companion-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"NavCompanion-{e}-{num}.png")
+    controller.take_fail_screenshot(f"Nav Companion-{e}-{num}.png")
 
-def NavCompanion_001():
+def Nav_Companion_001():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         if controller.click_by_image("Icons/navigation_icon.png"):
@@ -62,7 +62,7 @@ def NavCompanion_001():
     except Exception as e:
         error_log(e, "001")
 
-def NavCompanion_002():
+def Nav_Companion_002():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/navigation_icon.png")
@@ -79,7 +79,7 @@ def NavCompanion_002():
     except Exception as e:
         error_log(e, "002")
 
-def NavCompanion_003():
+def Nav_Companion_003():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/navigation_icon.png")
@@ -88,74 +88,68 @@ def NavCompanion_003():
     except Exception as e:
         error_log(e, "003")
 
-def NavCompanion_004():
+def Nav_Companion_004():
     try:
         pass
     except Exception as e:
         error_log(e, "004")
 
-def NavCompanion_005():
+def Nav_Companion_005():
     try:
         pass
     except Exception as e:
         error_log(e, "005")
 
-def NavCompanion_006():
+def Nav_Companion_006():
     try:
         pass
     except Exception as e:
         error_log(e, "006")
 
-def NavCompanion_007():
+def Nav_Companion_007():
     try:
         pass
     except Exception as e:
         error_log(e, "007")
 
-def NavCompanion_008():
+def Nav_Companion_008():
     try:
         pass
     except Exception as e:
         error_log(e, "008")
 
-def NavCompanion_009():
+def Nav_Companion_009():
     try:
         pass
     except Exception as e:
         error_log(e, "009")
 
-def NavCompanion_010():
+def Nav_Companion_010():
     try:
         pass
     except Exception as e:
         error_log(e, "010")
 
-def NavCompanion_011():
+def Nav_Companion_011():
     try:
         pass
     except Exception as e:
         error_log(e, "011")
 
-def NavCompanion_012():
+def Nav_Companion_012():
     try:
         pass
     except Exception as e:
         error_log(e, "012")
 
-def NavCompanion_013():
+def Nav_Companion_013():
     try:
         pass
     except Exception as e:
         error_log(e, "013")
 
-def NavCompanion_014():
-    try:
-        pass
-    except Exception as e:
-        error_log(e, "014")
-
-def NavCompanion_015():
+def Nav_Companion_014():
     try:
         log("✅ - Cannot complete style guide testcases (temporary)")
     except Exception as e:
-        error_log(e, "015")
+        error_log(e, "014")

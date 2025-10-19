@@ -14,7 +14,7 @@ def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
     controller.take_fail_screenshot(f"Profile-{e}-{num}.png")
 
-def Profiles_001():
+def Profile_001():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         # 1) Open Profile tab
@@ -87,7 +87,7 @@ def Profiles_001():
     except Exception as e:
         error_log(e, "001")
 
-def Profiles_002():
+def Profile_002():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         if controller.click_by_image("Icons/Profile_Icon.png", threshold=0.80):
@@ -102,7 +102,7 @@ def Profiles_002():
     except Exception as e:
         error_log(e, "002")
 
-def Profiles_003():
+def Profile_003():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/Profile_Icon.png")
@@ -126,7 +126,7 @@ def Profiles_003():
 
 # some of the text in this test case is not the same as my app version
 # need resource id of back button
-def Profiles_004():
+def Profile_004():
     current_pin = "1234"
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -167,7 +167,7 @@ def Profiles_004():
         error_log(e, "004")
 
 # THINK THIS BRAKES THE APP FOR NOW, will finish when it stops destroying everything
-# def Profiles_005():
+# def Profile_005():
 #     try:
 #         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 #         controller.click_by_image("Icons/Profile_Icon.png")
@@ -221,3 +221,93 @@ def Profile_006():
 
     except Exception as e:
         error_log(e, "006")
+
+def Profile_007():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "007")
+
+def Profile_007():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "007")
+
+def Profile_008():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "008")
+
+def Profile_009():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "009")
+
+def Profile_010():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "010")
+
+def Profile_011():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "011")
+
+def Profile_012():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "012")
+
+def Profile_013():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "013")
+
+def Profile_014():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "014")
+
+def Profile_015():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "015")
+
+def Profile_016():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "016")
+
+def Profile_017():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "017")
+
+def Profile_018():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "018")
+
+def Profile_019():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "019")
+
+def Profile_020():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "020")

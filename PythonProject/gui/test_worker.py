@@ -9,7 +9,7 @@ class TestRunnerWorker(QObject):
     progress = Signal(int)
     current_row = Signal(int)
     row_finished = Signal(int)
-    need_precondition = Signal(int)   # NEW: tell UI we need precondition
+    need_precondition = Signal(int)
 
     def __init__(self, service, testcase_count, parent=None):
         super().__init__(parent)
@@ -54,8 +54,8 @@ class TestRunnerWorker(QObject):
                 self._resume = False
                 self._mutex.unlock()
 
-            if "(" in self.service or ")" in self.service:
-                fixed_function_name = self.service.replace("(","").replace(")","")
+            if " " in self.service:
+                fixed_function_name = self.service.replace(" ","_").replace("-", "_").replace("& ", "")
             else:
                 fixed_function_name = self.service
 

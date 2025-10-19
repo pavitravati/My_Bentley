@@ -1,91 +1,118 @@
+from time import sleep
 from common_utils.android_image_comparision import *
+from common_utils.android_controller import *
 from core.log_emitter import log_emitter
 
+# Made a copy of the demo mode testcases to try and get them connected to the ui
 def log(msg):
     log_emitter.log_signal.emit(msg)
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"PHEV-MyBatteryCharge-{msg}-{num}.png")
+    controller.take_fail_screenshot(f"My Alerts-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"PHEV-MyBatteryCharge-{e}-{num}.png")
+    controller.take_fail_screenshot(f"My Alerts-{e}-{num}.png")
 
-def PHEV_MyBatteryCharge_001():
+def My_Alerts_001():
     try:
         pass
     except Exception as e:
         error_log(e, "001")
 
-def PHEV_MyBatteryCharge_002():
+def My_Alerts_002():
     try:
         pass
     except Exception as e:
         error_log(e, "002")
 
-def PHEV_MyBatteryCharge_003():
+def My_Alerts_003():
     try:
         pass
     except Exception as e:
         error_log(e, "003")
 
-def PHEV_MyBatteryCharge_004():
+def My_Alerts_004():
     try:
         pass
     except Exception as e:
         error_log(e, "004")
 
-def PHEV_MyBatteryCharge_005():
+def My_Alerts_005():
     try:
         pass
     except Exception as e:
         error_log(e, "005")
 
-def PHEV_MyBatteryCharge_006():
+def My_Alerts_006():
     try:
         pass
     except Exception as e:
         error_log(e, "006")
 
-def PHEV_MyBatteryCharge_007():
+def My_Alerts_007():
     try:
         pass
     except Exception as e:
         error_log(e, "007")
 
-def PHEV_MyBatteryCharge_008():
+def My_Alerts_008():
     try:
         pass
     except Exception as e:
         error_log(e, "008")
 
-def PHEV_MyBatteryCharge_009():
+def My_Alerts_009():
     try:
         pass
     except Exception as e:
         error_log(e, "009")
 
-def PHEV_MyBatteryCharge_010():
+def My_Alerts_010():
     try:
         pass
     except Exception as e:
         error_log(e, "010")
 
-def PHEV_MyBatteryCharge_011():
+def My_Alerts_011():
     try:
         pass
     except Exception as e:
         error_log(e, "011")
 
-def PHEV_MyBatteryCharge_012():
+def My_Alerts_012():
     try:
         pass
     except Exception as e:
         error_log(e, "012")
 
-def PHEV_MyBatteryCharge_013():
+def My_Alerts_013():
     try:
         pass
     except Exception as e:
         error_log(e, "013")
+
+def My_Alerts_014():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "014")
+
+def My_Alerts_015():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "015")
+
+def My_Alerts_016():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "016")
+
+def My_Alerts_017():
+    try:
+        log("✅ - temp, can't check style guide")
+    except Exception as e:
+        error_log(e, "017")

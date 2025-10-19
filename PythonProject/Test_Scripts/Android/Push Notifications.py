@@ -7,11 +7,11 @@ def log(msg):
 
 def fail_log(msg, num):
     log(f"{msg}")
-    controller.take_fail_screenshot(f"PushNotifications-{msg}-{num}.png")
+    controller.take_fail_screenshot(f"Push Notifications-{msg}-{num}.png")
 
 def error_log(e, num):
     log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"PushNotifications-{e}-{num}.png")
+    controller.take_fail_screenshot(f"Push Notifications-{e}-{num}.png")
 
 def identify_car():
 
@@ -29,7 +29,7 @@ def identify_car():
     return car
 
 # Need to do in car to see what a notificiation is like and how to click
-def PushNotifications_001():
+def Push_Notifications_001():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         car_model = identify_car()
@@ -47,7 +47,7 @@ def PushNotifications_001():
     except Exception as e:
         error_log(e, "001")
 
-def PushNotifications_002():
+def Push_Notifications_002():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         car_model = identify_car()
@@ -73,7 +73,7 @@ def PushNotifications_002():
         error_log(e, "002")
 
 # Get the notification but says cannot be done as vehicle error
-def PushNotifications_003():
+def Push_Notifications_003():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
@@ -88,21 +88,45 @@ def PushNotifications_003():
         error_log(e, "003")
 
 # Don't have charger
-def PushNotifications_004():
+def Push_Notifications_004():
     try:
         pass
     except Exception as e:
         error_log(e, "004")
 
 # Driving needed
-def PushNotifications_005():
+def Push_Notifications_005():
     try:
         pass
     except Exception as e:
         error_log(e, "005")
 
-def PushNotifications_006():
+def Push_Notifications_006():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "006")
+
+def Push_Notifications_007():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "007")
+
+def Push_Notifications_008():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "008")
+
+def Push_Notifications_009():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "009")
+
+def Push_Notifications_010():
     try:
         log("✅ - Cannot complete style guide testcases (temporary)")
     except Exception as e:
-        error_log(e, "006")
+        error_log(e, "010")

@@ -654,5 +654,8 @@ class DeviceController:
             if self.d(resourceId="uk.co.bentley.mybentley:id/textView_fragment_vehicle_poi_detail_card_parking_time").exists:
                 parked_for = self.d(resourceId="uk.co.bentley.mybentley:id/textView_fragment_vehicle_poi_detail_card_parking_time").get_text()
                 nav_vehicle["parked for"] = parked_for
+
+            return nav_vehicle
+
         except Exception as e:
             print(f"❌ Error while extracting vehicle details: {e}")

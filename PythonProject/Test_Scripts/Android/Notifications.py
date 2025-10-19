@@ -102,6 +102,18 @@ def Notifications_005():
 
 def Notifications_006():
     try:
-        log("✅ - Cannot complete style guide testcases (temporary)")
+        pass
     except Exception as e:
         error_log(e, "006")
+
+def Notifications_007():
+    try:
+        pass
+    except Exception as e:
+        error_log(e, "007")
+
+def Notifications_008():
+    try:
+        log("✅ - Cannot complete style guide testcases (temporary)")
+    except Exception as e:
+        error_log(e, "008")

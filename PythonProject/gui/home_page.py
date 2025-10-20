@@ -6,6 +6,7 @@ from PySide6.QtGui import QFont, QPixmap, QCursor
 from excel import services
 from PySide6.QtCore import Qt, Signal
 from excel import resource_path
+import globals
 
 class ClickableLabel(QLabel):
     clicked = Signal()
@@ -100,7 +101,7 @@ class HomePage(QWidget):
         header.setSectionResizeMode(QHeaderView.Fixed)
         header.setFixedHeight(40)
         testcase_table.verticalHeader().setVisible(False)
-        testcase_table.setRowCount(len(services))
+        testcase_table.setRowCount(len(services)+1)
         testcase_table.setWordWrap(True)
         testcase_table.setEditTriggers(QTableWidget.NoEditTriggers)
         if self.screen == 'Monitor':
@@ -141,8 +142,9 @@ class HomePage(QWidget):
         header_font = QFont("Arial", 15, QFont.Bold)
         testcase_table.horizontalHeader().setFont(header_font)
 
-        for row in range(len(services)):
+        for row in range(len(services)+1):
             checkbox = QCheckBox()
+            checkbox.clicked.connect(lambda: self.update_run_btn(testcase_table))
             checkbox.setCursor(Qt.PointingHandCursor)
             checkbox.setStyleSheet("""
                             QCheckBox {
@@ -172,7 +174,7 @@ class HomePage(QWidget):
                 testcase_table.setCellWidget(row, 1, cell_widget)
                 checkbox.toggled.connect(lambda checked, t=testcase_table: self.all_tests_checkbox(checked, t))
             else:
-                label = ClickableLabel(services[row])
+                label = ClickableLabel(services[row-1])
                 label.clicked.connect(lambda r=row: self.open_service_tests(services[r]))
 
                 text_cell = QWidget()
@@ -258,18 +260,22 @@ class HomePage(QWidget):
         self.name_input = QLineEdit()
         self.name_input.setPlaceholderText("Name")
         self.name_input.setStyleSheet("margin-bottom: 5px;")
+        self.name_input.textChanged.connect(lambda: self.update_run_btn(testcase_table))
 
         self.email_input = QLineEdit()
         self.email_input.setPlaceholderText("Email")
         self.email_input.setStyleSheet("margin-bottom: 5px;")
+        self.email_input.textChanged.connect(lambda: self.update_run_btn(testcase_table))
 
         self.password_input = QLineEdit()
         self.password_input.setPlaceholderText("Password")
         self.password_input.setStyleSheet("margin-bottom: 5px;")
+        self.password_input.textChanged.connect(lambda: self.update_run_btn(testcase_table))
 
         self.pin_input = QLineEdit()
         self.pin_input.setPlaceholderText("PIN")
         self.pin_input.setStyleSheet("margin-bottom: 5px;")
+        self.pin_input.textChanged.connect(lambda: self.update_run_btn(testcase_table))
 
         form_layout.addWidget(self.name_input)
         form_layout.addWidget(self.email_input)
@@ -286,6 +292,7 @@ class HomePage(QWidget):
 
         for btn in (self.android_btn, self.ios_btn):
             btn.setFixedSize(140, 45) if self.screen == 'Monitor' else btn.setFixedSize(85, 30)
+            btn.clicked.connect(lambda: self.update_run_btn(testcase_table))
             btn.setCursor(Qt.PointingHandCursor)
             btn.setCheckable(True)
             btn.setStyleSheet("""
@@ -322,6 +329,7 @@ class HomePage(QWidget):
         for btn in (self.ice_btn, self.phev_btn):
             btn.setFixedSize(140, 45) if self.screen == 'Monitor' else btn.setFixedSize(85, 30)
             btn.setCursor(Qt.PointingHandCursor)
+            btn.clicked.connect(lambda: self.update_run_btn(testcase_table))
             btn.setCheckable(True)
             btn.setStyleSheet("""
                 QPushButton {
@@ -341,8 +349,8 @@ class HomePage(QWidget):
                 }
             """)
 
-        self.ice_btn.clicked.connect(lambda: self._select_platform("android"))
-        self.phev_btn.clicked.connect(lambda: self._select_platform("ios"))
+        self.ice_btn.clicked.connect(lambda: self._select_car("ice"))
+        self.phev_btn.clicked.connect(lambda: self._select_car("phev"))
 
         vehicle_type_layout.addWidget(self.ice_btn)
         vehicle_type_layout.addWidget(self.phev_btn)
@@ -373,27 +381,33 @@ class HomePage(QWidget):
                 background-color: white;
             }
             QPushButton {
-                background-color: #394d45;
+                background-color: #dfe4e2;
+                border: 2px solid #394d45;
+                color: #394d45;
                 font-size: 16px;
                 font-weight: bold;
                 width: 250px;
                 height: 35px;
-                border: none;
                 border-radius: 10px;
                 padding: 6px 10px;
+            }
+            QPushButton:enabled {
+                background-color: #394d45;
                 color: white;
             }
             QPushButton:hover {
                 background-color: #25312c;
-                cursor: pointer;
+
             }
         """)
 
-        run_btn = QPushButton("Run")
-        run_btn.setCursor(Qt.PointingHandCursor)
+        self.run_btn = QPushButton("Run")
+        self.run_btn.setEnabled(False)
+        self.run_btn.setCursor(Qt.PointingHandCursor)
+        self.run_btn.clicked.connect(lambda: self.run_selected_services(testcase_table))
 
         btn_layout = QVBoxLayout()
-        btn_layout.addWidget(run_btn)
+        btn_layout.addWidget(self.run_btn)
         btn_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         btn_layout.setSpacing(30)
         btn_layout.setContentsMargins(10, 10, 10, 10)
@@ -470,6 +484,14 @@ class HomePage(QWidget):
             self.android_btn.setChecked(False)
             self.ios_btn.setChecked(True)
 
+    def _select_car(self, car_type):
+        if car_type == "ice":
+            self.ice_btn.setChecked(True)
+            self.phev_btn.setChecked(False)
+        else:
+            self.ice_btn.setChecked(False)
+            self.phev_btn.setChecked(True)
+
     def open_service_tests(self, service):
         self.main_window.show_test_cases(service)
 
@@ -481,3 +503,39 @@ class HomePage(QWidget):
                 if cb:
                     cb.setChecked(checked)
                     cb.setEnabled(not checked)
+
+    def update_run_btn(self, table):
+        name_filled = bool(self.name_input.text().strip())
+        email_filled = bool(self.email_input.text().strip())
+        password_filled = bool(self.password_input.text().strip())
+        pin_filled = bool(self.pin_input.text().strip())
+        vehicle_type = self.ice_btn.isChecked() or self.phev_btn.isChecked()
+        phone_type = self.ios_btn.isChecked() or self.android_btn.isChecked()
+        checkbox_check = False
+        for row in range(table.rowCount()):
+            cell_widget = table.cellWidget(row, 1)
+            if cell_widget:
+                cb = cell_widget.findChild(QCheckBox)
+                if cb.isChecked():
+                    checkbox_check = True
+
+        can_submit = name_filled and email_filled and password_filled and pin_filled and vehicle_type and phone_type and checkbox_check
+
+        self.run_btn.setEnabled(can_submit)
+
+    def run_selected_services(self, table):
+        globals.selected_services = []
+        for row in range(table.rowCount()):
+            cell_widget = table.cellWidget(row, 1)
+            if cell_widget:
+                cb = cell_widget.findChild(QCheckBox)
+                if cb.isChecked():
+                    globals.selected_services.append(services[row-1])
+        globals.current_name = self.name_input.text()
+        globals.current_email = self.email_input.text()
+        globals.current_password = self.password_input.text()
+        globals.current_pin = self.pin_input.text()
+        globals.vehicle_type = "ice" if self.ice_btn.isChecked() else "phev"
+        globals.phone_type = "Iphone" if self.ios_btn.isChecked() else "Android"
+
+    def

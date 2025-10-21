@@ -11,20 +11,20 @@ from widgets import PaddingDelegate
 from test_worker import TestRunnerWorker
 from error_page import ErrorPage
 from metric_page import MetricPage
+from service_report import ServiceReport
 import os
 import glob
 from excel import resource_path
 from PySide6.QtCore import QTime
-import globals
 
 testcase_map = load_data()
 
 class TestCaseTablePage(QWidget):
-    def __init__(self, main_window, service, parent=None):
+    def __init__(self, main_window, service="DemoMode", parent=None):
         super().__init__(parent)
-        self.current_row = None
         self.service = service
-        globals.log_history[service] = {}
+        self.log_history = {}
+        self.current_row = None
         log_emitter.log_signal.connect(self.handle_log)
         self.test_start_times = {}
         self.main_window = main_window
@@ -85,6 +85,30 @@ class TestCaseTablePage(QWidget):
 
         # Adds the horizontal layout to the main window layout
         layout.addLayout(top_layout)
+
+        # Creates the button that will begin the automated test and adds to main layout
+        main_button = QPushButton("Begin Automated Test")
+        main_button.setStyleSheet("""
+            QPushButton {
+                margin-top: 20px;
+                margin-bottom: 20px;
+                font-size: 16px;
+                height: 30px;
+                background-color: #394d45;
+                color: white;
+            }
+            QPushButton:disabled {
+                background-color: #859990; 
+                color: #cccccc;      
+            }
+            QPushButton:hover {
+                background-color: #323c38;
+            }
+        """)
+        main_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        main_button.setCursor(Qt.PointingHandCursor)
+        main_button.clicked.connect(self.main_button_clicked)
+        layout.addWidget(main_button)
 
         # Create the table with 8 columns and the rows needed for all test cases
         self.table = QTableWidget()
@@ -237,22 +261,35 @@ class TestCaseTablePage(QWidget):
         # Waits for table to be added and then adjusts the column widths
         QTimer.singleShot(0, self.final_adjust_layout)
 
-        self.thread = QThread()
-        self.worker = TestRunnerWorker(service, self.table.rowCount())
-        self.worker.moveToThread(self.thread)
+        self.results_btn = QPushButton("Show results")
+        self.results_btn.setVisible(False)
+        self.results_btn.setCursor(Qt.PointingHandCursor)
+        self.results_btn.setStyleSheet("margin-top: 20px; font-size: 16px; height: 30px; background-color: #394d45; color: white;")
+        self.results_btn.setStyleSheet("""
+            QPushButton {
+                margin-top: 20px;
+                font-size: 16px;
+                height: 30px;
+                background-color: #394d45;
+                color: white;
+            }
+            QPushButton:disabled {
+                background-color: #859990; 
+                color: #cccccc;      
+            }
+            QPushButton:hover {
+                background-color: #323c38;
+            }
+        """)
+        self.results_btn.clicked.connect(lambda checked: self.testing_click())
+        layout.addWidget(self.results_btn)
 
-        self.thread.started.connect(self.worker.run)
-        self.worker.finished.connect(self.thread.quit)
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.thread.finished.connect(self.thread.deleteLater)
-        self.worker.need_precondition.connect(self.on_need_precondition)
+    def generate_results(self):
+        self.results_btn.setVisible(True)
 
-        self.worker.current_row.connect(self.set_current_row)
-        self.worker.row_finished.connect(self.on_row_finished)
-        self.worker.finished.connect(self.next_service)
-
-        self.thread.start()
+    def testing_click(self):
+        self.service_report = ServiceReport(service_title=f"{self.service}", logs=self.log_history)
+        self.service_report.show()
 
     def adjust_column_widths(self):
         screen_size = QApplication.primaryScreen().size()
@@ -284,11 +321,39 @@ class TestCaseTablePage(QWidget):
             current_height = self.table.rowHeight(row)
             self.table.setRowHeight(row, current_height + padding)
 
+    def main_button_clicked(self):
+
+        self.sender().setVisible(False)
+
+        self.thread = QThread()
+        self.worker = TestRunnerWorker(self.service, self.table.rowCount())
+        self.worker.moveToThread(self.thread)
+
+        # Connect signals
+        self.thread.started.connect(self.worker.run)
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.worker.need_precondition.connect(self.on_need_precondition)
+
+        self.worker.current_row.connect(self.set_current_row)
+        self.worker.row_finished.connect(self.on_row_finished)
+
+        self.worker.progress.connect(self.update_progress)
+
+        self.worker.finished.connect(self.generate_results)
+
+        self.thread.start()
+
+    def update_progress(self, row):
+        print(f"Completed test row: {row}")
+
     def handle_log(self, message: str):
         try:
-            globals.log_history[self.service][self.current_row].append(message)
+            self.log_history[self.current_row].append(message)
         except:
-            globals.log_history[self.service][self.current_row] = [message]
+            self.log_history[self.current_row] = [message]
         print(message)
 
     @Slot(int)
@@ -317,8 +382,8 @@ class TestCaseTablePage(QWidget):
                 duration_item.setFont(QFont("Arial", 10))
 
         metrics = []
-        for i in range(len(globals.log_history[self.service][row])):
-            symbol = globals.log_history[self.service][row][i][0]
+        for i in range(len(self.log_history[row])):
+            symbol = self.log_history[row][i][0]
             if symbol == '✅':
                 colors.append('green')
             elif symbol == '❌':
@@ -326,7 +391,7 @@ class TestCaseTablePage(QWidget):
             elif symbol == '⚠':
                 colors.append('yellow')
             else:
-                metrics.append(globals.log_history[self.service][row][i])
+                metrics.append(self.log_history[row][i])
 
         result_cell = self.table.item(row-1, 5)
         if 'red' in colors:
@@ -378,7 +443,7 @@ class TestCaseTablePage(QWidget):
         test_title = self.table.item(row, 0).text()
 
         self.error_window = ErrorPage(title=test_title,
-                                      logs=globals.log_history[self.service][row], images=image_paths)
+                                      logs=self.log_history[row], images=image_paths)
         self.error_window.show()
 
     def open_test_case_metrics(self, row, metrics):
@@ -411,16 +476,4 @@ class TestCaseTablePage(QWidget):
                     child.setEnabled(False)
 
     def home_button_clicked(self):
-        globals.current_name = globals.current_email = globals.current_password = globals.current_pin = globals.vehicle_type = globals.phone_type = None
-        globals.selected_services = [None]
-        globals.service_index = 0
-        globals.current_service = globals.selected_services[globals.service_index]
         self.main_window.show_homepage()
-
-    def next_service(self):
-        globals.service_index += 1
-        if globals.service_index >= len(globals.selected_services):
-            self.home_button_clicked()
-        else:
-            self.main_window.setCentralWidget(None)
-            self.main_window.setCentralWidget(TestCaseTablePage(self.main_window, globals.selected_services[globals.service_index]))

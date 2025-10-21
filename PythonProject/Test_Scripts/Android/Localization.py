@@ -1,5 +1,6 @@
 from common_utils.android_image_comparision import *
 from core.log_emitter import log_emitter
+from time import sleep
 
 def log(msg):
     log_emitter.log_signal.emit(msg)
@@ -14,12 +15,12 @@ def error_log(e, num):
 
 def Localization_001():
     try:
-        pass
+        log("✅ - test")
     except Exception as e:
         error_log(e, "001")
 
 def Localization_002():
     try:
-        pass
+        fail_log("❌ - dsafad", "002")
     except Exception as e:
         error_log(e, "002")

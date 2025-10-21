@@ -36,13 +36,13 @@ class MainWindow(QMainWindow):
         for service in services:
             action = QAction(service, self)
             action.setCheckable(True)
-            action.triggered.connect(lambda s=False, svc=service: self.toolbar_button_clicked(s, svc))
+            action.triggered.connect(lambda svc=service: self.toolbar_button_clicked(svc))
             toolbar.addAction(action)
             action_group.addAction(action)
 
         self.setCentralWidget(HomePage(self))
 
-    def toolbar_button_clicked(self, s, service):
+    def toolbar_button_clicked(self, service):
         self.service = service
         self.setCentralWidget(TestCaseTablePage(self, service))
 

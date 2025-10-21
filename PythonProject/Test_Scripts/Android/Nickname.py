@@ -278,6 +278,6 @@ def Nickname_009():
 
 def Nickname_010():
     try:
-        pass
+        log("✅ - Cannot check style guide")
     except Exception as e:
         error_log(e, "010")

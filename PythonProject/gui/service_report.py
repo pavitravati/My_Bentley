@@ -1,16 +1,22 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTextEdit, QScrollArea, QPushButton, QToolButton, QSizePolicy
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTextEdit, QScrollArea, QToolBar, QToolButton, \
+    QSizePolicy, QPushButton, QComboBox
 from PySide6.QtGui import QFont, QPixmap
 from PySide6.QtCore import Qt
 from pathlib import Path
 from PySide6.QtWidgets import QApplication
+from openpyxl.reader.excel import load_workbook
+
 from excel import load_data
 import os
 import glob
+import globals
+
+testcase_map = load_data()
 
 class ServiceReport(QWidget):
-    def __init__(self, service_title: str, logs: dict[int, list], parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
-        testcase_map = load_data()
+        self.service = next(iter(globals.log_history))
 
         screen = QApplication.primaryScreen()
         screen_size = screen.availableGeometry()
@@ -20,14 +26,71 @@ class ServiceReport(QWidget):
 
         self.setFixedSize(width, height)
 
-        self.setWindowTitle(service_title)
+        self.setWindowTitle(self.service)
         layout = QVBoxLayout()
         self.setLayout(layout)
+
+        self.build_body_for_service(layout)
+
+    def toolbar_button_clicked(self, svc, layout):
+        self.service = svc
+        self.refresh_ui(layout)
+
+    def toolbar_button_clicked_import(self, svc, layout, folder_name):
+        self.service = svc
+        self.refresh_ui(layout, new_folder=True, folder_name=folder_name)
+
+    def refresh_ui(self, current_layout, new_folder=False, folder_name=None):
+        # Clear the existing layout (everything except toolbar)
+        main_layout = self.layout()
+
+        # Remove all widgets after the toolbar (index 1 onward)
+        for i in reversed(range(0, main_layout.count())):
+            item = main_layout.itemAt(i)
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
+            else:
+                layout = item.layout()
+                if layout:
+                    while layout.count():
+                        sub_item = layout.takeAt(0)
+                        sub_widget = sub_item.widget()
+                        if sub_widget:
+                            sub_widget.deleteLater()
+                    main_layout.removeItem(layout)
+
+        if new_folder:
+            self.build_body_for_folder(current_layout, folder_name)
+        else:
+            self.build_body_for_service(current_layout)
+
+    def build_body_for_service(self, layout):
+        toolbar = QHBoxLayout()
+        dropdown = QComboBox()
+        dropdown.addItem("Current test")
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        results_folder = os.path.join(script_dir, "test_results")
+        folder_names = [name for name in os.listdir(results_folder) if
+                        os.path.isdir(os.path.join(results_folder, name))]
+        for folder in folder_names:
+            dropdown.addItem(f"{folder.replace('+', ':')}")
+        dropdown.currentTextChanged.connect(lambda text: self.show_test_result(layout, text))
+
+        toolbar.addWidget(dropdown)
+
+        for service in globals.log_history:
+            toolbar_btn = QPushButton(service)
+            toolbar_btn.clicked.connect(lambda checked, svc=service: self.toolbar_button_clicked(svc, layout))
+            toolbar.addWidget(toolbar_btn)
+        toolbar.addStretch()
+
+        layout.addLayout(toolbar)
 
         top_layout = QHBoxLayout()
         top_layout.setContentsMargins(0, 40, 0, 20)
 
-        title = QLabel(service_title)
+        title = QLabel(self.service)
         title.setFont(QFont("Arial", 25, QFont.Bold))
         title.setStyleSheet("margin-left: 20px; margin-bottom: 20px;")
         top_layout.addWidget(title)
@@ -71,15 +134,16 @@ class ServiceReport(QWidget):
         testcase_layout = QVBoxLayout(testcase_container)
         testcase_layout.setAlignment(Qt.AlignTop)
 
-        for row, case in enumerate(testcase_map[service_title]):
+        for row, case in enumerate(globals.log_history[self.service]):
             result = '✅'
-            for i in range(len(logs[row + 1])):
-                if logs[row + 1][i][0] == '❌':
+            for i in range(len(globals.log_history[self.service][case])):
+                if globals.log_history[self.service][case][i][0] == '❌':
                     result = '❌'
                     break
 
             btn = QToolButton()
-            btn.setText(case['Test Case Description'])
+            test_description = testcase_map[self.service][row]['Test Case Description']
+            btn.setText(test_description)
             btn.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
             btn.setFixedWidth(320)
             btn.setFixedHeight(45)
@@ -90,11 +154,11 @@ class ServiceReport(QWidget):
             else:
                 btn.setStyleSheet("background-color: #7d232b; font-size: 12px; color: white;")
 
-            row_logs = logs[row + 1]
+            row_logs = globals.log_history[self.service][case]
             logs_combined = "\n".join(row_logs)
             btn.clicked.connect(
-                lambda checked, c=case, l=logs_combined, r=row + 1:
-                self.on_test_clicked(c, l, r)
+                lambda checked, c=test_description, l=logs_combined, r=row + 1, s=self.service:
+                self.on_test_clicked(c, l, r, s)
             )
             testcase_layout.addWidget(btn)
 
@@ -134,9 +198,12 @@ class ServiceReport(QWidget):
 
         layout.addLayout(container_layout)
 
-    def on_test_clicked(self, test_case, logs_combined, row):
-        self.log_textbox.append(test_case['Test Case Description'])
-        self.log_textbox.setPlainText(logs_combined)
+    def on_test_clicked(self, test_case, logs_combined, row, service, imported_test=False, folder_name=None):
+        self.log_textbox.append(test_case)
+        if type(logs_combined) == str:
+            self.log_textbox.setPlainText(logs_combined)
+        else:
+            self.log_textbox.setPlainText(str(logs_combined.value))
 
         while self.images_layout.count():
             item = self.images_layout.takeAt(0)
@@ -144,14 +211,17 @@ class ServiceReport(QWidget):
             if widget is not None:
                 widget.deleteLater()
 
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        image_dir = os.path.join(base_dir, "fail_images")
+        if imported_test:
+            image_dir = os.path.join(folder_name, "images")
+        else:
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            image_dir = os.path.join(base_dir, "fail_images")
         image_paths = []
         row_num = f"0{row}" if row < 10 else f"{row}"
 
         for file_path in glob.glob(os.path.join(image_dir, "*.png")):
             filename = os.path.basename(file_path)
-            if row_num in filename:
+            if row_num in filename and service in filename:
                 image_paths.append(file_path)
 
         for img_path_str in image_paths:
@@ -190,3 +260,149 @@ class ServiceReport(QWidget):
 
             report_image.addWidget(image_display)
             self.images_layout.addWidget(internal_container)
+
+    def show_test_result(self, layout, text):
+        if text == 'Current test':
+            self.service = next(iter(globals.log_history))
+            self.refresh_ui(layout)
+        else:
+            folder_name = text.replace(':', '+')
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            results_folder = os.path.join(script_dir, "test_results")
+            test_folder_path = os.path.join(results_folder, folder_name)
+            test_result_file = load_workbook(os.path.join(test_folder_path, "test_results.xlsx"))
+            self.service = test_result_file.sheetnames[0]
+            self.refresh_ui(layout, new_folder=True, folder_name=folder_name)
+
+    def build_body_for_folder(self, layout, folder_name):
+        toolbar = QHBoxLayout()
+        dropdown = QComboBox()
+        dropdown.addItem(folder_name.replace("+", ":"))
+        dropdown.addItem("Current test")
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        results_folder = os.path.join(script_dir, "test_results")
+        folder_names = [name for name in os.listdir(results_folder) if
+                        os.path.isdir(os.path.join(results_folder, name)) and folder_name != name]
+        for folder in folder_names:
+            dropdown.addItem(f"{folder.replace('+', ':')}")
+        dropdown.currentTextChanged.connect(lambda text: self.show_test_result(layout, text))
+
+        toolbar.addWidget(dropdown)
+
+        test_folder_path = os.path.join(results_folder, folder_name)
+        test_result_file = load_workbook(os.path.join(test_folder_path, "test_results.xlsx"))
+        for sheet in test_result_file.sheetnames:
+            toolbar_btn = QPushButton(sheet)
+            toolbar_btn.clicked.connect(lambda checked, svc=sheet: self.toolbar_button_clicked_import(svc, layout, folder_name))
+            toolbar.addWidget(toolbar_btn)
+        toolbar.addStretch()
+
+        layout.addLayout(toolbar)
+
+        top_layout = QHBoxLayout()
+        top_layout.setContentsMargins(0, 40, 0, 20)
+
+        title = QLabel(self.service)
+        title.setFont(QFont("Arial", 25, QFont.Bold))
+        title.setStyleSheet("margin-left: 20px; margin-bottom: 20px;")
+        top_layout.addWidget(title)
+
+        top_layout.addStretch()
+
+        logo = QLabel()
+        img_path = Path(__file__).parent / "images" / "bentleylogo.png"
+        pixmap = QPixmap(str(img_path))
+        logo.setPixmap(pixmap)
+        logo.setScaledContents(True)
+        logo.setMaximumSize(135, 50)
+        logo.setStyleSheet("margin-right: 20px;")
+        top_layout.addWidget(logo)
+
+        layout.addLayout(top_layout)
+
+        container_layout = QHBoxLayout()
+
+        # Add all testcases so that they can all be viewed
+        testcase_scroll = QScrollArea()
+        testcase_scroll.setWidgetResizable(True)
+        testcase_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        testcase_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        testcase_scroll.setFixedWidth(340)
+        testcase_scroll.setStyleSheet("""
+                    QScrollArea {
+                        border: none;
+                        background: transparent;
+                    }
+                    QScrollBar:vertical {
+                        background: transparent;
+                        width: 10px;   
+                        margin: 0px 5px 0px 0px;
+                        border-radius: 5px;
+                    }
+                """)
+
+        # container that holds buttons
+        testcase_container = QWidget()
+        testcase_layout = QVBoxLayout(testcase_container)
+        testcase_layout.setAlignment(Qt.AlignTop)
+        current_sheet = test_result_file[self.service]
+
+        for row in range(1, current_sheet.max_row+1):
+            cell_value = current_sheet[f'B{row}'].value
+            result = '❌' if '❌' in str(cell_value) else '✅'
+
+            btn = QToolButton()
+            test_description = str(current_sheet[f'A{row}'].value)
+            btn.setText(test_description)
+            btn.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+            btn.setFixedWidth(320)
+            btn.setFixedHeight(45)
+            btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Minimum)
+
+            if result == '✅':
+                btn.setStyleSheet("background-color: #394d45; font-size: 12px; color: white;")
+            else:
+                btn.setStyleSheet("background-color: #7d232b; font-size: 12px; color: white;")
+
+            row_logs = current_sheet[f'B{row}']
+            btn.clicked.connect(
+                lambda checked, c=test_description, l=row_logs, r=row, s=self.service:
+                self.on_test_clicked(c, l, r, s, True, test_folder_path)
+            )
+            testcase_layout.addWidget(btn)
+
+        testcase_scroll.setWidget(testcase_container)
+
+        container_layout.addWidget(testcase_scroll)
+
+        detail_layout = QVBoxLayout()
+
+        self.log_textbox = QTextEdit()
+        parent_height = self.parent().height() if self.parent() else 800
+        screen_size = QApplication.primaryScreen().size()
+        available_width = screen_size.width()
+        if available_width > 1500:
+            multi = 0.35
+        else:
+            multi = 0.25
+        self.log_textbox.setFixedHeight(int(parent_height * multi))
+        self.log_textbox.setReadOnly(True)
+        self.log_textbox.setFont(QFont("Arial", 12))
+
+        detail_layout.addWidget(self.log_textbox)
+
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+
+        container = QWidget()
+        self.images_layout = QHBoxLayout(container)
+        self.images_layout.setSpacing(5)
+        self.images_layout.setContentsMargins(20, 0, 20, 0)
+
+        scroll_area.setWidget(container)
+
+        detail_layout.addWidget(scroll_area)
+
+        container_layout.addLayout(detail_layout)
+
+        layout.addLayout(container_layout)

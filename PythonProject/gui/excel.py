@@ -1,5 +1,5 @@
 import pandas as pd
-from openpyxl import load_workbook
+from openpyxl import load_workbook, Workbook
 from openpyxl.utils import get_column_letter
 import sys
 import os
@@ -10,12 +10,6 @@ services = ['Demo Mode', 'Customer Enrollment', 'Add VIN', 'App Registration Pag
             'Roadside Assistance', 'Data Services', 'My Alerts', 'Theft Alarm', 'Stolen Vehicle Locator', 'Audials',
             'Car Finder', 'Nav Companion', 'Notifications', 'Push Notifications', 'Profile', 'Localization', 'Privacy Mode',
             'Remote Park Assist', 'Stolen Vehicle Tracking']
-
-# services = ['DemoMode', 'Customer_Enrollment', 'App_Registration_Pages-IDK', 'Add_VIN', 'MyBentleyAppLogin',
-#             'Nickname', 'License(App)', 'VehicleStatusReport', 'RemoteLockUnlock', 'SingleServiceActivation',
-#             'PHEV-MyCarStatistics', 'PHEV-MyCabinComfort', 'PHEV-MyBatteryCharge', 'RoadsideAssistanceCall(App)',
-#             'DataServices', 'TheftAlarm', 'Audials(App)', 'CarFinder', 'NavCompanion', 'Notifications',
-#             'Profiles', 'TextStrings', 'PrivacyMode(App)', 'RemoteParkAssist', 'VehicleTrackingSystem']
 
 def resource_path(relative_path):
     try:

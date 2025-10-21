@@ -6,7 +6,17 @@ from PySide6.QtGui import QFont, QPixmap, QCursor
 from excel import services
 from PySide6.QtCore import Qt, Signal
 from excel import resource_path
+from test_case_page import TestCaseTablePage
+from service_report import ServiceReport
+from openpyxl import load_workbook, Workbook
+from excel import load_data
+from datetime import datetime
+import shutil
+from openpyxl.utils import get_column_letter
 import globals
+import os
+
+testcase_map = load_data()
 
 class ClickableLabel(QLabel):
     clicked = Signal()
@@ -453,8 +463,10 @@ class HomePage(QWidget):
 
         result_btn = QPushButton("Results")
         result_btn.setCursor(Qt.PointingHandCursor)
+        result_btn.clicked.connect(self.result_btn_clicked)
         export_btn = QPushButton("Export")
         export_btn.setCursor(Qt.PointingHandCursor)
+        export_btn.clicked.connect(self.export_result)
         if self.screen == 'Laptop':
             result_btn.setFixedHeight(30)
             export_btn.setFixedHeight(30)
@@ -538,4 +550,34 @@ class HomePage(QWidget):
         globals.vehicle_type = "ice" if self.ice_btn.isChecked() else "phev"
         globals.phone_type = "Iphone" if self.ios_btn.isChecked() else "Android"
 
-    def
+        self.main_window.setCentralWidget(TestCaseTablePage(self.main_window, globals.selected_services[globals.service_index]))
+
+    def result_btn_clicked(self):
+        self.service_report = ServiceReport()
+        self.service_report.show()
+
+    def export_result(self):
+        workbook = Workbook()
+        del workbook["Sheet"]
+        for service in globals.log_history:
+            new_sheet = workbook.create_sheet(title=service)
+            for key, test_logs in globals.log_history[service].items():
+                results = ''
+                for res in test_logs:
+                    results += res + '\n'
+                new_sheet[f'A{key}'] = testcase_map[service][key-1]['Test Case Description']
+                new_sheet[f'B{key}'] = results
+        current_datetime = datetime.now().strftime("%Y-%m-%d %H+%M")
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        save_folder = os.path.join(script_dir, "test_results")
+        subfolder = os.path.join(save_folder, current_datetime)
+        imgfolder = os.path.join(subfolder, "images")
+        os.makedirs(subfolder, exist_ok=True)
+        os.makedirs(imgfolder, exist_ok=True)
+        save_path = os.path.join(subfolder, f"test_results.xlsx")
+        workbook.save(save_path)
+
+        images = os.path.join(script_dir, "fail_images")
+        dest_images = os.path.join(subfolder, "images")
+        if os.path.exists(images):
+            shutil.copytree(images, dest_images, dirs_exist_ok=True, ignore=shutil.ignore_patterns('.gitkeep'))

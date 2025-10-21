@@ -180,7 +180,6 @@ def Car_Finder_006():
     except Exception as e:
         error_log(e, "006")
 
-# ASK about how to verify that the route displayed is correct
 def Car_Finder_007():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -220,17 +219,49 @@ def Car_Finder_007():
     except Exception as e:
         error_log(e, "007")
 
+# Privacy mode in the car
 def Car_Finder_008():
     try:
-        pass
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        controller.swipe_down()
+        sleep(6)
+
+        controller.click_by_image("Icons/navigation_icon.png")
+        controller.click_by_image("Images/Navigation_Allow.png")
+        controller.click_by_image("Images/Navigation_Car_Image.png")
+
+        if not compare_with_expected_crop("Images/Navigation_Car_Image.png"):
+            log("✅ - Find my car icon not displayed when privacy mode activated")
+        else:
+            fail_log("❌ - Find my car icon displayed when privacy mode activated", "008")
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        controller.click_by_image("Icons/Error_Icon.png")
+
     except Exception as e:
         error_log(e, "008")
 
 def Car_Finder_009():
     try:
-        pass
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        controller.swipe_down()
+        sleep(6)
+
+        controller.click_by_image("Icons/navigation_icon.png")
+        controller.click_by_image("Images/Navigation_Allow.png")
+        controller.click_by_image("Images/Navigation_Car_Image.png")
+
+        if compare_with_expected_crop("Images/Navigation_Car_Image.png"):
+            print("✅ - Find my car icon displayed when privacy mode deactivated")
+        else:
+            print("❌ - Find my car icon not displayed when privacy mode deactivated", "009")
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        controller.click_by_image("Icons/Error_Icon.png")
+
+
     except Exception as e:
         error_log(e, "009")
+
+Car_Finder_009()
 
 def Car_Finder_010():
     try:

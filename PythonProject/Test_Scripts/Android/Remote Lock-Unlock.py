@@ -31,7 +31,6 @@ def identify_car():
 # ADD A CHECK TO ALOT OF THESE THAT CHECKS IF THE MOST RECENT NOTIF IS WHAT THE TEST CASE JUST DID AND TIMESTAMP IS WITHIN THE MINUTE
 # FIX ENTER PIN SO THAT IT DOES IT TILL IT WORKS
 # ASK IF WHEN CHECKING NOTIF IF DOING AS A METRIC AND THEN TESTER LOOKS IF NECESSARY
-
 def Remote_Lock_Unlock_001():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")

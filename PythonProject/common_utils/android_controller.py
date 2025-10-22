@@ -659,3 +659,29 @@ class DeviceController:
 
         except Exception as e:
             print(f"❌ Error while extracting vehicle details: {e}")
+
+    def find_img(self, image_path, threshold=0.8):
+        template_path = self.get_resource_path(image_path)
+
+        if not os.path.exists(template_path):
+            print(f" Image file not found: {template_path}")
+            return False
+
+        screenshot_path = self.take_screenshot("temp.png")  # Make sure this returns the path
+        screen = cv2.imread(screenshot_path)
+        template = cv2.imread(template_path)
+
+        if screen is None or template is None:
+            print("Error reading screenshot or template image.")
+            return False
+
+        result = cv2.matchTemplate(screen, template, cv2.TM_CCOEFF_NORMED)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+
+        print(f"Match confidence: {max_val}")
+
+        if max_val >= threshold:
+            return True
+        else:
+            print("Image not found on screen (below threshold).")
+            return False

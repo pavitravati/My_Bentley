@@ -15,12 +15,12 @@ def error_log(e, num):
 
 def Localization_001():
     try:
-        log("✅ - test")
+        pass
     except Exception as e:
         error_log(e, "001")
 
 def Localization_002():
     try:
-        fail_log("❌ - dsafad", "002")
+        pass
     except Exception as e:
         error_log(e, "002")

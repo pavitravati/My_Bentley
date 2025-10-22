@@ -251,17 +251,15 @@ def Car_Finder_009():
         controller.click_by_image("Images/Navigation_Car_Image.png")
 
         if compare_with_expected_crop("Images/Navigation_Car_Image.png"):
-            print("✅ - Find my car icon displayed when privacy mode deactivated")
+            log("✅ - Find my car icon displayed when privacy mode deactivated")
         else:
-            print("❌ - Find my car icon not displayed when privacy mode deactivated", "009")
+            fail_log("❌ - Find my car icon not displayed when privacy mode deactivated", "009")
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/Error_Icon.png")
 
 
     except Exception as e:
         error_log(e, "009")
-
-Car_Finder_009()
 
 def Car_Finder_010():
     try:

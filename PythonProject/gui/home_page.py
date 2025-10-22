@@ -6,6 +6,7 @@ from PySide6.QtGui import QFont, QPixmap, QCursor
 from excel import services
 from PySide6.QtCore import Qt, Signal
 from excel import resource_path
+from gui.import_page import ImportResult
 from test_case_page import TestCaseTablePage
 from service_report import ServiceReport
 from openpyxl import load_workbook, Workbook
@@ -467,6 +468,9 @@ class HomePage(QWidget):
         export_btn = QPushButton("Export")
         export_btn.setCursor(Qt.PointingHandCursor)
         export_btn.clicked.connect(self.export_result)
+        import_btn = QPushButton("Import")
+        import_btn.setCursor(Qt.PointingHandCursor)
+        import_btn.clicked.connect(self.import_result)
         if self.screen == 'Laptop':
             result_btn.setFixedHeight(30)
             export_btn.setFixedHeight(30)
@@ -477,6 +481,7 @@ class HomePage(QWidget):
         result_btn_layout.addWidget(tests_failed)
         result_btn_layout.addWidget(result_btn)
         result_btn_layout.addWidget(export_btn)
+        result_btn_layout.addWidget(import_btn)
         result_btn_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         result_btn_layout.setSpacing(30 if self.screen == 'Monitor' else 15)
         result_btn_layout.setContentsMargins(10, 10, 10, 10)
@@ -581,3 +586,7 @@ class HomePage(QWidget):
         dest_images = os.path.join(subfolder, "images")
         if os.path.exists(images):
             shutil.copytree(images, dest_images, dirs_exist_ok=True, ignore=shutil.ignore_patterns('.gitkeep'))
+
+    def import_result(self):
+        self.import_result = ImportResult()
+        self.import_result.show()

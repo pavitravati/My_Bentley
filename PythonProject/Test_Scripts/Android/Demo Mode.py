@@ -3,7 +3,6 @@ from common_utils.android_image_comparision import *
 from common_utils.android_controller import *
 from core.log_emitter import log_emitter
 
-
 # Made a copy of the demo mode testcases to try and get them connected to the ui
 def log(msg):
     log_emitter.log_signal.emit(msg)

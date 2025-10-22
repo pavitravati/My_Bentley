@@ -1,11 +1,10 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTextEdit, QScrollArea, QToolBar, QToolButton, \
     QSizePolicy, QPushButton, QComboBox
-from PySide6.QtGui import QFont, QPixmap
+from PySide6.QtGui import QFont, QPixmap, QStandardItemModel
 from PySide6.QtCore import Qt
 from pathlib import Path
 from PySide6.QtWidgets import QApplication
 from openpyxl.reader.excel import load_workbook
-
 from excel import load_data
 import os
 import glob
@@ -16,7 +15,12 @@ testcase_map = load_data()
 class ServiceReport(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.service = next(iter(globals.log_history))
+        try:
+            self.service = next(iter(globals.log_history))
+            self.current_test = True
+        except:
+            self.service = None
+            self.current_test = False
 
         screen = QApplication.primaryScreen()
         screen_size = screen.availableGeometry()
@@ -67,17 +71,20 @@ class ServiceReport(QWidget):
 
     def build_body_for_service(self, layout):
         toolbar = QHBoxLayout()
-        dropdown = QComboBox()
-        dropdown.addItem("Current test")
+        self.dropdown = QComboBox()
+        if self.current_test:
+            self.dropdown.addItem("Current test")
+        else:
+            self.dropdown.addItem("Select test")
         script_dir = os.path.dirname(os.path.abspath(__file__))
         results_folder = os.path.join(script_dir, "test_results")
         folder_names = [name for name in os.listdir(results_folder) if
                         os.path.isdir(os.path.join(results_folder, name))]
         for folder in folder_names:
-            dropdown.addItem(f"{folder.replace('+', ':')}")
-        dropdown.currentTextChanged.connect(lambda text: self.show_test_result(layout, text))
+            self.dropdown.addItem(f"{folder.replace('+', ':')}")
+        self.dropdown.currentTextChanged.connect(lambda text: self.show_test_result(layout, text))
 
-        toolbar.addWidget(dropdown)
+        toolbar.addWidget(self.dropdown)
 
         for service in globals.log_history:
             toolbar_btn = QPushButton(service)
@@ -134,33 +141,34 @@ class ServiceReport(QWidget):
         testcase_layout = QVBoxLayout(testcase_container)
         testcase_layout.setAlignment(Qt.AlignTop)
 
-        for row, case in enumerate(globals.log_history[self.service]):
-            result = '✅'
-            for i in range(len(globals.log_history[self.service][case])):
-                if globals.log_history[self.service][case][i][0] == '❌':
-                    result = '❌'
-                    break
+        if self.service:
+            for row, case in enumerate(globals.log_history[self.service]):
+                result = '✅'
+                for i in range(len(globals.log_history[self.service][case])):
+                    if globals.log_history[self.service][case][i][0] == '❌':
+                        result = '❌'
+                        break
 
-            btn = QToolButton()
-            test_description = testcase_map[self.service][row]['Test Case Description']
-            btn.setText(test_description)
-            btn.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-            btn.setFixedWidth(320)
-            btn.setFixedHeight(45)
-            btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Minimum)
+                btn = QToolButton()
+                test_description = testcase_map[self.service][row]['Test Case Description']
+                btn.setText(test_description)
+                btn.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+                btn.setFixedWidth(320)
+                btn.setFixedHeight(45)
+                btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Minimum)
 
-            if result == '✅':
-                btn.setStyleSheet("background-color: #394d45; font-size: 12px; color: white;")
-            else:
-                btn.setStyleSheet("background-color: #7d232b; font-size: 12px; color: white;")
+                if result == '✅':
+                    btn.setStyleSheet("background-color: #394d45; font-size: 12px; color: white;")
+                else:
+                    btn.setStyleSheet("background-color: #7d232b; font-size: 12px; color: white;")
 
-            row_logs = globals.log_history[self.service][case]
-            logs_combined = "\n".join(row_logs)
-            btn.clicked.connect(
-                lambda checked, c=test_description, l=logs_combined, r=row + 1, s=self.service:
-                self.on_test_clicked(c, l, r, s)
-            )
-            testcase_layout.addWidget(btn)
+                row_logs = globals.log_history[self.service][case]
+                logs_combined = "\n".join(row_logs)
+                btn.clicked.connect(
+                    lambda checked, c=test_description, l=logs_combined, r=row + 1, s=self.service:
+                    self.on_test_clicked(c, l, r, s)
+                )
+                testcase_layout.addWidget(btn)
 
         testcase_scroll.setWidget(testcase_container)
 
@@ -276,18 +284,19 @@ class ServiceReport(QWidget):
 
     def build_body_for_folder(self, layout, folder_name):
         toolbar = QHBoxLayout()
-        dropdown = QComboBox()
-        dropdown.addItem(folder_name.replace("+", ":"))
-        dropdown.addItem("Current test")
+        self.dropdown = QComboBox()
+        self.dropdown.addItem(folder_name.replace("+", ":"))
+        if self.current_test:
+            self.dropdown.addItem("Current test")
         script_dir = os.path.dirname(os.path.abspath(__file__))
         results_folder = os.path.join(script_dir, "test_results")
         folder_names = [name for name in os.listdir(results_folder) if
                         os.path.isdir(os.path.join(results_folder, name)) and folder_name != name]
         for folder in folder_names:
-            dropdown.addItem(f"{folder.replace('+', ':')}")
-        dropdown.currentTextChanged.connect(lambda text: self.show_test_result(layout, text))
+            self.dropdown.addItem(f"{folder.replace('+', ':')}")
+        self.dropdown.currentTextChanged.connect(lambda text: self.show_test_result(layout, text))
 
-        toolbar.addWidget(dropdown)
+        toolbar.addWidget(self.dropdown)
 
         test_folder_path = os.path.join(results_folder, folder_name)
         test_result_file = load_workbook(os.path.join(test_folder_path, "test_results.xlsx"))

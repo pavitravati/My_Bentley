@@ -60,8 +60,8 @@ class ImportResult(QWidget):
         folder_path = QFileDialog.getExistingDirectory(self, "Select a Folder")
 
         if folder_path:
-            folder_name = os.path.basename(folder_path)
-            script_dir = os.path.dirname(os.path.abspath(__file__))
+            # folder_name = os.path.basename(folder_path)
+            # script_dir = os.path.dirname(os.path.abspath(__file__))
             # save_folder = os.path.join(script_dir, "test_results", folder_name)
             save_folder = globals.sharedrive_path
 

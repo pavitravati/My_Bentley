@@ -13,9 +13,9 @@ from openpyxl import load_workbook, Workbook
 from excel import load_data
 from datetime import datetime
 import shutil
-from openpyxl.utils import get_column_letter
 import globals
 import os
+import glob
 
 testcase_map = load_data()
 
@@ -558,6 +558,11 @@ class HomePage(QWidget):
         self.main_window.setCentralWidget(TestCaseTablePage(self.main_window, globals.selected_services[globals.service_index]))
 
     def result_btn_clicked(self):
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        image_dir = os.path.join(base_dir, "fail_images")
+        for file in glob.glob(os.path.join(image_dir, "*.png")):
+            os.remove(file)
+
         self.service_report = ServiceReport()
         self.service_report.show()
 
@@ -574,7 +579,8 @@ class HomePage(QWidget):
                 new_sheet[f'B{key}'] = results
         current_datetime = datetime.now().strftime("%Y-%m-%d %H+%M")
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        save_folder = os.path.join(script_dir, "test_results")
+        # save_folder = os.path.join(script_dir, "test_results")
+        save_folder = globals.sharedrive_path
         subfolder = os.path.join(save_folder, current_datetime)
         imgfolder = os.path.join(subfolder, "images")
         os.makedirs(subfolder, exist_ok=True)

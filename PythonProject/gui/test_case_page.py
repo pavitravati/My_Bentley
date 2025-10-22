@@ -20,7 +20,7 @@ import globals
 testcase_map = load_data()
 
 class TestCaseTablePage(QWidget):
-    def __init__(self, main_window, service, parent=None):
+    def __init__(self, main_window, service, parent=None, auto_run=True):
         super().__init__(parent)
         self.current_row = None
         self.service = service
@@ -236,23 +236,24 @@ class TestCaseTablePage(QWidget):
         layout.addWidget(self.table)
         # Waits for table to be added and then adjusts the column widths
         QTimer.singleShot(0, self.final_adjust_layout)
+        if auto_run:
+            self.thread = QThread()
+            self.worker = TestRunnerWorker(service, self.table.rowCount())
+            self.worker.moveToThread(self.thread)
 
-        self.thread = QThread()
-        self.worker = TestRunnerWorker(service, self.table.rowCount())
-        self.worker.moveToThread(self.thread)
+            self.thread.started.connect(self.worker.run)
+            self.worker.finished.connect(self.thread.quit)
+            self.worker.finished.connect(self.worker.deleteLater)
+            self.worker.finished.connect(self.worker.deleteLater)
+            self.thread.finished.connect(self.thread.deleteLater)
+            self.worker.need_precondition.connect(self.on_need_precondition)
 
-        self.thread.started.connect(self.worker.run)
-        self.worker.finished.connect(self.thread.quit)
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.thread.finished.connect(self.thread.deleteLater)
-        self.worker.need_precondition.connect(self.on_need_precondition)
+            self.worker.current_row.connect(self.set_current_row)
+            self.worker.row_finished.connect(self.on_row_finished)
+            self.worker.finished.connect(self.next_service)
 
-        self.worker.current_row.connect(self.set_current_row)
-        self.worker.row_finished.connect(self.on_row_finished)
-        self.worker.finished.connect(self.next_service)
+            self.thread.start()
 
-        self.thread.start()
 
     def adjust_column_widths(self):
         screen_size = QApplication.primaryScreen().size()

@@ -77,7 +77,8 @@ class ServiceReport(QWidget):
         else:
             self.dropdown.addItem("Select test")
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        results_folder = os.path.join(script_dir, "test_results")
+        # results_folder = os.path.join(script_dir, "test_results")
+        results_folder = globals.sharedrive_path
         folder_names = [name for name in os.listdir(results_folder) if
                         os.path.isdir(os.path.join(results_folder, name))]
         for folder in folder_names:
@@ -276,7 +277,8 @@ class ServiceReport(QWidget):
         else:
             folder_name = text.replace(':', '+')
             script_dir = os.path.dirname(os.path.abspath(__file__))
-            results_folder = os.path.join(script_dir, "test_results")
+            # results_folder = os.path.join(script_dir, "test_results")
+            results_folder = globals.sharedrive_path
             test_folder_path = os.path.join(results_folder, folder_name)
             test_result_file = load_workbook(os.path.join(test_folder_path, "test_results.xlsx"))
             self.service = test_result_file.sheetnames[0]
@@ -288,8 +290,9 @@ class ServiceReport(QWidget):
         self.dropdown.addItem(folder_name.replace("+", ":"))
         if self.current_test:
             self.dropdown.addItem("Current test")
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        results_folder = os.path.join(script_dir, "test_results")
+        # script_dir = os.path.dirname(os.path.abspath(__file__))
+        # results_folder = os.path.join(script_dir, "test_results")
+        results_folder = globals.sharedrive_path
         folder_names = [name for name in os.listdir(results_folder) if
                         os.path.isdir(os.path.join(results_folder, name)) and folder_name != name]
         for folder in folder_names:

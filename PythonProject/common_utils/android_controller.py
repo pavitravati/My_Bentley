@@ -68,7 +68,7 @@ class DeviceController:
         self.d.press("home")
         time.sleep(1)
 
-    def take_screenshot(self, filename):
+    def take_screenshot(self, filename="test.png"):
         os.makedirs("resource", exist_ok=True)
         full_path = self.get_resource_path(filename)
         self.d.screenshot(full_path)

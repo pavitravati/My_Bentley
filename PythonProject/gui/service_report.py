@@ -154,6 +154,7 @@ class ServiceReport(QWidget):
                 test_description = testcase_map[self.service][row]['Test Case Description']
                 btn.setText(test_description)
                 btn.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+                btn.setCursor(Qt.PointingHandCursor)
                 btn.setFixedWidth(320)
                 btn.setFixedHeight(45)
                 btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Minimum)
@@ -247,10 +248,10 @@ class ServiceReport(QWidget):
 
             img_label = QLabel()
             img_text = img_path_str.split(" - ")
-            if '❌' in img_text[0]:
-                img_text = img_text[1].split("-")[0]
+            if '❌' in img_text[-2] or '⚠' in img_text[-2]:
+                img_text = img_text[-1].split("-")[0]
             else:
-                img_text = img_text[0].split("-")[1].replace('_', ' ').replace('.png', '')
+                img_text = img_text[-1].split("-")[1].replace('_', ' ').replace('.png', '') # Don't remember what case this is here for
             img_label.setText(img_text)
             img_label.setFont(QFont("Arial", 12))
             img_label.setWordWrap(True)
@@ -367,6 +368,7 @@ class ServiceReport(QWidget):
             test_description = str(current_sheet[f'A{row}'].value)
             btn.setText(test_description)
             btn.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+            btn.setCursor(Qt.PointingHandCursor)
             btn.setFixedWidth(320)
             btn.setFixedHeight(45)
             btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Minimum)

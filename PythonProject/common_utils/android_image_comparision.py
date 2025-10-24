@@ -119,8 +119,10 @@ def compare_with_expected_crop(expected_image_path, threshold=0.95, output_folde
 
     # Return result
     if score >= threshold:
+        # print(score)
         print("Match successful")
         return True
     else:
+        # print(score)
         print("Match failed")
         return False

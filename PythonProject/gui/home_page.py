@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QTableWidget, QLabel, QCheckBox, QPushButton, QHBoxLayout,
-    QHeaderView, QTableWidgetItem, QFrame, QLineEdit, QSizePolicy, QApplication
+    QHeaderView, QTableWidgetItem, QFrame, QLineEdit, QSizePolicy, QApplication, QToolButton
 )
 from PySide6.QtGui import QFont, QPixmap, QCursor
 from excel import services
@@ -186,7 +186,7 @@ class HomePage(QWidget):
                 checkbox.toggled.connect(lambda checked, t=testcase_table: self.all_tests_checkbox(checked, t))
             else:
                 label = ClickableLabel(services[row-1])
-                label.clicked.connect(lambda r=row: self.open_service_tests(services[r]))
+                label.clicked.connect(lambda r=row: self.open_service_tests(services[r-1]))
 
                 text_cell = QWidget()
                 text_cell.setFixedHeight(20)
@@ -225,24 +225,8 @@ class HomePage(QWidget):
                         border-radius: 10px;
                         background-color: white;
                     }
-                    QPushButton {
-                        background-color: #394d45;
-                        width: 220px;
-                        height: 35px;
-                        border: none;
-                        border-radius: 10px;
-                        padding: 6px 10px;
-                        color: white;
-                        font-size: 16px;
-                        font-weight: bold;
-                        margin-top: 2px;
-                    }
-                    QPushButton:hover {
-                        background-color: #25312c;
-                        cursor: pointer;
-                    }
                     QLineEdit {
-                        border: 2px solid #394d45;
+                        border: 1px solid #394d45;
                         border-radius: 8px;
                         padding: 6px 10px;
                         background-color: #f3f6f5;
@@ -298,8 +282,10 @@ class HomePage(QWidget):
         platform_layout.setSpacing(10)
         platform_layout.setAlignment(Qt.AlignCenter)
 
-        self.android_btn = QPushButton("Android")
-        self.ios_btn = QPushButton("iOS")
+        self.android_btn = QToolButton()
+        self.ios_btn = QToolButton()
+        self.android_btn.setText("Android")
+        self.ios_btn.setText("iOS")
 
         for btn in (self.android_btn, self.ios_btn):
             btn.setFixedSize(140, 45) if self.screen == 'Monitor' else btn.setFixedSize(85, 30)
@@ -307,19 +293,17 @@ class HomePage(QWidget):
             btn.setCursor(Qt.PointingHandCursor)
             btn.setCheckable(True)
             btn.setStyleSheet("""
-                QPushButton {
-                    background-color: #dfe4e2;
-                    border: 2px solid #394d45;
-                    border-radius: 8px;
+                QToolButton {
+                    background-color: #e0f1eb;
                     color: #394d45;
                     font-weight: bold;
                     font-size: 12px;
                 }
-                QPushButton:checked {
-                    background-color: #394d45;
+                QToolButton:checked {
+                    background-color: #485f56;
                     color: white;
                 }
-                QPushButton:hover {
+                QTolButton:hover {
                     background-color: #cfd4d2;
                 }
             """)
@@ -334,8 +318,10 @@ class HomePage(QWidget):
         vehicle_type_layout.setSpacing(10)
         vehicle_type_layout.setAlignment(Qt.AlignCenter)
 
-        self.ice_btn = QPushButton("ICE")
-        self.phev_btn = QPushButton("PHEV")
+        self.ice_btn = QToolButton()
+        self.ice_btn.setText("ICE")
+        self.phev_btn = QToolButton()
+        self.phev_btn.setText("PHEV")
 
         for btn in (self.ice_btn, self.phev_btn):
             btn.setFixedSize(140, 45) if self.screen == 'Monitor' else btn.setFixedSize(85, 30)
@@ -343,19 +329,17 @@ class HomePage(QWidget):
             btn.clicked.connect(lambda: self.update_run_btn(testcase_table))
             btn.setCheckable(True)
             btn.setStyleSheet("""
-                QPushButton {
-                    background-color: #dfe4e2;
-                    border: 2px solid #394d45;
-                    border-radius: 8px;
+                QToolButton {
+                    background-color: #e0f1eb;
                     color: #394d45;
                     font-weight: bold;
                     font-size: 12px;
                 }
-                QPushButton:checked {
-                    background-color: #394d45;
+                QToolButton:checked {
+                    background-color: #485f56;
                     color: white;
                 }
-                QPushButton:hover {
+                QTolButton:hover {
                     background-color: #cfd4d2;
                 }
             """)
@@ -391,28 +375,29 @@ class HomePage(QWidget):
                 border-radius: 10px;
                 background-color: white;
             }
-            QPushButton {
-                background-color: #dfe4e2;
-                border: 2px solid #394d45;
+            QToolButton {
+                background-color: #31b7e8;
                 color: #394d45;
                 font-size: 16px;
                 font-weight: bold;
-                width: 250px;
-                height: 35px;
-                border-radius: 10px;
-                padding: 6px 10px;
+                width: 300px;
+                height: 40px;
             }
-            QPushButton:enabled {
+            QToolButton:disabled {
+                background-color: #e0f1eb;
+            }
+            QToolButton:enabled {
                 background-color: #394d45;
                 color: white;
             }
-            QPushButton:hover {
+            QToolButton:hover {
                 background-color: #25312c;
 
             }
         """)
 
-        self.run_btn = QPushButton("Run")
+        self.run_btn = QToolButton()
+        self.run_btn.setText("Run")
         self.run_btn.setEnabled(False)
         self.run_btn.setCursor(Qt.PointingHandCursor)
         self.run_btn.clicked.connect(lambda: self.run_selected_services(testcase_table))
@@ -436,18 +421,15 @@ class HomePage(QWidget):
                         border-radius: 10px;
                         background-color: white;
                     }
-                    QPushButton {
+                    QToolButton {
                         background-color: #394d45;
                         font-size: 16px;
                         font-weight: bold;
-                        width: 250px;
-                        height: 35px;
-                        border: none;
-                        border-radius: 10px;
-                        padding: 6px 10px;
+                        width: 300px;
+                        height: 40px;
                         color: white;
                     }
-                    QPushButton:hover {
+                    QToolButton:hover {
                         background-color: #25312c;
                         cursor: pointer;
                     }
@@ -458,17 +440,20 @@ class HomePage(QWidget):
                     }
                 """)
 
-        tests_run = QLabel("Tests run: 0")
-        tests_passed = QLabel("Tests passed: 0")
-        tests_failed = QLabel("Tests failed: 0")
+        tests_run = QLabel(f"Tests run: {globals.tests_run}")
+        tests_passed = QLabel(f"Tests passed: {globals.tests_passed}")
+        tests_failed = QLabel(f"Tests failed: {globals.tests_failed}")
 
-        result_btn = QPushButton("Results")
+        result_btn = QToolButton()
+        result_btn.setText("Results")
         result_btn.setCursor(Qt.PointingHandCursor)
         result_btn.clicked.connect(self.result_btn_clicked)
-        export_btn = QPushButton("Export")
+        export_btn = QToolButton()
+        export_btn.setText("Export")
         export_btn.setCursor(Qt.PointingHandCursor)
         export_btn.clicked.connect(self.export_result)
-        import_btn = QPushButton("Import")
+        import_btn = QToolButton()
+        import_btn.setText("Import")
         import_btn.setCursor(Qt.PointingHandCursor)
         import_btn.clicked.connect(self.import_result)
         if self.screen == 'Laptop':
@@ -558,11 +543,7 @@ class HomePage(QWidget):
         self.main_window.setCentralWidget(TestCaseTablePage(self.main_window, globals.selected_services[globals.service_index]))
 
     def result_btn_clicked(self):
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        image_dir = os.path.join(base_dir, "fail_images")
-        for file in glob.glob(os.path.join(image_dir, "*.png")):
-            os.remove(file)
-
+        print(globals.log_history)
         self.service_report = ServiceReport()
         self.service_report.show()
 

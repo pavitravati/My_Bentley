@@ -249,9 +249,6 @@ def Privacy_Mode_005():
     except Exception as e:
             error_log(e, "005")
 
-# Privacy_Mode_004()
-# Privacy_Mode_005()
-
 def Privacy_Mode_006():
     try:
         log("✅ - temp can't check style guide")

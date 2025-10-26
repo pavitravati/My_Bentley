@@ -1,17 +1,6 @@
 from time import sleep
 from common_utils.android_image_comparision import *
-from core.log_emitter import log_emitter
-
-def log(msg):
-    log_emitter.log_signal.emit(msg)
-
-def fail_log(msg, num):
-    log(f"{msg}")
-    controller.take_fail_screenshot(f"Service Management-{msg}-{num}.png")
-
-def error_log(e, num):
-    log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Service Management-{e}-{num}.png")
+from core.log_emitter import log, fail_log, metric_log, error_log
 
 def Service_Management_001():
     try:
@@ -24,13 +13,13 @@ def Service_Management_001():
         if service_management:
             # At least the three services that show for all regions and cars
             if len(service_management) > 2:
-                log("✅ - Services extracted from service management page")
+                log("Services extracted from service management page")
             else:
-                fail_log("❌ - Some general services missing")
+                fail_log("Some general services missing")
             for service in service_management:
-                log(f"{service} displayed")
+                metric_log(f"{service} displayed")
         else:
-            fail_log("❌ - Could not extract services from service management page", "001")
+            fail_log("Could not extract services from service management page", "001")
 
         controller.click_by_image("Icons/back_icon.png")
         controller.click_by_image("Icons/back_icon.png")
@@ -45,32 +34,32 @@ def Service_Management_002():
         controller.click_text("Service Management")
 
         if controller.click_text("Lock my car"):
-            log("✅ - Lock my car toggled off")
+            log("Lock my car toggled off")
         else:
-            fail_log("❌ - Lock my car failed to toggle off", "002")
+            fail_log("Lock my car failed to toggle off", "002")
         sleep(3)
 
         controller.click_by_image("Icons/back_icon.png")
         controller.click_by_image("Icons/back_icon.png")
         if compare_with_expected_crop("Icons/Remote_Lock_Grey.png", 0.8):
-            log("✅ - Remote lock/unlock successfully disabled")
+            log("Remote lock/unlock successfully disabled")
         else:
-            fail_log("❌ - Remote lock unlock failed to disable", "002")
+            fail_log("Remote lock unlock failed to disable", "002")
 
         controller.click_by_image("Icons/info_btn.png")
         controller.click_text("Service Management")
         if controller.click_text("Lock my car"):
-            log("✅ - Lock my car toggled on")
+            log("Lock my car toggled on")
         else:
-            fail_log("❌ - Lock my car failed to toggle on", "002")
+            fail_log("Lock my car failed to toggle on", "002")
         sleep(3)
 
         controller.click_by_image("Icons/back_icon.png")
         controller.click_by_image("Icons/back_icon.png")
         if compare_with_expected_crop("Icons/Remote_Lock.png"):
-            log("✅ - Remote lock/unlock successfully enabled")
+            log("Remote lock/unlock successfully enabled")
         else:
-            fail_log("❌ - Remote lock unlock failed to be enabled", "002")
+            fail_log("Remote lock unlock failed to be enabled", "002")
 
     except Exception as e:
         error_log(e, "002")
@@ -82,9 +71,9 @@ def Service_Management_003():
         controller.click_text("Service Management")
 
         if controller.click_text("Find my car"):
-            log("✅ - Find my car toggled off")
+            log("Find my car toggled off")
         else:
-            fail_log("❌ - Find my car failed to toggle off", "003")
+            fail_log("Find my car failed to toggle off", "003")
         sleep(3)
 
         controller.click_by_image("Icons/back_icon.png")
@@ -92,17 +81,17 @@ def Service_Management_003():
         controller.click_by_image("Icons/navigation_icon.png")
 
         if not controller.d(resourceId="uk.co.bentley.mybentley:id/imageButton_layout_map_button").exists:
-            log("✅ - Car finder successfully disabled")
+            log("Car finder successfully disabled")
         else:
-            fail_log("❌ - Car finder failed to disable", "003")
+            fail_log("Car finder failed to disable", "003")
 
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/info_btn.png")
         controller.click_text("Service Management")
         if controller.click_text("Find my car"):
-            log("✅ - Find my car toggled on")
+            log("Find my car toggled on")
         else:
-            fail_log("❌ - Find my car failed to toggle on", "003")
+            fail_log("Find my car failed to toggle on", "003")
         sleep(3)
 
         controller.click_by_image("Icons/back_icon.png")
@@ -110,9 +99,9 @@ def Service_Management_003():
         controller.click_by_image("Icons/navigation_icon.png")
 
         if controller.d(resourceId='uk.co.bentley.mybentley:id/imageButton_layout_map_button').exists:
-            log("✅ - Car finder successfully enabled")
+            log("Car finder successfully enabled")
         else:
-            fail_log("❌ - Car finder failed to be enabled", "003")
+            fail_log("Car finder failed to be enabled", "003")
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
@@ -125,9 +114,9 @@ def Service_Management_004():
         controller.click_text("Service Management")
 
         if controller.click_text("My car status"):
-            log("✅ - My car status toggled off")
+            log("My car status toggled off")
         else:
-            fail_log("❌ - My car status failed to toggle off", "004")
+            fail_log("My car status failed to toggle off", "004")
         sleep(3)
 
         controller.click_by_image("Icons/back_icon.png")
@@ -135,17 +124,17 @@ def Service_Management_004():
         controller.swipe_up()
 
         if controller.is_text_present("My car status unavailable"):
-            log("✅ - Car status successfully disabled")
+            log("Car status successfully disabled")
         else:
-            fail_log("❌ - Car status failed to disable", "004")
+            fail_log("Car status failed to disable", "004")
         controller.swipe_down()
 
         controller.click_by_image("Icons/info_btn.png")
         controller.click_text("Service Management")
         if controller.click_text("My car status"):
-            log("✅ - My car status toggled on")
+            log("My car status toggled on")
         else:
-            fail_log("❌ - My car status failed to toggle on", "004")
+            fail_log("My car status failed to toggle on", "004")
         sleep(3)
 
         controller.click_by_image("Icons/back_icon.png")
@@ -153,9 +142,9 @@ def Service_Management_004():
         controller.swipe_up()
 
         if controller.d(text='Fuel range').exists:
-            log("✅ - Car status successfully enabled")
+            log("Car status successfully enabled")
         else:
-            fail_log("❌ - Car status failed to be enabled", "004")
+            fail_log("Car status failed to be enabled", "004")
         controller.swipe_down()
 
     except Exception as e:
@@ -169,9 +158,9 @@ def Service_Management_005():
         controller.swipe_up()
 
         if controller.click_text("My cabin comfort"):
-            log("✅ - My cabin comfort toggled off")
+            log("My cabin comfort toggled off")
         else:
-            fail_log("❌ - My cabin comfort failed to toggle off", "005")
+            fail_log("My cabin comfort failed to toggle off", "005")
         sleep(3)
 
         controller.click_by_image("Icons/back_icon.png")
@@ -180,18 +169,18 @@ def Service_Management_005():
         controller.swipe_up(0.3)
 
         if controller.is_text_present("Function disabled"):
-            log("✅ - Cabin comfort successfully disabled")
+            log("Cabin comfort successfully disabled")
         else:
-            fail_log("❌ - Cabin comfort failed to disable", "005")
+            fail_log("Cabin comfort failed to disable", "005")
 
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/info_btn.png")
         controller.click_text("Service Management")
         controller.swipe_up()
         if controller.click_text("My cabin comfort"):
-            log("✅ - My cabin comfort toggled on")
+            log("My cabin comfort toggled on")
         else:
-            fail_log("❌ - My cabin comfort failed to toggle on", "005")
+            fail_log("My cabin comfort failed to toggle on", "005")
         sleep(3)
 
         controller.click_by_image("Icons/back_icon.png")
@@ -199,10 +188,10 @@ def Service_Management_005():
         controller.click_by_image("Icons/windows_icon.png")
 
         if controller.click_text("MY CABIN COMFORT"):
-            log("✅ - Cabin comfort successfully enabled")
+            log("Cabin comfort successfully enabled")
             controller.click_by_image("Icons/back_icon.png")
         else:
-            fail_log("❌ - Cabin comfort failed to be enabled", "005")
+            fail_log("Cabin comfort failed to be enabled", "005")
 
         controller.swipe_down()
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -218,9 +207,9 @@ def Service_Management_006():
         controller.swipe_up()
 
         if controller.click_text("My car statistics"):
-            log("✅ - My car statistics toggled off")
+            log("My car statistics toggled off")
         else:
-            fail_log("❌ - My car statistics failed to toggle off", "006")
+            fail_log("My car statistics failed to toggle off", "006")
         sleep(3)
 
         controller.click_by_image("Icons/back_icon.png")
@@ -228,18 +217,18 @@ def Service_Management_006():
         controller.click_by_image("Icons/windows_icon.png")
 
         if controller.is_text_present("Function disabled"):
-            log("✅ - Car statistics successfully disabled")
+            log("Car statistics successfully disabled")
         else:
-            fail_log("❌ - Car statistics failed to disable", "006")
+            fail_log("Car statistics failed to disable", "006")
 
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/info_btn.png")
         controller.click_text("Service Management")
         controller.swipe_up()
         if controller.click_text("My car statistics"):
-            log("✅ -  My car statistics toggled on")
+            log(" My car statistics toggled on")
         else:
-            fail_log("❌ -  My car statistics failed to toggle on", "006")
+            fail_log(" My car statistics failed to toggle on", "006")
         sleep(3)
 
         controller.click_by_image("Icons/back_icon.png")
@@ -247,11 +236,11 @@ def Service_Management_006():
         controller.click_by_image("Icons/windows_icon.png")
 
         if controller.click_text("MY CAR STATISTICS"):
-            log("✅ - Car statistics successfully enabled")
+            log("Car statistics successfully enabled")
             controller.click_text("List view")
             controller.click_by_image("Icons/back_icon.png")
         else:
-            fail_log("❌ - Car statistics failed to be enabled", "006")
+            fail_log("Car statistics failed to be enabled", "006")
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
@@ -277,6 +266,6 @@ def Service_Management_009():
 
 def Service_Management_010():
     try:
-        log("✅ - Cannot complete style guide testcases (temporary)")
+        log("Cannot complete style guide testcases (temporary)")
     except Exception as e:
         error_log(e, "010")

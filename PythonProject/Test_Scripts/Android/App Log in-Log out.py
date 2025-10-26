@@ -1,17 +1,6 @@
 from time import sleep
 from common_utils.android_image_comparision import *
-from core.log_emitter import log_emitter
-
-def log(msg):
-    log_emitter.log_signal.emit(msg)
-
-def fail_log(msg, num):
-    log(f"{msg}")
-    controller.take_fail_screenshot(f"App Log in-Log out-{msg}-{num}.png")
-
-def error_log(e, num):
-    log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"App Log in-Log out-{e}-{num}.png")
+from core.log_emitter import log, metric_log, error_log, fail_log
 
 # This is very dodgy if the phone is slow/slow internet
 def App_Log_in_Log_out_001():
@@ -25,9 +14,9 @@ def App_Log_in_Log_out_001():
         sleep(1)
 
         if controller.click_by_image("Icons/login_register_icon.png"):
-            log("✅ - Login button clicked")
+            log("Login button clicked")
         else:
-            fail_log("❌ - Login button not clicked", "001")
+            fail_log("Login button not clicked", "001")
 
         if controller.wait_for_text("WELCOME", 30):
             # add the spaces(%s) so that if first chars get cut off it still works
@@ -36,14 +25,14 @@ def App_Log_in_Log_out_001():
             sleep(5)
             password = "Password1!"
             controller.enter_text(password)
-            log("✅ - Email and Password entered")
+            log("Email and Password entered")
         else:
-            fail_log("❌ - Email and Password not entered", "001")
+            fail_log("Email and Password not entered", "001")
 
         if controller.wait_for_text("DASHBOARD"):
-            log("✅ - Dashboard screen not launched")
+            log("Dashboard screen not launched")
         else:
-            fail_log("❌ - Dashboard screen not launched", "001")
+            fail_log("Dashboard screen not launched", "001")
 
     except Exception as e:
         error_log(e, "001")
@@ -59,9 +48,9 @@ def App_Log_in_Log_out_002():
         sleep(1)
 
         if controller.click_by_image("Icons/login_register_icon.png"):
-            log("✅ - Login button clicked")
+            log("Login button clicked")
         else:
-            fail_log("❌ - Login button not clicked", "001")
+            fail_log("Login button not clicked", "001")
 
         if controller.wait_for_text("WELCOME", 30):
             # add the spaces(%s) so that if first chars get cut off it still works
@@ -69,14 +58,14 @@ def App_Log_in_Log_out_002():
             controller.enter_text(email)
             sleep(5)
             controller.enter_text("Wrongpassword")
-            log("✅ - Email and incorrect Password entered")
+            log("Email and incorrect Password entered")
         else:
-            fail_log("❌ - Email and incorrect Password not entered", "002")
+            fail_log("Email and incorrect Password not entered", "002")
 
         if controller.wait_for_text("Sorry, wrong password. Please try again", "002"):
-            log("✅ - Incorrect password error message displayed")
+            log("Incorrect password error message displayed")
         else:
-            fail_log("❌ - Incorrect password error message not displayed", "002")
+            fail_log("Incorrect password error message not displayed", "002")
 
     except Exception as e:
         error_log(e, "002")
@@ -92,14 +81,14 @@ def App_Log_in_Log_out_003():
         sleep(0.2)
 
         if controller.click_text("Cancel"):
-            log("✅ - Cancel clicked on popup")
+            log("Cancel clicked on popup")
         else:
-            fail_log("❌ - Cancel not clicked on popup", "003")
+            fail_log("Cancel not clicked on popup", "003")
 
         if compare_with_expected_crop("Images/Profile_Screen.png"):
-            log("✅ - Popup closed")
+            log("Popup closed")
         else:
-            fail_log("❌ - Popup not closed", "003")
+            fail_log("Popup not closed", "003")
 
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
@@ -110,24 +99,24 @@ def App_Log_in_Log_out_004():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         if controller.click_by_image("Icons/Profile_Icon.png"):
-            log("✅ - Profile icon clicked")
+            log("Profile icon clicked")
         else:
-            fail_log("❌ - Profile icon not clicked", "004")
+            fail_log("Profile icon not clicked", "004")
         sleep(0.2)
         if controller.click_text("General"):
-            log("✅ - General tab clicked")
+            log("General tab clicked")
         else:
-            fail_log("❌ - General tab not clicked", "004")
+            fail_log("General tab not clicked", "004")
         sleep(0.2)
         if controller.click_text("Log out"):
-            log("✅ - Log out button clicked")
+            log("Log out button clicked")
         else:
-            fail_log("❌ - Log out button not clicked", "004")
+            fail_log("Log out button not clicked", "004")
         sleep(0.2)
         if controller.click_by_image("Icons/Logout_btn.png"):
-            log("✅ - Logged out of account")
+            log("Logged out of account")
         else:
-            fail_log("❌ - Not logged out of account", "004")
+            fail_log("Not logged out of account", "004")
         sleep(5)
 
         controller.click_by_image("Icons/login_register_icon.png")
@@ -145,15 +134,15 @@ def App_Log_in_Log_out_005():
         sleep(1)
 
         if controller.click_by_image("Icons/login_register_icon.png"):
-            log("✅ - Login button clicked")
+            log("Login button clicked")
         else:
-            fail_log("❌ - Login button not clicked", "005")
+            fail_log("Login button not clicked", "005")
 
         sleep(0.2)
         if controller.is_text_present("Login failed"):
-            log("✅ - Login failed message displayed")
+            log("Login failed message displayed")
         else:
-            fail_log("❌ - Login failed message not displayed", "005")
+            fail_log("Login failed message not displayed", "005")
 
     except Exception as e:
         error_log(e, "005")
@@ -165,24 +154,24 @@ def App_Log_in_Log_out_006():
         else:
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
             if controller.click_by_image("Icons/Profile_Icon.png"):
-                log("✅ - Successfully opened profile page in flight mode")
+                log("Successfully opened profile page in flight mode")
             else:
-                fail_log("❌ - Unsuccessfully opened profile page in flight mode", "006")
+                fail_log("Unsuccessfully opened profile page in flight mode", "006")
 
             controller.click_text("General")
             controller.click_by_image("Icons/Profile_Logout_Icon.png")
             controller.click_text("Log out")
 
             if compare_with_expected_crop("Images/My_Bentley_Login_Page.png"):
-                log("✅ - Successfully logged out in flight mode")
+                log("Successfully logged out in flight mode")
             else:
-                fail_log("❌ - Unsuccessfully logged out in flight mode", "006")
+                fail_log("Unsuccessfully logged out in flight mode", "006")
 
     except Exception as e:
         error_log(e, "006")
 
 def App_Log_in_Log_out_007():
     try:
-        log("✅ - Cannot check style guide")
+        log("Cannot check style guide")
     except Exception as e:
         error_log(e, "007")

@@ -1,41 +1,28 @@
 from common_utils.android_image_comparision import *
-
-v
-from core.log_emitter import log_emitter
-
-def log(msg):
-    log_emitter.log_signal.emit(msg)
-
-def fail_log(msg, num):
-    log(f"{msg}")
-    controller.take_fail_screenshot(f"Notifications-{msg}-{num}.png")
-
-def error_log(e, num):
-    log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Notifications-{e}-{num}.png")
+from core.log_emitter import log, fail_log, error_log, metric_log
 
 def Notifications_001():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         if controller.click_by_image("Icons/New_Notification_icon.png") or controller.click_by_image("Icons/Notification_icon.png"):
-            log("✅ - Notification page launched")
+            log("Notification page launched")
         else:
-            fail_log("❌ - Notification page not launched", "001")
+            fail_log("Notification page not launched", "001")
 
         if controller.is_text_present("NOTIFICATIONS"):
-            log("✅ - Notification title displayed")
+            log("Notification title displayed")
         else:
-            fail_log("❌ - Notification title not displayed", "001")
+            fail_log("Notification title not displayed", "001")
 
         if controller.is_text_present("Actions") and controller.is_text_present("Alerts"):
-            log("✅ - Actions & Alerts tab displayed")
+            log("Actions & Alerts tab displayed")
         else:
-            fail_log("❌ - Actions & Alerts tab not displayed", "001")
+            fail_log("Actions & Alerts tab not displayed", "001")
 
         if controller.is_text_present("Last updated"):
-            log("✅ - Last updated displayed")
+            log("Last updated displayed")
         else:
-            fail_log("❌ - Last updated not displayed", "001")
+            fail_log("Last updated not displayed", "001")
 
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
@@ -64,12 +51,12 @@ def Notifications_003():
         controller.click_by_image("Icons/Notification_icon.png")
 
         if controller.is_text_present("There are no new notifications to display"):
-            log("✅ - No new notifications displayed correctly")
+            log("No new notifications displayed correctly")
         elif controller.is_text_present("There are new notifications to display"):
             # Here use the 07/10 dump to check
-            log("✅ - Maximum of 10 notifications are displayed correctly")
+            log("Maximum of 10 notifications are displayed correctly")
         else:
-            fail_log("❌ - Notifications are not displayed correctly", "003")
+            fail_log("Notifications are not displayed correctly", "003")
 
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
@@ -86,7 +73,7 @@ def Notifications_004():
             # use 07/10 dump to check all details
             pass
         else:
-            fail_log("❌ - There are no notifications displayed to check the format", "004")
+            fail_log("There are no notifications displayed to check the format", "004")
 
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
@@ -114,6 +101,6 @@ def Notifications_007():
 
 def Notifications_008():
     try:
-        log("✅ - Cannot complete style guide testcases (temporary)")
+        log("Cannot complete style guide testcases (temporary)")
     except Exception as e:
         error_log(e, "008")

@@ -1,17 +1,5 @@
 from common_utils.android_image_comparision import *
-from core.log_emitter import log_emitter
-
-
-def log(msg):
-    log_emitter.log_signal.emit(msg)
-
-def fail_log(msg, num):
-    log(f"{msg}")
-    controller.take_fail_screenshot(f"Push Notifications-{msg}-{num}.png")
-
-def error_log(e, num):
-    log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Push Notifications-{e}-{num}.png")
+from core.log_emitter import log, fail_log, error_log, metric_log
 
 def identify_car():
 
@@ -35,14 +23,14 @@ def Push_Notifications_001():
         car_model = identify_car()
         # see if there is a way to swipe down to get full details of notification before cutoff to check full detail
         if controller.wait_for_text_and_click(f"Theft alert {car_model}"):
-            log("✅ - Theft alert triggered and clicked")
+            log("Theft alert triggered and clicked")
         else:
-            fail_log("❌ - Theft alert not triggered", "001")
+            fail_log("Theft alert not triggered", "001")
 
         if controller.is_text_present("STOLEN VEHICLE TRACKING"):
-            log("✅ - Vehicle theft alert paged opened")
+            log("Vehicle theft alert paged opened")
         else:
-            fail_log("❌ - Vehicle theft alert page not opened", "001")
+            fail_log("Vehicle theft alert page not opened", "001")
 
     except Exception as e:
         error_log(e, "001")
@@ -53,21 +41,21 @@ def Push_Notifications_002():
         car_model = identify_car()
 
         if controller.click_by_image("Icons/Remote_Lock.png"):
-            log("✅ - Remote Lock operation performed")
+            log("Remote Lock operation performed")
             controller.click_home()
         else:
-            fail_log("❌ - Remote Lock operation not performed", "002")
+            fail_log("Remote Lock operation not performed", "002")
 
         # Opens to dashboard not alert screen
         if controller.wait_for_text_and_click(f"Lock my car {car_model} has been locked"):
-            log("✅ - Lock notification received")
+            log("Lock notification received")
         else:
-            fail_log("❌ - Lock notification not received", "002")
+            fail_log("Lock notification not received", "002")
 
         if controller.wait_for_text("DASHBOARD"):
-            log("✅ - Dashboard opened when notification clicked")
+            log("Dashboard opened when notification clicked")
         else:
-            fail_log("❌ - Dashboard not opened", "002")
+            fail_log("Dashboard not opened", "002")
 
     except Exception as e:
         error_log(e, "002")
@@ -127,6 +115,6 @@ def Push_Notifications_009():
 
 def Push_Notifications_010():
     try:
-        log("✅ - Cannot complete style guide testcases (temporary)")
+        log("Cannot complete style guide testcases (temporary)")
     except Exception as e:
         error_log(e, "010")

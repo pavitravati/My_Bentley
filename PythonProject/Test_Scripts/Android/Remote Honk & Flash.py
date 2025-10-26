@@ -1,19 +1,7 @@
 from time import sleep
 from common_utils.android_image_comparision import *
 from common_utils.android_controller import *
-from core.log_emitter import log_emitter
-
-# Made a copy of the demo mode testcases to try and get them connected to the ui
-def log(msg):
-    log_emitter.log_signal.emit(msg)
-
-def fail_log(msg, num):
-    log(f"{msg}")
-    controller.take_fail_screenshot(f"Remote_Honk_&_Flash-{msg}-{num}.png")
-
-def error_log(e, num):
-    log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Remote_Honk_&_Flash-{e}-{num}.png")
+from core.log_emitter import log, fail_log, error_log, metric_log
 
 # Cannot test without china app
 def Remote_Honk_Flash_001():

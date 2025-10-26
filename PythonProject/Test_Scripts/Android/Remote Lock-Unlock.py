@@ -1,18 +1,7 @@
 from time import sleep
 from common_utils.android_image_comparision import *
-from core.log_emitter import log_emitter
+from core.log_emitter import log, fail_log, error_log, metric_log
 from common_utils.android_controller import *
-
-def log(msg):
-    log_emitter.log_signal.emit(msg)
-
-def fail_log(msg, num):
-    log(f"{msg}")
-    controller.take_fail_screenshot(f"Remote Lock-Unlock-{msg}-{num}.png")
-
-def error_log(e, num):
-    log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Remote Lock-Unlock-{e}-{num}.png")
 
 def identify_car():
     if compare_with_expected_crop("Icons/Bentayga.png"):
@@ -35,14 +24,14 @@ def Remote_Lock_Unlock_001():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         if (compare_with_expected_crop("Icons/Remote_Lock.png")):
-            log("✅ - Lock button visible")
+            log("Lock button visible")
         else:
-            fail_log("❌ - Lock button not visible", "001")
+            fail_log("Lock button not visible", "001")
 
         if (compare_with_expected_crop("Icons/Remote_Unlock.png")):
-            log("✅ - Unlock button visible")
+            log("Unlock button visible")
         else:
-            fail_log("❌ - Unlock button not visible", "001")
+            fail_log("Unlock button not visible", "001")
 
     except Exception as e:
         error_log(e, "001")
@@ -54,19 +43,19 @@ def Remote_Lock_Unlock_002():
         sleep(1)
         controller.enter_pin("1234")
         if controller.wait_for_text("Successfully unlocked", timeout=100):
-            log("✅ - Unlock message displayed")
+            log("Unlock message displayed")
         else:
-            fail_log("❌ - Unlock message not displayed", "002")
+            fail_log("Unlock message not displayed", "002")
 
         if controller.wait_for_text("Successfully unlocked"):
-            log("✅ - Unlock notification displayed")
+            log("Unlock notification displayed")
         else:
-            fail_log("❌ - Unlock notification not displayed", "002")
+            fail_log("Unlock notification not displayed", "002")
 
         if controller.wait_for_text("Vehicle unlocked"):
-            log("✅ - Lock status changed")
+            log("Lock status changed")
         else:
-            fail_log("❌ - Lock status not changed", "002")
+            fail_log("Lock status not changed", "002")
 
     except Exception as e:
         error_log(e, "002")
@@ -78,19 +67,19 @@ def Remote_Lock_Unlock_003():
         sleep(1)
         controller.enter_pin("1234")
         if controller.wait_for_text("Successfully locked", timeout=100):
-            log("✅ - Lock message displayed")
+            log("Lock message displayed")
         else:
-            fail_log("❌ - Lock message not displayed", "003")
+            fail_log("Lock message not displayed", "003")
 
         if controller.wait_for_text("Successfully locked"):
-            log("✅ - Lock notification displayed")
+            log("Lock notification displayed")
         else:
-            fail_log("❌ - Lock notification not displayed", "002")
+            fail_log("Lock notification not displayed", "002")
 
         if controller.wait_for_text("Vehicle locked"):
-            log("✅ - Lock status changed")
+            log("Lock status changed")
         else:
-            fail_log("❌ - Lock status not changed", "003")
+            fail_log("Lock status not changed", "003")
 
     except Exception as e:
         error_log(e, "003")
@@ -104,12 +93,11 @@ def Remote_Lock_Unlock_004():
         # sleep(1)
         # controller.enter_pin("0000")
         # if controller.wait_for_text("Invalid PIN. Please try again."):
-        #     print("✅ - Remote lock/unlock invalid PIN message displayed")
+        #     print("Remote lock/unlock invalid PIN message displayed")
         # else:
-        #     fail_log("❌ - Remote lock/unlock invalid PIN message not displayed", "004")
+        #     fail_log("Remote lock/unlock invalid PIN message not displayed", "004")
         #
         # controller.click(500,500)
-        log("✅")
 
     except Exception as e:
         error_log(e, "004")
@@ -124,15 +112,15 @@ def Remote_Lock_Unlock_005():
         sleep(1)
         controller.enter_pin("1234")
         if controller.wait_for_text("Vehicle could not be locked", timeout=100):
-            log("✅ - Remote lock blocked when ignition on")
+            log("Remote lock blocked when ignition on")
         else:
-            fail_log("❌ - Remote lock not blocked", "005")
+            fail_log("Remote lock not blocked", "005")
         controller.click_by_image("Icons/Error_Icon.png")
 
         if controller.wait_for_text("Vehicle unlocked"):
-            log("✅ - Lock status unchanged")
+            log("Lock status unchanged")
         else:
-            fail_log("❌ - Lock status not unchanged", "005")
+            fail_log("Lock status not unchanged", "005")
 
     except Exception as e:
         error_log(e, "005")
@@ -145,15 +133,15 @@ def Remote_Lock_Unlock_006():
         sleep(1)
         controller.enter_pin("1234")
         if controller.wait_for_text("Vehicle could not be unlocked", timeout=100):
-            log("✅ - Remote unlock blocked when ignition on")
+            log("Remote unlock blocked when ignition on")
         else:
-            fail_log("❌ - Remote lock not blocked", "006")
+            fail_log("Remote lock not blocked", "006")
         controller.click_by_image("Icons/Error_Icon.png")
 
         if controller.wait_for_text("Vehicle locked"):
-            log("✅ - Lock status unchanged")
+            log("Lock status unchanged")
         else:
-            fail_log("❌ - Lock status not unchanged", "006")
+            fail_log("Lock status not unchanged", "006")
 
     except Exception as e:
         error_log(e, "006")
@@ -168,15 +156,15 @@ def Remote_Lock_Unlock_007():
         # below has error message is it always going to happen
         # if controller.wait_for_text("Please close the driver's door", timeout=100):
         if controller.wait_for_text("Vehicle could not be locked", timeout=100):
-            log("✅ - Remote lock blocked when driver's door open")
+            log("Remote lock blocked when driver's door open")
         else:
-            fail_log("❌ - Remote lock not blocked", "007")
+            fail_log("Remote lock not blocked", "007")
         controller.click_by_image("Icons/Error_Icon.png")
 
         if controller.wait_for_text("Vehicle unlocked"):
-            log("✅ - Lock status unchanged")
+            log("Lock status unchanged")
         else:
-            fail_log("❌ - Lock status not unchanged", "007")
+            fail_log("Lock status not unchanged", "007")
 
     except Exception as e:
         error_log(e, "007")
@@ -189,22 +177,22 @@ def Remote_Lock_Unlock_008():
         sleep(1)
         controller.enter_pin("1234")
         if controller.wait_for_text("Partially locked", timeout=100):
-            log("✅ - Remote unlock partially locked")
+            log("Remote unlock partially locked")
         else:
-            fail_log("❌ - Remote unlock not partially locked", "008")
+            fail_log("Remote unlock not partially locked", "008")
 
         if controller.wait_for_text("Vehicle is not completely locked"):
-            log("✅ - Vehicle is not completely locked")
+            log("Vehicle is not completely locked")
         else:
-            fail_log("❌ - Vehicle is not completely locked", "008")
+            fail_log("Vehicle is not completely locked", "008")
         controller.click_by_image("Icons/Error_Icon.png")
         sleep(2)
         controller.click_by_image("Icons/New_Notification_icon.png")
         # CHECK IF MOST RECENT NOTIF IS {CAR} LOCKED
         # if controller.is_text_present(f"{car} was successfully locked"):
-        #     log("✅ - Failed to unlock notification received")
+        #     log("Failed to unlock notification received")
         # else:
-        #     fail_log("❌ - Failed to unlock notification not received", "008")
+        #     fail_log("Failed to unlock notification not received", "008")
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
@@ -235,9 +223,9 @@ def Remote_Lock_Unlock_010():
             raise Exception("Timed out - Car took too long")
 
         if latency_time < 40:
-            log(f"✅ - Latency time: {latency_time}")
+            log(f"Latency time: {latency_time}")
         else:
-            fail_log(f"❌ - Latency time: {latency_time}", "010")
+            fail_log(f"Latency time: {latency_time}", "010")
 
     except Exception as e:
         error_log(e, "010")
@@ -249,9 +237,9 @@ def Remote_Lock_Unlock_011():
         sleep(1)
         controller.enter_pin("1234")
         if controller.wait_for_text("Successfully locked", timeout=100):
-            log("✅ - Remote lock worked while locked")
+            log("Remote lock worked while locked")
         else:
-            fail_log("❌ - Remote lock failed while locked", "011")
+            fail_log("Remote lock failed while locked", "011")
 
     except Exception as e:
         error_log(e, "010")
@@ -263,9 +251,9 @@ def Remote_Lock_Unlock_012():
         sleep(1)
         controller.enter_pin("1234")
         if controller.wait_for_text("Successfully unlocked", timeout=100):
-            log("✅ - Remote unlock worked while unlocked")
+            log("Remote unlock worked while unlocked")
         else:
-            fail_log("❌ - Remote unlock failed while unlocked", "012")
+            fail_log("Remote unlock failed while unlocked", "012")
 
     except Exception as e:
         error_log(e, "012")
@@ -280,14 +268,14 @@ def Remote_Lock_Unlock_013():
         if controller.wait_for_text("Vehicle could not be locked"):
         #check what is in the dump
         # if controller.wait_for_text("Connection failed. Please check your Internet connection. (Error 10.6)"):
-            log("✅ - Remote lock failed without network connection")
+            log("Remote lock failed without network connection")
         else:
-            fail_log("❌ - Remote lock failed without network connection", "013")
+            fail_log("Remote lock failed without network connection", "013")
 
         controller.click_text("Cancel")
 
     except Exception as e:
-        log(f"⚠️ - Unexpected error: {e}")
+        error_log(f"⚠️ - Unexpected error: {e}")
 
 def Remote_Lock_Unlock_014():
     try:
@@ -296,14 +284,14 @@ def Remote_Lock_Unlock_014():
         sleep(1)
         controller.enter_pin("1234")
         if controller.wait_for_text("Successfully locked", timeout=100):
-            log("✅ - Lock message displayed when fob key in vehicle")
+            log("Lock message displayed when fob key in vehicle")
         else:
-            fail_log("❌ - Lock message not displayed when fob key in vehicle", "014")
+            fail_log("Lock message not displayed when fob key in vehicle", "014")
 
         if controller.wait_for_text("Vehicle locked"):
-            log("✅ - Lock status changed")
+            log("Lock status changed")
         else:
-            fail_log("❌ - Lock status not changed", "014")
+            fail_log("Lock status not changed", "014")
 
     except Exception as e:
         error_log(e, "014")
@@ -315,14 +303,14 @@ def Remote_Lock_Unlock_015():
         sleep(1)
         controller.enter_pin("1234")
         if controller.wait_for_text("Successfully unlocked", timeout=100):
-            log("✅ - Unlock message displayed when fob key inside vehicle")
+            log("Unlock message displayed when fob key inside vehicle")
         else:
-            fail_log("❌ - Unlock message not displayed when fob key inside vehicle", "015")
+            fail_log("Unlock message not displayed when fob key inside vehicle", "015")
 
         if controller.wait_for_text("Vehicle unlocked"):
-            log("✅ - Lock status changed")
+            log("Lock status changed")
         else:
-            fail_log("❌ - Lock status not changed", "015")
+            fail_log("Lock status not changed", "015")
 
     except Exception as e:
         error_log(e, "015")
@@ -334,14 +322,14 @@ def Remote_Lock_Unlock_016():
         sleep(1)
         controller.enter_pin("1234")
         if controller.wait_for_text("Successfully locked", timeout=100):
-            log("✅ - Lock message displayed when fob key inside vehicle")
+            log("Lock message displayed when fob key inside vehicle")
         else:
-            fail_log("❌ - Lock message not displayed when fob key inside vehicle", "016")
+            fail_log("Lock message not displayed when fob key inside vehicle", "016")
 
         if controller.wait_for_text("Vehicle locked"):
-            log("✅ - Lock status changed")
+            log("Lock status changed")
         else:
-            fail_log("❌ - Lock status not changed", "016")
+            fail_log("Lock status not changed", "016")
 
     except Exception as e:
         error_log(e, "016")
@@ -354,9 +342,9 @@ def Remote_Lock_Unlock_017():
         sleep(5)
 
         if compare_with_expected_crop("Icons\grey_lock.png"):
-            log("✅ - Remote lock unlock unavailable when privacy mode activated")
+            log("Remote lock unlock unavailable when privacy mode activated")
         else:
-            fail_log("❌ - Remote lock unlock failed to be disabled when privacy mode activated", "017")
+            fail_log("Remote lock unlock failed to be disabled when privacy mode activated", "017")
 
         controller.click_by_image("Icons/Error_Icon.png")
 
@@ -370,9 +358,9 @@ def Remote_Lock_Unlock_018():
         sleep(5)
 
         if compare_with_expected_crop("Icons/Remote_Lock_Available.png"):
-            log("✅ - Remote lock unlock available when privacy mode deactivated")
+            log("Remote lock unlock available when privacy mode deactivated")
         else:
-            fail_log("❌ - Remote lock unlock failed to be enabled when privacy mode deactivated", "018")
+            fail_log("Remote lock unlock failed to be enabled when privacy mode deactivated", "018")
 
         controller.click_by_image("Icons/Error_Icon.png")
 
@@ -381,6 +369,6 @@ def Remote_Lock_Unlock_018():
 
 def Remote_Lock_Unlock_019():
     try:
-        log("✅ - Cannot check style guide")
+        log("Cannot check style guide")
     except Exception as e:
         error_log(e, "019")

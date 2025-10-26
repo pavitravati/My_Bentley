@@ -1,17 +1,6 @@
 from common_utils.android_image_comparision import *
-from core.log_emitter import log_emitter
+from core.log_emitter import log, fail_log, error_log, metric_log
 from time import sleep
-
-def log(msg):
-    log_emitter.log_signal.emit(msg)
-
-def fail_log(msg, num):
-    log(f"{msg}")
-    controller.take_fail_screenshot(f"Audials-{msg}-{num}.png")
-
-def error_log(e, num):
-    log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Audials-{e}-{num}.png")
 
 def Audials_001():
     try:
@@ -22,15 +11,15 @@ def Audials_001():
             controller.swipe_up()
 
         if controller.click_text("AUDIALS"):
-            log("✅ - Audials section clicked")
+            log("Audials section clicked")
         else:
-            fail_log("❌ - Audials section not clicked", "001")
+            fail_log("Audials section not clicked", "001")
 
         controller.click_text("OK")
         if controller.is_text_present("audials.com"):
-            log("✅ - Redirected to Audials.com")
+            log("Redirected to Audials.com")
         else:
-            fail_log("❌ - Failed to redirect to Audials.com", "001")
+            fail_log("Failed to redirect to Audials.com", "001")
 
         controller.press_home()
         controller.launch_app("uk.co.bentley.mybentley")
@@ -42,6 +31,6 @@ def Audials_001():
 # Font checking test
 def Audials_002():
     try:
-        log("✅ - Cannot check style")
+        log("Cannot check style")
     except Exception as e:
         error_log(e, "002")

@@ -1,26 +1,15 @@
 from common_utils.android_image_comparision import *
-from core.log_emitter import log_emitter
+from core.log_emitter import log, fail_log, error_log, metric_log
 from time import sleep
-
-def log(msg):
-    log_emitter.log_signal.emit(msg)
-
-def fail_log(msg, num):
-    log(f"{msg}")
-    controller.take_fail_screenshot(f"Localization-{msg}-{num}.png")
-
-def error_log(e, num):
-    log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Localization-{e}-{num}.png")
 
 def Localization_001():
     try:
-        pass
+        error_log("Cannot check this service")
     except Exception as e:
         error_log(e, "001")
 
 def Localization_002():
     try:
-        pass
+        error_log("Cannot check this service")
     except Exception as e:
         error_log(e, "002")

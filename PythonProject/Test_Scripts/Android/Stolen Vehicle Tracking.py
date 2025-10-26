@@ -1,18 +1,7 @@
 from common_utils.android_image_comparision import *
-from core.log_emitter import log_emitter
+from core.log_emitter import log, fail_log, metric_log, error_log
 import datetime
 from dateutil.relativedelta import relativedelta
-
-def log(msg):
-    log_emitter.log_signal.emit(msg)
-
-def fail_log(msg, num):
-    log(f"{msg}")
-    controller.take_fail_screenshot(f"Stolen Vehicle Tracking-{msg}-{num}.png")
-
-def error_log(e, num):
-    log(f"⚠️ - Unexpected error: {e}")
-    controller.take_fail_screenshot(f"Stolen Vehicle Tracking-{e}-{num}.png")
 
 def Stolen_Vehicle_Tracking_001():
     try:
@@ -25,14 +14,14 @@ def Stolen_Vehicle_Tracking_001():
         date_limit = current_date + relativedelta(years=3)
 
         if extracted['Vehicle tracking system']:
-            log("✅ - Licenses extracted")
+            log("Licenses extracted")
             license_date = datetime.datetime.strptime(extracted['Vehicle tracking system'][-10:], "%d/%m/%Y").date()
             if license_date >= date_limit:
-                log("✅ - Vehicle tracking system license has a valid date")
+                log("Vehicle tracking system license has a valid date")
             else:
-                fail_log("❌ - Vehicle tracking system license does not have a valid date", "001")
+                fail_log("Vehicle tracking system license does not have a valid date", "001")
         else:
-            fail_log("❌ - Failed to extract licenses", "001")
+            fail_log("Failed to extract licenses", "001")
 
         controller.click_by_image("Icons/back_btn.png")
         controller.click_by_image("Icons/back_btn.png")
@@ -48,13 +37,13 @@ def Stolen_Vehicle_Tracking_002():
         extracted = controller.extract_all_license_dates()
 
         if extracted['Vehicle tracking system']:
-            log("✅ - Licenses extracted")
+            log("Licenses extracted")
             if extracted['Vehicle tracking system']:
-                fail_log("❌ - Vehicle tracking system license is displayed", "002")
+                fail_log("Vehicle tracking system license is displayed", "002")
             else:
-                log("✅ - Vehicle tracking system license is not displayed")
+                log("Vehicle tracking system license is not displayed")
         else:
-            fail_log("❌ - Failed to extract licenses", "002")
+            fail_log("Failed to extract licenses", "002")
 
         controller.click_by_image("Icons/back_btn.png")
         controller.click_by_image("Icons/back_btn.png")

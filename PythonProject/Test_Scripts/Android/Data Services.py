@@ -2,6 +2,8 @@ from time import sleep
 from common_utils.android_image_comparision import *
 from core.log_emitter import log, fail_log, metric_log, error_log
 
+img_service = "Data Services"
+
 # Make sure this works using better wifi as it struggles on bad wifi
 def Data_Services_001():
     try:
@@ -14,7 +16,7 @@ def Data_Services_001():
             log("Bentley Support Centre web launched")
             controller.wait_for_text_and_click("AGREE TO ALL")
         else:
-            fail_log("Bentley Support Centre web not launched", "001")
+            fail_log("Bentley Support Centre web not launched", "001", img_service)
         sleep(5)
 
         controller.swipe_up()
@@ -23,35 +25,31 @@ def Data_Services_001():
         if controller.is_text_present("Connect Now"):
             log("Data Service Provider web launched")
         else:
-            fail_log("Data Service Provider web not launched", "001")
+            fail_log("Data Service Provider web not launched", "001", img_service)
 
         controller.press_home()
         controller.launch_app("uk.co.bentley.mybentley")
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
-        error_log(e, "001")
+        error_log(e, "001", img_service)
 
+# Need NAR car
 def Data_Services_002():
     try:
         pass
     except Exception as e:
-        error_log(e, "002")
+        error_log(e, "002", img_service)
 
+# Need china car
 def Data_Services_003():
     try:
         pass
     except Exception as e:
-        error_log(e, "003")
+        error_log(e, "003", img_service)
 
 def Data_Services_004():
     try:
-        pass
+        log("Cannot check style guide")
     except Exception as e:
-        error_log(e, "004")
-
-def Data_Services_005():
-    try:
-        pass
-    except Exception as e:
-        error_log(e, "005")
+        error_log(e, "004", img_service)

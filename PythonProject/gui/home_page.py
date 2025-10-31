@@ -353,6 +353,50 @@ class HomePage(QWidget):
         form_layout.addLayout(vehicle_type_layout)
         form_layout.addLayout(platform_layout)
 
+        country_layout = QHBoxLayout()
+        country_layout.setSpacing(10)
+        country_layout.setAlignment(Qt.AlignCenter)
+
+        self.eur_btn = QToolButton()
+        self.eur_btn.setText("EUR")
+        self.nar_btn = QToolButton()
+        self.nar_btn.setText("NAR")
+        self.chn_btn = QToolButton()
+        self.chn_btn.setText("CHN")
+
+        for btn in (self.eur_btn, self.nar_btn, self.chn_btn):
+            btn.setFixedSize(90, 45) if self.screen == 'Monitor' else btn.setFixedSize(55, 30)
+            btn.setCursor(Qt.PointingHandCursor)
+            btn.clicked.connect(lambda: self.update_run_btn(testcase_table))
+            btn.setCheckable(True)
+            btn.setStyleSheet("""
+                        QToolButton {
+                            background-color: #e0f1eb;
+                            color: #394d45;
+                            font-weight: bold;
+                            font-size: 12px;
+                        }
+                        QToolButton:checked {
+                            background-color: #485f56;
+                            color: white;
+                        }
+                        QTolButton:hover {
+                            background-color: #cfd4d2;
+                        }
+                    """)
+
+        self.eur_btn.clicked.connect(lambda: self._select_country("eur"))
+        self.nar_btn.clicked.connect(lambda: self._select_country("nar"))
+        self.chn_btn.clicked.connect(lambda: self._select_country("chn"))
+
+        country_layout.addWidget(self.eur_btn)
+        country_layout.addWidget(self.nar_btn)
+        country_layout.addWidget(self.chn_btn)
+
+        form_layout.addLayout(vehicle_type_layout)
+        form_layout.addLayout(platform_layout)
+        form_layout.addLayout(country_layout)
+
         middle_side.addWidget(credentials_frame)
         main_container.addWidget(middle_container)
 
@@ -494,6 +538,20 @@ class HomePage(QWidget):
             self.ice_btn.setChecked(False)
             self.phev_btn.setChecked(True)
 
+    def _select_country(self, country):
+        if country == "eur":
+            self.eur_btn.setChecked(True)
+            self.nar_btn.setChecked(False)
+            self.chn_btn.setChecked(False)
+        elif country == "nar":
+            self.eur_btn.setChecked(False)
+            self.nar_btn.setChecked(True)
+            self.chn_btn.setChecked(False)
+        else:
+            self.eur_btn.setChecked(False)
+            self.nar_btn.setChecked(False)
+            self.chn_btn.setChecked(True)
+
     def open_service_tests(self, service):
         self.main_window.show_test_cases(service)
 
@@ -513,6 +571,7 @@ class HomePage(QWidget):
         pin_filled = bool(self.pin_input.text().strip())
         vehicle_type = self.ice_btn.isChecked() or self.phev_btn.isChecked()
         phone_type = self.ios_btn.isChecked() or self.android_btn.isChecked()
+        country = self.chn_btn.isChecked() or self.eur_btn.isChecked() or self.nar_btn.isChecked()
         checkbox_check = False
         for row in range(table.rowCount()):
             cell_widget = table.cellWidget(row, 1)
@@ -521,7 +580,7 @@ class HomePage(QWidget):
                 if cb.isChecked():
                     checkbox_check = True
 
-        can_submit = name_filled and email_filled and password_filled and pin_filled and vehicle_type and phone_type and checkbox_check
+        can_submit = name_filled and email_filled and password_filled and pin_filled and vehicle_type and phone_type and checkbox_check and country
 
         self.run_btn.setEnabled(can_submit)
 

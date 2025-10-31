@@ -2,6 +2,8 @@ from common_utils.android_image_comparision import *
 from core.log_emitter import log, fail_log, error_log, metric_log
 from time import sleep
 
+img_service = "Car Finder"
+
 def identify_car():
     if compare_with_expected_crop("Icons/Bentayga.png"):
         car = 'Bentayga'
@@ -23,11 +25,11 @@ def Car_Finder_001():
             controller.click_by_image("Images/Navigation_Allow.png")
             log("Navigation tab displayed")
         else:
-            fail_log("Navigation tab not displayed", "001")
+            fail_log("Navigation tab not displayed", "001", img_service)
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
-        error_log(e, "001")
+        error_log(e, "001", img_service)
 
 # Image recognition of the markers does not work and the ids are the same so this is dodgy
 def Car_Finder_002():
@@ -53,11 +55,11 @@ def Car_Finder_002():
         if len(markers) == len(cars) or len(cars)+1:
             log("Car map markers all displayed")
         else:
-            fail_log("Car map markers not displayed", "002")
+            fail_log("Car map markers not displayed", "002", img_service)
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
-        error_log(e, "002")
+        error_log(e, "002", img_service)
 
 def Car_Finder_003():
     try:
@@ -68,11 +70,11 @@ def Car_Finder_003():
         if controller.d.xpath('//*[@content-desc="User\'s location"]').exists:
             log("User icon displayed on navigation page")
         else:
-            fail_log("User icon not displayed on navigation page", "003")
+            fail_log("User icon not displayed on navigation page", "003", img_service)
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
-        error_log(e, "003")
+        error_log(e, "003", img_service)
 
 # same problem as 002
 def Car_Finder_004():
@@ -87,11 +89,11 @@ def Car_Finder_004():
         if len(markers) >= 1:
             log("User location displayed on navigation page")
         else:
-            fail_log("User location not displayed on navigation page", "004")
+            fail_log("User location not displayed on navigation page", "004", img_service)
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
-        error_log(e, "004")
+        error_log(e, "004", img_service)
 
 # Is this not a literal repeat of testcase 2 and 4
 def Car_Finder_005():
@@ -117,18 +119,18 @@ def Car_Finder_005():
         if len(markers) >= 1:
             log("User location displayed on navigation page")
         else:
-            fail_log("User location not displayed on navigation page", "005")
+            fail_log("User location not displayed on navigation page", "005", img_service)
 
         controller.click_by_image("Images/Navigation_Car_Image.png")
         markers = controller.d.xpath('//*[@content-desc="Map Marker"]').all()
         if len(markers) == len(cars) or len(cars) + 1:
             log(f"{car} icon displayed on navigation page")
         else:
-            fail_log(f"{car} icon displayed on navigation page", "005")
+            fail_log(f"{car} icon displayed on navigation page", "005", img_service)
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
-        error_log(e, "005")
+        error_log(e, "005", img_service)
 
 def Car_Finder_006():
     try:
@@ -159,15 +161,15 @@ def Car_Finder_006():
                     for metric, stat in vehicle_details:
                         metric_log(f"{metric}: {stat}")
                 else:
-                    fail_log("No vehicle visible on navigation page", "006")
+                    fail_log("No vehicle visible on navigation page", "006", img_service)
             except Exception as e:
-                fail_log("No vehicle visible on navigation page", "006")
+                fail_log("No vehicle visible on navigation page", "006", img_service)
 
         controller.click(500, 500)
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
-        error_log(e, "006")
+        error_log(e, "006", img_service)
 
 def Car_Finder_007():
     try:
@@ -188,7 +190,7 @@ def Car_Finder_007():
             try:
                 controller.click(driver_icon_bounds[1][0], driver_icon_bounds[1][1])
             except Exception as e:
-                fail_log("No vehicle visible on navigation page", "007")
+                fail_log("No vehicle visible on navigation page", "007", img_service)
 
         if controller.click_text("PLAN ROUTE"):
             log("Plan route button clicked")
@@ -196,9 +198,9 @@ def Car_Finder_007():
             if controller.is_text_present("Your location") and controller.d.xpath('//*[starts-with(@content-desc, "Destination")]').exists:
                 log("Route created and displayed")
             else:
-                fail_log("Route not created", "007")
+                fail_log("Route not created", "007", img_service)
         else:
-            fail_log("Plan route button not displayed", "007")
+            fail_log("Plan route button not displayed", "007", img_service)
 
         controller.press_home()
         controller.launch_app("uk.co.bentley.mybentley")
@@ -206,7 +208,7 @@ def Car_Finder_007():
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
-        error_log(e, "007")
+        error_log(e, "007", img_service)
 
 # Privacy mode in the car
 def Car_Finder_008():
@@ -222,12 +224,12 @@ def Car_Finder_008():
         if not compare_with_expected_crop("Images/Navigation_Car_Image.png"):
             log("Find my car icon not displayed when privacy mode activated")
         else:
-            fail_log("Find my car icon displayed when privacy mode activated", "008")
+            fail_log("Find my car icon displayed when privacy mode activated", "008", img_service)
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/Error_Icon.png")
 
     except Exception as e:
-        error_log(e, "008")
+        error_log(e, "008", img_service)
 
 def Car_Finder_009():
     try:
@@ -242,16 +244,15 @@ def Car_Finder_009():
         if compare_with_expected_crop("Images/Navigation_Car_Image.png"):
             log("Find my car icon displayed when privacy mode deactivated")
         else:
-            fail_log("Find my car icon not displayed when privacy mode deactivated", "009")
+            fail_log("Find my car icon not displayed when privacy mode deactivated", "009", img_service)
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/Error_Icon.png")
 
-
     except Exception as e:
-        error_log(e, "009")
+        error_log(e, "009", img_service)
 
 def Car_Finder_010():
     try:
         log("temp, Cannot check style guide")
     except Exception as e:
-        error_log(e, "009")
+        error_log(e, "010", img_service)

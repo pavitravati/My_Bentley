@@ -116,6 +116,33 @@ class DeviceController:
         end_x = int(width * 0.8)
         self.swipe(start_x, start_y, end_x, start_y, duration)
 
+    def delete_sent_location(self):
+        width, height = self.d.window_size()
+        start_y = height // 1.2
+        start_x = int(width * 0.8)
+        end_x = int(width * 0.2)
+        self.swipe(start_x, start_y, end_x, start_y)
+
+    def delete_favourite_location(self):
+        width, height = self.d.window_size()
+        start_y = height // 2.15
+        start_x = int(width * 0.8)
+        end_x = int(width * 0.2)
+        self.swipe(start_x, start_y, end_x, start_y)
+        start_y = height // 1.35
+        self.swipe(start_x, start_y, end_x, start_y)
+
+    def swipe_heating_duration(self):
+        heating_durations = []
+        heating_durations.append(self.d(resourceId="android:id/numberpicker_input").get_text())
+        for _ in range(5):
+            start_y = 1180
+            start_x = 500
+            end_y = 900
+            self.swipe(start_x, start_y, start_x, end_y, 0.2)
+            heating_durations.append(self.d(resourceId="android:id/numberpicker_input").get_text())
+        return heating_durations
+
     def click_by_image(self, image_path, threshold=0.8):
         """
         Click on the screen based on matching image.
@@ -161,6 +188,20 @@ class DeviceController:
 
     def click_by_resource_id(self, res_id):
         el = self.d(resourceId=res_id)
+        if el.exists:
+            el.click()
+            return True
+        return False
+
+    def click_by_text_id(self, text_id):
+        el = self.d(text=text_id)
+        if el.exists:
+            el.click()
+            return True
+        return False
+
+    def click_by_content_desc(self, desc):
+        el = self.d(description=desc)
         if el.exists:
             el.click()
             return True
@@ -216,10 +257,24 @@ class DeviceController:
                     metrics["Bonnet"] = value.get_text()
 
             # Fuel Range
+            # Fuel Range
             if self.d(resourceId="uk.co.bentley.mybentley:id/textView_primary_range_title_vsr_combined_range").exists:
                 value = self.d(resourceId="uk.co.bentley.mybentley:id/textView_primary_range_vsr_combined_range")
                 if value.exists:
                     metrics["Fuel Range"] = value.get_text()
+
+            # Battery Range
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_secondary_range_vsr_combined_range").exists:
+                value = self.d(resourceId="uk.co.bentley.mybentley:id/textView_secondary_range_vsr_combined_range")
+                if value.exists:
+                    metrics["Battery Range"] = value.get_text()
+
+            # Fuel level and battery in %
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_level_vsr_fuel").exists:
+                values = self.d.xpath('//*[@resource-id="uk.co.bentley.mybentley:id/textView_level_vsr_fuel"]').all()
+                metrics["Fuel pct"] = values[0].attrib.get('text')
+                if len(values) > 1:
+                    metrics['Battery pct'] = values[1].attrib.get('text')
 
             # Doors
             if self.d(text="Doors").exists:

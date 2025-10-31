@@ -12,16 +12,16 @@ def app_logout():
     else:
         return False
 
-def app_login():
+def app_login(email=globals.current_email, password=globals.current_password):
     controller.click_by_image("Icons/login_register_icon.png")
     controller.wait_for_text("WELCOME", 30)
     while controller.is_text_present("WELCOME"):
-        controller.enter_text(globals.current_email)
+        controller.enter_text(email)
         sleep(1)
     sleep(5)
     if not controller.is_text_present("CREATE ACCOUNT"):
         while controller.is_text_present("Log in – Enter password"):
-            controller.enter_text(globals.current_password)
+            controller.enter_text(password)
             sleep(1)
     else:
         controller.click_by_image("Icons/login_page_x.png")

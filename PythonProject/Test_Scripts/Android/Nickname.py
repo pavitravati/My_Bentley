@@ -2,6 +2,8 @@ from time import sleep
 from common_utils.android_image_comparision import *
 from core.log_emitter import log, fail_log, error_log, metric_log
 
+img_service = "Nickname"
+
 # Swapped around testcase 4 and 5 here and in the Excel sheet I used
 def identify_car():
     if compare_with_expected_crop("Icons/Bentayga.png"):
@@ -21,12 +23,12 @@ def nickname_page(num):
     if controller.click_by_image("Icons/info_btn.png"):
         log("Info icon clicked")
     else:
-        fail_log("Info icon not clicked", num)
+        fail_log("Info icon not clicked", num, img_service)
 
     if controller.click_by_image("Icons/edit_name.png"):
         log("Edit button clicked")
     else:
-        fail_log("Edit button not clicked", num)
+        fail_log("Edit button not clicked", num, img_service)
 
 def Nickname_001():
     try:
@@ -37,12 +39,12 @@ def Nickname_001():
         if controller.count_text(text=car_name) == 2 and controller.is_text_present("Vehicle name") and controller.is_text_present("Model"):
             log("Default vehicle details displayed")
         else:
-            fail_log("Default vehicle details not displayed", "001")
+            fail_log("Default vehicle details not displayed", "001", img_service)
 
         controller.click_by_image("Icons/back_icon.png")
 
     except Exception as e:
-        error_log(e, "001")
+        error_log(e, "001", img_service)
 
 def Nickname_002():
     try:
@@ -52,12 +54,10 @@ def Nickname_002():
         if controller.is_text_present(car_name):
             log("Default vehicle name displayed")
         else:
-            fail_log("Default vehicle name not displayed", "002")
+            fail_log("Default vehicle name not displayed", "002", img_service)
 
     except Exception as e:
-        error_log(e, "002")
-
-Nickname_002()
+        error_log(e, "002", img_service)
 
 def Nickname_003():
     try:
@@ -71,7 +71,7 @@ def Nickname_003():
         if compare_with_expected_crop("Icons/save_disabled.png"):
             log("Save button is present and disabled when name unedited")
         else:
-            fail_log("Save button is not present or disabled when name unedited", "003")
+            fail_log("Save button is not present or disabled when name unedited", "003", img_service)
 
         controller.click_text(car_name)
         controller.enter_text(f"{car_name}123")
@@ -79,13 +79,13 @@ def Nickname_003():
         if compare_with_expected_crop("Icons/save_enabled.png"):
             log("Save button is present and disabled when name edited")
         else:
-            fail_log("Save button is not present or disabled when name edited", "003")
+            fail_log("Save button is not present or disabled when name edited", "003", img_service)
 
         controller.click_by_image("Icons/back_icon.png")
         controller.click_by_image("Icons/back_icon.png")
 
     except Exception as e:
-        error_log(e, "003")
+        error_log(e, "003", img_service)
 
 def Nickname_004():
     try:
@@ -102,17 +102,17 @@ def Nickname_004():
             controller.click_by_image("Icons/back_icon.png")
             controller.swipe_down()
         else:
-            fail_log("Nickname edited unsuccessfully", "004")
+            fail_log("Nickname edited unsuccessfully", "004", img_service)
             controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
             controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
 
         if controller.wait_for_text(f"{car_name}123"):
             log("Nickname displayed successfully")
         else:
-            fail_log("Nickname displayed unsuccessfully", "004")
+            fail_log("Nickname displayed unsuccessfully", "004", img_service)
 
     except Exception as e:
-        error_log(e, "004")
+        error_log(e, "004", img_service)
 
 def Nickname_005():
     try:
@@ -123,13 +123,13 @@ def Nickname_005():
         if compare_with_expected_crop("Icons/save_disabled.png"):
             log("Save button is present and disabled when name unedited")
         else:
-            fail_log("Save button is not present or disabled when name unedited", "005")
+            fail_log("Save button is not present or disabled when name unedited", "005", img_service)
 
         controller.click_by_image("Icons/back_icon.png")
         controller.click_by_image("Icons/back_icon.png")
 
     except Exception as e:
-        error_log(e, "005")
+        error_log(e, "005", img_service)
 
 def Nickname_006():
     try:
@@ -143,7 +143,7 @@ def Nickname_006():
             log("19 Character nickname edited successfully")
             sleep(5)
         else:
-            fail_log("19 Character nickname edited unsuccessfully", "006")
+            fail_log("19 Character nickname edited unsuccessfully", "006", img_service)
             controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
 
         controller.click_by_image("Icons/back_icon.png")
@@ -153,13 +153,13 @@ def Nickname_006():
         if controller.is_text_present("testingnickname1234"):
             log("19 Character nickname displayed successfully")
         else:
-            fail_log("19 Character nickname displayed unsuccessfully", "006")
+            fail_log("19 Character nickname displayed unsuccessfully", "006", img_service)
 
         controller.click_by_image("Icons/back_icon.png")
         controller.click_by_image("Icons/back_icon.png")
 
     except Exception as e:
-        error_log(e, "006")
+        error_log(e, "006", img_service)
 
 def Nickname_007():
     try:
@@ -174,7 +174,7 @@ def Nickname_007():
             log("Special character nickname edited successfully")
             sleep(5)
         else:
-            fail_log("Special character nickname edited unsuccessfully", "007")
+            fail_log("Special character nickname edited unsuccessfully", "007", img_service)
             controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
 
         controller.click_by_image("Icons/back_icon.png")
@@ -184,10 +184,10 @@ def Nickname_007():
         if controller.is_text_present("!?#£✅❌"):
             log("Special character nickname displayed successfully")
         else:
-            fail_log("Special character nickname displayed unsuccessfully", "007")
+            fail_log("Special character nickname displayed unsuccessfully", "007", img_service)
 
     except Exception as e:
-        error_log(e, "007")
+        error_log(e, "007", img_service)
 
 def Nickname_008():
     try:
@@ -202,14 +202,14 @@ def Nickname_008():
             log("Save disabled for nickname with space")
             sleep(5)
         elif compare_with_expected_crop("Icons/save_enabled.png"):
-            fail_log("Save disabled for nickname with space", "008")
+            fail_log("Save disabled for nickname with space", "008", img_service)
 
         controller.click_by_image("Icons/back_icon.png")
         controller.click_by_image("Icons/back_icon.png")
 
 
     except Exception as e:
-        error_log(e, "008")
+        error_log(e, "008", img_service)
 
 def Nickname_009():
     try:
@@ -224,7 +224,7 @@ def Nickname_009():
         if controller.click_by_image("Icons/save_enabled.png"):
             log("Nickname edited successfully")
         else:
-            fail_log("Nickname edited unsuccessfully", "009")
+            fail_log("Nickname edited unsuccessfully", "009", img_service)
         sleep(5)
 
         controller.click_by_image("Icons/back_icon.png")
@@ -246,26 +246,26 @@ def Nickname_009():
         if compare_with_expected_crop("Images/My_Bentley_Dashboard.png"):
             log("Logged in")
         else:
-            fail_log("Failed to login", "009")
+            fail_log("Failed to login", "009", img_service)
 
         if controller.is_text_present(f"{car_name}123"):
             log("Nickname displayed in dashboard screen successfully")
         else:
-            fail_log("Nickname displayed in dashboard screen unsuccessfully", "009")
+            fail_log("Nickname displayed in dashboard screen unsuccessfully", "009", img_service)
 
         controller.click_by_image("Icons/info_btn.png")
         if controller.is_text_present(f"{car_name}123"):
             log("Nickname displayed in vehicle details screen successfully")
         else:
-            fail_log("Nickname displayed in vehicle details screen unsuccessfully", "009")
+            fail_log("Nickname displayed in vehicle details screen unsuccessfully", "009", img_service)
 
         controller.click_by_image("Icons/back_icon.png")
 
     except Exception as e:
-        error_log(e, "009")
+        error_log(e, "009", img_service)
 
 def Nickname_010():
     try:
         log("Cannot check style guide")
     except Exception as e:
-        error_log(e, "010")
+        error_log(e, "010", img_service)

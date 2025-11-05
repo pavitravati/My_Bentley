@@ -1,175 +1,665 @@
 from common_utils.android_image_comparision import *
 from core.log_emitter import log, fail_log, metric_log, error_log
-import datetime
-from dateutil.relativedelta import relativedelta
+from time import sleep
+from core.app_functions import remote_swipe, enable_flight_mode, disable_flight_mode
+from gui.globals import current_name, current_email
 
 img_service = "Stolen Vehicle Tracking"
 
+# Done in car
 def Stolen_Vehicle_Tracking_001():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        controller.click_by_image("Icons/info_btn.png")
-        controller.click_text("Services and licenses")
-
-        extracted = controller.extract_all_license_dates()
-        current_date = datetime.date.today()
-        date_limit = current_date + relativedelta(years=3)
-
-        if extracted['Vehicle tracking system']:
-            log("Licenses extracted")
-            license_date = datetime.datetime.strptime(extracted['Vehicle tracking system'][-10:], "%d/%m/%Y").date()
-            if license_date >= date_limit:
-                log("Vehicle tracking system license has a valid date")
-            else:
-                fail_log("Vehicle tracking system license does not have a valid date", "001", img_service)
-        else:
-            fail_log("Failed to extract licenses", "001", img_service)
-
-        controller.click_by_image("Icons/back_btn.png")
-        controller.click_by_image("Icons/back_btn.png")
-
+        pass
     except Exception as e:
         error_log(e, "001", img_service)
 
+#Done in car
 def Stolen_Vehicle_Tracking_002():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        controller.click_by_image("Icons/info_btn.png")
-        controller.click_text("Services and licenses")
-        extracted = controller.extract_all_license_dates()
-
-        if extracted['Vehicle tracking system']:
-            log("Licenses extracted")
-            if extracted['Vehicle tracking system']:
-                fail_log("Vehicle tracking system license is displayed", "002", img_service)
-            else:
-                log("Vehicle tracking system license is not displayed")
-        else:
-            fail_log("Failed to extract licenses", "002", img_service)
-
-        controller.click_by_image("Icons/back_btn.png")
-        controller.click_by_image("Icons/back_btn.png")
-
+        pass
     except Exception as e:
         error_log(e, "002", img_service)
 
+# Tested (no call)
 def Stolen_Vehicle_Tracking_003():
     try:
-        pass
+        controller.click_by_image("Icons/windows_icon.png")
+        if remote_swipe("STOLEN VEHICLE TRACKING"):
+            Stolen_vehicle_tracking = controller.d(text="STOLEN VEHICLE TRACKING")
+            status = Stolen_vehicle_tracking.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item").get_text()
+            if 'active' in status:
+                log("Stolen vehicle tracking feature is displayed as active")
+            else:
+                fail_log("Stolen vehicle tracking feature is not displayed as active", "003", img_service)
+        else:
+            fail_log("Stolen vehicle tracking feature not displayed", "003", img_service)
+
+        # Call can't be automated
+        controller.swipe_down(0.05)
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+
     except Exception as e:
         error_log(e, "003", img_service)
 
 def Stolen_Vehicle_Tracking_004():
     try:
-        pass
+        # How to have no vts license
+
+        controller.click_by_image("Icons/windows_icon.png")
+        if not remote_swipe("STOLfEN VEHICLE TRACKING"):
+            log("Stolen vehicle tracking feature not displayed in car remote screen")
+        else:
+            fail_log("Stolen vehicle tracking section displayed in car remote screen", "004", img_service)
+        controller.swipe_down(0.05)
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "004", img_service)
 
 def Stolen_Vehicle_Tracking_005():
     try:
-        pass
+        # Best way to add vehicle with vts license
+
+        controller.click_by_image("Icons/windows_icon.png")
+        if remote_swipe("STOLfEN VEHICLE TRACKING"):
+            log("Stolen vehicle tracking feature displayed in car remote screen")
+        else:
+            fail_log("Stolen vehicle tracking feature not displayed in car remote screen", "005", img_service)
+        controller.swipe_down(0.05)
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "005", img_service)
 
 def Stolen_Vehicle_Tracking_006():
     try:
-        pass
+        # No vts license
+        controller.click_by_image("Icons/windows_icon.png")
+        if remote_swipe("STOLEN VEHICLE TRACKING"):
+            Stolen_vehicle_tracking = controller.d(text="STOLEN VEHICLE TRACKING")
+            status = Stolen_vehicle_tracking.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item").get_text()
+            # Check what it would actually say
+            if 'Not active' in status:
+                log("Stolen vehicle tracking feature is displayed as active")
+            else:
+                fail_log("Stolen vehicle tracking feature is not displayed as active", "006", img_service)
+        else:
+            fail_log("Stolen vehicle tracking feature not displayed", "006", img_service)
+        controller.swipe_down(0.05)
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+
+        # vts license pending
+        controller.click_by_image("Icons/windows_icon.png")
+        if remote_swipe("STOLEN VEHICLE TRACKING"):
+            Stolen_vehicle_tracking = controller.d(text="STOLEN VEHICLE TRACKING")
+            status = Stolen_vehicle_tracking.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item").get_text()
+            # Check what it would actually say
+            if 'pending' in status:
+                log("Stolen vehicle tracking feature is displayed as active")
+            else:
+                fail_log("Stolen vehicle tracking feature is not displayed as active", "006", img_service)
+        else:
+            fail_log("Stolen vehicle tracking feature not displayed", "006", img_service)
+        controller.swipe_down(0.05)
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+
+        # vts license active
+        controller.click_by_image("Icons/windows_icon.png")
+        if remote_swipe("STOLEN VEHICLE TRACKING"):
+            Stolen_vehicle_tracking = controller.d(text="STOLEN VEHICLE TRACKING")
+            status = Stolen_vehicle_tracking.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item").get_text()
+            if 'active' in status:
+                log("Stolen vehicle tracking feature is displayed as active")
+            else:
+                fail_log("Stolen vehicle tracking feature is not displayed as active", "006", img_service)
+        else:
+            fail_log("Stolen vehicle tracking feature not displayed", "006", img_service)
+        controller.swipe_down(0.05)
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "006", img_service)
 
+# Tested
 def Stolen_Vehicle_Tracking_007():
     try:
-        pass
+        controller.click_by_image("Icons/windows_icon.png")
+        if remote_swipe("STOLEN VEHICLE TRACKING"):
+            controller.click_text("STOLEN VEHICLE TRACKING")
+            if controller.is_text_present("My Alerts") and controller.is_text_present("Configure") and controller.click_text("My Details"):
+                log("Stolen vehicle tracking page displayed and My details tab clicked")
+            else:
+                fail_log("Stolen vehicle tracking page not displayed", "006", img_service)
+
+            my_details_metrics = controller.extract_svt_details()
+            if len(my_details_metrics) == 9:
+                log("All Stolen vehicle tracking details extracted")
+            else:
+                fail_log("Failed to extract all stolen vehicle tracking details", "007", img_service)
+            for label, value in my_details_metrics.items():
+                metric_log(f"{label}: {value}")
+
+            controller.click_text("My Vehicle Security Tracking certificate")
+            if controller.wait_for_text("CERTIFICATE"):
+                log("Certificate can be opened ready to download")
+                controller.click_by_image("Icons/back_icon.png")
+            else:
+                fail_log("Certificate cannot be opened", "006", img_service)
+                controller.click_by_image("Icons/Error_Icon.png")
+
+        else:
+            fail_log("Stolen vehicle tracking feature not displayed", "007", img_service)
+
+        controller.click_by_image("Icons/back_icon.png")
+        controller.swipe_down(0.05)
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+
     except Exception as e:
         error_log(e, "007", img_service)
 
+#Tested
 def Stolen_Vehicle_Tracking_008():
     try:
-        pass
+        controller.click_by_image("Icons/windows_icon.png")
+        if remote_swipe("STOLEN VEHICLE TRACKING"):
+            controller.click_text("STOLEN VEHICLE TRACKING")
+            controller.click_text("My Details")
+            if controller.click_text("My Bentley"):
+                log("My Bentley section clicked")
+            else:
+                fail_log("My Bentley section not found", "008", img_service)
+
+            model = controller.d(resourceId="uk.co.bentley.mybentley:id/dropDown_vts_registration_vehicle_model").get_text()
+            metric_log(f"Vehicle Model: {model}") if model else fail_log("Model not found", "008", img_service)
+
+            vehicle_colour = controller.d(resourceId="uk.co.bentley.mybentley:id/dropDown_vts_registration_vehicle_color")
+            metric_log(f"Vehicle Colour: {vehicle_colour.get_text()}") if vehicle_colour else fail_log("Vehicle colour not found", "008", img_service)
+
+            vehicle_country = controller.d(resourceId="uk.co.bentley.mybentley:id/editText_vts_registration_vehicle_country").get_text()
+            metric_log(f"Vehicle Country: {vehicle_country}") if vehicle_country else fail_log("Vehicle country not found", "008", img_service)
+
+            vehicle_reg = controller.d(resourceId="uk.co.bentley.mybentley:id/editText_vts_registration_vehicle_country")
+            metric_log(f"Vehicle Registration: {vehicle_reg.get_text()}") if vehicle_reg else fail_log("Vehicle registration not found", "008", img_service)
+
+            if model and vehicle_colour and vehicle_country and vehicle_reg:
+                log("All details extracted from My Bentley page")
+            else:
+                fail_log("Not all details extracted from My Bentley Page", "008", img_service)
+
+        controller.click_by_image("Icons/back_icon.png")
+        controller.click_by_image("Icons/back_icon.png")
+        controller.swipe_down(0.05)
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+
     except Exception as e:
         error_log(e, "008", img_service)
 
+#Tested, lots of things so some false fails
 def Stolen_Vehicle_Tracking_009():
     try:
-        pass
+        controller.click_by_image("Icons/windows_icon.png")
+        if remote_swipe("STOLEN VEHICLE TRACKING"):
+            controller.click_text("STOLEN VEHICLE TRACKING")
+            controller.click_text("My Details")
+            controller.click_text("Name")
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_registration_name_first_name")
+            controller.enter_text("123")
+            controller.click_text("SAVE CHANGES")
+            if controller.wait_for_text(f"{current_name.split(" ")[0]}123 gqm", 30) and not controller.is_text_present("MY BENTLEY"):
+                log("Name successfully edited")
+            else:
+                fail_log("Name failed to be edited", "009", img_service)
+            sleep(0.5)
+            controller.click_text("Name")
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_registration_name_first_name")
+            controller.clear_text(3)
+            controller.click_text("SAVE CHANGES")
+            controller.wait_for_text("Name")
+            if not controller.wait_for_text(current_name, 30):
+                fail_log("Name failed to be reset to original name", "009", img_service)
+
+            controller.click_text("Email Address")
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_registration_name_email")
+            while controller.d(resourceId="uk.co.bentley.mybentley:id/editText_registration_name_email").get_text() != "Email address":
+                controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_registration_name_email")
+                controller.clear_text(16)
+            controller.enter_text("newtest@gqm.anonaddy.com")
+            controller.click_text("SAVE CHANGES")
+            while controller.is_text_present("Loading..."):
+                sleep(1)
+            log("Email successfully edited") if controller.wait_for_text(f"newtest@gqm.anonaddy.com") else fail_log("Email failed to be edited", "009", img_service)
+            controller.click_text("Email Address")
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_registration_name_email")
+            while controller.d(resourceId="uk.co.bentley.mybentley:id/editText_registration_name_email").get_text() != "Email address":
+                controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_registration_name_email")
+                controller.clear_text(16)
+            controller.enter_text(current_email)
+            controller.click_text("SAVE CHANGES")
+            while controller.is_text_present("Loading..."):
+                sleep(1)
+            if not controller.wait_for_text(current_email, 30):
+                fail_log("Email address failed to be reset to original email", "009", img_service)
+
+            address_value = controller.d.xpath('//*[@text="Address"]/following-sibling::android.widget.TextView[1]')
+            current_address = address_value.text.replace("\n", ".")
+            controller.click_text("Address")
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/textView_vts_registration_address_country")
+            log("Country can be changed") if controller.is_text_present("Search for a country or language") else fail_log("Country cannot be changed", "009", img_service)
+            controller.click_by_image("Icons/back_icon.png")
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_vts_registration_address_address")
+            controller.enter_text("2")
+            controller.swipe_down()
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_vts_registration_address_city")
+            controller.enter_text("2")
+            controller.swipe_down()
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_vts_registration_address_postcode")
+            controller.clear_text(1)
+            controller.enter_text("a")
+            controller.click_text("SAVE CHANGES")
+            while controller.is_text_present("Loading..."):
+                sleep(1)
+            lines = current_address.split(".")
+            controller.click_by_image("Icons/back_icon.png")
+            controller.click_text("STOLEN VEHICLE TRACKING")
+            if controller.wait_for_text(f'{lines[0]}\n{lines[1]}2\n{lines[2]}2\n{lines[3][:-1]}a'):
+                log("Address successfully edited")
+            else:
+                fail_log("Address failed to be edited", "009", img_service)
+            controller.click_text("Address")
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_vts_registration_address_address")
+            controller.clear_text(1)
+            controller.swipe_down()
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_vts_registration_address_city")
+            controller.clear_text(1)
+            controller.swipe_down()
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_vts_registration_address_postcode")
+            controller.clear_text(1)
+            controller.enter_text(current_address.split(".")[3][-1])
+            controller.click_text("SAVE CHANGES")
+            while controller.is_text_present("Loading..."):
+                sleep(1)
+            controller.click_by_image("Icons/back_icon.png")
+            controller.click_text("STOLEN VEHICLE TRACKING")
+            if not controller.wait_for_text(current_address.replace(".", "\n")):
+                fail_log("Address failed to be reset to original address", "009", img_service)
+
+            controller.click_text("Primary Mobile Number")
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_vts_registration_phone_number_input")
+            current_phone = controller.d(resourceId="uk.co.bentley.mybentley:id/editText_vts_registration_phone_number_input").get_text()
+            last_digit = int(current_phone[-1])
+            controller.clear_text(1)
+            controller.enter_text(last_digit+1 if last_digit != 9 else 1)
+            controller.click_text("SAVE CHANGES")
+            log("Mobile number can be edited") if controller.wait_for_text("Confirm your mobile number") else fail_log("Mobile number cannot be edited", "009", img_service)
+            controller.click_text("Edit")
+            controller.click_by_image("Icons/back_icon.png")
+
+            controller.swipe_up()
+            if controller.click_text("My Security Language") and controller.is_text_present("MY SECURITY LANGUAGE"):
+                # Need to access a phone/vehicle where you can edit it, mine does not allow
+                pass
+            else:
+                fail_log("My security language could not be edited", "009", img_service)
+
+            controller.click_text("My Security Question")
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_vts_registration_security_que_answer")
+            controller.enter_text(1)
+            controller.click_text("SAVE CHANGES")
+            if controller.is_text_present("Confirm and submit"):
+                controller.click_text("Edit")
+                log("Security question answer can be edited")
+            else:
+                fail_log("Security question answer failed to be edited", "009", img_service)
+            controller.click_by_image("Icons/back_icon.png")
+
+            controller.swipe_down()
+            controller.click_by_image("Icons/back_icon.png")
+            controller.swipe_down(0.05)
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "009", img_service)
 
+# Tested
 def Stolen_Vehicle_Tracking_010():
     try:
-        pass
+        controller.click_by_image("Icons/windows_icon.png")
+        if remote_swipe("STOLEN VEHICLE TRACKING"):
+            controller.click_text("STOLEN VEHICLE TRACKING")
+            controller.click_text("My Details")
+
+            controller.click_text("My Bentley")
+            current_colour = controller.d(resourceId="uk.co.bentley.mybentley:id/dropDown_vts_registration_vehicle_color").get_text()
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/dropDown_vts_registration_vehicle_color")
+            if current_colour == "Beige":
+                new_colour = "Black"
+                controller.click_text("Black")
+            else:
+                new_colour = "Beige"
+                controller.click_text("Beige")
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_vts_registration_vehicle_country")
+            # Check what it is like when this is editable
+            if False:
+                pass
+            else:
+                if controller.click_by_image("Icons/info_btn.png"):
+                    fail_log("Registration country cannot be changed", "010", img_service)
+                    controller.click_text("OK")
+                else:
+                    fail_log("Registration country cannot be changed", "010", img_service)
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_vts_registration_vehicle_registration_number")
+            current_reg = controller.d(resourceId="uk.co.bentley.mybentley:id/editText_vts_registration_vehicle_registration_number").get_text()
+            controller.clear_text(1)
+            if current_reg[-1] != 'A':
+                reg_end = 'A'
+                controller.enter_text(reg_end)
+            else:
+                reg_end = 'B'
+                controller.enter_text(reg_end)
+            current_model = controller.d(resourceId="uk.co.bentley.mybentley:id/dropDown_vts_registration_vehicle_model").get_text()
+            controller.click_text("SAVE CHANGES")
+            while controller.is_text_present("Loading..."):
+                sleep(1)
+            if controller.wait_for_text(f"{new_colour}, {current_model}, {current_reg[:-1]}{reg_end}"):
+                log("My Bentley details successfully edited")
+            else:
+                fail_log("My Bentley details not successfully edited", "010", img_service)
+            controller.click_text("My Bentley")
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/dropDown_vts_registration_vehicle_color")
+            sleep(0.5)
+            if not controller.click_text(current_colour):
+                controller.swipe_up()
+                controller.click_text(current_colour)
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_vts_registration_vehicle_registration_number")
+            controller.clear_text(1)
+            controller.enter_text(current_reg[-1])
+            controller.click_text("SAVE CHANGES")
+            while controller.is_text_present("Loading..."):
+                sleep(1)
+            sleep(2)
+            if not controller.is_text_present(f"{current_colour}, {current_model}, {current_reg}"):
+                fail_log("My Bentley details set to original details", "010", img_service)
+
+        controller.click_by_image("Icons/back_icon.png")
+        controller.swipe_down(0.05)
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "010", img_service)
 
+# Tested
 def Stolen_Vehicle_Tracking_011():
     try:
-        pass
+        controller.click_by_image("Icons/windows_icon.png")
+        if remote_swipe("STOLEN VEHICLE TRACKING"):
+            controller.click_text("STOLEN VEHICLE TRACKING")
+            controller.click_text("My Details")
+            controller.swipe_up()
+
+            if controller.click_text("My Security Question"):
+                log("My security questions tab clicked")
+                controller.click_text("What was the name of your first school?")
+                controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_vts_registration_security_que_answer")
+                controller.enter_text("test1")
+                controller.click_text("SAVE CHANGES")
+                controller.click_text("Confirm and submit")
+                while controller.is_text_present("Loading..."):
+                    sleep(1)
+                controller.click_text("My Security Question")
+                if controller.is_text_present("test1"):
+                    log("First security question is editable")
+                else:
+                    fail_log("First security question failed to be edited", "011", img_service)
+
+                controller.click_text("Where is your place of birth?")
+                controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_vts_registration_security_que_answer")
+                controller.enter_text("test2")
+                controller.click_text("SAVE CHANGES")
+                controller.click_text("Confirm and submit")
+                while controller.is_text_present("Loading..."):
+                    sleep(1)
+                controller.click_text("My Security Question")
+                if controller.is_text_present("test2"):
+                    log("Second security question is editable")
+                else:
+                    fail_log("Second security question failed to be edited", "011", img_service)
+
+                controller.click_text("What is the name of your first pet?")
+                controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_vts_registration_security_que_answer")
+                controller.enter_text("test3")
+                controller.click_text("SAVE CHANGES")
+                controller.click_text("Confirm and submit")
+                while controller.is_text_present("Loading..."):
+                    sleep(1)
+                controller.click_text("My Security Question")
+                if controller.is_text_present("test3"):
+                    log("Third security question is editable")
+                else:
+                    fail_log("Third security question failed to be edited", "011", img_service)
+
+                # Set second answer back to 'Crewe'
+                controller.click_text("Where is your place of birth?")
+                controller.click_by_resource_id("uk.co.bentley.mybentley:id/editText_vts_registration_security_que_answer")
+                controller.enter_text("Crewe")
+                controller.click_text("SAVE CHANGES")
+                controller.click_text("Confirm and submit")
+                while controller.is_text_present("Loading..."):
+                    sleep(1)
+                sleep(0.5)
+                controller.swipe_down()
+            else:
+                fail_log("My security questions tab not found", "011", img_service)
+
+        controller.click_by_image("Icons/back_icon.png")
+        controller.swipe_down(0.05)
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "011", img_service)
 
+# Tested
 def Stolen_Vehicle_Tracking_012():
     try:
-        pass
+        controller.click_by_image("Icons/windows_icon.png")
+        if remote_swipe("STOLEN VEHICLE TRACKING"):
+            controller.click_text("STOLEN VEHICLE TRACKING")
+            if controller.click_text("Configure"):
+                log("Configure tab clicked")
+            else:
+                fail_log("Configure tab not found", "012", img_service)
+            controller.swipe_up()
+
+            if controller.is_text_present("Garage mode") and controller.is_text_present("Transport mode") and controller.click_text("Deactivation mode"):
+                log("Configure page displayed")
+            else:
+                fail_log("Configure page not displayed successfully", "012", img_service)
+            controller.click_text("SYNC TO CAR")
+            controller.enter_pin("1234")
+            sleep(2)
+
+            while controller.is_text_present("Sending message to car"):
+                sleep(1)
+            sleep(0.2)
+            controller.click_text("STOLEN VEHICLE TRACKING")
+            controller.click_text("My Alerts")
+            if controller.is_text_present("DEACTIVATION MODE ENABLED"):
+                deactivation_mode = controller.d(text="DEACTIVATION MODE ENABLED")
+                time = deactivation_mode.sibling(index="1").get_text()
+                log(f"Deactivation mode enabled ({time}) and shown in 'My Alerts' page")
+            else:
+                fail_log("Deactivation mode not displayed as enabled in 'My Alerts' page", "012", img_service)
+            controller.click_text("Configure")
+            controller.click_text("Deactivation mode")
+            controller.swipe_down()
+            controller.click_text("SYNC TO CAR")
+            controller.enter_pin("1234")
+            sleep(2)
+            while controller.is_text_present("Sending message to car"):
+                sleep(1)
+            sleep(0.5)
+
+        controller.click_by_image("Icons/back_icon.png")
+        controller.swipe_down(0.05)
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "012", img_service)
 
+# Tested
 def Stolen_Vehicle_Tracking_013():
     try:
-        pass
+        controller.click_by_image("Icons/windows_icon.png")
+        if remote_swipe("STOLEN VEHICLE TRACKING"):
+            controller.click_text("STOLEN VEHICLE TRACKING")
+            controller.click_text("Configure")
+
+            if controller.click_text("Garage mode") and controller.click_text("SYNC TO CAR"):
+                log("Garage mode enabled and synced to car")
+            else:
+                fail_log("Garage mode not enabled or synced to car", "013", img_service)
+            controller.enter_pin("1234")
+            sleep(2)
+            while controller.is_text_present("Sending message to car"):
+                sleep(1)
+            sleep(0.5)
+            controller.click_text("STOLEN VEHICLE TRACKING")
+            controller.click_text("My Alerts")
+            if controller.is_text_present("GARAGE MODE ENABLED"):
+                garage_mode = controller.d(text="GARAGE MODE ENABLED")
+                time = garage_mode.sibling(index="1").get_text()
+                log(f"Garage mode enabled ({time}) and shown in 'My Alerts' page")
+            else:
+                fail_log("Garage mode not displayed as enabled in 'My Alerts' page", "012", img_service)
+
+            if enable_flight_mode():
+                log("Flight mode enabled on phone")
+            else:
+                fail_log("Flight mode not eneabled on phone", "013", img_service)
+            sleep(1)
+
+            controller.click_text("Configure")
+            controller.click_text("Garage mode")
+            controller.click_text("SYNC TO CAR")
+            controller.enter_pin("1234")
+            sleep(1)
+            if controller.is_text_present("An error occurred when setting special mode. Please try again."):
+                log("Sync to car failed in flight mode")
+            else:
+                fail_log("Expected erorr message not shown", "013", img_service)
+            controller.click_text("Cancel")
+
+            # Disable flight mode and then the special mode
+            disable_flight_mode()
+            sleep(5)
+            controller.click_text("SYNC TO CAR")
+            controller.enter_pin("1234")
+            sleep(2)
+            while controller.is_text_present("Sending message to car"):
+                sleep(1)
+
+        controller.swipe_down(0.05)
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "013", img_service)
 
+# Can't be automated
 def Stolen_Vehicle_Tracking_014():
     try:
-        pass
+        log("Can't be automated")
     except Exception as e:
         error_log(e, "014", img_service)
 
+# Done in car
 def Stolen_Vehicle_Tracking_015():
     try:
-        pass
+        log("Done in car")
     except Exception as e:
         error_log(e, "015", img_service)
 
+# Done in car
 def Stolen_Vehicle_Tracking_016():
     try:
-        pass
+        log("Done in car")
     except Exception as e:
         error_log(e, "016", img_service)
 
+# Done in car
 def Stolen_Vehicle_Tracking_017():
     try:
-        pass
+        log("Done in car")
     except Exception as e:
         error_log(e, "017", img_service)
 
+# Done in car
 def Stolen_Vehicle_Tracking_018():
     try:
-        pass
+        log("Done in car")
     except Exception as e:
         error_log(e, "018", img_service)
 
 def Stolen_Vehicle_Tracking_019():
     try:
-        pass
+        # After factory reset in vehicle...
+        controller.click_by_image("Icons/windows_icon.png")
+        if remote_swipe("STOLEN VEHICLE TRACKING"):
+            Stolen_vehicle_tracking = controller.d(text="STOLEN VEHICLE TRACKING")
+            status = Stolen_vehicle_tracking.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item").get_text()
+            if 'Currently active' in status:
+                log("Stolen vehicle tracking feature is displayed as active")
+            else:
+                fail_log("Stolen vehicle tracking feature is not displayed as active", "019", img_service)
+
+        controller.swipe_down(0.05)
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "019", img_service)
 
 def Stolen_Vehicle_Tracking_020():
     try:
-        pass
+        controller.click_by_image("Icons/windows_icon.png")
+        if remote_swipe("STOLEN VEHICLE TRACKING"):
+            controller.click_text("STOLEN VEHICLE TRACKING")
+            if controller.click_text("Configure"):
+                log("Configure tab clicked")
+            else:
+                fail_log("Configure tab not found", "020", img_service)
+            sleep(0.2)
+            controller.click_text("Garage mode")
+            controller.click_text("SYNC TO CAR")
+            controller.enter_pin("1234")
+            sleep(2)
+            if controller.is_text_present("Sending message to car"):
+                log("Garage mode enabled and sent to car")
+            else:
+                fail_log("Garage mode not enabled or not sent to car", "020", img_service)
+            while controller.is_text_present("Sending message to car"):
+                sleep(1)
+            sleep(0.2)
+
+        controller.swipe_down(0.05)
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "020", img_service)
 
 def Stolen_Vehicle_Tracking_021():
     try:
-        pass
+        controller.click_by_image("Icons/windows_icon.png")
+        if remote_swipe("STOLEN VEHICLE TRACKING"):
+            controller.click_text("STOLEN VEHICLE TRACKING")
+            controller.click_text("My Alerts")
+            if controller.is_text_present("GARAGE MODE ENABLED"):
+                garage_mode = controller.d(text="GARAGE MODE ENABLED")
+                time = garage_mode.sibling(index="1").get_text()
+                log(f"Garage mode enabled ({time}) and shown in 'My Alerts' page")
+            else:
+                fail_log("Garage mode not displayed as enabled in 'My Alerts' page", "020", img_service)
+
+        controller.click_by_image("Icons/back_icon.png")
+        controller.swipe_down(0.05)
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "021", img_service)
 
+# This test sleeps till the time in which the timer says it will run out.
 def Stolen_Vehicle_Tracking_022():
     try:
-        pass
+        controller.click_by_image("Icons/windows_icon.png")
+        if remote_swipe("STOLEN VEHICLE TRACKING"):
+            controller.click_text("STOLEN VEHICLE TRACKING")
+            controller.click_text("My Alerts")
     except Exception as e:
         error_log(e, "022", img_service)
 
@@ -279,7 +769,7 @@ def Stolen_Vehicle_Tracking_040():
     try:
         pass
     except Exception as e:
-        error_log(e, "040", img_service, img_service)
+        error_log(e, "040", img_service)
 
 def Stolen_Vehicle_Tracking_041():
     try:
@@ -397,6 +887,6 @@ def Stolen_Vehicle_Tracking_059():
 
 def Stolen_Vehicle_Tracking_060():
     try:
-        pass
+        log("Cannot check style guide")
     except Exception as e:
         error_log(e, "060", img_service)

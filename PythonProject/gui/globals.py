@@ -1,6 +1,6 @@
 import os
 
-current_name = current_email = current_password = current_pin = vehicle_type = phone_type = country = None
+current_name = current_email = current_password = current_pin = vehicle_type = phone_type = country = current_VIN = None
 selected_services = [None]
 
 service_index = 0
@@ -20,3 +20,9 @@ for service, tests in log_history.items():
 user_dir = os.environ.get("USERPROFILE")
 base_path = os.path.join(user_dir, "Volkswagen AG", "BY GQM - Smart Quality - Documents", "1. Workstreams", "1. Connected Car", "4. Testing", "Automated testing", "Automation app")
 sharedrive_path = base_path
+
+#temp
+current_email = "testdrive@gqm.anonaddy.com"
+current_password = "Password1!"
+current_VIN = "SJAAE14V3TC029739"
+current_name = "test gqm"

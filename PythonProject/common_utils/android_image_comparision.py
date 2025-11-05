@@ -123,6 +123,6 @@ def compare_with_expected_crop(expected_image_path, threshold=0.95, output_folde
         print("Match successful")
         return True
     else:
-        # print(score)
+        print(score)
         print("Match failed")
         return False

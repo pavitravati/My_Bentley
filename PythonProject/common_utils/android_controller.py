@@ -3,6 +3,9 @@ import time
 import cv2
 import os
 
+from scipy.stats import landau
+
+
 class DeviceController:
     def __init__(self):
         self.d = u2.connect()
@@ -40,6 +43,10 @@ class DeviceController:
     def wait_for_text(self, text, timeout=10):
         """Wait until text appears on screen."""
         return self.d(text=text).wait(timeout=timeout)
+
+    def wait_for_text_that_contains(self, text, timeout=10):
+        """Wait until text appears on screen."""
+        return self.d(textContains=text).wait(timeout=timeout)
 
     def wait_for_text_and_click(self, text, timeout=10):
         if self.wait_for_text(text, timeout=timeout):
@@ -95,11 +102,32 @@ class DeviceController:
         end_y = int(height * 0.2)
         self.swipe(start_x, start_y, start_x, end_y, duration)
 
+    def small_swipe_up(self, duration=0.05):
+        width, height = self.d.window_size()
+        start_x = width // 2
+        start_y = int(height * 0.4)
+        end_y = int(height * 0.2)
+        self.swipe(start_x, start_y, start_x, end_y, duration)
+
     def swipe_down(self, duration=0.2):
         width, height = self.d.window_size()
         start_x = width // 2
         start_y = int(height * 0.2)
         end_y = int(height * 0.8)
+        self.swipe(start_x, start_y, start_x, end_y, duration)
+
+    def settings_swipe_down(self, duration=0.2):
+        width, height = self.d.window_size()
+        start_x = width // 2
+        start_y = int(height * 0.5)
+        end_y = int(height * 0.8)
+        self.swipe(start_x, start_y, start_x, end_y, duration)
+
+    def small_swipe_down(self, duration=0.05):
+        width, height = self.d.window_size()
+        start_x = width // 2
+        start_y = int(height * 0.2)
+        end_y = int(height * 0.4)
         self.swipe(start_x, start_y, start_x, end_y, duration)
 
     def swipe_left(self, duration=0.2):
@@ -115,6 +143,13 @@ class DeviceController:
         start_x = int(width * 0.2)
         end_x = int(width * 0.8)
         self.swipe(start_x, start_y, end_x, start_y, duration)
+
+    def swipe_settings(self, duration=0.1):
+        width, height = self.d.window_size()
+        start_x = width // 1.2
+        start_y = int(height * 0.05)
+        end_y = int(height * 0.3)
+        self.swipe(start_x, start_y, start_x, end_y, duration)
 
     def delete_sent_location(self):
         width, height = self.d.window_size()
@@ -227,10 +262,8 @@ class DeviceController:
         for _ in range(num_chars):
             os.system("adb shell input keyevent 67")  # KEYCODE_DEL
 
-
     def extract_dashboard_metrics(self):
         metrics = {}
-
         try:
             # Mileage
             if self.d(text="Mileage").exists:
@@ -740,3 +773,36 @@ class DeviceController:
         else:
             print("Image not found on screen (below threshold).")
             return False
+
+    def extract_svt_details(self):
+        svt_details = {}
+
+        svt_details['Certificate'] = self.d.xpath('//*[@text="MY CERTIFICATE"]/following-sibling::android.view.View//android.widget.TextView').get_text()
+
+        details = self.d.xpath('//*[@text="MY DETAILS"]/following-sibling::android.view.View').all()
+        for view in details:
+            bounds = view.attrib.get("bounds")
+            if not bounds:
+                continue
+            textviews = self.d.xpath(f'//android.view.View[@bounds="{bounds}"]//android.widget.TextView').all()
+            if len(textviews) >= 2:
+                label = textviews[0].attrib.get("text", "")
+                value = textviews[1].attrib.get("text", "").replace("\n", ", ")
+                svt_details[label] = value
+            elif len(textviews) == 1:
+                label = textviews[0].attrib.get("text", "")
+                if label == 'Other Mobile Numbers':
+                    svt_details['Other Mobile Numbers'] = ''
+
+        self.swipe_up()
+        if self.is_text_present("My Security Question"):
+            svt_details['My Security Question'] = 'Section displayed'
+
+        language = self.d.xpath('//*[@text="My Security Language"]/following-sibling::android.widget.TextView[1]')
+        svt_details['My Security Language'] = language.get_text()
+        self.swipe_down()
+
+        return svt_details
+
+    def extract_svt_mybentley(self):
+        pass

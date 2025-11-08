@@ -12,6 +12,6 @@ def Localization_001():
 
 def Localization_002():
     try:
-        log("Cannot check this service")
+        fail_log("Cannot check this service", "002" ,img_service)
     except Exception as e:
         error_log(e, "002", img_service)

@@ -247,15 +247,17 @@ class ServiceReport(QWidget):
                 continue
 
             img_label = QLabel()
-            img_text = img_path_str.split(" - ")
-            if '❌' in img_text[-2] or '⚠' in img_text[-2]:
-                img_text = img_text[-1].split("-")[0]
-            else:
-                img_text = img_text[-1].split("-")[1].replace('_', ' ').replace('.png', '') # Don't remember what case this is here for
+            img_text = img_path_str.split("-")
+            # print(img_text)
+            # if '❌' in img_text[-2] or '⚠' in img_text[-2]:
+            #     img_text = img_text[-1].split("-")[0]
+            # else:
+            #     img_text = img_text[-1].split("-")[1].replace('_', ' ').replace('.png', '') # Don't remember what case this is here for
+            img_text = img_text[1]
             img_label.setText(img_text)
             img_label.setFont(QFont("Arial", 12))
             img_label.setWordWrap(True)
-            report_image.addWidget(img_label)
+            # report_image.addWidget(img_label)
 
             image_display = QLabel()
 

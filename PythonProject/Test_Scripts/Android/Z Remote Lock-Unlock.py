@@ -204,14 +204,13 @@ def Remote_Lock_Unlock_009():
             start = 2 if "Last updated" in notifs[1].attrib.get("text") else 1
             for i in range(start, len(notifs), 3):
                 if i + 2 < len(notifs):
-                    print(f"{notifs[i].attrib.get("text")} - {notifs[i + 2].attrib.get("text")} ({notifs[i + 1].attrib.get("text")})")
+                    log(f"{notifs[i].attrib.get("text")} - {notifs[i + 2].attrib.get("text")} ({notifs[i + 1].attrib.get("text")})")
         else:
             fail_log("Past notifications not displayed", "009", img_service)
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "009", img_service)
-Remote_Lock_Unlock_009()
 
 def Remote_Lock_Unlock_010():
     try:

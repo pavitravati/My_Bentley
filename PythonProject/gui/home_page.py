@@ -1,3 +1,4 @@
+import re
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QTableWidget, QLabel, QCheckBox, QPushButton, QHBoxLayout,
     QHeaderView, QTableWidgetItem, QFrame, QLineEdit, QSizePolicy, QApplication, QToolButton
@@ -5,7 +6,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QFont, QPixmap, QCursor
 from excel import services
 from PySide6.QtCore import Qt, Signal
-from excel import resource_path
+from excel import resource_path, no_vehicle_services
+from gui.excel import only_vehicle_services, no_precondition_services
 from gui.import_page import ImportResult
 from test_case_page import TestCaseTablePage
 from service_report import ServiceReport
@@ -15,7 +17,6 @@ from datetime import datetime
 import shutil
 import globals
 import os
-import glob
 
 testcase_map = load_data()
 
@@ -184,9 +185,27 @@ class HomePage(QWidget):
                 testcase_table.setItem(row, 0, item)
                 testcase_table.setCellWidget(row, 1, cell_widget)
                 checkbox.toggled.connect(lambda checked, t=testcase_table: self.all_tests_checkbox(checked, t))
+            # elif row == 1:
+            #     item = QTableWidgetItem("No Vehicle services")
+            #     item.setFont(QFont("Arial", 12, QFont.Bold))
+            #     testcase_table.setItem(row, 0, item)
+            #     testcase_table.setCellWidget(row, 1, cell_widget)
+            #     checkbox.toggled.connect(lambda checked, t=testcase_table: self.no_vehicle_tests_checkbox(checked, t))
+            # elif row == 2:
+            #     item = QTableWidgetItem("Only Vehicle services")
+            #     item.setFont(QFont("Arial", 12, QFont.Bold))
+            #     testcase_table.setItem(row, 0, item)
+            #     testcase_table.setCellWidget(row, 1, cell_widget)
+            #     checkbox.toggled.connect(lambda checked, t=testcase_table: self.vehicle_tests_checkbox(checked, t))
+            # elif row == 3:
+            #     item = QTableWidgetItem("Only Vehicle services")
+            #     item.setFont(QFont("Arial", 12, QFont.Bold))
+            #     testcase_table.setItem(row, 0, item)
+            #     testcase_table.setCellWidget(row, 1, cell_widget)
+            #     checkbox.toggled.connect(lambda checked, t=testcase_table: self.no_precondition_tests_checkbox(checked, t))
             else:
                 label = ClickableLabel(services[row-1])
-                label.clicked.connect(lambda r=row: self.open_service_tests(services[r-1]))
+                label.clicked.connect(lambda r=row: self.open_service_tests(services[r-2]))
 
                 text_cell = QWidget()
                 text_cell.setFixedHeight(20)
@@ -477,6 +496,10 @@ class HomePage(QWidget):
                         background-color: #25312c;
                         cursor: pointer;
                     }
+                    QToolButton:disabled {
+                        background-color: #e0f1eb;
+                        color: #394d45;
+                    }
                     QLabel {
                         font-size: 18px;
                         color: #394d45;
@@ -484,15 +507,26 @@ class HomePage(QWidget):
                     }
                 """)
 
-        tests_run = QLabel(f"Tests run: {globals.tests_run}")
-        tests_passed = QLabel(f"Tests passed: {globals.tests_passed}")
-        tests_failed = QLabel(f"Tests failed: {globals.tests_failed}")
+        tests_run = tests_passed = tests_failed = 0
+        print(globals.log_history)
+        for service, tests in globals.log_history.items():
+            for test in tests:
+                for log in range(len(globals.log_history[service][test])):
+                    tests_run += 1
+                    if '❌' in globals.log_history[service][test][log]:
+                        tests_failed += 1
+                    else:
+                        tests_passed += 1
+        tests_run_label = QLabel(f"Tests run: {tests_run}")
+        tests_passed_label = QLabel(f"Tests passed: {tests_passed}")
+        tests_failed_label = QLabel(f"Tests failed: {tests_failed}")
 
         result_btn = QToolButton()
         result_btn.setText("Results")
         result_btn.setCursor(Qt.PointingHandCursor)
         result_btn.clicked.connect(self.result_btn_clicked)
         export_btn = QToolButton()
+        export_btn.setEnabled(False) if tests_run == 0 else export_btn.setEnabled(True)
         export_btn.setText("Export")
         export_btn.setCursor(Qt.PointingHandCursor)
         export_btn.clicked.connect(self.export_result)
@@ -505,9 +539,9 @@ class HomePage(QWidget):
             export_btn.setFixedHeight(30)
 
         result_btn_layout = QVBoxLayout()
-        result_btn_layout.addWidget(tests_run)
-        result_btn_layout.addWidget(tests_passed)
-        result_btn_layout.addWidget(tests_failed)
+        result_btn_layout.addWidget(tests_run_label)
+        result_btn_layout.addWidget(tests_passed_label)
+        result_btn_layout.addWidget(tests_failed_label)
         result_btn_layout.addWidget(result_btn)
         result_btn_layout.addWidget(export_btn)
         result_btn_layout.addWidget(import_btn)
@@ -556,13 +590,56 @@ class HomePage(QWidget):
         self.main_window.show_test_cases(service)
 
     def all_tests_checkbox(self, checked, table):
-        for row in range(1, table.rowCount()):
+        self.clear_checkboxes(table)
+        for row in range(4, table.rowCount()):
             cell_widget = table.cellWidget(row, 1)
             if cell_widget:
                 cb = cell_widget.findChild(QCheckBox)
                 if cb:
                     cb.setChecked(checked)
                     cb.setEnabled(not checked)
+
+    def no_vehicle_tests_checkbox(self, checked, table):
+        self.clear_checkboxes(table)
+        for row in range(4, table.rowCount()):
+            cell_widget = table.cellWidget(row, 0).findChild(QLabel).text()
+            plain_text = re.sub('<[^<]+?>', '', cell_widget)
+            if plain_text in no_vehicle_services:
+                cb = table.cellWidget(row, 1).findChild(QCheckBox)
+                if cb:
+                    cb.setChecked(checked)
+                    cb.setEnabled(not checked)
+
+    def vehicle_tests_checkbox(self, checked, table):
+        self.clear_checkboxes(table)
+        for row in range(4, table.rowCount()):
+            cell_widget = table.cellWidget(row, 0).findChild(QLabel).text()
+            plain_text = re.sub('<[^<]+?>', '', cell_widget)
+            if plain_text in only_vehicle_services:
+                cb = table.cellWidget(row, 1).findChild(QCheckBox)
+                if cb:
+                    cb.setChecked(checked)
+                    cb.setEnabled(not checked)
+
+    def no_precondition_tests_checkbox(self, checked, table):
+        self.clear_checkboxes(table)
+        for row in range(4, table.rowCount()):
+            cell_widget = table.cellWidget(row, 0).findChild(QLabel).text()
+            plain_text = re.sub('<[^<]+?>', '', cell_widget)
+            if plain_text in no_precondition_services:
+                cb = table.cellWidget(row, 1).findChild(QCheckBox)
+                if cb:
+                    cb.setChecked(checked)
+                    cb.setEnabled(not checked)
+
+    def clear_checkboxes(self, table):
+        for row in range(1, table.rowCount()):
+            cell_widget = table.cellWidget(row, 1)
+            if cell_widget:
+                cb = cell_widget.findChild(QCheckBox)
+                if cb:
+                    cb.setChecked(False)
+                    cb.setEnabled(True)
 
     def update_run_btn(self, table):
         name_filled = bool(self.name_input.text().strip())
@@ -585,6 +662,7 @@ class HomePage(QWidget):
         self.run_btn.setEnabled(can_submit)
 
     def run_selected_services(self, table):
+        globals.log_history = {}
         globals.selected_services = []
         for row in range(table.rowCount()):
             cell_widget = table.cellWidget(row, 1)
@@ -602,7 +680,6 @@ class HomePage(QWidget):
         self.main_window.setCentralWidget(TestCaseTablePage(self.main_window, globals.selected_services[globals.service_index]))
 
     def result_btn_clicked(self):
-        print(globals.log_history)
         self.service_report = ServiceReport()
         self.service_report.show()
 
@@ -634,5 +711,5 @@ class HomePage(QWidget):
             shutil.copytree(images, dest_images, dirs_exist_ok=True, ignore=shutil.ignore_patterns('.gitkeep'))
 
     def import_result(self):
-        self.import_result = ImportResult()
-        self.import_result.show()
+        self.import_window = ImportResult()
+        self.import_window.show()

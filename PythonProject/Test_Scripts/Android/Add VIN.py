@@ -273,18 +273,42 @@ def Add_VIN_014():
 
 def Add_VIN_015():
     try:
-        pass
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        while not controller.is_pressed("ADD A VEHICLE"):
+            controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
+            sleep(1)
+        controller.swipe_up()
+        controller.click_text("ADD A VEHICLE")
+        controller.swipe_up()
+        controller.click_text("Enter VIN manually")
+        if not compare_with_expected_crop("Icons/emoji_icon.png"):
+            log("Emojis are not able to be entered in VIN section")
+        else:
+            controller.click(500, 1800)
+            if not controller.is_pressed("Enter VIN manually"):
+                log("Emojis are not able to be entered in VIN section")
+            else:
+                fail_log("Emojis are able to alter the VIN section", "015", img_service)
+                controller.clear_text(5)
+        controller.click_text("Enter VIN manually")
+        controller.enter_text("!#@%&*")
+        if controller.is_text_present("Enter VIN manually"):
+            log("Special characters and emojis cannot be entered in the VIN section")
+        else:
+            fail_log("Special characters have altered the VIN section", "015", img_service)
+
     except Exception as e:
         error_log(e, "015", img_service)
 
 def Add_VIN_016():
     try:
-        pass
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+
     except Exception as e:
         error_log(e, "016", img_service)
 
 def Add_VIN_017():
     try:
-        pass
+        log("Cannot verify style guide")
     except Exception as e:
         error_log(e, "017", img_service)

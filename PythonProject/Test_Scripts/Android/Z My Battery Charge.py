@@ -329,7 +329,6 @@ def My_Battery_Charge_011():
                 try:
                     controller.click(driver_icon_bounds[1][0], driver_icon_bounds[1][1])
                     vehicle_details = controller.extract_navigation_vehicle()
-                    print(vehicle_details)
                     if vehicle_details:
                         log("PHEV Vehicle details displayed in Car Finder feature")
                         for metric, stat in vehicle_details:

@@ -11,6 +11,11 @@ services = ['Demo Mode', 'Customer Enrollment', 'Add VIN', 'App Registration Pag
             'Car Finder', 'Nav Companion', 'Notifications', 'Push Notifications', 'Profile', 'Localization', 'Privacy Mode',
             'Remote Park Assist', 'Stolen Vehicle Tracking']
 
+no_vehicle_services = ['Demo Mode', 'App Log in-Log out']
+only_vehicle_services = [x for x in services if x not in no_vehicle_services]
+
+no_precondition_services = ['Demo Mode']
+
 def resource_path(relative_path):
     try:
         base_path = sys._MEIPASS

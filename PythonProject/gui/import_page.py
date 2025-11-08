@@ -1,12 +1,7 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QFileDialog, QApplication, QMessageBox
-from PySide6.QtGui import QFont, QPixmap, QStandardItemModel
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QFileDialog, QMessageBox
 from PySide6.QtCore import Qt
-from pathlib import Path
 from PySide6.QtWidgets import QApplication
-from openpyxl.reader.excel import load_workbook
-from excel import load_data
 import os
-import glob
 import globals
 import shutil
 
@@ -60,27 +55,29 @@ class ImportResult(QWidget):
         folder_path = QFileDialog.getExistingDirectory(self, "Select a Folder")
 
         if folder_path:
-            # folder_name = os.path.basename(folder_path)
+            folder_name = os.path.basename(folder_path)
             # script_dir = os.path.dirname(os.path.abspath(__file__))
             # save_folder = os.path.join(script_dir, "test_results", folder_name)
             save_folder = globals.sharedrive_path
-
+            full_path = os.path.join(save_folder, folder_name)
             # If it already exists, confirm overwrite
-            if os.path.exists(save_folder):
-                reply = QMessageBox.question(
-                    self,
-                    "Overwrite?",
-                    f"Folder '{folder_name}' already exists in target directory.\n\nOverwrite?",
-                    QMessageBox.Yes | QMessageBox.No,
-                    QMessageBox.No
-                )
-                if reply == QMessageBox.No:
-                    return
-                shutil.rmtree(save_folder)
+            if os.path.exists(full_path):
+                self.info_label.setText("❌ Folder already exists.")
+                # reply = QMessageBox.question(
+                #     self,
+                #     "Overwrite?",
+                #     f"Folder '{folder_name}' already exists in target directory.\n\nOverwrite?",
+                #     QMessageBox.Yes | QMessageBox.No,
+                #     QMessageBox.No
+                # )
+                # if reply == QMessageBox.No:
+                #     return
+                # shutil.rmtree(save_folder)
+            else:
 
-            try:
-                shutil.copytree(folder_path, save_folder)
-                self.info_label.setText(f"✅ Folder '{folder_name}' saved to {script_dir}")
-            except Exception as e:
-                QMessageBox.critical(self, "Error", f"Failed to copy folder:\n{e}")
-                self.info_label.setText("❌ Error saving folder.")
+                try:
+                    shutil.copytree(folder_path, full_path)
+                    self.info_label.setText(f"✅ Folder '{folder_path}' saved to {save_folder}")
+                except Exception as e:
+                    QMessageBox.critical(self, "Error", f"Failed to copy folder:\n{e}")
+                    self.info_label.setText("❌ Error saving folder.")

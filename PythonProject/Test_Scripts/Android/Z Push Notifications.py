@@ -18,7 +18,9 @@ def identify_car():
 
     return car
 
-# Need to do in car to see what a notificiation is like and how to click
+# Having alot of problems with android notifications, need to ask about this and find out if its a lost cause
+
+# Need to do in car to see what a notification is like and how to click
 def Push_Notifications_001():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -84,16 +86,17 @@ def Push_Notifications_004():
     except Exception as e:
         error_log(e, "004", img_service)
 
-# Driving needed
+# Can't automate
 def Push_Notifications_005():
     try:
-        pass
+        log("Can't automate")
     except Exception as e:
         error_log(e, "005", img_service)
 
+# Can't automate
 def Push_Notifications_006():
     try:
-        pass
+        log("Can't automate")
     except Exception as e:
         error_log(e, "006", img_service)
 

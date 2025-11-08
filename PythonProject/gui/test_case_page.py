@@ -398,8 +398,7 @@ class TestCaseTablePage(QWidget):
 
         test_title = self.table.item(row, 0 if self.auto_run else 1).text()
 
-        self.error_window = ErrorPage(title=test_title,
-                                      logs=globals.log_history[self.service][row], images=image_paths)
+        self.error_window = ErrorPage(title=test_title, logs=globals.log_history[self.service][row], images=image_paths)
         self.error_window.show()
 
     def open_test_case_metrics(self, row, metrics):
@@ -430,19 +429,20 @@ class TestCaseTablePage(QWidget):
                 if child.text() == "Run Testcase":
                     child.setEnabled(False)
 
-    def home_button_clicked(self):
+    def home_button_clicked(self, automated=False):
+        if not automated:
+            globals.log_history.popitem()
         globals.current_name = globals.current_email = globals.current_password = globals.current_pin = globals.vehicle_type = globals.phone_type = None
         globals.tests_run = globals.tests_passed = globals.tests_failed = 0
         globals.selected_services = [None]
         globals.service_index = 0
         globals.current_service = globals.selected_services[globals.service_index]
-        globals.log_history = {}
         self.main_window.show_homepage()
 
     def next_service(self):
         globals.service_index += 1
         if globals.service_index >= len(globals.selected_services):
-            self.home_button_clicked()
+            self.home_button_clicked(True)
         else:
             self.main_window.setCentralWidget(None)
             self.main_window.setCentralWidget(TestCaseTablePage(self.main_window, globals.selected_services[globals.service_index]))

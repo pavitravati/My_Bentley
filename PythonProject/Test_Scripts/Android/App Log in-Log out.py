@@ -51,6 +51,7 @@ def App_Log_in_Log_out_002():
             fail_log("Incorrect password error message not displayed", "002", img_service)
         sleep(1)
         controller.enter_text(globals.current_password)
+        sleep(3)
 
     except Exception as e:
         error_log(e, "002", img_service)

@@ -31,7 +31,6 @@ def Data_Services_001():
         controller.click_text("Verify")
         # Finish when the VIN is recognised
 
-        controller.press_home()
         controller.launch_app("uk.co.bentley.mybentley")
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 

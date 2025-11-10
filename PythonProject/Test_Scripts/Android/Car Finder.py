@@ -204,7 +204,6 @@ def Car_Finder_007():
         else:
             fail_log("Plan route button not displayed", "007", img_service)
 
-        controller.press_home()
         controller.launch_app("uk.co.bentley.mybentley")
         controller.click(500, 500)
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")

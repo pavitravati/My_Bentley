@@ -76,7 +76,7 @@ class ServiceReport(QWidget):
             self.dropdown.addItem("Current test")
         else:
             self.dropdown.addItem("Select test")
-        script_dir = os.path.dirname(os.path.abspath(__file__))
+        # script_dir = os.path.dirname(os.path.abspath(__file__))
         # results_folder = os.path.join(script_dir, "test_results")
         results_folder = globals.sharedrive_path
         folder_names = [name for name in os.listdir(results_folder) if
@@ -178,6 +178,7 @@ class ServiceReport(QWidget):
 
         detail_layout = QVBoxLayout()
 
+        # Make this just the text add but in a seperate cotainer so that a button can be added for KPMs
         self.log_textbox = QTextEdit()
         parent_height = self.parent().height() if self.parent() else 800
         screen_size = QApplication.primaryScreen().size()
@@ -247,17 +248,11 @@ class ServiceReport(QWidget):
                 continue
 
             img_label = QLabel()
-            img_text = img_path_str.split("-")
-            # print(img_text)
-            # if '❌' in img_text[-2] or '⚠' in img_text[-2]:
-            #     img_text = img_text[-1].split("-")[0]
-            # else:
-            #     img_text = img_text[-1].split("-")[1].replace('_', ' ').replace('.png', '') # Don't remember what case this is here for
-            img_text = img_text[1]
+            img_text = img_path_str.split("-")[-2]
             img_label.setText(img_text)
             img_label.setFont(QFont("Arial", 12))
             img_label.setWordWrap(True)
-            # report_image.addWidget(img_label)
+            report_image.addWidget(img_label)
 
             image_display = QLabel()
 

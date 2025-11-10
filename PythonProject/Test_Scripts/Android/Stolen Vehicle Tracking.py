@@ -1300,7 +1300,6 @@ def Stolen_Vehicle_Tracking_051():
             ##########
             # After call
             ##########
-            controller.click_home()
             controller.launch_app("uk.co.bentley.mybentley")
             controller.click_text("Cancel")
         controller.click_by_image("Icons/back_icon.png")

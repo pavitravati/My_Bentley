@@ -224,116 +224,110 @@ def Demo_Mode_007():
 
 def Demo_Mode_008():
     try:
-        # if controller.click_by_image("Icons/Profile_Icon.png"):
-        #     log("Tapped Profile tab")
-        # else:
-        #     fail_log("Profile tab not tapped", "008", img_service)
-        #
-        # if compare_with_expected_crop("Images/Profile_Screen.png"):
-        #     log("Profile Title is present")
-        # else:
-        #     fail_log("Profile Title is not present", "008", img_service)
-        #
-        # if compare_with_expected_crop("Images/Profile_Screen_User_Icon.png"):
-        #     log("Profile User Icon is present")
-        # else:
-        #     fail_log("Profile User Icon is not present", "008", img_service)
-        #
-        # if compare_with_expected_crop("Images/Profile_Screen_User_Name.png"):
-        #     log("Profile User Name is present")
-        # else:
-        #     fail_log("Profile User Name is not present", "008", img_service)
-        #
-        # if compare_with_expected_crop("Images/Profile_Screen_MyDetails_Tab.png"):
-        #     log("Profile 'My details' tab is present")
-        # else:
-        #     fail_log("Profile 'My details' tab is not present", "008", img_service)
-        #
-        # if controller.click_by_image("Icons/Profile_Account_Icon.png"):
-        #     log("Tapped Account")
-        # else:
-        #     fail_log("Account not tapped", "008", img_service)
-        #
-        # if compare_with_expected_crop("Images/Profile_Account_Screen.png"):
-        #     log("Profile Account screen is present")
-        # else:
-        #     fail_log("Profile Account screen is not present", "008", img_service)
-        #
-        # if controller.click_by_image("Icons/Profile_General_Icon.png"):
-        #     log("Tapped General")
-        # else:
-        #     fail_log("General not tapped", "008", img_service)
-        #
-        # if compare_with_expected_crop("Images/Profile_General_Screen.png"):
-        #     log("Profile General screen is present")
-        # else:
-        #     fail_log("Profile General screen is not present", "008", img_service)
-        #
-        # if compare_with_expected_crop("Images/Profile_Screen_Setting_Icon.png"):
-        #     log("Profile Settings icon is present")
-        # else:
-        #     fail_log("Profile Settings icon is not present", "008", img_service)
-        #
-        # controller.click_text("My Details")
-        # controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        sleep(3)
-        fail_log("Profile tab not tapped", "008", img_service)
+        if controller.click_by_image("Icons/Profile_Icon.png"):
+            log("Tapped Profile tab")
+        else:
+            fail_log("Profile tab not tapped", "008", img_service)
+
+        if compare_with_expected_crop("Images/Profile_Screen.png"):
+            log("Profile Title is present")
+        else:
+            fail_log("Profile Title is not present", "008", img_service)
+
+        if compare_with_expected_crop("Images/Profile_Screen_User_Icon.png"):
+            log("Profile User Icon is present")
+        else:
+            fail_log("Profile User Icon is not present", "008", img_service)
+
+        if compare_with_expected_crop("Images/Profile_Screen_User_Name.png"):
+            log("Profile User Name is present")
+        else:
+            fail_log("Profile User Name is not present", "008", img_service)
+
+        if compare_with_expected_crop("Images/Profile_Screen_MyDetails_Tab.png"):
+            log("Profile 'My details' tab is present")
+        else:
+            fail_log("Profile 'My details' tab is not present", "008", img_service)
+
+        if controller.click_by_image("Icons/Profile_Account_Icon.png"):
+            log("Tapped Account")
+        else:
+            fail_log("Account not tapped", "008", img_service)
+
+        if compare_with_expected_crop("Images/Profile_Account_Screen.png"):
+            log("Profile Account screen is present")
+        else:
+            fail_log("Profile Account screen is not present", "008", img_service)
+
+        if controller.click_by_image("Icons/Profile_General_Icon.png"):
+            log("Tapped General")
+        else:
+            fail_log("General not tapped", "008", img_service)
+
+        if compare_with_expected_crop("Images/Profile_General_Screen.png"):
+            log("Profile General screen is present")
+        else:
+            fail_log("Profile General screen is not present", "008", img_service)
+
+        if compare_with_expected_crop("Images/Profile_Screen_Setting_Icon.png"):
+            log("Profile Settings icon is present")
+        else:
+            fail_log("Profile Settings icon is not present", "008", img_service)
+
+        controller.click_text("My Details")
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "008", img_service)
 
 def Demo_Mode_009():
     try:
-        # controller.click_by_image("Icons/Profile_Icon.png")
-        #
-        # controller.click_by_image("Icons/Profile_Screen_Setting_Icon.png")
-        # log("User tracking section displayed") if controller.is_text_present("User tracking") else fail_log("User tracking section not displayed", "009", img_service)
-        # log("Google maps consent section displayed") if controller.is_text_present("User tracking") else fail_log("Google maps consent section not displayed", "009", img_service)
-        # log("Units section displayed") if controller.is_text_present("User tracking") else fail_log("Units section not displayed", "009", img_service)
-        # log("Permissions section displayed") if controller.is_text_present("User tracking") else fail_log("Permissions section not displayed", "009", img_service)
-        # if controller.is_text_present("User tracking") and compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
-        #     log("Last mile notification section and toggle displayed")
-        # else:
-        #     fail_log("Last mile notification section and toggle not displayed", "009", img_service)
-        #
-        # controller.click_by_image("Icons/back_icon.png")
-        # controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        sleep(1)
-        log("temp")
+        controller.click_by_image("Icons/Profile_Icon.png")
+
+        controller.click_by_image("Icons/Profile_Screen_Setting_Icon.png")
+        log("User tracking section displayed") if controller.is_text_present("User tracking") else fail_log("User tracking section not displayed", "009", img_service)
+        log("Google maps consent section displayed") if controller.is_text_present("User tracking") else fail_log("Google maps consent section not displayed", "009", img_service)
+        log("Units section displayed") if controller.is_text_present("User tracking") else fail_log("Units section not displayed", "009", img_service)
+        log("Permissions section displayed") if controller.is_text_present("User tracking") else fail_log("Permissions section not displayed", "009", img_service)
+        if controller.is_text_present("User tracking") and compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
+            log("Last mile notification section and toggle displayed")
+        else:
+            fail_log("Last mile notification section and toggle not displayed", "009", img_service)
+
+        controller.click_by_image("Icons/back_icon.png")
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "009", img_service)
 
 def Demo_Mode_010():
     try:
-        # for _ in range(4):
-        #     controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
-        #
-        # if compare_with_expected_crop("Images/Add_Vehicle_Information_Screen.png"):
-        #     log("Vehicle info Screen options are present")
-        # else:
-        #     fail_log("Vehicle info Screen options not present", "010", img_service)
-        #
-        # controller.click_by_image("Icons/info_btn.png")
-        # if controller.is_text_present("Locating your VIN"):
-        #     log("Locating VIN information displayed")
-        # else:
-        #     fail_log("Locating VIN information not displayed", "010", img_service)
-        # controller.click_text("OK")
-        #
-        # controller.swipe_up()
-        # if controller.is_text_present("ADD A VEHICLE"):
-        #     log("Add vehicle button displayed")
-        # else:
-        #     fail_log("Add vehicle button not displayed", "010", img_service)
-        # controller.small_swipe_down()
-        #
-        # for _ in range(4):
-        #     controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
-        #
-        # controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        sleep(1)
-        log("temp")
+        for _ in range(4):
+            controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
+
+        if compare_with_expected_crop("Images/Add_Vehicle_Information_Screen.png"):
+            log("Vehicle info Screen options are present")
+        else:
+            fail_log("Vehicle info Screen options not present", "010", img_service)
+
+        controller.click_by_image("Icons/info_btn.png")
+        if controller.is_text_present("Locating your VIN"):
+            log("Locating VIN information displayed")
+        else:
+            fail_log("Locating VIN information not displayed", "010", img_service)
+        controller.click_text("OK")
+
+        controller.swipe_up()
+        if controller.is_text_present("ADD A VEHICLE"):
+            log("Add vehicle button displayed")
+        else:
+            fail_log("Add vehicle button not displayed", "010", img_service)
+        controller.small_swipe_down()
+
+        for _ in range(4):
+            controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
+
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "010", img_service)
@@ -346,44 +340,40 @@ def Demo_Mode_011():
 
 def Demo_Mode_012():
     try:
-        # controller.click_by_image("Icons/Profile_Icon.png")
-        # compare_with_expected_crop("Images/Profile_Screen.png")
-        # controller.click_by_image("Icons/Profile_General_Icon.png")
-        # compare_with_expected_crop("Images/Profile_General_Screen.png")
-        # if controller.click_by_image("Icons/Profile_Logout_Icon.png"):
-        #     log("Demo mode exiting")
-        # else:
-        #     fail_log("Demo mode not exiting", "012", img_service)
-        #
-        # if controller.wait_for_text_and_click("DISCOVER MY BENTLEY", 30):
-        #     log("Sign in page is visible")
-        # else:
-        #     fail_log("Sign in page not visible", "012", img_service)
-        # controller.wait_for_text("Demo mode", 30)
-        sleep(1)
-        log("temp")
+        controller.click_by_image("Icons/Profile_Icon.png")
+        compare_with_expected_crop("Images/Profile_Screen.png")
+        controller.click_by_image("Icons/Profile_General_Icon.png")
+        compare_with_expected_crop("Images/Profile_General_Screen.png")
+        if controller.click_by_image("Icons/Profile_Logout_Icon.png"):
+            log("Demo mode exiting")
+        else:
+            fail_log("Demo mode not exiting", "012", img_service)
+
+        if controller.wait_for_text_and_click("DISCOVER MY BENTLEY", 30):
+            log("Sign in page is visible")
+        else:
+            fail_log("Sign in page not visible", "012", img_service)
+        controller.wait_for_text("Demo mode", 30)
 
     except Exception as e:
         error_log(e, "012", img_service)
 
 def Demo_Mode_013():
-    # try:
-    #     if controller.click_by_image("Icons/logout_icon.png"):
-    #         log("Demo mode exiting")
-    #     else:
-    #         fail_log("Demo mode not exiting", "013", img_service)
-    #     sleep(1)
-    #     if controller.wait_for_text("DISCOVER MY BENTLEY"):
-    #         log("Sign in page is visible")
-    #     else:
-    #         fail_log("Sign in page is visible", "013", img_service)
-    # except Exception as e:
-    #     error_log(e, "013", img_service)
-    #
-    # if current_email:
-    #     app_login()
-    sleep(1)
-    log("temp")
+    try:
+        if controller.click_by_image("Icons/logout_icon.png"):
+            log("Demo mode exiting")
+        else:
+            fail_log("Demo mode not exiting", "013", img_service)
+        sleep(1)
+        if controller.wait_for_text("DISCOVER MY BENTLEY"):
+            log("Sign in page is visible")
+        else:
+            fail_log("Sign in page is visible", "013", img_service)
+
+        if current_email is not None:
+            app_login()
+    except Exception as e:
+        error_log(e, "013", img_service)
 
 def Demo_Mode_014():
     try:

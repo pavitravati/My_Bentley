@@ -4,6 +4,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QAction, QActionGroup
 from excel import services
 from test_case_page import TestCaseTablePage
+import globals
 from home_page import HomePage
 import sys
 import os, glob
@@ -46,7 +47,9 @@ class MainWindow(QMainWindow):
         self.service = service
         self.setCentralWidget(TestCaseTablePage(self, service, auto_run=False))
 
-    def show_homepage(self):
+    def show_homepage(self, auto_cancel=False):
+        if auto_cancel:
+            globals.log_history.popitem()
         self.setCentralWidget(HomePage(self))
 
     def show_test_cases(self, service):

@@ -1,6 +1,6 @@
 import os
 
-current_name = current_email = current_password = current_pin = vehicle_type = phone_type = country = current_VIN = None
+current_name = current_email = current_password = current_pin = vehicle_type = phone_type = country = current_VIN = second_email = second_password = None
 selected_services = [None]
 
 service_index = 0
@@ -13,5 +13,7 @@ sharedrive_path = base_path
 #temp
 current_email = "testdrive@gqm.anonaddy.com"
 current_password = "Password1!"
-current_VIN = "SJAAE14V3TC029739"
+current_VIN = "SJAAC14V6TC026906"
 current_name = "test gqm"
+second_email = "testdrive1@gqm.anonaddy.com"
+second_password = "Password1!"

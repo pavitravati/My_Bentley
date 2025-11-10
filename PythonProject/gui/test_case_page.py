@@ -430,38 +430,70 @@ class TestCaseTablePage(QWidget):
                     child.setEnabled(False)
 
     def home_button_clicked(self, automated=False):
-        if not automated:
-            globals.log_history.popitem()
-        globals.current_name = globals.current_email = globals.current_password = globals.current_pin = globals.vehicle_type = globals.phone_type = None
-        globals.tests_run = globals.tests_passed = globals.tests_failed = 0
-        globals.selected_services = [None]
-        globals.service_index = 0
-        globals.current_service = globals.selected_services[globals.service_index]
-        self.main_window.show_homepage()
+        """Safely stop and clean up any active worker thread before returning home."""
+        if hasattr(self, "worker") and self.worker:
+            try:
+                self.worker.stop()
+            except Exception:
+                pass
+
+            thread = None
+            try:
+                thread = self.worker.thread()
+            except RuntimeError:
+                # Worker’s C++ object already deleted
+                thread = None
+
+            if thread and thread.isRunning():
+                try:
+                    thread.quit()
+                    thread.wait()
+                except RuntimeError:
+                    pass
+
+            # Clean up safely
+            try:
+                self.worker.deleteLater()
+            except RuntimeError:
+                pass
+
+            self.worker = None
+            self.thread = None
+
+        self.main_window.show_homepage(auto_cancel=not automated)
 
     def next_service(self):
+        """Move to the next service, or return home when done."""
         globals.service_index += 1
         if globals.service_index >= len(globals.selected_services):
-            self.home_button_clicked(True)
+            # Use Qt's event loop to delay until after signals finish
+            QTimer.singleShot(0, lambda: self.home_button_clicked(True))
         else:
             self.main_window.setCentralWidget(None)
-            self.main_window.setCentralWidget(TestCaseTablePage(self.main_window, globals.selected_services[globals.service_index]))
+            self.main_window.setCentralWidget(
+                TestCaseTablePage(
+                    self.main_window,
+                    globals.selected_services[globals.service_index]
+                )
+            )
 
     def run_testcase_manual(self, row):
+        """Run a single testcase manually on a background QThread."""
         self.thread = QThread()
         self.worker = TestRunnerWorker(self.service, 1)
         self.worker.moveToThread(self.thread)
 
-        # When thread starts, emit start_manual with the zero-based row index
+        # Run worker logic when the thread starts
         self.thread.started.connect(lambda: self.worker.start_manual.emit(row))
 
+        # orderly shutdown
         self.worker.finished.connect(self.thread.quit)
-        self.worker.finished.connect(self.worker.deleteLater)
+        # don't auto-delete worker here; we'll handle it manually later
         self.thread.finished.connect(self.thread.deleteLater)
-        self.worker.need_precondition.connect(self.on_need_precondition)
 
+        # UI updates
+        self.worker.need_precondition.connect(self.on_need_precondition)
         self.worker.current_row.connect(self.set_current_row)
         self.worker.row_finished.connect(self.on_row_finished)
-        # self.worker.finished.connect(self.next_service)
 
         self.thread.start()

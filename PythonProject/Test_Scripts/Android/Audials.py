@@ -26,7 +26,6 @@ def Audials_001():
         # else:
         #     fail_log("Failed to redirect to Audials.com", "001", img_service)
         #
-        # controller.press_home()
         # controller.launch_app("uk.co.bentley.mybentley")
         # controller.swipe_down(0.19)
         # controller.swipe_down(0.19)

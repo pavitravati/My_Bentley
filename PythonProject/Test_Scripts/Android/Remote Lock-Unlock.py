@@ -1,8 +1,9 @@
 from time import sleep
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log, metric_log
+from core.log_emitter import log, fail_log, error_log
 from common_utils.android_controller import *
-from core.app_functions import app_login, app_logout, enable_flight_mode, disable_flight_mode
+from core.app_functions import enable_flight_mode, disable_flight_mode
+from datetime import datetime, timedelta
 
 img_service = "Remote Lock-Unlock"
 
@@ -19,6 +20,49 @@ def identify_car():
         car = ''
 
     return car
+
+def check_notif(text, num):
+    car = identify_car()
+    controller.click_images("Icons/New_Notification_icon.png")
+    controller.click_by_image("Icons/Notification_icon.png")
+    controller.swipe_down()
+    sleep(1)
+    while controller.is_text_present("updating..."):
+        sleep(1)
+    controller.click_text("Update vehicle data")
+    controller.click_by_image("Icons/Error_Icon.png")
+
+    notifications = controller.d.xpath('//android.widget.TextView').all()
+    events = []
+
+    if notifications[2].attrib.get("text") == "NOTIFICATIONS":
+        notifications.pop(0)
+    if "Last updated" in notifications[2].attrib.get("text"):
+        notifications.pop(0)
+    for i in range(2, 5, 3):
+        try:
+            title = notifications[i].attrib.get("text", "")
+            time = notifications[i + 1].attrib.get("text", "")
+            desc = notifications[i + 2].attrib.get("text", "")
+            events.append({
+                "title": title,
+                "time": time,
+                "description": desc
+            })
+
+        except IndexError:
+            break
+
+    now = datetime.now()
+    displayed_time = datetime.strptime(events[0]['time'][-4], "%H:%M")
+    same_minute = displayed_time == now.strftime("%H:%M")
+    last_minute = displayed_time == (now - timedelta(minutes=1)).strftime("%H:%M")
+
+    if events[0]['title'] == f"{car} {text}" and (same_minute or last_minute):
+        log(f"Remote {text} notification displayed correctly")
+    else:
+        fail_log(f"Remote {text} notification not displayed", num, img_service)
+
 
 # ADD A CHECK TO ALOT OF THESE THAT CHECKS IF THE MOST RECENT NOTIF IS WHAT THE TEST CASE JUST DID AND TIMESTAMP IS WITHIN THE MINUTE
 # FIX ENTER PIN SO THAT IT DOES IT TILL IT WORKS
@@ -60,6 +104,8 @@ def Remote_Lock_Unlock_002():
         else:
             fail_log("Lock status not changed", "002", img_service)
 
+        check_notif("unlock", "002")
+
     except Exception as e:
         error_log(e, "002", img_service)
 
@@ -83,6 +129,8 @@ def Remote_Lock_Unlock_003():
             log("Lock status changed")
         else:
             fail_log("Lock status not changed", "003", img_service)
+
+        check_notif("lock", "003")
 
     except Exception as e:
         error_log(e, "003", img_service)
@@ -125,6 +173,9 @@ def Remote_Lock_Unlock_005():
         else:
             fail_log("Lock status not unchanged", "005", img_service)
 
+        # Check what is said in the notif
+        check_notif("unlock", "005")
+
     except Exception as e:
         error_log(e, "005", img_service)
 
@@ -145,6 +196,9 @@ def Remote_Lock_Unlock_006():
             log("Lock status unchanged")
         else:
             fail_log("Lock status not unchanged", "006", img_service)
+
+        # Check what is said in the notif
+        check_notif("lock", "006")
 
     except Exception as e:
         error_log(e, "006", img_service)
@@ -169,6 +223,9 @@ def Remote_Lock_Unlock_007():
         else:
             fail_log("Lock status not unchanged", "007", img_service)
 
+        # Check what is said in the notif
+        check_notif("lock", "007")
+
     except Exception as e:
         error_log(e, "007", img_service)
 
@@ -189,6 +246,9 @@ def Remote_Lock_Unlock_008():
         else:
             fail_log("Vehicle is not completely locked", "008", img_service)
         controller.click_by_image("Icons/Error_Icon.png")
+
+        # Check what is said in the notif
+        check_notif("lock", "008")
 
     except Exception as e:
         error_log(e, "008", img_service)
@@ -243,6 +303,9 @@ def Remote_Lock_Unlock_011():
         else:
             fail_log("Remote lock failed while locked", "011", img_service)
 
+        # Check what is said in the notif
+        check_notif("lock", "011")
+
     except Exception as e:
         error_log(e, "011", img_service)
 
@@ -256,6 +319,9 @@ def Remote_Lock_Unlock_012():
             log("Remote unlock worked while unlocked")
         else:
             fail_log("Remote unlock failed while unlocked", "012", img_service)
+
+        # Check what is said in the notif
+        check_notif("unlock", "012")
 
     except Exception as e:
         error_log(e, "012", img_service)
@@ -297,6 +363,9 @@ def Remote_Lock_Unlock_014():
         else:
             fail_log("Lock status not changed", "014", img_service)
 
+        # Check what is said in the notif
+        check_notif("lock", "014")
+
     except Exception as e:
         error_log(e, "014", img_service)
 
@@ -316,6 +385,9 @@ def Remote_Lock_Unlock_015():
         else:
             fail_log("Lock status not changed", "015", img_service)
 
+        # Check what is said in the notif
+        check_notif("unlock", "015")
+
     except Exception as e:
         error_log(e, "015", img_service)
 
@@ -334,6 +406,9 @@ def Remote_Lock_Unlock_016():
             log("Lock status changed")
         else:
             fail_log("Lock status not changed", "016", img_service)
+
+        # Check what is said in the notif
+        check_notif("lock", "016")
 
     except Exception as e:
         error_log(e, "016", img_service)

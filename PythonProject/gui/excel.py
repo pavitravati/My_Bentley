@@ -11,10 +11,13 @@ services = ['Demo Mode', 'Customer Enrollment', 'Add VIN', 'App Registration Pag
             'Car Finder', 'Nav Companion', 'Notifications', 'Push Notifications', 'Profile', 'Localization', 'Privacy Mode',
             'Remote Park Assist', 'Stolen Vehicle Tracking']
 
-no_vehicle_services = ['Demo Mode', 'App Log in-Log out']
+no_vehicle_services = ['Demo Mode', 'Customer Enrollment', 'Add VIN', 'App Registration Pages', 'App Log in-Log out',
+                       'Nickname', 'Services and licenses', 'My Car Statistics', 'Service Management', 'Roadside Assistance',
+                       'Data Services', 'Stolen Vehicle Locator', 'Audials', 'Notifications', 'Profile', 'Localization']
 only_vehicle_services = [x for x in services if x not in no_vehicle_services]
-
-no_precondition_services = ['Demo Mode']
+no_precondition_services = ['Demo Mode', 'Add VIN', 'App Registration Pages', 'Nickname', 'Services and licenses',
+                            'My Car Statistics', 'Service Management', 'Roadside Assistance', 'Data Services',
+                            'Stolen Vehicle Locator', 'Audials', 'Car Finder', 'Push Notifications', 'Profile', 'Localization']
 
 def resource_path(relative_path):
     try:

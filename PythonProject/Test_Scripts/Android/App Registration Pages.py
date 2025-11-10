@@ -114,6 +114,8 @@ def App_Registration_Pages_002():
                         controller.enter_text(vin)
                         log("VIN entered") if controller.wait_for_text("YOUR PREFERRED BENTLEY RETAILER") else fail_log("VIN not entered", "002", img_service)
                         controller.click("Icons/Homescreen_Right_Arrow.png")
+                        controller.wait_for_text_and_click("Search by retailer name or location")
+                        controller.enter_text("Manchester")
                         controller.click_text("Bentley Manchester")
                         controller.click_text("CONFIRM")
                         log("Retailer selected") if controller.wait_for_text("ADD YOUR BENTLEY") else fail_log("Retailer failed to be selected", "002", img_service)

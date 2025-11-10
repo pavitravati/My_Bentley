@@ -1,5 +1,8 @@
 from common_utils.android_image_comparision import *
 from core.log_emitter import log, fail_log, metric_log, error_log
+from core.app_functions import app_login
+from gui.globals import *
+from time import sleep
 
 img_service = "Customer Enrollment"
 
@@ -228,21 +231,67 @@ def Customer_Enrollment_035():
 def Customer_Enrollment_036():
     try:
         pass
+        # Delete vehicle function
+
+        ############
+        # Tester check HMI
+        ############
     except Exception as e:
         error_log(e, "036", img_service)
 
 def Customer_Enrollment_037():
     try:
-        pass
+        # Delete vehicle function
+
+        while not controller.is_text_present("ADD A VEHICLE"):
+            controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
+            sleep(0.05)
+        controller.small_swipe_up()
+        controller.click_text("ADD A VEHICLE")
+        controller.small_swipe_up()
+        controller.click_text("Enter VIN manually")
+        controller.enter_text(current_VIN)
+        if controller.click_text("CONFIRM"):
+            log("VIN entered manually")
+        else:
+            fail_log("VIN failed to be entered manually", "037", img_service)
+        controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
+        controller.wait_for_text_and_click("Search by retailer name or location")
+        controller.enter_text("Manchester")
+        controller.click_text("Bentley Manchester")
+        controller.wait_for_text_and_click("CONFIRM")
+
+        # Check how to automate adding VIN and then check
     except Exception as e:
         error_log(e, "037", img_service)
 
 def Customer_Enrollment_038():
     try:
-        pass
+        app_login(second_email, second_password)
+        if controller.wait_for_text("ADD A VEHICLE"):
+            log("No VIN on second account")
+        else:
+            fail_log("No VIN on second account check failed", "038", img_service)
+        controller.small_swipe_up()
+        controller.click_text("ADD A VEHICLE")
+        controller.small_swipe_up()
+        controller.click_text("Enter VIN manually")
+        controller.enter_text(current_VIN)
+        if controller.click_text("CONFIRM"):
+            log("VIN entered manually")
+        else:
+            fail_log("VIN failed to be entered manually", "038", img_service)
+        controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
+        controller.wait_for_text_and_click("Search by retailer name or location")
+        controller.enter_text("Manchester")
+        controller.click_text("Bentley Manchester")
+        controller.wait_for_text_and_click("CONFIRM")
+
+        # Check how to automate adding VIN and then check
     except Exception as e:
         error_log(e, "038", img_service)
 
+# Can't be automated
 def Customer_Enrollment_039():
     try:
         pass
@@ -251,6 +300,6 @@ def Customer_Enrollment_039():
 
 def Customer_Enrollment_040():
     try:
-        pass
+        log("Cannot check style guide")
     except Exception as e:
         error_log(e, "040", img_service)

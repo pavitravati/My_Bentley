@@ -116,8 +116,6 @@ class DeviceController:
         end_y = int(height * 0.8)
         self.swipe(start_x, start_y, start_x, end_y, duration)
 
-
-
     def settings_swipe_down(self, duration=0.2):
         width, height = self.d.window_size()
         start_x = width // 2

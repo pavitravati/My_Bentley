@@ -1,9 +1,8 @@
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log, metric_log
+from core.log_emitter import log, fail_log, error_log
 from time import sleep
 import random
-from gui.globals import current_VIN
-from core.app_functions import app_login
+from core.globals import current_VIN
 
 img_service = "Add VIN"
 random_email = f"automation{str(random.random())[2:6]}@gqm.anonaddy.com"

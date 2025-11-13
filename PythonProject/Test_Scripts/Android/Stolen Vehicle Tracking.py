@@ -1,10 +1,8 @@
-from math import lgamma
-
 from common_utils.android_image_comparision import *
 from core.log_emitter import log, fail_log, metric_log, error_log
 from time import sleep
 from core.app_functions import remote_swipe, enable_flight_mode, disable_flight_mode
-from gui.globals import current_name, current_email
+from core.globals import current_name, current_email
 from datetime import datetime
 
 img_service = "Stolen Vehicle Tracking"

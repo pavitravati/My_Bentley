@@ -19,6 +19,19 @@ no_precondition_services = ['Demo Mode', 'Add VIN', 'App Registration Pages', 'N
                             'My Car Statistics', 'Service Management', 'Roadside Assistance', 'Data Services',
                             'Stolen Vehicle Locator', 'Audials', 'Car Finder', 'Push Notifications', 'Profile', 'Localization']
 
+credentials_check = {
+    'Demo Mode': (0,0,0,0,0,1,0), 'Customer Enrollment': (0,1,1,1,0,1,0), 'Add VIN': (0,1,1,1,0,1,0), 'App Registration Pages': (0,0,1,0,0,1,0),
+    'App Log in-Log out': (0,1,1,0,0,1,0), 'Nickname': (1,1,1,1,1,1,1), 'Services and licenses': (1,1,1,1,1,1,1), 'Vehicle Status Report': (1,1,1,1,1,1,1),
+    'Remote Lock-Unlock': (1,1,1,1,1,1,1), 'Remote Honk & Flash': (0,0,0,0,0,1,1), 'My Car Statistics': (1,1,1,1,1,1,1), 'My Cabin Comfort': (0,0,0,0,1,1,0),
+    'My Battery Charge': (0,0,0,0,1,1,0), 'Service Management': (1,1,1,1,1,1,1), 'Activate Heating': (0,0,0,0,1,1,0), 'Roadside Assistance': (0,0,0,0,0,1,1),
+    'Data Services': (0,0,0,0,0,1,1), 'My Alerts': (1,1,1,1,1,1,1), 'Theft Alarm': (1,1,1,1,1,1,1), 'Stolen Vehicle Locator': (1,1,1,1,1,1,1),
+    'Audials': (1,1,1,1,1,1,1), 'Car Finder': (1,1,1,1,1,1,1), 'Nav Companion': (1,1,1,1,1,1,1), 'Notifications': (1,1,1,1,1,1,1),
+    'Push Notifications': (1,1,1,1,1,1,1), 'Profile': (1,1,1,1,1,1,1), 'Localization': (1,1,1,1,1,1,1), 'Privacy Mode': (1,1,1,1,1,1,1),
+    'Remote Park Assist': (1,1,1,1,1,1,1), 'Stolen Vehicle Tracking': (1,1,1,1,1,1,1)
+}
+
+
+
 def resource_path(relative_path):
     try:
         base_path = sys._MEIPASS

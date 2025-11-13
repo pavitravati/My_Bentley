@@ -8,7 +8,7 @@ from PySide6.QtGui import QFont, QPixmap, QCursor
 from excel import services
 from PySide6.QtCore import Qt, Signal
 from excel import resource_path, no_vehicle_services
-from gui.excel import only_vehicle_services, no_precondition_services, credentials_check
+from gui.excel import only_vehicle_services, no_precondition_services
 from gui.import_page import ImportResult
 from test_case_page import TestCaseTablePage
 from service_report import ServiceReport
@@ -16,19 +16,23 @@ from openpyxl import Workbook
 from excel import load_data
 from datetime import datetime
 import shutil
-import core.globals as globals
+from core import globals
 import os
 
 testcase_map = load_data()
 
+
 class ClickableLabel(QLabel):
     clicked = Signal()
+
     def __init__(self, text):
-        super().__init__(f"<a style='color:black; text-decoration:none; font-size:14px; margin:0px' href='#'>{text}</a>")
+        super().__init__(
+            f"<a style='color:black; text-decoration:none; font-size:14px; margin:0px' href='#'>{text}</a>")
         self.setTextInteractionFlags(Qt.TextBrowserInteraction)
         self.setOpenExternalLinks(False)
         self.setCursor(QCursor(Qt.PointingHandCursor))
         self.linkActivated.connect(lambda _: self.clicked.emit())
+
 
 class HomePage(QWidget):
     def __init__(self, main_window, parent=None):
@@ -100,7 +104,6 @@ class HomePage(QWidget):
         """)
         left_side.setContentsMargins(40, 20, 20, 20)
 
-
         testcase_table = QTableWidget()
         testcase_table.setColumnCount(2)
         if self.screen == 'Monitor':
@@ -114,7 +117,7 @@ class HomePage(QWidget):
         header.setSectionResizeMode(QHeaderView.Fixed)
         header.setFixedHeight(40)
         testcase_table.verticalHeader().setVisible(False)
-        testcase_table.setRowCount(len(services)+4)
+        testcase_table.setRowCount(len(services) + 4)
         testcase_table.setWordWrap(True)
         testcase_table.setEditTriggers(QTableWidget.NoEditTriggers)
         if self.screen == 'Monitor':
@@ -133,7 +136,7 @@ class HomePage(QWidget):
                         selection-color: black;
                         outline: 0;
                     }
-                
+
                     QHeaderView::section {
                         background-color: #394d45;
                         color: white;
@@ -142,12 +145,12 @@ class HomePage(QWidget):
                         padding: 8px;
                         border-right: 1px solid #51645c;
                     }
-                
+
                     QTableWidget::item {
                         border-bottom: 1px solid #dcdcdc;
                         padding: 6px;
                     }
-                
+
                     QTableWidget::item:hover {
                         background-color: #e8edea;
                     }
@@ -155,9 +158,9 @@ class HomePage(QWidget):
         header_font = QFont("Arial", 15, QFont.Bold)
         testcase_table.horizontalHeader().setFont(header_font)
 
-        for row in range(len(services)+4):
+        for row in range(len(services) + 4):
             checkbox = QCheckBox()
-            # checkbox.clicked.connect(lambda: self.update_run_btn(testcase_table))
+            checkbox.clicked.connect(lambda: self.update_run_btn(testcase_table))
             checkbox.setCursor(Qt.PointingHandCursor)
             checkbox.setStyleSheet("""
                             QCheckBox {
@@ -186,33 +189,29 @@ class HomePage(QWidget):
                 testcase_table.setItem(row, 0, item)
                 testcase_table.setCellWidget(row, 1, cell_widget)
                 checkbox.toggled.connect(lambda checked, t=testcase_table: self.all_tests_checkbox(checked, t))
-                checkbox.clicked.connect(lambda: self.update_run_btn(testcase_table))
             elif row == 1:
                 item = QTableWidgetItem("No Vehicle services")
                 item.setFont(QFont("Arial", 12, QFont.Bold))
                 testcase_table.setItem(row, 0, item)
                 testcase_table.setCellWidget(row, 1, cell_widget)
                 checkbox.toggled.connect(lambda checked, t=testcase_table: self.no_vehicle_tests_checkbox(checked, t))
-                checkbox.clicked.connect(lambda: self.update_run_btn(testcase_table))
             elif row == 2:
                 item = QTableWidgetItem("Only Vehicle services")
                 item.setFont(QFont("Arial", 12, QFont.Bold))
                 testcase_table.setItem(row, 0, item)
                 testcase_table.setCellWidget(row, 1, cell_widget)
                 checkbox.toggled.connect(lambda checked, t=testcase_table: self.vehicle_tests_checkbox(checked, t))
-                checkbox.clicked.connect(lambda: self.update_run_btn(testcase_table))
             elif row == 3:
                 item = QTableWidgetItem("No precondition services")
                 item.setFont(QFont("Arial", 12, QFont.Bold))
                 testcase_table.setItem(row, 0, item)
                 testcase_table.setCellWidget(row, 1, cell_widget)
-                checkbox.toggled.connect(lambda checked, t=testcase_table: self.no_precondition_tests_checkbox(checked, t))
-                checkbox.clicked.connect(lambda: self.update_run_btn(testcase_table))
+                checkbox.toggled.connect(
+                    lambda checked, t=testcase_table: self.no_precondition_tests_checkbox(checked, t))
             else:
-                label = ClickableLabel(services[row-4])
-                label.clicked.connect(lambda r=row: self.open_service_tests(services[r-4]))
-                checkbox.clicked.connect(lambda _=None, check=credentials_check[services[row-4]], t=testcase_table: self.enable_credentials(check, t))
-                checkbox.clicked.connect(lambda: self.update_run_btn(testcase_table))
+                label = ClickableLabel(services[row - 4])
+                label.clicked.connect(lambda r=row: self.open_service_tests(services[r - 4]))
+                # checkbox.clicked.connect(lambda _=None, check=credentials_check[services[row-4]]: self.enable_credentials(check, testcase_table))
 
                 text_cell = QWidget()
                 text_cell.setFixedHeight(20)
@@ -289,7 +288,7 @@ class HomePage(QWidget):
         else:
             self.name_input.setPlaceholderText("Name")
         self.name_input.setStyleSheet("margin-bottom: 5px;")
-        self.name_input.textChanged.connect(lambda: self.update_globals("name", self.name_input.text()))
+        # self.name_input.setDisabled(True)
         self.name_input.textChanged.connect(lambda: self.update_run_btn(testcase_table))
 
         self.email_input = QLineEdit()
@@ -298,7 +297,7 @@ class HomePage(QWidget):
         else:
             self.email_input.setPlaceholderText("Email")
         self.email_input.setStyleSheet("margin-bottom: 5px;")
-        self.email_input.textChanged.connect(lambda: self.update_globals("email", self.email_input.text()))
+        # self.email_input.setDisabled(True)
         self.email_input.textChanged.connect(lambda: self.update_run_btn(testcase_table))
 
         self.password_input = QLineEdit()
@@ -307,7 +306,7 @@ class HomePage(QWidget):
         else:
             self.password_input.setPlaceholderText("Password")
         self.password_input.setStyleSheet("margin-bottom: 5px;")
-        self.password_input.textChanged.connect(lambda: self.update_globals("password", self.password_input.text()))
+        # self.password_input.setDisabled(True)
         self.password_input.textChanged.connect(lambda: self.update_run_btn(testcase_table))
 
         self.pin_input = QLineEdit()
@@ -316,7 +315,7 @@ class HomePage(QWidget):
         else:
             self.pin_input.setPlaceholderText("PIN")
         self.pin_input.setStyleSheet("margin-bottom: 5px;")
-        self.pin_input.textChanged.connect(lambda: self.update_globals("pin", self.pin_input.text()))
+        # self.pin_input.setDisabled(True)
         self.pin_input.textChanged.connect(lambda: self.update_run_btn(testcase_table))
 
         form_layout.addWidget(self.name_input)
@@ -380,10 +379,11 @@ class HomePage(QWidget):
         for btn in (self.eur_btn, self.nar_btn, self.chn_btn):
             btn.setFixedSize(90, 45) if self.screen == 'Monitor' else btn.setFixedSize(77, 30)
 
-        for btn in (self.eur_btn, self.nar_btn, self.chn_btn, self.ice_btn, self.phev_btn, self.android_btn, self.ios_btn):
+        for btn in (self.eur_btn, self.nar_btn, self.chn_btn, self.ice_btn, self.phev_btn, self.android_btn,
+                    self.ios_btn):
             btn.setCheckable(True)
+            # btn.setDisabled(True)
             btn.setCursor(Qt.PointingHandCursor)
-            btn.clicked.connect(lambda _=None, selected_btn=btn: self.update_globals(selected_btn))
             btn.clicked.connect(lambda: self.update_run_btn(testcase_table))
             btn.setStyleSheet("""
                 QToolButton {
@@ -404,7 +404,6 @@ class HomePage(QWidget):
                     color: #D9DADA;
                 }
             """)
-
 
         self.eur_btn.clicked.connect(lambda: self._select_country("eur"))
         self.nar_btn.clicked.connect(lambda: self._select_country("nar"))
@@ -600,8 +599,8 @@ class HomePage(QWidget):
         self.main_window.show_test_cases(service)
 
     def all_tests_checkbox(self, checked, table):
+        # self.enable_credentials()
         self.clear_checkboxes(table)
-        self.enable_credentials(checked, table=table)
         for row in range(4, table.rowCount()):
             cell_widget = table.cellWidget(row, 1)
             if cell_widget:
@@ -611,8 +610,8 @@ class HomePage(QWidget):
                     cb.setEnabled(not checked)
 
     def no_vehicle_tests_checkbox(self, checked, table):
+        # self.enable_credentials()
         self.clear_checkboxes(table, 1)
-        self.enable_credentials(checked, table=table)
         for row in range(4, table.rowCount()):
             cell_widget = table.cellWidget(row, 0).findChild(QLabel).text()
             plain_text = re.sub('<[^<]+?>', '', cell_widget)
@@ -623,8 +622,8 @@ class HomePage(QWidget):
                     cb.setEnabled(not checked)
 
     def vehicle_tests_checkbox(self, checked, table):
+        # self.enable_credentials()
         self.clear_checkboxes(table, 2)
-        self.enable_credentials(checked, table=table)
         for row in range(4, table.rowCount()):
             cell_widget = table.cellWidget(row, 0).findChild(QLabel).text()
             plain_text = re.sub('<[^<]+?>', '', cell_widget)
@@ -635,8 +634,8 @@ class HomePage(QWidget):
                     cb.setEnabled(not checked)
 
     def no_precondition_tests_checkbox(self, checked, table):
+        # self.enable_credentials()
         self.clear_checkboxes(table, 3)
-        self.enable_credentials(checked, table=table)
         for row in range(4, table.rowCount()):
             cell_widget = table.cellWidget(row, 0).findChild(QLabel).text()
             plain_text = re.sub('<[^<]+?>', '', cell_widget)
@@ -656,53 +655,47 @@ class HomePage(QWidget):
                         cb.setChecked(False)
                         cb.setEnabled(True)
 
-    def enable_credentials(self, checker=(1,1,1,1,1,1,1), table=None):
-        total_checked = (0,0,0,0,0,0,0)
-        min_checked = False
-        for row in range(table.rowCount()):
-            cell_widget = table.cellWidget(row, 1)
-            if cell_widget:
-                cb = cell_widget.findChild(QCheckBox)
-                if cb.isChecked() and row < 4:
-                    min_checked = True
-                    total_checked = (1,1,1,1,1,1,1)
-                elif cb.isChecked():
-                    min_checked = True
-                    total_checked = tuple(a or b for a, b in zip(total_checked, credentials_check[services[row-4]]))
-
-        widget_groups = [
-            [self.name_input],
-            [self.email_input],
-            [self.password_input],
-            [self.pin_input],
-            [self.ice_btn, self.phev_btn],
-            [self.android_btn, self.ios_btn],
-            [self.chn_btn, self.eur_btn, self.nar_btn],
-        ]
-
-        for flag, group in zip(total_checked, widget_groups):
-            for widget in group:
-                if not min_checked:
-                    widget.setEnabled(True)
-                else:
-                    widget.setEnabled(True if flag==1 else False)
-
+    # def enable_credentials(self, checker=(1,1,1,1,1,1,1), table=None):
+    #     if checker != (1,1,1,1,1,1,1):
+    #         total_checked = (0,0,0,0,0,0,0)
+    #         for row in range(4, table.rowCount()):
+    #             cell_widget = table.cellWidget(row, 1)
+    #             if cell_widget:
+    #                 cb = cell_widget.findChild(QCheckBox)
+    #                 if cb.isChecked():
+    #                     total_checked = tuple(a or b for a, b in zip(total_checked, credentials_check[services[row-4]]))
+    #     else:
+    #         total_checked = checker
+    #
+    #     widget_groups = [
+    #         [self.name_input],
+    #         [self.email_input],
+    #         [self.password_input],
+    #         [self.pin_input],
+    #         [self.ice_btn, self.phev_btn],
+    #         [self.android_btn, self.ios_btn],
+    #         [self.chn_btn, self.eur_btn, self.nar_btn],
+    #     ]
+    #
+    #     for flag, group in zip(total_checked, widget_groups):
+    #         for widget in group:
+    #             widget.setEnabled(True if flag==1 else False)
 
     def update_run_btn(self, table):
-        name_filled = bool(self.name_input.text().strip() != '' or not self.name_input.isEnabled())
-        email_filled = bool(self.email_input.text().strip() or not self.email_input.isEnabled())
-        password_filled = bool(self.password_input.text().strip() or not self.password_input.isEnabled())
-        pin_filled = bool(self.pin_input.text().strip() or not self.pin_input.isEnabled())
-        vehicle_type = self.ice_btn.isChecked() or self.phev_btn.isChecked() or not self.ice_btn.isEnabled()
-        phone_type = self.ios_btn.isChecked() or self.android_btn.isChecked() or not self.ios_btn.isEnabled()
-        country = self.chn_btn.isChecked() or self.eur_btn.isChecked() or self.nar_btn.isChecked() or not self.chn_btn.isEnabled()
-        # name_filled = bool(self.name_input.text().strip())
-        # email_filled = bool(self.email_input.text().strip())
-        # password_filled = bool(self.password_input.text().strip())
-        # pin_filled = bool(self.pin_input.text().strip())
-        # vehicle_type = self.ice_btn.isChecked() or self.phev_btn.isChecked()
-        # phone_type = self.ios_btn.isChecked() or self.android_btn.isChecked()
-        # country = self.chn_btn.isChecked() or self.eur_btn.isChecked() or self.nar_btn.isChecked()
+        # name_filled = bool(self.name_input.text().strip() or self.name_input.isEnabled())
+        # email_filled = bool(self.email_input.text().strip() or self.email_input.isEnabled())
+        # password_filled = bool(self.password_input.text().strip() or self.password_input.isEnabled())
+        # pin_filled = bool(self.pin_input.text().strip() or self.pin_input.isEnabled())
+        # vehicle_type = self.ice_btn.isChecked() or self.phev_btn.isChecked() or self.ice_btn.isEnabled()
+        # phone_type = self.ios_btn.isChecked() or self.android_btn.isChecked() or self.ios_btn.isEnabled()
+        # country = self.chn_btn.isChecked() or self.eur_btn.isChecked() or self.nar_btn.isChecked() or self.chn_btn.isEnabled()
+        name_filled = bool(self.name_input.text().strip())
+        email_filled = bool(self.email_input.text().strip())
+        password_filled = bool(self.password_input.text().strip())
+        pin_filled = bool(self.pin_input.text().strip())
+        vehicle_type = self.ice_btn.isChecked() or self.phev_btn.isChecked()
+        phone_type = self.ios_btn.isChecked() or self.android_btn.isChecked()
+        country = self.chn_btn.isChecked() or self.eur_btn.isChecked() or self.nar_btn.isChecked()
         checkbox_check = False
         for row in range(table.rowCount()):
             cell_widget = table.cellWidget(row, 1)
@@ -730,8 +723,8 @@ class HomePage(QWidget):
         globals.current_password = self.password_input.text()
         globals.current_pin = self.pin_input.text()
 
-        self.main_window.setCentralWidget(TestCaseTablePage(self.main_window, globals.selected_services[
-            globals.service_index]))
+        self.main_window.setCentralWidget(
+            TestCaseTablePage(self.main_window, globals.selected_services[globals.service_index]))
 
     def result_btn_clicked(self):
         self.service_report = ServiceReport()
@@ -746,7 +739,7 @@ class HomePage(QWidget):
                 results = ''
                 for res in test_logs:
                     results += res + '\n'
-                new_sheet[f'A{key}'] = testcase_map[service][key-1]['Test Case Description']
+                new_sheet[f'A{key}'] = testcase_map[service][key - 1]['Test Case Description']
                 new_sheet[f'B{key}'] = results
         current_datetime = datetime.now().strftime("%Y-%m-%d %H+%M")
         script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -767,28 +760,3 @@ class HomePage(QWidget):
     def import_result(self):
         self.import_window = ImportResult()
         self.import_window.show()
-
-    def update_globals(self, key, value="btn"):
-        match key:
-            case "name":
-                globals.current_name = value
-            case "email":
-                globals.current_email = value
-            case "password":
-                globals.current_password = value
-            case "pin":
-                globals.current_pin = value
-            case "ICE":
-                globals.vehicle_type = "ice"
-            case "PHEV":
-                globals.vehicle_type = "phev"
-            case "Android":
-                globals.phone_type = "android"
-            case "iOS":
-                globals.phone_type = "ios"
-            case "EUR":
-                globals.country = "eur"
-            case "NAR":
-                globals.country = "nar"
-            case "CHN":
-                globals.country = "chn"

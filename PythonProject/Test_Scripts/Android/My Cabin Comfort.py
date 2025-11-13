@@ -3,14 +3,14 @@ from core.log_emitter import log, fail_log, error_log, metric_log
 from time import sleep
 import re
 from datetime import date, datetime
+from core.app_functions import remote_swipe
 
 img_service = "My Cabin Comfort"
 
 def My_Cabin_Comfort_001():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.6)
+        remote_swipe("MY CABIN COMFORT")
 
         cabin_comfort = controller.d(text="MY CABIN COMFORT")
         status = cabin_comfort.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
@@ -32,9 +32,8 @@ def My_Cabin_Comfort_001():
 
 def My_Cabin_Comfort_002():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.6)
+        remote_swipe("MY CABIN COMFORT")
 
         if controller.click_text("MY CABIN COMFORT"):
             log("Cabin Comfort section clicked")
@@ -60,9 +59,8 @@ def My_Cabin_Comfort_002():
 
 def My_Cabin_Comfort_003():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.6)
+        remote_swipe("MY CABIN COMFORT")
 
         if controller.click_text("MY CABIN COMFORT"):
             if controller.is_text_present("MY CABIN COMFORT"):
@@ -99,17 +97,22 @@ def My_Cabin_Comfort_003():
     except Exception as e:
         error_log(e, "003", img_service)
 
+# Test in car with rear seat heating...
 def My_Cabin_Comfort_004():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.6)
+        remote_swipe("MY CABIN COMFORT")
 
         if controller.click_text("MY CABIN COMFORT"):
             if compare_with_expected_crop("Images/default_heating.png", 0.99):
                 log("Default seat heating options displayed")
             else:
-                fail_log("Default seat heating options not displayed", "004", img_service)
+                controller.click_by_image("Icons/Front_right_seat_disabled.png", 1)
+                controller.click_by_image("Icons/Front_left_seat_disabled.png", 1)
+                if compare_with_expected_crop("Images/default_heating.png", 0.99):
+                    log("Default seat heating options displayed")
+                else:
+                    fail_log("Default seat heating options not displayed", "004", img_service)
 
             if controller.click_by_image("Icons/Rear_left_seat_disabled.png") and compare_with_expected_crop("Icons/Rear_left_seat_enabled.png", 0.99):
                 log("Rear seat heating options supported")
@@ -129,9 +132,8 @@ def My_Cabin_Comfort_004():
 def My_Cabin_Comfort_005():
     temperatures = ["16", "17", "18", "19", "21"]
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.6)
+        remote_swipe("MY CABIN COMFORT")
 
         if controller.click_text("MY CABIN COMFORT"):
             for i in range(1, 6):
@@ -153,9 +155,8 @@ def My_Cabin_Comfort_005():
 
 def My_Cabin_Comfort_006():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.6)
+        remote_swipe("MY CABIN COMFORT")
 
         if controller.click_text("MY CABIN COMFORT"):
             controller.click(200, 930)
@@ -170,12 +171,38 @@ def My_Cabin_Comfort_006():
                 log("Start button clicked")
             else:
                 fail_log("Start button not found", "006", img_service)
+            controller.wait_for_text("Sending message to car")
+            while controller.is_text_present("Sending message to car"):
+                sleep(0.5)
+            if controller.is_text_present("Successfully sent to car"):
+                log("Successfully sent to car status displayed")
+            else:
+                fail_log("Successfully sent to car status not displayed", "006", img_service)
+            controller.wait_for_text("My cabin comfort is active")
+            if controller.is_text_present("My cabin comfort is active") and controller.is_text_present("- 10 min"):
+                log("Active cabin comfort status displayed")
+            else:
+                fail_log("Active cabin comfort not displayed", "006", img_service)
+            controller.click_text("MY CABIN COMFORT")
+            if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
+                log("Stop button displayed when cabin comfort active")
+                controller.click_text("STOP")
+            else:
+                fail_log("Stop button not found, or cabin comfort not active", "006", img_service)
 
-            #rest in car
+            ############
+            # Validate the time matches
+            ############
+
+            #########
+            # Tester confirm it is active in car
+            #########
+
         else:
             fail_log("Cabin comfort section could not be found", "006", img_service)
 
-        controller.click_by_image("Icons/back_icon.png")
+        controller.click_text("STOP")
+        controller.wait_for_text("Not active")
         controller.swipe_down()
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
@@ -183,9 +210,8 @@ def My_Cabin_Comfort_006():
 
 def My_Cabin_Comfort_007():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.6)
+        remote_swipe("MY CABIN COMFORT")
 
         if controller.click_text("MY CABIN COMFORT"):
             controller.click(300, 930)
@@ -211,7 +237,30 @@ def My_Cabin_Comfort_007():
             else:
                 fail_log("Start button not found", "007", img_service)
 
-            # rest in car
+            controller.wait_for_text("Sending message to car")
+            while controller.is_text_present("Sending message to car"):
+                sleep(0.5)
+            if controller.is_text_present("Successfully sent to car"):
+                log("Successfully sent to car status displayed")
+            else:
+                fail_log("Successfully sent to car status not displayed", "007", img_service)
+            controller.wait_for_text("My cabin comfort is active")
+            if controller.is_text_present("My cabin comfort is active") and controller.is_text_present("- 10 min"):
+                log("Active cabin comfort status displayed")
+            else:
+                fail_log("Active cabin comfort not displayed", "007", img_service)
+            controller.click_text("MY CABIN COMFORT")
+            if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
+                log("Stop button displayed when cabin comfort active")
+                controller.click_text("STOP")
+                while controller.is_text_present("Sending message to car"):
+                    sleep(0.5)
+            else:
+                fail_log("Stop button not found, or cabin comfort not active", "007", img_service)
+
+            #########
+            # Tester confirm it is active
+            #########
         else:
             fail_log("Cabin comfort section could not be found", "007", img_service)
 
@@ -224,9 +273,8 @@ def My_Cabin_Comfort_007():
 
 def My_Cabin_Comfort_008():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.6)
+        remote_swipe("MY CABIN COMFORT")
 
         if controller.click_text("MY CABIN COMFORT"):
             controller.click(300, 930)
@@ -252,7 +300,30 @@ def My_Cabin_Comfort_008():
             else:
                 fail_log("Start button not found", "008", img_service)
 
-            # rest in car
+            controller.wait_for_text("Sending message to car")
+            while controller.is_text_present("Sending message to car"):
+                sleep(0.5)
+            if controller.is_text_present("Successfully sent to car"):
+                log("Successfully sent to car status displayed")
+            else:
+                fail_log("Successfully sent to car status not displayed", "008", img_service)
+            controller.wait_for_text("My cabin comfort is active")
+            if controller.is_text_present("My cabin comfort is active") and controller.is_text_present("- 10 min"):
+                log("Active cabin comfort status displayed")
+            else:
+                fail_log("Active cabin comfort not displayed", "008", img_service)
+            controller.click_text("MY CABIN COMFORT")
+            if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
+                log("Stop button displayed when cabin comfort active")
+                controller.click_text("STOP")
+                while controller.is_text_present("Sending message to car"):
+                    sleep(0.5)
+            else:
+                fail_log("Stop button not found, or cabin comfort not active", "008", img_service)
+
+            #########
+            # Tester confirm it is active
+            #########
         else:
             fail_log("Cabin comfort section could not be found", "008", img_service)
 
@@ -264,9 +335,8 @@ def My_Cabin_Comfort_008():
 
 def My_Cabin_Comfort_009():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.6)
+        remote_swipe("MY CABIN COMFORT")
 
         if controller.click_text("MY CABIN COMFORT"):
             controller.click(300, 930)
@@ -292,7 +362,30 @@ def My_Cabin_Comfort_009():
             else:
                 fail_log("Start button not found", "009", img_service)
 
-            # rest in car
+            controller.wait_for_text("Sending message to car")
+            while controller.is_text_present("Sending message to car"):
+                sleep(0.5)
+            if controller.is_text_present("Successfully sent to car"):
+                log("Successfully sent to car status displayed")
+            else:
+                fail_log("Successfully sent to car status not displayed", "009", img_service)
+            controller.wait_for_text("My cabin comfort is active")
+            if controller.is_text_present("My cabin comfort is active") and controller.is_text_present("- 10 min"):
+                log("Active cabin comfort status displayed")
+            else:
+                fail_log("Active cabin comfort not displayed", "009", img_service)
+            controller.click_text("MY CABIN COMFORT")
+            if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
+                log("Stop button displayed when cabin comfort active")
+                controller.click_text("STOP")
+                while controller.is_text_present("Sending message to car"):
+                    sleep(0.5)
+            else:
+                fail_log("Stop button not found, or cabin comfort not active", "009", img_service)
+
+            #########
+            # Tester confirm it is active
+            #########
         else:
             fail_log("Cabin comfort section could not be found", "009", img_service)
 
@@ -304,9 +397,8 @@ def My_Cabin_Comfort_009():
 
 def My_Cabin_Comfort_010():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.6)
+        remote_swipe("MY CABIN COMFORT")
 
         if controller.click_text("MY CABIN COMFORT"):
             controller.click(300, 930)
@@ -332,7 +424,30 @@ def My_Cabin_Comfort_010():
             else:
                 fail_log("Start button not found", "010", img_service)
 
-            # rest in car
+            controller.wait_for_text("Sending message to car")
+            while controller.is_text_present("Sending message to car"):
+                sleep(0.5)
+            if controller.is_text_present("Successfully sent to car"):
+                log("Successfully sent to car status displayed")
+            else:
+                fail_log("Successfully sent to car status not displayed", "010", img_service)
+            controller.wait_for_text("My cabin comfort is active")
+            if controller.is_text_present("My cabin comfort is active") and controller.is_text_present("- 10 min"):
+                log("Active cabin comfort status displayed")
+            else:
+                fail_log("Active cabin comfort not displayed", "010", img_service)
+            controller.click_text("MY CABIN COMFORT")
+            if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
+                log("Stop button displayed when cabin comfort active")
+                controller.click_text("STOP")
+                while controller.is_text_present("Sending message to car"):
+                    sleep(0.5)
+            else:
+                fail_log("Stop button not found, or cabin comfort not active", "010", img_service)
+
+            #########
+            # Tester confirm it is active
+            #########
         else:
             fail_log("Cabin comfort section could not be found", "010", img_service)
 
@@ -344,9 +459,8 @@ def My_Cabin_Comfort_010():
 
 def My_Cabin_Comfort_011():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.6)
+        remote_swipe("MY CABIN COMFORT")
 
         if controller.click_text("MY CABIN COMFORT"):
             controller.click(300, 930)
@@ -372,7 +486,30 @@ def My_Cabin_Comfort_011():
             else:
                 fail_log("Start button not found", "011", img_service)
 
-            # rest in car
+            controller.wait_for_text("Sending message to car")
+            while controller.is_text_present("Sending message to car"):
+                sleep(0.5)
+            if controller.is_text_present("Successfully sent to car"):
+                log("Successfully sent to car status displayed")
+            else:
+                fail_log("Successfully sent to car status not displayed", "011", img_service)
+            controller.wait_for_text("My cabin comfort is active")
+            if controller.is_text_present("My cabin comfort is active") and controller.is_text_present("- 10 min"):
+                log("Active cabin comfort status displayed")
+            else:
+                fail_log("Active cabin comfort not displayed", "011", img_service)
+            controller.click_text("MY CABIN COMFORT")
+            if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
+                log("Stop button displayed when cabin comfort active")
+                controller.click_text("STOP")
+                while controller.is_text_present("Sending message to car"):
+                    sleep(0.5)
+            else:
+                fail_log("Stop button not found, or cabin comfort not active", "011", img_service)
+
+            #########
+            # Tester confirm it is active
+            #########
         else:
             fail_log("Cabin comfort section could not be found", "010", img_service)
 
@@ -384,32 +521,31 @@ def My_Cabin_Comfort_011():
 
 def My_Cabin_Comfort_012():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.6)
+        remote_swipe("MY CABIN COMFORT")
 
-        cabin_comfort = controller.d(text="MY CABIN COMFORT")
-        status = cabin_comfort.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
-        if cabin_comfort.exists:
-            log("Cabin comfort section displayed")
-            if status.exists and status.get_text() == "Not active":
-                log("Status is 'Not active'")
-            else:
-                fail_log("Status is not 'Not active'", "012", img_service)
-
-        # guessing, do all in car
         if controller.click_text("MY CABIN COMFORT"):
-            if controller.click_text("STOP"):
-                log("Stop button clicked")
-            else:
-                fail_log("Stop button not found", "012", img_service)
+            if controller.click_text("START"):
+                log("Start button clicked")
+                sleep(0.5)
+                while controller.is_text_present("Sending message to car"):
+                    sleep(0.5)
+            controller.wait_for_text_and_click("My cabin comfort is active")
 
-            if controller.istext_present("START"):
-                log("Stop button is now the start button")
-            else:
-                fail_log("Start button not found", "012", img_service)
+        if controller.click_text("STOP"):
+            log("Stop button clicked")
         else:
-            fail_log("Cabin comfort section could not be found", "012", img_service)
+            fail_log("Stop button not found", "012", img_service)
+
+        while controller.is_text_present("Sending message to car"):
+            sleep(0.5)
+        controller.wait_for_text("Not active")
+        controller.click_text("MY CABIN COMFORT")
+
+        if controller.istext_present("START"):
+            log("Stop button is now the start button")
+        else:
+            fail_log("Start button not found", "012", img_service)
 
         controller.click_by_image("Icons/back_icon.png")
         controller.swipe_down()
@@ -420,9 +556,8 @@ def My_Cabin_Comfort_012():
 # Verifying the timers exist is dodgy as no unique resource ids so used an image of the toggles and then returned the timers as metrics.
 def My_Cabin_Comfort_013():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.6)
+        remote_swipe("MY CABIN COMFORT")
 
         if controller.click_text("MY CABIN COMFORT"):
             if controller.click_text("Set timer"):
@@ -478,9 +613,8 @@ def My_Cabin_Comfort_013():
 
 def My_Cabin_Comfort_014():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.6)
+        remote_swipe("MY CABIN COMFORT")
 
         if controller.click_text("MY CABIN COMFORT"):
             if controller.click_text("Set timer"):
@@ -517,18 +651,50 @@ def My_Cabin_Comfort_014():
 
 def My_Cabin_Comfort_015():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.6)
+        remote_swipe("MY CABIN COMFORT")
 
         if controller.click_text("MY CABIN COMFORT"):
-            controller.click_by_image("Icons/Interior_heating_toggle.png")
             if controller.click_text("Set timer"):
                 controller.click_text("SETTINGS")
-                controller.click_by_image("Icons/Interior_heating_toggle.png")
+                if controller.click_by_image("Icons/Interior_heating_toggle.png"):
+                    log("Interior surface heating disabled")
+                elif compare_with_expected_crop("Images/timer_toggle.png"):
+                    log("Interior surface heating disabled")
+                else:
+                    fail_log("Interior surface heating not disabled", "015", img_service)
                 controller.click_by_image("Icons/back_icon.png")
 
-                # ask about this one
+                controller.click_by_image("Icons/timer_toggle_off.png")
+                controller.click_text("SYNC TO CAR")
+                sleep(0.5)
+                while controller.is_text_present("Sending message to car"):
+                    sleep(0.5)
+                if controller.is_text_present("Successfully sent to car"):
+                    log("Successfully sent to car status displayed")
+                else:
+                    fail_log("Successfully sent to car status not displayed", "015", img_service)
+                if controller.wait_for_text("My cabin comfort scheduled"):
+                    log("My cabin comfort scheduled status displayed")
+                else:
+                    fail_log("My cabin comfort scheduled status not displayed", "015", img_service)
+
+                # Removes the timers
+                count=0
+                while True:
+                    count+=1
+                    controller.click_text("MY CABIN COMFORT")
+                    controller.click_text("Set timer")
+                    controller.click_by_image("Icons/Interior_heating_toggle.png")
+                    controller.click_by_image("Icons/Interior_heating_toggle.png")
+                    controller.click_text("SYNC TO CAR")
+                    while controller.is_text_present("Sending message to car"):
+                        sleep(0.5)
+                    if controller.is_text_present("Successfully sent to car"):
+                        break
+                    # Stop infinite loop
+                    if count > 5:
+                        break
 
             else:
                 fail_log("Set timer tab not found", "015", img_service)
@@ -543,37 +709,183 @@ def My_Cabin_Comfort_015():
 
 def My_Cabin_Comfort_016():
     try:
-        pass
+        controller.click_by_image("Icons/windows_icon.png")
+        remote_swipe("MY CABIN COMFORT")
+
+        if controller.click_text("MY CABIN COMFORT"):
+            if controller.click_text("Set timer"):
+                controller.click_text("SETTINGS")
+                if controller.click_by_image("Images/timer_toggle.png"):
+                    log("Interior surface heating enabled")
+                elif compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
+                    log("Interior surface heating enabled")
+                else:
+                    fail_log("Interior surface heating not enabled", "016", img_service)
+                controller.click_by_image("Icons/back_icon.png")
+
+                controller.click_by_image("Icons/timer_toggle_off.png")
+                controller.click_text("SYNC TO CAR")
+                sleep(0.5)
+                while controller.is_text_present("Sending message to car"):
+                    sleep(0.5)
+                if controller.is_text_present("Successfully sent to car"):
+                    log("Successfully sent to car status displayed")
+                else:
+                    fail_log("Successfully sent to car status not displayed", "016", img_service)
+                if controller.wait_for_text("My cabin comfort scheduled"):
+                    log("My cabin comfort scheduled status displayed")
+                else:
+                    fail_log("My cabin comfort scheduled status not displayed", "016", img_service)
+
+                # Removes the timers
+                count = 0
+                while True:
+                    count += 1
+                    controller.click_text("MY CABIN COMFORT")
+                    controller.click_text("Set timer")
+                    controller.click_by_image("Icons/Interior_heating_toggle.png")
+                    controller.click_by_image("Icons/Interior_heating_toggle.png")
+                    controller.click_text("SYNC TO CAR")
+                    while controller.is_text_present("Sending message to car"):
+                        sleep(0.5)
+                    if controller.is_text_present("Successfully sent to car"):
+                        break
+                    # Stop infinite loop
+                    if count > 5:
+                        fail_log("Failed to remove timer to allow for automation")
+                        break
+
+            else:
+                fail_log("Set timer tab not found", "015", img_service)
+        else:
+            fail_log("Cabin comfort section could not be found", "015", img_service)
+
+        controller.click_by_image("Icons/back_icon.png")
+        controller.swipe_down()
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "016", img_service)
 
 def My_Cabin_Comfort_017():
     try:
-        pass
+        controller.click_by_image("Icons/windows_icon.png")
+        remote_swipe("MY CABIN COMFORT")
+        cabin_comfort = controller.d(text="MY CABIN COMFORT")
+        status = cabin_comfort.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
+        # Check what status would be
+        if status.get_text() == "My cabin comfort is active":
+            log("Cabin comfort Status displayed correctly")
+        else:
+            fail_log("Cabin comfort status not displayed correctly", "017", img_service)
+        # Validate 4
+        controller.click_text("MY CABIN COMFORT")
+        controller.click_text("Set timer")
+        ##########
+        # Wait for tester to validate screenshot
+        ##########
+        controller.click_by_image("Icons/Interior_heating_toggle.png")
+        controller.click_by_image("Icons/Interior_heating_toggle.png")
+        controller.click_text("SYNC TO CAR")
+        while controller.is_text_present("Sending message to car"):
+            sleep(0.5)
+        if not controller.is_text_present("Successfully sent to car"):
+            # Removes the timers
+            count = 0
+            while True:
+                count += 1
+                controller.click_text("MY CABIN COMFORT")
+                controller.click_text("Set timer")
+                controller.click_by_image("Icons/Interior_heating_toggle.png")
+                controller.click_by_image("Icons/Interior_heating_toggle.png")
+                controller.click_text("SYNC TO CAR")
+                while controller.is_text_present("Sending message to car"):
+                    sleep(0.5)
+                if controller.is_text_present("Successfully sent to car"):
+                    break
+                # Stop infinite loop
+                if count > 5:
+                    fail_log("Failed to remove timer to allow for automation")
+                    break
+
+        controller.click_by_image("Icons/back_icon.png")
+        controller.swipe_down()
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "017", img_service)
 
 def My_Cabin_Comfort_018():
     try:
-        pass
+        log("Not done on app")
     except Exception as e:
         error_log(e, "018", img_service)
 
 def My_Cabin_Comfort_019():
     try:
-        pass
+        controller.click_by_image("Icons/windows_icon.png")
+        remote_swipe("MY CABIN COMFORT")
+        cabin_comfort = controller.d(text="MY CABIN COMFORT")
+        status = cabin_comfort.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
+        time = cabin_comfort.sibling(resourceId="uk.co.bentley.mybentley:id/textView_info_car_remote_item")
+        if status.get_text() == "My cabin comfort is active":
+            log("Active cabin comfort status displayed")
+        else:
+            fail_log("Active cabin comfort status not displayed", "019", img_service)
+        # Get tester to validate time is expected, using pause and check feature
+        controller.click_text("MY CABIN COMFORT")
+        controller.click_text("Set timer")
+        controller.click_text("SETTINGS")
+        # get tester to validate interior surface heating on or off
+        if compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
+            # Check if the heating being on is correct
+            pass
+        elif compare_with_expected_crop("Images/timer_toggle.png"):
+            # Check if the heating being off is correct
+            pass
+        else:
+            fail_log("Interior heating option not displayed", "019", img_service)
+        controller.click_by_image("Icons/back_icon.png")
+        controller.click_by_image("Icons/back_icon.png")
+        controller.swipe_down()
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "019", img_service)
 
 def My_Cabin_Comfort_020():
     try:
-        pass
+        controller.click_by_image("Icons/windows_icon.png")
+        remote_swipe("MY CABIN COMFORT")
+        cabin_comfort = controller.d(text="MY CABIN COMFORT")
+        status = cabin_comfort.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
+        if status.get_text() == "Not active":
+            log("Not active status displayed correctly")
+        else:
+            fail_log("Not active status not displayed", "020", img_service)
+        controller.swipe_down()
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "020", img_service)
 
 def My_Cabin_Comfort_021():
     try:
-        pass
+        controller.click_by_image("Icons/windows_icon.png")
+        remote_swipe("MY CABIN COMFORT")
+        cabin_comfort = controller.d(text="MY CABIN COMFORT")
+        status = cabin_comfort.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
+        time = cabin_comfort.sibling(resourceId="uk.co.bentley.mybentley:id/textView_info_car_remote_item")
+        if status.get_text() == "My cabin comfort scheduled":
+            log("Cabin comfort scheduled status displayed correctly")
+        else:
+            fail_log("Cabin comfort scheduled status not displayed correctly", "021", img_service)
+        # Get tester to validate the time in status, using new feature
+        # Validate 4
+        controller.click_text("MY CABIN COMFORT")
+        controller.click_text("Quick start")
+        ##########
+        # Wait for tester to validate screenshot
+        ##########
+        controller.click_by_image("Icons/back_icon.png")
+        controller.swipe_down()
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "021", img_service)
 
@@ -601,9 +913,8 @@ def set_new_timer(index, testcase_idx):
     # Clicking co-ords as I can find no way to click the timer
 def My_Cabin_Comfort_022():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.6)
+        remote_swipe("MY CABIN COMFORT")
 
         if controller.click_text("MY CABIN COMFORT"):
             if controller.click_text("Set timer"):
@@ -629,23 +940,36 @@ def My_Cabin_Comfort_022():
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "022", img_service)
+My_Cabin_Comfort_022()
 
 def My_Cabin_Comfort_023():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.6)
+        remote_swipe("MY CABIN COMFORT")
 
         if controller.click_text("MY CABIN COMFORT"):
             if controller.click_text("Set timer"):
-                # set first timer
                 controller.click(500, 520)
                 set_new_timer(1, "023")
-                # set second timer
                 controller.click(500, 720)
                 set_new_timer(2, "023")
                 controller.click_text("SYNC TO CAR")
-                # Continue in car
+                sleep(0.5)
+                while controller.is_text_present("Sending message to car"):
+                    sleep(0.5)
+                cabin_comfort = controller.d(text="MY CABIN COMFORT")
+                status = cabin_comfort.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
+                if status:
+                    log("Successfully sent to car status displayed")
+                else:
+                    fail_log("Successfully sent to car status not displayed", "023", img_service)
+                controller.wait_for_text("My cabin comfort is active")
+                cabin_comfort = controller.d(text="MY CABIN COMFORT")
+                status = cabin_comfort.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
+                if status:
+                    log("Scheduled timer status displayed")
+                else:
+                    fail_log("Scheduled timer status not displayed", "023", img_service)
             else:
                 fail_log("Set timer tab not found", "023", img_service)
         else:
@@ -672,7 +996,7 @@ def My_Cabin_Comfort_024():
         controller.click_by_image("Icons/back_icon.png")
 
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.6)
+        remote_swipe("MY CABIN COMFORT")
         if controller.click_text("MY CABIN COMFORT") and controller.is_text_present("Function disabled"):
             log("Cabin comfort successfully disabled")
         else:
@@ -710,7 +1034,7 @@ def My_Cabin_Comfort_025():
         sleep(8)
         controller.wait_for_text("Data successfully updated")
         controller.click_by_image("Icons/windows_icon.png")
-        controller.swipe_up(0.9)
+        remote_swipe("MY CABIN COMFORT")
 
         if compare_with_expected_crop("Images/cabin_comfort_disabled.png"):
             log("Cabin comfort disabled in privacy mode")

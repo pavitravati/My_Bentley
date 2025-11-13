@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QFileDi
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication
 import os
-import globals
+from core import globals
 import shutil
 
 class ImportResult(QWidget):

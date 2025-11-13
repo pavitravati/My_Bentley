@@ -1,10 +1,10 @@
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QToolBar
 )
-from PySide6.QtGui import QAction, QActionGroup
+from PySide6.QtGui import QAction, QActionGroup, QIcon
 from excel import services
 from test_case_page import TestCaseTablePage
-import globals
+from core import globals
 from home_page import HomePage
 import sys
 import os, glob
@@ -100,8 +100,11 @@ if __name__ == "__main__":
     QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
         background: none;
     """
+
     app.setStyleSheet(scrollbar_style)
     app.setStyle("Fusion")
+    icon_path = os.path.join(os.path.dirname(__file__), "images", "bentleyicon.png")
+    app.setWindowIcon(QIcon(icon_path))
     window = MainWindow()
     window.showMaximized()
     app.aboutToQuit.connect(cleanup_images)

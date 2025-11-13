@@ -1,7 +1,7 @@
 from common_utils.android_image_comparision import *
 from core.log_emitter import log, fail_log, error_log, metric_log
 from time import sleep
-from datetime import datetime
+from datetime import datetime, timedelta
 
 img_service = "My Battery Charge"
 
@@ -61,15 +61,14 @@ def My_Battery_Charge_002():
             else:
                 fail_log("Set timer tab not found", "002", img_service)
             controller.click_by_image("icons/back_icon.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             fail_log("My battery charge service failed to open", "002", img_service)
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "002", img_service)
 
 def My_Battery_Charge_003():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/windows_icon.png")
         controller.click_text("MY BATTERY CHARGE")
 
@@ -77,17 +76,70 @@ def My_Battery_Charge_003():
             log("Quick start button clicked")
         else:
             fail_log("Quick start button not found", "003", img_service)
-        # Finish in car
+        sleep(1)
+
+        if controller.is_text_present("Sending message to car"):
+            log("Quick start sent to the car")
+        else:
+            fail_log("Quick start nto sent to the car", "003", img_service)
+
+        while not controller.is_text_present("Successfully sent to car"):
+            sleep(0.5)
+
+        if controller.is_text_present("Successfully sent to car"):
+            log("Quick start successfully sent to the car")
+        else:
+            fail_log("Quick start not sent to the car", "003", img_service)
+
+        controller.click_text("MY BATTERY CHARGE")
+
+        if controller.wait_for_text("SWITCH TO TIMER MODE"):
+            log("Quick start button now displays 'SWITCH TO TIMER MODE' after clicked")
+        else:
+            fail_log("'SWITCH TO TIMER MODE' button not displayed after Quick start button clicked", "003", img_service)
+        controller.click_by_image("icons/back_icon.png")
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        # Tester confirmation of car charging
     except Exception as e:
         error_log(e, "003", img_service)
 
 def My_Battery_Charge_004():
     try:
-        pass
-        # do in car
+        controller.click_by_image("Icons/windows_icon.png")
+        controller.click_text("MY BATTERY CHARGE")
+
+        if controller.click_text("SWITCH TO TIMER MODE"):
+            log("Timer mode button clicked")
+        else:
+            fail_log("Timer mode button not found", "004", img_service)
+        sleep(1)
+
+        if controller.is_text_present("Sending message to car"):
+            log("Timer mode sent to the car")
+        else:
+            fail_log("Timer mode nto sent to the car", "004", img_service)
+
+        while not controller.is_text_present("Successfully sent to car"):
+            sleep(0.5)
+
+        if controller.is_text_present("Successfully sent to car"):
+            log("Timer mode successfully sent to the car")
+        else:
+            fail_log("Timer mode not sent to the car", "004", img_service)
+
+        controller.click_text("MY BATTERY CHARGE")
+
+        if controller.wait_for_text("QUICK START"):
+            log("Timer mode button now displays 'QUICK START' after clicked")
+        else:
+            fail_log("'QUICK START' button not displayed after Timer mode button clicked", "004", img_service)
+        controller.click_by_image("icons/back_icon.png")
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        # Tester confirmation of car charging
     except Exception as e:
         error_log(e, "004", img_service)
 
+# Does not work due to days error
 def My_Battery_Charge_005():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -105,25 +157,76 @@ def My_Battery_Charge_005():
         if controller.is_text_present("EDIT TIMER"):
             log("Timer opened and editable")
         else:
-            fail_log("Timer not opened or editable", "004", img_service)
+            fail_log("Timer not opened or editable", "005", img_service)
+
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/textView_periodic_time_rbc_timer_setting")
+        sleep(0.2)
+        controller.click_by_content_desc("13")
+        sleep(0.2)
+        controller.click_by_content_desc("0")
+        sleep(0.2)
+        controller.click_text("OK")
+        if controller.is_text_present("13:00"):
+            log("Time set to correct time")
+        else:
+            fail_log("Time failed to be set to correct time", "005", img_service)
 
         if controller.d(resourceId="uk.co.bentley.mybentley:id/switch_repeat_rbc_timer_setting").info.get("checked"):
             log("Activate repeat enabled for timer")
         else:
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/switch_repeat_rbc_timer_setting")
-            controller.click_by_image("Icons/monday_repeat.png")
             log("Activate repeat enabled for timer")
+
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/weekdayCircularLabel_one_rbc_timer_setting") if compare_with_expected_crop("Icons/repeat_days/monday_enable.png") else None
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/weekdayCircularLabel_two_rbc_timer_setting") if compare_with_expected_crop("Icons/repeat_days/tuesday_enable.png") else None
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/weekdayCircularLabel_three_rbc_timer_setting") if compare_with_expected_crop("Icons/repeat_days/wednesday_enable.png") else None
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/weekdayCircularLabel_four_rbc_timer_setting") if compare_with_expected_crop("Icons/repeat_days/thursday_enable.png") else None
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/weekdayCircularLabel_five_rbc_timer_setting") if compare_with_expected_crop("Icons/repeat_days/friday_enable.png") else None
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/weekdayCircularLabel_six_rbc_timer_setting") if compare_with_expected_crop("Icons/repeat_days/saturday_enable.png") else None
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/weekdayCircularLabel_seven_rbc_timer_setting") if compare_with_expected_crop("Icons/repeat_days/sunday_enable.png") else None
+
+        days = {'Monday': 'one', 'Tuesday': 'two', 'Wednesday': 'three', 'Thursday': 'four', 'Friday': 'five',
+                'Saturday': 'six', 'Sunday': 'seven'}
+        tomorrow = datetime.now() + timedelta(days=1)
+        tomorrow = tomorrow.strftime("%A")
+
+        controller.click_by_resource_id(f"uk.co.bentley.mybentley:id/weekdayCircularLabel_{days[tomorrow]}_rbc_timer_setting")
+
+        if controller.d(resourceId="uk.co.bentley.mybentley:id/switch_electric_climatisation_setting").info.get("checked"):
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/switch_electric_climatisation_setting")
+            log("Cabin comfort disabled for timer")
 
         if controller.click_text("Save"):
             log("Edited timer saved")
         else:
-            fail_log("Edited timer not saved", "004", img_service)
+            fail_log("Edited timer not saved", "005", img_service)
 
-        # Do in car
+        controller.click_text("SYNC TO CAR")
+        sleep(1)
+
+        if controller.is_text_present("Sending message to car"):
+            log("Sent timer mode to the car")
+        else:
+            fail_log("Timer mode not sent to the car", "005", img_service)
+
+        while not controller.is_text_present("Successfully sent to car"):
+            sleep(0.5)
+
+        if controller.is_text_present("Successfully sent to car"):
+            log("Timer mode successfully sent to the car")
+        else:
+            fail_log("Timer mode not sent to the car", "005", img_service)
+
+        if controller.is_text_present("Timer scheduled - Tomorrow 13:00"):
+            log("Set timer status is displayed")
+        else:
+            fail_log("Set timer status is not displayed", "005", img_service)
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
-        error_log(e, "005")
+        error_log(e, "005", img_service)
 
+# Doesn't work due to days error
 def My_Battery_Charge_006():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -135,13 +238,64 @@ def My_Battery_Charge_006():
                 '//*[@resource-id="uk.co.bentley.mybentley:id/textView_periodic_time_rbc_timer_item"]').all()
             buttons[0].click()
 
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/textView_periodic_time_rbc_timer_setting")
+            sleep(0.2)
+            controller.click_by_content_desc("14")
+            sleep(0.2)
+            controller.click_by_content_desc("0")
+            sleep(0.2)
+            controller.click_text("OK")
+            if controller.is_text_present("14:00"):
+                log("Time set to correct time")
+            else:
+                fail_log("Time failed to be set to correct time", "006", img_service)
+
+            if controller.d(resourceId="uk.co.bentley.mybentley:id/switch_repeat_rbc_timer_setting").info.get(
+                    "checked"):
+                log("Activate repeat enabled for timer")
+            else:
+                controller.click_by_resource_id("uk.co.bentley.mybentley:id/switch_repeat_rbc_timer_setting")
+                log("Activate repeat enabled for timer")
+
+            controller.click_by_resource_id(
+                "uk.co.bentley.mybentley:id/weekdayCircularLabel_one_rbc_timer_setting") if compare_with_expected_crop(
+                "Icons/repeat_days/monday_enable.png") else None
+            controller.click_by_resource_id(
+                "uk.co.bentley.mybentley:id/weekdayCircularLabel_two_rbc_timer_setting") if compare_with_expected_crop(
+                "Icons/repeat_days/tuesday_enable.png") else None
+            controller.click_by_resource_id(
+                "uk.co.bentley.mybentley:id/weekdayCircularLabel_three_rbc_timer_setting") if compare_with_expected_crop(
+                "Icons/repeat_days/wednesday_enable.png") else None
+            controller.click_by_resource_id(
+                "uk.co.bentley.mybentley:id/weekdayCircularLabel_four_rbc_timer_setting") if compare_with_expected_crop(
+                "Icons/repeat_days/thursday_enable.png") else None
+            controller.click_by_resource_id(
+                "uk.co.bentley.mybentley:id/weekdayCircularLabel_five_rbc_timer_setting") if compare_with_expected_crop(
+                "Icons/repeat_days/friday_enable.png") else None
+            controller.click_by_resource_id(
+                "uk.co.bentley.mybentley:id/weekdayCircularLabel_six_rbc_timer_setting") if compare_with_expected_crop(
+                "Icons/repeat_days/saturday_enable.png") else None
+            controller.click_by_resource_id(
+                "uk.co.bentley.mybentley:id/weekdayCircularLabel_seven_rbc_timer_setting") if compare_with_expected_crop(
+                "Icons/repeat_days/sunday_enable.png") else None
+
+            days = {'Monday': 'one', 'Tuesday': 'two', 'Wednesday': 'three', 'Thursday': 'four', 'Friday': 'five',
+                    'Saturday': 'six', 'Sunday': 'seven'}
+            tomorrow = datetime.now() + timedelta(days=1)
+            tomorrow = tomorrow.strftime("%A")
+
+            controller.click_by_resource_id(
+                f"uk.co.bentley.mybentley:id/weekdayCircularLabel_{days[tomorrow]}_rbc_timer_setting")
+
             if not controller.d(resourceId="uk.co.bentley.mybentley:id/switch_electric_climatisation_setting").info.get("checked"):
                 if controller.click_by_resource_id("uk.co.bentley.mybentley:id/switch_electric_climatisation_setting"):
                     log("Cabin comfort activated")
                 else:
                     fail_log("Cabin comfort could not be activated", "006", img_service)
+            else:
+                fail_log("Cabin comfort activated", "006", img_service)
 
-            if controller.click_text("Save"):
+            if controller.click_text("Save") and controller.is_text_present("MY BATTERY CHARGE"):
                 log("Timer saved")
             else:
                 fail_log("Timer not saved", "006", img_service)
@@ -152,8 +306,28 @@ def My_Battery_Charge_006():
                 else:
                     fail_log("Timer could not be enabled", "006", img_service)
 
-            # controller.click_text("SYNC TO CAR")
-            # Finish in car
+            controller.click_text("SYNC TO CAR")
+            sleep(1)
+
+            if controller.is_text_present("Sending message to car"):
+                log("Sent timer mode to the car")
+            else:
+                fail_log("Timer mode not sent to the car", "006", img_service)
+
+            while not controller.is_text_present("Successfully sent to car"):
+                sleep(0.5)
+
+            if controller.is_text_present("Successfully sent to car"):
+                log("Timer mode successfully sent to the car")
+            else:
+                fail_log("Timer mode not sent to the car", "006", img_service)
+
+            if controller.is_text_present(f"Timer scheduled - Tomorrow 14:00"):
+                log("Set timer status is displayed")
+            else:
+                fail_log("Set timer status is displayed", "006", img_service)
+
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             fail_log("Timers not displayed", "006", img_service)
     except Exception as e:
@@ -161,7 +335,21 @@ def My_Battery_Charge_006():
 
 def My_Battery_Charge_007():
     try:
-        pass
+        controller.click_by_image("Icons/windows_icon.png")
+        controller.click_text("MY BATTERY CHARGE")
+        controller.click_text("Set timer")
+        if controller.d(resourceId="uk.co.bentley.mybentley:id/textView_periodic_time_rbc_timer_item").exists:
+            buttons = controller.d.xpath(
+                '//*[@resource-id="uk.co.bentley.mybentley:id/textView_periodic_time_rbc_timer_item"]').all()
+            buttons[0].click()
+
+        ###########
+        # Display timer screenshot for validation by tester
+        ###########
+
+        controller.click_by_image("Icons/login_page_x.png")
+        controller.click_by_image("icons/back_icon.png")
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "007", img_service)
 
@@ -242,8 +430,6 @@ def My_Battery_Charge_008():
             fail_log("My battery charge page not displayed", "008", img_service)
     except Exception as e:
         error_log(e, "008", img_service)
-
-My_Battery_Charge_008()
 
 def My_Battery_Charge_009():
     try:
@@ -348,7 +534,8 @@ def My_Battery_Charge_012():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
-        sleep(8)
+        while not (controller.is_text_present("Data successfully updated") or controller.is_text_present("Data not updated")):
+            sleep(0.5)
         controller.wait_for_text("Data successfully updated")
         controller.click_by_image("Icons/windows_icon.png")
 

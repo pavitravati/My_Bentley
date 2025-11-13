@@ -1,7 +1,7 @@
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, metric_log, error_log
+from core.log_emitter import log, fail_log, error_log
 from core.app_functions import app_login
-from gui.globals import *
+from core.globals import *
 from time import sleep
 
 img_service = "Customer Enrollment"

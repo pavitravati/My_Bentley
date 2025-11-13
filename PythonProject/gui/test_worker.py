@@ -1,7 +1,7 @@
 from PySide6.QtCore import QObject, Signal, Slot, QWaitCondition, QMutex
 import importlib, sys, os
 from excel import load_data
-import globals
+from core import globals
 import traceback
 
 testcase_map = load_data()

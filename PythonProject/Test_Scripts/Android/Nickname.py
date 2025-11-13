@@ -1,7 +1,6 @@
 from time import sleep
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log, metric_log
-from gui.globals import current_email, current_password
+from core.log_emitter import log, fail_log, error_log
 from core.app_functions import app_login, app_logout
 
 img_service = "Nickname"

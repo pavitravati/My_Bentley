@@ -1,7 +1,7 @@
 from time import sleep
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, metric_log, error_log
-from gui.globals import current_VIN
+from core.log_emitter import log, fail_log, error_log
+from core.globals import current_VIN
 
 img_service = "Data Services"
 

@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QTableWidget, QLabel, QSizePolicy,
-    QCheckBox, QPushButton, QHBoxLayout, QApplication, QHeaderView, QToolButton
+    QCheckBox, QPushButton, QHBoxLayout, QApplication, QHeaderView
 )
 from PySide6.QtGui import QFont, QPixmap, QColor, QBrush, QIcon
 from PySide6.QtCore import Qt, QTimer, Slot, QThread, QSize
@@ -15,7 +15,7 @@ import os
 import glob
 from excel import resource_path
 from PySide6.QtCore import QTime
-import globals
+from core import globals
 
 testcase_map = load_data()
 

@@ -1,6 +1,6 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTextEdit, QScrollArea, QToolBar, QToolButton, \
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTextEdit, QScrollArea, QToolButton, \
     QSizePolicy, QPushButton, QComboBox
-from PySide6.QtGui import QFont, QPixmap, QStandardItemModel
+from PySide6.QtGui import QFont, QPixmap
 from PySide6.QtCore import Qt
 from pathlib import Path
 from PySide6.QtWidgets import QApplication
@@ -8,7 +8,7 @@ from openpyxl.reader.excel import load_workbook
 from excel import load_data
 import os
 import glob
-import globals
+from core import globals
 
 testcase_map = load_data()
 
@@ -22,6 +22,8 @@ class ServiceReport(QWidget):
             self.service = None
             self.current_test = False
 
+        self.setWindowTitle("Automated Testing Report")
+
         screen = QApplication.primaryScreen()
         screen_size = screen.availableGeometry()
         width = int(screen_size.width() * 0.8)
@@ -30,7 +32,6 @@ class ServiceReport(QWidget):
 
         self.setFixedSize(width, height)
 
-        self.setWindowTitle(self.service)
         layout = QVBoxLayout()
         self.setLayout(layout)
 
@@ -159,9 +160,11 @@ class ServiceReport(QWidget):
                 btn.setFixedHeight(45)
                 btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Minimum)
 
+                is_fail = False
                 if result == '✅':
                     btn.setStyleSheet("background-color: #394d45; font-size: 12px; color: white;")
                 else:
+                    is_fail = True
                     btn.setStyleSheet("background-color: #7d232b; font-size: 12px; color: white;")
 
                 row_logs = globals.log_history[self.service][case]
@@ -170,6 +173,11 @@ class ServiceReport(QWidget):
                     lambda checked, c=test_description, l=logs_combined, r=row + 1, s=self.service:
                     self.on_test_clicked(c, l, r, s)
                 )
+                if is_fail:
+                    btn.clicked.connect(
+                        lambda checked, c=test_description, l=logs_combined, r=row + 1, s=self.service:
+                        self.failed_test_clicked(c, l, r, s)
+                    )
                 testcase_layout.addWidget(btn)
 
         testcase_scroll.setWidget(testcase_container)
@@ -178,7 +186,6 @@ class ServiceReport(QWidget):
 
         detail_layout = QVBoxLayout()
 
-        # Make this just the text add but in a seperate cotainer so that a button can be added for KPMs
         self.log_textbox = QTextEdit()
         parent_height = self.parent().height() if self.parent() else 800
         screen_size = QApplication.primaryScreen().size()
@@ -197,6 +204,7 @@ class ServiceReport(QWidget):
         scroll_area.setWidgetResizable(True)
 
         container = QWidget()
+        container.setStyleSheet("background: white")
         self.images_layout = QHBoxLayout(container)
         self.images_layout.setSpacing(5)
         self.images_layout.setContentsMargins(20, 0, 20, 0)
@@ -417,3 +425,6 @@ class ServiceReport(QWidget):
         container_layout.addLayout(detail_layout)
 
         layout.addLayout(container_layout)
+
+    def failed_test_clicked(self, test_case, logs_combined, row, service, imported_test=False, folder_name=None):
+        pass

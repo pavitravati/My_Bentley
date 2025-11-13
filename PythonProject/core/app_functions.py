@@ -1,6 +1,6 @@
 from time import sleep
 from common_utils.android_image_comparision import *
-import gui.globals as globals
+import core.globals as globals
 
 def app_logout():
     controller.click_by_image("Icons/Logout_Icon.png")
@@ -21,7 +21,8 @@ def app_login(email=globals.current_email, password=globals.current_password):
     while controller.is_text_present("WELCOME"):
         controller.enter_text(f"%s%s%s%s%s{email}")
         sleep(1)
-    sleep(2)
+    # sleep(2)
+    controller.wait_for_text("Log in – Enter password")
     if not controller.is_text_present("CREATE ACCOUNT"):
         while controller.is_text_present("Log in – Enter password"):
             controller.enter_text(password)

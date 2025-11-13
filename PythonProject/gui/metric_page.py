@@ -7,11 +7,20 @@ from PySide6.QtCore import Qt
 class MetricPage(QWidget):
     def __init__(self, title: str, logs: list[str], parent=None):
         super().__init__(parent)
+        if QApplication.primaryScreen().size().width() > 1500:
+            self.screen = 'Monitor'
+        else:
+            self.screen = 'Laptop'
 
         screen = QApplication.primaryScreen()
         screen_size = screen.availableGeometry()
-        width = int(screen_size.width() * 0.5)
-        height = int(screen_size.height() * 0.5)
+        if self.screen == 'Monitor':
+            width = int(screen_size.width() * 0.5)
+            height = int(screen_size.height() * 0.5)
+        else:
+            width = int(screen_size.width() * 0.7)
+            height = int(screen_size.height() * 0.7)
+
         self.resize(width, height)
         self.setFixedSize(width, height)
 

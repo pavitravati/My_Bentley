@@ -1,5 +1,6 @@
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, metric_log, error_log
+from core.globals import vehicle_type, country
+from core.log_emitter import log, fail_log, metric_log, error_log, blocked_log
 import datetime
 from dateutil.relativedelta import relativedelta
 
@@ -9,17 +10,14 @@ def backspace(num):
     for i in range(num):
         controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
 
-# First three test cases are not done on the app
-###########
 def Services_and_licenses_001():
-    log("temp, not done in app")
+    blocked_log("Test blocked - All done in vehicle")
 
 def Services_and_licenses_002():
-    log("temp, not done in app")
+    blocked_log("Test blocked - All done in vehicle")
 
 def Services_and_licenses_003():
-    log("temp, not done in app")
-###########
+    blocked_log("Test blocked - All done in vehicle")
 
 def Services_and_licenses_004():
     try:
@@ -37,7 +35,6 @@ def Services_and_licenses_004():
         current_date = datetime.date.today()
         date_limit = current_date + relativedelta(years=3)
 
-        # is a license being out of date considered an error? more like this further down
         if licenses:
             log("Extracted Licenses:")
             for license, date in licenses:
@@ -48,8 +45,7 @@ def Services_and_licenses_004():
                     fail_log(f"{license}: {date.replace("/", "-")} - Less than 3 years", "004", img_service)
                     metric_log(f"{license}: {date} - Less than 3 years ❌")
         else:
-            fail_log("Metrics not extracted", "003", img_service)
-
+            fail_log("Metrics not extracted", "004", img_service)
         backspace(2)
 
     except Exception as e:
@@ -174,27 +170,45 @@ def Services_and_licenses_007():
         except Exception as e:
             fail_log("License date not extracted", "007", img_service)
 
-        service_titles = {
-            "Activate heating": False, "Find my car": False, "Lock my car": False, "My car status": False,
-            "My battery charge": False, "My cabin comfort": False, "My car statistics": False,
-            "Remote departure time programming": False, "Theft alert": False, "Stolen Vehicle Locator/Finder": False,
-            "Speed alert": False, "Valet alert": False, "Geofence": False, "Remote Honk & Flash": False
-        }
+        if vehicle_type == "phev":
+            service_titles = {
+                "Find my car": False, "Lock my car": False, "My car status": False,
+                "My battery charge": False, "My cabin comfort": False, "My car statistics": False,
+                "Remote departure time programming": False, "Theft alert": False
+            }
 
-        if controller.is_text_present("SERVICES"):
-            log("Services are listed")
-            for _ in range(3):
-                for key, toggle in service_titles.items():
-                    if _ == 2:
-                        if service_titles[key]:
-                            log(f"{key} is listed")
-                        else:
-                            fail_log(f"{key.replace("/", " ")} is not listed", "007", img_service)
-                    elif controller.is_text_present(key):
-                        service_titles[key] = True
-                controller.swipe_up()
-        else:
-            fail_log("Services are not listed", "007", img_service)
+            if controller.is_text_present("SERVICES"):
+                log("Services are listed")
+                for _ in range(3):
+                    for key, toggle in service_titles.items():
+                        if _ == 2:
+                            if service_titles[key]:
+                                log(f"{key} is listed")
+                            else:
+                                fail_log(f"{key.replace("/", " ")} is not listed", "007", img_service)
+                        elif controller.is_text_present(key):
+                            service_titles[key] = True
+                    controller.swipe_up()
+            else:
+                fail_log("Services are not listed", "007", img_service)
+        elif vehicle_type == "ice":
+            service_titles = {
+                "Activate heating": False, "Find my car": False, "Lock my car": False, "My car status": False, "Theft alert": False
+            }
+
+            if controller.is_text_present("SERVICES"):
+                log("Services are listed")
+                for _ in range(2):
+                    for key, toggle in service_titles.items():
+                        if _ == 1:
+                            if service_titles[key]:
+                                log(f"{key} is listed")
+                            else:
+                                fail_log(f"{key.replace("/", " ")} is not listed", "007", img_service)
+                        elif controller.is_text_present(key):
+                            service_titles[key] = True
+            else:
+                fail_log("Services are not listed", "007", img_service)
 
         backspace(3)
 
@@ -275,42 +289,44 @@ def Services_and_licenses_009():
 
 def Services_and_licenses_010():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        controller.click_by_image("Icons/info_btn.png")
-        controller.click_text("Services and licenses")
-        if controller.click_text("Vehicle tracking system"):
-            log("Vehicle tracking system page opened")
-        else:
-            fail_log("Vehicle tracking system page not opened", "010", img_service)
-
-        if controller.is_text_present("VEHICLE TRACKING SYSTEM"):
-            log("Screen title displayed")
-        else:
-            fail_log("Screen title not displayed", "010", img_service)
-
-        try:
-            current_date = datetime.date.today()
-            date_limit = current_date + relativedelta(years=3)
-            license_date = datetime.datetime.strptime(controller.extract_license_date()[-10:], "%d/%m/%Y").date()
-            if license_date >= date_limit:
-                log("License is valid for at least 3 years")
+        if country == "eur":
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+            controller.click_by_image("Icons/info_btn.png")
+            controller.click_text("Services and licenses")
+            if controller.click_text("Vehicle tracking system"):
+                log("Vehicle tracking system page opened")
             else:
-                fail_log("License is not valid for at least 3 years", "010", img_service)
-        except Exception as e:
-            fail_log("License date not extracted", "010", img_service)
+                fail_log("Vehicle tracking system page not opened", "010", img_service)
 
-        if controller.is_text_present("Vehicle tracking system"):
-            log("Service title displayed")
+            if controller.is_text_present("VEHICLE TRACKING SYSTEM"):
+                log("Screen title displayed")
+            else:
+                fail_log("Screen title not displayed", "010", img_service)
+
+            try:
+                current_date = datetime.date.today()
+                date_limit = current_date + relativedelta(years=3)
+                license_date = datetime.datetime.strptime(controller.extract_license_date()[-10:], "%d/%m/%Y").date()
+                if license_date >= date_limit:
+                    log("License is valid for at least 3 years")
+                else:
+                    fail_log("License is not valid for at least 3 years", "010", img_service)
+            except Exception as e:
+                fail_log("License date not extracted", "010", img_service)
+
+            if controller.is_text_present("Vehicle tracking system"):
+                log("Service title displayed")
+            else:
+                fail_log("Service title not displayed", "010", img_service)
+
+            backspace(3)
         else:
-            fail_log("Service title not displayed", "010", img_service)
-
-        backspace(3)
-
+            blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
         error_log(e, "010", img_service)
 
 def Services_and_licenses_011():
     try:
-        log("temp, Cannot check styleguide")
+        blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "011", img_service)

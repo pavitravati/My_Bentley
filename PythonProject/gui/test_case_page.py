@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QFont, QPixmap, QColor, QBrush, QIcon
 from PySide6.QtCore import Qt, QTimer, Slot, QThread, QSize
-from excel import load_data
+from excel import load_data, service_details, resource_path
 from core.log_emitter import log_emitter
 from utils import make_item
 from widgets import PaddingDelegate
@@ -13,7 +13,6 @@ from error_page import ErrorPage
 from metric_page import MetricPage
 import os
 import glob
-from excel import resource_path
 from PySide6.QtCore import QTime
 from core import globals
 
@@ -346,6 +345,8 @@ class TestCaseTablePage(QWidget):
                 colors.append('red')
             elif symbol == '⚠':
                 colors.append('yellow')
+            elif symbol == '🔒':
+                colors.append('grey')
             else:
                 metrics.append(globals.log_history[self.service][row][i])
 
@@ -372,6 +373,17 @@ class TestCaseTablePage(QWidget):
             result_cell.setBackground(QColor("#F6BE00"))
             self.table.item(row-1, 2 if self.auto_run else 3).setForeground(QBrush(QColor("#F6BE00")))
             self.table.item(row-1, 3 if self.auto_run else 4).setForeground(QBrush(QColor("#F6BE00")))
+        elif 'grey' in colors:
+            blocked_btn = QPushButton("Reason")
+            blocked_btn.setCursor(Qt.PointingHandCursor)
+            blocked_btn.clicked.connect(lambda checked: self.open_blocked_case(row))
+            self.table.setCellWidget(row-1, 6 if self.auto_run else 7, blocked_btn)
+
+            result_cell.setText("Blocked")
+            result_cell.setForeground(QBrush(QColor("white")))
+            result_cell.setBackground(QColor("gray"))
+            self.table.item(row-1, 2 if self.auto_run else 3).setForeground(QBrush(QColor("gray")))
+            self.table.item(row-1, 3 if self.auto_run else 4).setForeground(QBrush(QColor("gray")))
         else:
             result_cell.setText("Passed")
             result_cell.setForeground(QBrush(QColor("white")))
@@ -400,6 +412,12 @@ class TestCaseTablePage(QWidget):
 
         self.error_window = ErrorPage(title=test_title, logs=globals.log_history[self.service][row], images=image_paths)
         self.error_window.show()
+
+    def open_blocked_case(self, row):
+        test_title = self.table.item(row, 0 if self.auto_run else 1).text()
+
+        self.metric_window = MetricPage(title=test_title, logs=globals.log_history[self.service][row])
+        self.metric_window.show()
 
     def open_test_case_metrics(self, row, metrics):
         test_title = self.table.item(row, 0 if self.auto_run else 1).text()

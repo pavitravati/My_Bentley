@@ -1,6 +1,6 @@
 from time import sleep
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, error_log, fail_log
+from core.log_emitter import log, error_log, fail_log, blocked_log
 from core.app_functions import app_login, app_logout, enable_flight_mode, disable_flight_mode
 import core.globals as globals
 
@@ -179,6 +179,6 @@ def App_Log_in_Log_out_006():
 
 def App_Log_in_Log_out_007():
     try:
-        log("Cannot check style guide")
+        blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "007", img_service)

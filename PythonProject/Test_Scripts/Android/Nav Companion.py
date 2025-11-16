@@ -1,5 +1,5 @@
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log, metric_log
+from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
 
 img_service = "Nav Companion"
 
@@ -360,24 +360,24 @@ def Nav_Companion_010():
 
 def Nav_Companion_011():
     try:
-        pass
+        blocked_log("Test blocked - Not written due to issues")
     except Exception as e:
         error_log(e, "011", img_service)
 
 def Nav_Companion_012():
     try:
-        pass
+        blocked_log("Test blocked - Not written due to issues")
     except Exception as e:
         error_log(e, "012", img_service)
 
 def Nav_Companion_013():
     try:
-        pass
+        blocked_log("Test blocked - Not written due to issues")
     except Exception as e:
         error_log(e, "013", img_service)
 
 def Nav_Companion_014():
     try:
-        log("Cannot complete style guide testcases (temporary)")
+        blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "014", img_service)

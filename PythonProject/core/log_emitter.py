@@ -19,6 +19,10 @@ def fail_log(msg, num, service):
     log_emitter.log_signal.emit(f"❌ - {msg}")
     controller.take_fail_screenshot(f"{service}-{msg}-{num}.png")
 
+def blocked_log(msg):
+    print(f"🔒 - {msg}")
+    log_emitter.log_signal.emit(f"🔒{msg}")
+
 def error_log(e, num, service):
     print(f"⚠️ - {e}")
     log_emitter.log_signal.emit(f"⚠️ - Unexpected error: {e}")

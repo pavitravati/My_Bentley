@@ -1,5 +1,5 @@
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log, metric_log
+from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
 from time import sleep
 
 img_service = "My Car Statistics"
@@ -480,7 +480,6 @@ def My_Car_Statistics_012():
 
 def My_Car_Statistics_013():
     try:
-        log("Cannot check style guide")
-
+        blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "013", img_service)

@@ -1,12 +1,11 @@
 from time import sleep
 from common_utils.android_image_comparision import *
 from common_utils.android_controller import *
-from core.log_emitter import log, fail_log, error_log, metric_log
+from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
 from core.app_functions import app_login
+from core.globals import country
 
 img_service = "Profile"
-
-# Testcases on the PIN kill the app so do avoid those for now
 
 def Profile_001():
     try:
@@ -58,7 +57,6 @@ def Profile_001():
         else:
             fail_log("Profile General screen is not present", "001", img_service)
 
-        # 8) Settings icon visible
         if compare_with_expected_crop("Images/Profile_Screen_Setting_Icon.png"):
             log("Profile Settings icon is present")
         else:
@@ -133,8 +131,9 @@ def Profile_004():
         error_log(e, "004", img_service)
 
 # THINK THIS BRAKES THE APP FOR NOW, will finish when it stops destroying everything
-# def Profile_005():
-#     try:
+def Profile_005():
+    try:
+        blocked_log("Test blocked - App killer")
 #         controller.click_by_image("Icons/Profile_Icon.png")
 #         controller.click_by_image("Icons/Profile_Account_Icon.png")
 #         controller.click_text("PIN")
@@ -150,10 +149,9 @@ def Profile_004():
 #         controller.click_text("Confirm")
 #         # need to be in vehicle to finish, so I can reset primary user
 #
-#     except Exception as e:
-#         error_log(e, "005", img_service)
+    except Exception as e:
+        error_log(e, "005", img_service)
 
-# Tested
 def Profile_006():
     try:
         controller.click_by_image("Icons/Profile_Icon.png")
@@ -172,7 +170,6 @@ def Profile_006():
     except Exception as e:
         error_log(e, "006", img_service)
 
-# Tested
 def Profile_007():
     try:
         controller.click_by_image("Icons/Profile_Icon.png")
@@ -191,7 +188,6 @@ def Profile_007():
     except Exception as e:
         error_log(e, "007", img_service)
 
-# Tested
 def Profile_008():
     try:
         controller.click_by_image("Icons/Profile_Icon.png")
@@ -213,7 +209,6 @@ def Profile_008():
     except Exception as e:
         error_log(e, "008", img_service)
 
-# Tested
 def Profile_009():
     try:
         controller.click_by_image("Icons/Profile_Icon.png")
@@ -235,7 +230,6 @@ def Profile_009():
     except Exception as e:
         error_log(e, "009", img_service)
 
-# Tested
 def Profile_010():
     try:
         controller.click_by_image("Icons/Profile_Icon.png")
@@ -259,23 +253,25 @@ def Profile_010():
 
 def Profile_011():
     try:
-        controller.click_by_image("Icons/Profile_Icon.png")
-        controller.click_text("Account")
-        controller.swipe_up()
-        if controller.click_text("Vehicle Tracking Terms and Conditions"):
-            log("Vehicle tracking t&cs tab clicked")
-        else:
-            fail_log("Vehicle tracking t&cs not displayed", "011", img_service)
+        if country == "eur":
+            controller.click_by_image("Icons/Profile_Icon.png")
+            controller.click_text("Account")
+            controller.swipe_up()
+            if controller.click_text("Vehicle Tracking Terms and Conditions"):
+                log("Vehicle tracking t&cs tab clicked")
+            else:
+                fail_log("Vehicle tracking t&cs not displayed", "011", img_service)
 
-        # Getting an error
-        controller.click_by_image("Icons/back_icon.png")
-        controller.settings_swipe_down()
-        controller.settings_swipe_down()
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+            # Getting an error
+            controller.click_by_image("Icons/back_icon.png")
+            controller.settings_swipe_down()
+            controller.settings_swipe_down()
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        else:
+            blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
         error_log(e, "011", img_service)
 
-# Tested
 def Profile_012():
     try:
         controller.click_by_image("Icons/Profile_Icon.png")
@@ -297,7 +293,6 @@ def Profile_012():
     except Exception as e:
         error_log(e, "012", img_service)
 
-# Tested
 def Profile_013():
     try:
         controller.click_by_image("Icons/Profile_Icon.png")
@@ -325,11 +320,10 @@ def Profile_013():
 #IOS only
 def Profile_014():
     try:
-        log("IOS only")
+        blocked_log("Test blocked - iOS only test")
     except Exception as e:
         error_log(e, "014", img_service)
 
-# Tested
 def Profile_015():
     try:
         controller.click_by_image("Icons/Profile_Icon.png")
@@ -353,7 +347,6 @@ def Profile_015():
     except Exception as e:
         error_log(e, "015", img_service)
 
-# Tested
 def Profile_016():
     try:
         controller.click_by_image("Icons/Profile_Icon.png")
@@ -394,7 +387,6 @@ def Profile_016():
     except Exception as e:
         error_log(e, "016", img_service)
 
-# Tested
 def Profile_017():
     try:
         controller.click_by_image("Icons/Profile_Icon.png")
@@ -414,7 +406,6 @@ def Profile_017():
     except Exception as e:
         error_log(e, "017", img_service)
 
-# Tested
 def Profile_018():
     try:
         controller.click_by_image("Icons/Profile_Icon.png")
@@ -445,7 +436,7 @@ def Profile_018():
 
 def Profile_019():
     try:
-        log("Cannot check style guide")
+        blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "019", img_service)
 

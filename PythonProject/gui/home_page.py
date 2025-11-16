@@ -5,15 +5,12 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QFont, QPixmap, QCursor
 
-from excel import services
 from PySide6.QtCore import Qt, Signal
-from excel import resource_path, no_vehicle_services
-from gui.excel import only_vehicle_services, no_precondition_services, credentials_check
+from gui.excel import resource_path, load_data, services, service_details
 from gui.import_page import ImportResult
 from test_case_page import TestCaseTablePage
 from service_report import ServiceReport
 from openpyxl import Workbook
-from excel import load_data
 from datetime import datetime
 import shutil
 import core.globals as globals
@@ -29,6 +26,22 @@ class ClickableLabel(QLabel):
         self.setOpenExternalLinks(False)
         self.setCursor(QCursor(Qt.PointingHandCursor))
         self.linkActivated.connect(lambda _: self.clicked.emit())
+
+class BlockedLabel(QLabel):
+    def __init__(self, normal_text, hover_text):
+        super().__init__(normal_text)
+        self.normal_text = normal_text
+        self.hover_text = hover_text
+        self.setMouseTracking(True)
+        self.setStyleSheet("color:gray; font-size:14px;")
+
+    def enterEvent(self, event):
+        self.setText(self.hover_text)
+        super().enterEvent(event)
+
+    def leaveEvent(self, event):
+        self.setText(self.normal_text)
+        super().leaveEvent(event)
 
 class HomePage(QWidget):
     def __init__(self, main_window, parent=None):
@@ -209,10 +222,15 @@ class HomePage(QWidget):
                 checkbox.toggled.connect(lambda checked, t=testcase_table: self.no_precondition_tests_checkbox(checked, t))
                 checkbox.clicked.connect(lambda: self.update_run_btn(testcase_table))
             else:
-                label = ClickableLabel(services[row-4])
-                label.clicked.connect(lambda r=row: self.open_service_tests(services[r-4]))
-                checkbox.clicked.connect(lambda _=None, check=credentials_check[services[row-4]], t=testcase_table: self.enable_credentials(check, t))
-                checkbox.clicked.connect(lambda: self.update_run_btn(testcase_table))
+                if service_details[services[row-4]][0][2] == "":
+                    label = ClickableLabel(services[row - 4])
+                    label.clicked.connect(lambda r=row: self.open_service_tests(services[r - 4]))
+                    checkbox.clicked.connect(lambda _=None, check=service_details[services[row-4]][1], t=testcase_table: self.enable_credentials(check, t))
+                    checkbox.clicked.connect(lambda: self.update_run_btn(testcase_table))
+                else:
+                    label = BlockedLabel(services[row - 4], service_details[services[row - 4]][0][2])
+                    checkbox.setDisabled(True)
+
 
                 text_cell = QWidget()
                 text_cell.setFixedHeight(20)
@@ -336,8 +354,6 @@ class HomePage(QWidget):
 
         self.android_btn.clicked.connect(lambda: self._select_platform("android"))
         self.ios_btn.clicked.connect(lambda: self._select_platform("ios"))
-        self.android_btn.setChecked(True if globals.phone_type == 'android' else False)
-        self.ios_btn.setChecked(True if globals.phone_type == 'ios' else False)
 
         platform_layout.addWidget(self.android_btn)
         platform_layout.addWidget(self.ios_btn)
@@ -356,9 +372,6 @@ class HomePage(QWidget):
 
         self.ice_btn.clicked.connect(lambda: self._select_car("ice"))
         self.phev_btn.clicked.connect(lambda: self._select_car("phev"))
-
-        self.ice_btn.setChecked(True if globals.vehicle_type == 'ice' else False)
-        self.phev_btn.setChecked(True if globals.vehicle_type == 'phev' else False)
 
         vehicle_type_layout.addWidget(self.ice_btn)
         vehicle_type_layout.addWidget(self.phev_btn)
@@ -410,9 +423,14 @@ class HomePage(QWidget):
         self.nar_btn.clicked.connect(lambda: self._select_country("nar"))
         self.chn_btn.clicked.connect(lambda: self._select_country("chn"))
 
+        print("country: ", globals.country)
         self.eur_btn.setChecked(True if globals.country == 'eur' else False)
         self.nar_btn.setChecked(True if globals.country == 'nar' else False)
         self.chn_btn.setChecked(True if globals.country == 'chn' else False)
+        self.android_btn.setChecked(True if globals.phone_type == 'android' else False)
+        self.ios_btn.setChecked(True if globals.phone_type == 'ios' else False)
+        self.ice_btn.setChecked(True if globals.vehicle_type == 'ice' else False)
+        self.phev_btn.setChecked(True if globals.vehicle_type == 'phev' else False)
 
         country_layout.addWidget(self.eur_btn)
         country_layout.addWidget(self.nar_btn)
@@ -597,7 +615,11 @@ class HomePage(QWidget):
         globals.country = country
 
     def open_service_tests(self, service):
-        self.main_window.show_test_cases(service)
+        fields = [globals.current_name, globals.current_email, globals.current_password, globals.current_pin, globals.vehicle_type, globals.phone_type, globals.country]
+        stored = service_details[service][1]
+
+        if not any(not f and s for f, s in zip(fields, stored)):
+            self.main_window.show_test_cases(service)
 
     def all_tests_checkbox(self, checked, table):
         self.clear_checkboxes(table)
@@ -606,7 +628,9 @@ class HomePage(QWidget):
             cell_widget = table.cellWidget(row, 1)
             if cell_widget:
                 cb = cell_widget.findChild(QCheckBox)
-                if cb:
+                text_widget = table.cellWidget(row, 0).findChild(QLabel).text()
+                plain_text = re.sub('<[^<]+?>', '', text_widget)
+                if cb and service_details[plain_text][0][2] == "":
                     cb.setChecked(checked)
                     cb.setEnabled(not checked)
 
@@ -616,7 +640,7 @@ class HomePage(QWidget):
         for row in range(4, table.rowCount()):
             cell_widget = table.cellWidget(row, 0).findChild(QLabel).text()
             plain_text = re.sub('<[^<]+?>', '', cell_widget)
-            if plain_text in no_vehicle_services:
+            if service_details[plain_text[0][0]]:
                 cb = table.cellWidget(row, 1).findChild(QCheckBox)
                 if cb:
                     cb.setChecked(checked)
@@ -628,7 +652,7 @@ class HomePage(QWidget):
         for row in range(4, table.rowCount()):
             cell_widget = table.cellWidget(row, 0).findChild(QLabel).text()
             plain_text = re.sub('<[^<]+?>', '', cell_widget)
-            if plain_text in only_vehicle_services:
+            if not service_details[plain_text[0][0]]:
                 cb = table.cellWidget(row, 1).findChild(QCheckBox)
                 if cb:
                     cb.setChecked(checked)
@@ -640,7 +664,7 @@ class HomePage(QWidget):
         for row in range(4, table.rowCount()):
             cell_widget = table.cellWidget(row, 0).findChild(QLabel).text()
             plain_text = re.sub('<[^<]+?>', '', cell_widget)
-            if plain_text in no_precondition_services:
+            if service_details[plain_text[0][1]]:
                 cb = table.cellWidget(row, 1).findChild(QCheckBox)
                 if cb:
                     cb.setChecked(checked)
@@ -668,7 +692,7 @@ class HomePage(QWidget):
                     total_checked = (1,1,1,1,1,1,1)
                 elif cb.isChecked():
                     min_checked = True
-                    total_checked = tuple(a or b for a, b in zip(total_checked, credentials_check[services[row-4]]))
+                    total_checked = tuple(a or b for a, b in zip(total_checked, service_details[services[row-4]][1]))
 
         widget_groups = [
             [self.name_input],
@@ -677,7 +701,7 @@ class HomePage(QWidget):
             [self.pin_input],
             [self.ice_btn, self.phev_btn],
             [self.android_btn, self.ios_btn],
-            [self.chn_btn, self.eur_btn, self.nar_btn],
+            [self.chn_btn, self.eur_btn, self.nar_btn]
         ]
 
         for flag, group in zip(total_checked, widget_groups):
@@ -687,7 +711,6 @@ class HomePage(QWidget):
                 else:
                     widget.setEnabled(True if flag==1 else False)
 
-
     def update_run_btn(self, table):
         name_filled = bool(self.name_input.text().strip() != '' or not self.name_input.isEnabled())
         email_filled = bool(self.email_input.text().strip() or not self.email_input.isEnabled())
@@ -696,13 +719,6 @@ class HomePage(QWidget):
         vehicle_type = self.ice_btn.isChecked() or self.phev_btn.isChecked() or not self.ice_btn.isEnabled()
         phone_type = self.ios_btn.isChecked() or self.android_btn.isChecked() or not self.ios_btn.isEnabled()
         country = self.chn_btn.isChecked() or self.eur_btn.isChecked() or self.nar_btn.isChecked() or not self.chn_btn.isEnabled()
-        # name_filled = bool(self.name_input.text().strip())
-        # email_filled = bool(self.email_input.text().strip())
-        # password_filled = bool(self.password_input.text().strip())
-        # pin_filled = bool(self.pin_input.text().strip())
-        # vehicle_type = self.ice_btn.isChecked() or self.phev_btn.isChecked()
-        # phone_type = self.ios_btn.isChecked() or self.android_btn.isChecked()
-        # country = self.chn_btn.isChecked() or self.eur_btn.isChecked() or self.nar_btn.isChecked()
         checkbox_check = False
         for row in range(table.rowCount()):
             cell_widget = table.cellWidget(row, 1)
@@ -724,14 +740,10 @@ class HomePage(QWidget):
             if cell_widget:
                 cb = cell_widget.findChild(QCheckBox)
                 if cb.isChecked():
-                    globals.selected_services.append(services[row - 4])
-        globals.current_name = self.name_input.text()
-        globals.current_email = self.email_input.text()
-        globals.current_password = self.password_input.text()
-        globals.current_pin = self.pin_input.text()
+                    if service_details[services[row-4]][0][3] == "" or globals.country in service_details[services[row-4]][0][3]:
+                        globals.selected_services.append(services[row - 4])
 
-        self.main_window.setCentralWidget(TestCaseTablePage(self.main_window, globals.selected_services[
-            globals.service_index]))
+        self.main_window.setCentralWidget(TestCaseTablePage(self.main_window, globals.selected_services[globals.service_index]))
 
     def result_btn_clicked(self):
         self.service_report = ServiceReport()

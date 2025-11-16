@@ -1,5 +1,5 @@
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log, metric_log
+from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
 from core.app_functions import remote_swipe
 from time import sleep
 
@@ -433,6 +433,6 @@ def Remote_Park_Assist_052():
 
 def Remote_Park_Assist_053():
     try:
-        log("Cannot check style guide")
+        blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "053", img_service)

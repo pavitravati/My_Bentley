@@ -1,5 +1,5 @@
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log, metric_log
+from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
 from time import sleep
 from datetime import datetime, timedelta
 
@@ -334,24 +334,25 @@ def My_Battery_Charge_006():
         error_log(e, "006", img_service)
 
 def My_Battery_Charge_007():
-    try:
-        controller.click_by_image("Icons/windows_icon.png")
-        controller.click_text("MY BATTERY CHARGE")
-        controller.click_text("Set timer")
-        if controller.d(resourceId="uk.co.bentley.mybentley:id/textView_periodic_time_rbc_timer_item").exists:
-            buttons = controller.d.xpath(
-                '//*[@resource-id="uk.co.bentley.mybentley:id/textView_periodic_time_rbc_timer_item"]').all()
-            buttons[0].click()
-
-        ###########
-        # Display timer screenshot for validation by tester
-        ###########
-
-        controller.click_by_image("Icons/login_page_x.png")
-        controller.click_by_image("icons/back_icon.png")
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-    except Exception as e:
-        error_log(e, "007", img_service)
+    blocked_log("Test blocked - Need mid test validation function")
+    # try:
+    #     controller.click_by_image("Icons/windows_icon.png")
+    #     controller.click_text("MY BATTERY CHARGE")
+    #     controller.click_text("Set timer")
+    #     if controller.d(resourceId="uk.co.bentley.mybentley:id/textView_periodic_time_rbc_timer_item").exists:
+    #         buttons = controller.d.xpath(
+    #             '//*[@resource-id="uk.co.bentley.mybentley:id/textView_periodic_time_rbc_timer_item"]').all()
+    #         buttons[0].click()
+    #
+    #     ###########
+    #     # Display timer screenshot for validation by tester
+    #     ###########
+    #
+    #     controller.click_by_image("Icons/login_page_x.png")
+    #     controller.click_by_image("icons/back_icon.png")
+    #     controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+    # except Exception as e:
+    #     error_log(e, "007", img_service)
 
 def set_duplicate_timer():
     controller.click_by_resource_id("uk.co.bentley.mybentley:id/textView_periodic_time_rbc_timer_setting")
@@ -550,6 +551,6 @@ def My_Battery_Charge_012():
 
 def My_Battery_Charge_013():
     try:
-        log("Cannot check style guide")
+        blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "013", img_service)

@@ -1,5 +1,5 @@
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log, metric_log
+from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
 from time import sleep
 import re
 from datetime import date, datetime
@@ -940,7 +940,6 @@ def My_Cabin_Comfort_022():
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "022", img_service)
-My_Cabin_Comfort_022()
 
 def My_Cabin_Comfort_023():
     try:
@@ -1048,6 +1047,6 @@ def My_Cabin_Comfort_025():
 
 def My_Cabin_Comfort_026():
     try:
-        log("Cannot check style guide")
+        blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "026", img_service)

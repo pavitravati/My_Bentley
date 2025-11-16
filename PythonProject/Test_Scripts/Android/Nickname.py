@@ -1,6 +1,6 @@
 from time import sleep
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log
+from core.log_emitter import log, fail_log, error_log, blocked_log
 from core.app_functions import app_login, app_logout
 
 img_service = "Nickname"
@@ -261,6 +261,6 @@ controller.click_text("SAVE")
 
 def Nickname_010():
     try:
-        log("Cannot check style guide")
+        blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "010", img_service)

@@ -1,36 +1,21 @@
 import pandas as pd
-from openpyxl import load_workbook, Workbook
+from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 import sys
 import os
 
-services = ['Demo Mode', 'Customer Enrollment', 'Add VIN', 'App Registration Pages', 'App Log in-Log out',
-            'Nickname', 'Services and licenses', 'Vehicle Status Report', 'Remote Lock-Unlock', 'Remote Honk & Flash',
-            'My Car Statistics', 'My Cabin Comfort', 'My Battery Charge', 'Service Management', 'Activate Heating',
-            'Roadside Assistance', 'Data Services', 'My Alerts', 'Theft Alarm', 'Stolen Vehicle Locator', 'Audials',
-            'Car Finder', 'Nav Companion', 'Notifications', 'Push Notifications', 'Profile', 'Localization', 'Privacy Mode',
-            'Remote Park Assist', 'Stolen Vehicle Tracking']
-
-no_vehicle_services = ['Demo Mode', 'Customer Enrollment', 'Add VIN', 'App Registration Pages', 'App Log in-Log out',
-                       'Nickname', 'Services and licenses', 'My Car Statistics', 'Service Management', 'Roadside Assistance',
-                       'Data Services', 'Stolen Vehicle Locator', 'Audials', 'Notifications', 'Profile', 'Localization']
-only_vehicle_services = [x for x in services if x not in no_vehicle_services]
-no_precondition_services = ['Demo Mode', 'Add VIN', 'App Registration Pages', 'Nickname', 'Services and licenses',
-                            'My Car Statistics', 'Service Management', 'Roadside Assistance', 'Data Services',
-                            'Stolen Vehicle Locator', 'Audials', 'Car Finder', 'Push Notifications', 'Profile', 'Localization']
-
-credentials_check = {
-    'Demo Mode': (0,0,0,0,0,1,0), 'Customer Enrollment': (0,1,1,1,0,1,0), 'Add VIN': (0,1,1,1,0,1,0), 'App Registration Pages': (0,0,1,0,0,1,0),
-    'App Log in-Log out': (0,1,1,0,0,1,0), 'Nickname': (1,1,1,1,1,1,1), 'Services and licenses': (1,1,1,1,1,1,1), 'Vehicle Status Report': (1,1,1,1,1,1,1),
-    'Remote Lock-Unlock': (1,1,1,1,1,1,1), 'Remote Honk & Flash': (0,0,0,0,0,1,1), 'My Car Statistics': (1,1,1,1,1,1,1), 'My Cabin Comfort': (0,0,0,0,1,1,0),
-    'My Battery Charge': (0,0,0,0,1,1,0), 'Service Management': (1,1,1,1,1,1,1), 'Activate Heating': (0,0,0,0,1,1,0), 'Roadside Assistance': (0,0,0,0,0,1,1),
-    'Data Services': (0,0,0,0,0,1,1), 'My Alerts': (1,1,1,1,1,1,1), 'Theft Alarm': (1,1,1,1,1,1,1), 'Stolen Vehicle Locator': (1,1,1,1,1,1,1),
-    'Audials': (1,1,1,1,1,1,1), 'Car Finder': (1,1,1,1,1,1,1), 'Nav Companion': (1,1,1,1,1,1,1), 'Notifications': (1,1,1,1,1,1,1),
-    'Push Notifications': (1,1,1,1,1,1,1), 'Profile': (1,1,1,1,1,1,1), 'Localization': (1,1,1,1,1,1,1), 'Privacy Mode': (1,1,1,1,1,1,1),
-    'Remote Park Assist': (1,1,1,1,1,1,1), 'Stolen Vehicle Tracking': (1,1,1,1,1,1,1)
-}
-
-
+# (name, email, password, pin, vehicle, phone, country)
+service_details = {'Demo Mode': [[1,1,"",""], (0,0,0,0,0,1,1)], 'Customer Enrollment': [[1,0,"Not finished",""], (1,1,1,1,1,1,1)], 'Add VIN': [[1,1,"Not finished",""], (1,1,1,1,1,1,1)],
+            'App Registration Pages': [[1,1,"Not finished",""], (1,1,1,1,1,1,1)], 'App Log in-Log out': [[1,0,"",""], (0,1,1,0,1,1,1)], 'Nickname': [[1,1,"",""], (0,0,0,0,1,1,1)],
+            'Services and licenses': [[1,1,"",""], (0,0,0,0,1,1,1)], 'Vehicle Status Report': [[0,0,"",""], (0,0,0,0,1,1,1)], 'Remote Lock-Unlock': [[0,0,"Not finished"], (0,0,0,1,1,1,1)],
+            'Remote Honk & Flash': [[0,0,"Not finished","chn"], (0,0,0,0,1,1,1)], 'My Car Statistics': [[1,1,"",""], (0,0,0,0,1,1,1)], 'My Cabin Comfort': [[0,0,"",""], (0,0,0,0,1,1,1)],
+            'My Battery Charge': [[0,0,"",""], (0,0,0,0,1,1,1)], 'Service Management': [[1,1,"",""], (0,0,0,0,1,1,1)], 'Activate Heating': [[0,0,"Not finished","eur"], (0,0,0,0,1,1,1)],
+            'Roadside Assistance': [[1,1,"",""], (0,0,0,0,1,1,1)], 'Data Services': [[1,1,"Broken",""], (0,0,0,0,1,1,1)], 'My Alerts': [[0,0,"Not finished","nar"], (0,0,0,0,1,1,1)],
+            'Theft Alarm': [[0,0,"","eur"], (0,0,0,0,1,1,1)], 'Stolen Vehicle Locator': [[1,1,"Not finished","nar chn"], (0,0,0,0,1,1,1)], 'Audials': [[1,1,"","eur nar"], (0,0,0,0,1,1,1)],
+            'Car Finder': [[0,1,"",""], (0,0,0,0,1,1,1)], 'Nav Companion': [[0,0,"",""], (0,0,0,0,1,1,1)], 'Notifications': [[1,0,"Not finished",""], (0,0,0,0,1,1,1)],
+            'Push Notifications': [[0,1,"Broken",""], (0,0,0,0,1,1,1)], 'Profile': [[1,1,"",""], (1,1,0,1,1,1,1)], 'Localization': [[1,1,"Not automatable",""], (0,0,0,0,1,1,1)],
+            'Privacy Mode': [[0,0,"",""], (1,1,1,1,1,1,1)], 'Remote Park Assist': [[0,0,"Not automatable",""], (1,1,1,1,1,1,1)], 'Stolen Vehicle Tracking': [[0,0,"Not finished","eur"], (0,0,0,0,1,1,1)]}
+services = list(service_details.keys())
 
 def resource_path(relative_path):
     try:

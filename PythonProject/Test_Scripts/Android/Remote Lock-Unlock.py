@@ -1,6 +1,6 @@
 from time import sleep
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log
+from core.log_emitter import log, fail_log, error_log, blocked_log
 from common_utils.android_controller import *
 from core.app_functions import enable_flight_mode, disable_flight_mode
 from datetime import datetime, timedelta
@@ -63,10 +63,6 @@ def check_notif(text, num):
     else:
         fail_log(f"Remote {text} notification not displayed", num, img_service)
 
-
-# ADD A CHECK TO ALOT OF THESE THAT CHECKS IF THE MOST RECENT NOTIF IS WHAT THE TEST CASE JUST DID AND TIMESTAMP IS WITHIN THE MINUTE
-# FIX ENTER PIN SO THAT IT DOES IT TILL IT WORKS
-# ASK IF WHEN CHECKING NOTIF IF DOING AS A METRIC AND THEN TESTER LOOKS IF NECESSARY
 def Remote_Lock_Unlock_001():
     try:
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -453,6 +449,6 @@ def Remote_Lock_Unlock_018():
 
 def Remote_Lock_Unlock_019():
     try:
-        log("Cannot check style guide")
+        blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "019", img_service)

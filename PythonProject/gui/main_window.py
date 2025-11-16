@@ -2,12 +2,13 @@ from PySide6.QtWidgets import (
     QApplication, QMainWindow, QToolBar
 )
 from PySide6.QtGui import QAction, QActionGroup, QIcon
-from excel import services
+from excel import services, service_details
 from test_case_page import TestCaseTablePage
 from core import globals
 from home_page import HomePage
 import sys
 import os, glob
+import core.globals as globals
 
 def cleanup_images():
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -44,8 +45,12 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(HomePage(self))
 
     def toolbar_button_clicked(self, service):
-        self.service = service
-        self.setCentralWidget(TestCaseTablePage(self, service, auto_run=False))
+        fields = [globals.current_name, globals.current_email, globals.current_password, globals.current_pin, globals.vehicle_type, globals.phone_type, globals.country]
+        stored = service_details[service][1]
+
+        if not any(not f and s for f, s in zip(fields, stored)):
+            self.service = service
+            self.setCentralWidget(TestCaseTablePage(self, service, auto_run=False))
 
     def show_homepage(self, auto_cancel=False):
         if auto_cancel:

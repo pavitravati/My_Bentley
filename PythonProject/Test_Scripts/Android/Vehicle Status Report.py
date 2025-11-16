@@ -1,6 +1,7 @@
 from time import sleep
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, metric_log, fail_log, error_log
+from core.globals import vehicle_type
+from core.log_emitter import log, metric_log, fail_log, error_log, blocked_log
 from datetime import datetime
 
 img_service = "Vehicle Status Report"
@@ -61,7 +62,6 @@ def Vehicle_Status_Report_002():
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         car_name = identify_car()
         if controller.is_text_present("DASHBOARD"):
-            log("Dashboard page opened, and status information is displayed")
             log("Screen title displayed") if controller.is_text_present("DASHBOARD") else fail_log("Screen title not displayed", "002", img_service)
             log("Vehicle image displayed") if car_name != '' else fail_log("Vehicle image not displayed", "002", img_service)
             info_btn = True if controller.click_by_image("Icons/info_btn.png") else False
@@ -74,8 +74,11 @@ def Vehicle_Status_Report_002():
             log("Last vehicle contact displayed") if compare_with_expected_crop("Icons/Last_vehicle_contact.png") else fail_log("Last vehicle contact displayed", "002", img_service)
             log("Remote Lock/Unlock button displayed") if compare_with_expected_crop("Icons/Remote_Lock.png") else fail_log("Remote Lock/Unlock button not displayed", "002", img_service)
             log("Vehicle lock status displayed") if controller.is_text_present("Vehicle unlocked") or controller.is_text_present("Vehicle locked") else fail_log("Vehicle lock status not displayed", "002", img_service)
-            controller.swipe_up()
-            log("Combined range section displayed") if controller.is_text_present("Combined range") else fail_log("Combined range section not displayed", "002", img_service)
+            if vehicle_type == "phev":
+                controller.swipe_up()
+                log("Combined range section displayed") if controller.is_text_present("Combined range") else fail_log("Combined range section not displayed", "002", img_service)
+            elif vehicle_type == "ice":
+                controller.swipe_up(0.3)
             mileage_results = controller.extract_fuel_range_and_level(True)
             log(f"Mileage metrics displayed: {mileage_results}") if len(mileage_results) == 3 or len(mileage_results) == 6 else fail_log(f"Mileage metrics not displayed: {mileage_results}", "002", img_service)
             log("Side lights status displayed") if controller.d(text="Lights").exists else fail_log("Side lights status displayed", "002", img_service)
@@ -110,7 +113,10 @@ def Vehicle_Status_Report_003():
         else:
             fail_log("Vehicle data not updated", "003", img_service)
 
-        controller.swipe_up()
+        if vehicle_type == "phev":
+            controller.swipe_up()
+        elif vehicle_type == "ice":
+            controller.swipe_up(0.3)
         metrics1 = controller.extract_dashboard_metrics()
         controller.swipe_up()
         metrics2 = controller.extract_dashboard_metrics()
@@ -138,7 +144,10 @@ def Vehicle_Status_Report_004():
         else:
             fail_log("Vehicle data not updated when ignition is off", "004", img_service)
 
-        controller.swipe_up()
+        if vehicle_type == "phev":
+            controller.swipe_up()
+        elif vehicle_type == "ice":
+            controller.swipe_up(0.3)
         metrics1 = controller.extract_dashboard_metrics()
         controller.swipe_up()
         metrics2 = controller.extract_dashboard_metrics()
@@ -166,7 +175,10 @@ def Vehicle_Status_Report_005():
         else:
             fail_log("Vehicle data not updated when ignition is on", "005", img_service)
 
-        controller.swipe_up()
+        if vehicle_type == "phev":
+            controller.swipe_up()
+        elif vehicle_type == "ice":
+            controller.swipe_up(0.3)
         metrics1 = controller.extract_dashboard_metrics()
         controller.swipe_up()
         metrics2 = controller.extract_dashboard_metrics()
@@ -194,8 +206,10 @@ def Vehicle_Status_Report_006():
         else:
             fail_log("Vehicle data not updated when engine is running", "006", img_service)
 
-
-        controller.swipe_up()
+        if vehicle_type == "phev":
+            controller.swipe_up()
+        elif vehicle_type == "ice":
+            controller.swipe_up(0.3)
         metrics1 = controller.extract_dashboard_metrics()
         controller.swipe_up()
         metrics2 = controller.extract_dashboard_metrics()
@@ -222,7 +236,10 @@ def Vehicle_Status_Report_007():
         else:
             fail_log("Vehicle data not updated", "007", img_service)
 
-        controller.swipe_up()
+        if vehicle_type == "phev":
+            controller.swipe_up()
+        elif vehicle_type == "ice":
+            controller.swipe_up(0.3)
         fuel_details = controller.extract_fuel_range_and_level()
         try:
             metric_log(f"Fuel level: {fuel_details["fuel level"]}")
@@ -239,28 +256,31 @@ def Vehicle_Status_Report_007():
 
 def Vehicle_Status_Report_008():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        controller.swipe_down()
-        sleep(6)
+        if vehicle_type == "phev":
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+            controller.swipe_down()
+            sleep(6)
 
-        controller.click_by_image("Icons/Update_Vehicle_data.png")
-        if controller.wait_for_text("Vehicle status successfully retrieved", 30):
-            log("Vehicle data updated")
-        else:
-            fail_log("Vehicle data not updated", "008", img_service)
+            controller.click_by_image("Icons/Update_Vehicle_data.png")
+            if controller.wait_for_text("Vehicle status successfully retrieved", 30):
+                log("Vehicle data updated")
+            else:
+                fail_log("Vehicle data not updated", "008", img_service)
 
-        controller.swipe_up()
-        fuel_details = controller.extract_fuel_range_and_level(phev=True)
-        try:
-            metric_log(f"Fuel level: {fuel_details["fuel level"]}")
-            metric_log(f"Fuel range: {fuel_details['fuel range']}")
-            metric_log(f"Electricity level: {fuel_details['elec level']}")
-            metric_log(f"Electricity range: {fuel_details['elec range']}")
-            metric_log(f"Combined range: {fuel_details['combined range']}")
-            log("All fuel and electricity data extracted")
-        except Exception as e:
-            error_log(e, "008", img_service)
-        controller.swipe_down()
+            controller.swipe_up()
+            fuel_details = controller.extract_fuel_range_and_level()
+            try:
+                metric_log(f"Fuel level: {fuel_details["fuel level"]}")
+                metric_log(f"Fuel range: {fuel_details['fuel range']}")
+                metric_log(f"Electricity level: {fuel_details['elec level']}")
+                metric_log(f"Electricity range: {fuel_details['elec range']}")
+                metric_log(f"Combined range: {fuel_details['combined range']}")
+                log("All fuel and electricity data extracted")
+            except Exception as e:
+                error_log(e, "008", img_service)
+            controller.swipe_down()
+        elif vehicle_type == "ice":
+            log("temp - make N/A function")
 
     except Exception as e:
         error_log(e, "008", img_service)
@@ -277,14 +297,22 @@ def Vehicle_Status_Report_009():
         else:
             fail_log("Vehicle data not updated", "009", img_service)
 
-        controller.swipe_up()
-        fuel_details = controller.extract_fuel_range_and_level(phev=True)
+        if vehicle_type == "phev":
+            controller.swipe_up()
+        elif vehicle_type == "ice":
+            controller.swipe_up(0.3)
+        fuel_details = controller.extract_fuel_range_and_level()
         try:
             metric_log(f"Total mileage: {fuel_details["total mileage"]}")
-            metric_log(f"Combined range: {fuel_details["combined range"]}")
-            log("Total mileage and combined range data extracted")
+            log("Total mileage data extracted")
         except Exception as e:
             error_log(e, "009", img_service)
+        if vehicle_type == "phev":
+            try:
+                metric_log(f"Combined range: {fuel_details["combined range"]}")
+                log("Combined range data extracted")
+            except Exception as e:
+                error_log(e, "009", img_service)
         controller.swipe_down()
 
     except Exception as e:
@@ -295,7 +323,10 @@ def Vehicle_Status_Report_010():
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         change_units("Kilometres")
 
-        controller.swipe_up()
+        if vehicle_type == "phev":
+            controller.swipe_up()
+        elif vehicle_type == "ice":
+            controller.swipe_up(0.3)
         if controller.check_units("km"):
             log("Metrics displayed in metric units")
         else:
@@ -310,7 +341,10 @@ def Vehicle_Status_Report_011():
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         change_units("Miles")
 
-        controller.swipe_up()
+        if vehicle_type == "phev":
+            controller.swipe_up()
+        elif vehicle_type == "ice":
+            controller.swipe_up(0.3)
         if controller.check_units("mi"):
             log("Metrics displayed in imperial units")
         else:
@@ -350,7 +384,6 @@ def Vehicle_Status_Report_012():
 
     except Exception as e:
         error_log(e, "012", img_service)
-Vehicle_Status_Report_012()
 
 def Vehicle_Status_Report_013():
     try:
@@ -500,7 +533,7 @@ def Vehicle_Status_Report_017():
         window_details = controller.extract_window_status()
         try:
             if window_details['front right'] == 'Open' and window_details['front left'] == 'Closed' and window_details[
-                'rear right'] == 'Closed' and window_details['rear left'] == 'Closed' and window_details['sunroof'] == 'Closed':
+                'rear right'] == 'Closed' and window_details['rear left'] == 'Closed' and (window_details['sunroof'] == 'Closed' or not 'sunroof' in window_details):
                 log("Window data updated successfully")
             else:
                 fail_log("Door data not updated successfully", "017", img_service)
@@ -508,7 +541,8 @@ def Vehicle_Status_Report_017():
                 metric_log(f"Front Co Passenger window: {window_details['front left']}")
                 metric_log(f"Rear Left window: {window_details['rear left']}")
                 metric_log(f"Rear right window: {window_details['rear right']}")
-                metric_log(f"Sunroof: {window_details['sunroof']}")
+                if 'sunroof' in window_details:
+                    metric_log(f"Sunroof: {window_details['sunroof']}")
         except Exception as e:
             error_log(e, "017", img_service)
 
@@ -536,7 +570,7 @@ def Vehicle_Status_Report_018():
         window_details = controller.extract_window_status()
         try:
             if window_details['front right'] == 'Open' and window_details['front left'] == 'Open' and window_details[
-                'rear right'] == 'Closed' and window_details['rear left'] == 'Closed' and window_details['sunroof'] == 'Closed':
+                'rear right'] == 'Closed' and window_details['rear left'] == 'Closed' and (window_details['sunroof'] == 'Closed' or not 'sunroof' in window_details):
                 log("Window data updated successfully")
             else:
                 fail_log("Door data not updated successfully", "018", img_service)
@@ -544,7 +578,8 @@ def Vehicle_Status_Report_018():
                 metric_log(f"Front Co Passenger window: {window_details['front left']}")
                 metric_log(f"Rear Left window: {window_details['rear left']}")
                 metric_log(f"Rear right window: {window_details['rear right']}")
-                metric_log(f"Sunroof: {window_details['sunroof']}")
+                if 'sunroof' in window_details:
+                    metric_log(f"Sunroof: {window_details['sunroof']}")
         except Exception as e:
             error_log(e, "018", img_service)
 
@@ -572,7 +607,7 @@ def Vehicle_Status_Report_019():
         window_details = controller.extract_window_status()
         try:
             if window_details['front right'] == 'Open' and window_details['front left'] == 'Open' and window_details[
-                'rear right'] == 'Closed' and window_details['rear left'] == 'Open' and window_details['sunroof'] == 'Closed':
+                'rear right'] == 'Closed' and window_details['rear left'] == 'Open' and (window_details['sunroof'] == 'Closed' or not 'sunroof' in window_details):
                 log("Window data updated successfully")
             else:
                 fail_log("Door data not updated successfully", "019", img_service)
@@ -580,7 +615,8 @@ def Vehicle_Status_Report_019():
                 metric_log(f"Front Co Passenger window: {window_details['front left']}")
                 metric_log(f"Rear Left window: {window_details['rear left']}")
                 metric_log(f"Rear right window: {window_details['rear right']}")
-                metric_log(f"Sunroof: {window_details['sunroof']}")
+                if 'sunroof' in window_details:
+                    metric_log(f"Sunroof: {window_details['sunroof']}")
         except Exception as e:
             error_log(e, "019", img_service)
 
@@ -608,8 +644,8 @@ def Vehicle_Status_Report_020():
         window_details = controller.extract_window_status()
         try:
             if window_details['front right'] == 'Open' and window_details['front left'] == 'Open' and window_details[
-                'rear right'] == 'Open' and window_details['rear left'] == 'Open' and window_details[
-                'sunroof'] == 'Closed':
+                'rear right'] == 'Open' and window_details['rear left'] == 'Open' and (window_details[
+                'sunroof'] == 'Closed' or not 'sunroof' in window_details):
                 log("Window data updated successfully")
             else:
                 fail_log("Door data not updated successfully", "021", img_service)
@@ -617,7 +653,8 @@ def Vehicle_Status_Report_020():
                 metric_log(f"Front Co Passenger window: {window_details['front left']}")
                 metric_log(f"Rear Left window: {window_details['rear left']}")
                 metric_log(f"Rear right window: {window_details['rear right']}")
-                metric_log(f"Sunroof: {window_details['sunroof']}")
+                if 'sunroof' in window_details:
+                    metric_log(f"Sunroof: {window_details['sunroof']}")
         except Exception as e:
             error_log(e, "020", img_service)
 
@@ -645,8 +682,8 @@ def Vehicle_Status_Report_021():
         window_details = controller.extract_window_status()
         try:
             if window_details['front right'] == 'Open' and window_details['front left'] == 'Open' and window_details[
-                'rear right'] == 'Open' and window_details['rear left'] == 'Open' and window_details[
-                'sunroof'] == 'Open':
+                'rear right'] == 'Open' and window_details['rear left'] == 'Open' and (window_details[
+                'sunroof'] == 'Open' or not 'sunroof' in window_details):
                 log("Window data updated successfully")
             else:
                 fail_log("Door data not updated successfully", "021", img_service)
@@ -654,7 +691,8 @@ def Vehicle_Status_Report_021():
                 metric_log(f"Front Co Passenger window: {window_details['front left']}")
                 metric_log(f"Rear Left window: {window_details['rear left']}")
                 metric_log(f"Rear right window: {window_details['rear right']}")
-                metric_log(f"Sunroof: {window_details['sunroof']}")
+                if 'sunroof' in window_details:
+                    metric_log(f"Sunroof: {window_details['sunroof']}")
         except Exception as e:
             error_log(e, "021", img_service)
 
@@ -682,8 +720,8 @@ def Vehicle_Status_Report_022():
         window_details = controller.extract_window_status()
         try:
             if window_details['front right'] == 'Closed' and window_details['front left'] == 'Closed' and window_details[
-                'rear right'] == 'Closed' and window_details['rear left'] == 'Closed' and window_details[
-                'sunroof'] == 'Closed':
+                'rear right'] == 'Closed' and window_details['rear left'] == 'Closed' and (window_details[
+                'sunroof'] == 'Closed' or not 'sunroof' in window_details):
                 log("Window data updated successfully")
             else:
                 fail_log("Door data not updated successfully", "022", img_service)
@@ -691,7 +729,8 @@ def Vehicle_Status_Report_022():
                 metric_log(f"Front Co Passenger window: {window_details['front left']}")
                 metric_log(f"Rear Left window: {window_details['rear left']}")
                 metric_log(f"Rear right window: {window_details['rear right']}")
-                metric_log(f"Sunroof: {window_details['sunroof']}")
+                if 'sunroof' in window_details:
+                    metric_log(f"Sunroof: {window_details['sunroof']}")
         except Exception as e:
             error_log(e, "022", img_service)
 
@@ -804,14 +843,14 @@ def Vehicle_Status_Report_026():
             fail_log("Vehicle data not updated", "026", img_service)
 
         controller.swipe_up()
-        light_status = controller.extract_boot_bonnet_status()
+        light_status = controller.extract_lights_status()
 
         try:
-            if light_status["lights"] == "On":
+            if light_status == "On":
                 log("Lights data updated successfully")
             else:
                 fail_log("Lights data not updated successfully", "026", img_service)
-                metric_log(f"Lights: {light_status['lights']}")
+                metric_log(f"Lights: {light_status}")
         except Exception as e:
             error_log(e, "026", img_service)
 
@@ -833,14 +872,14 @@ def Vehicle_Status_Report_027():
             fail_log("Vehicle data not updated", "027", img_service)
 
         controller.swipe_up()
-        light_status = controller.extract_boot_bonnet_status()
+        light_status = controller.extract_lights_status()
 
         try:
-            if light_status["lights"] == "Off":
+            if light_status == "Off":
                 log("Lights data updated successfully")
             else:
                 fail_log("Lights data not updated successfully", "027", img_service)
-                metric_log(f"Lights: {light_status['lights']}")
+                metric_log(f"Lights: {light_status}")
         except Exception as e:
             error_log(e, "027", img_service)
 
@@ -929,6 +968,6 @@ def Vehicle_Status_Report_030():
 
 def Vehicle_Status_Report_031():
     try:
-        log("Can't check style guide")
+        blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "031", img_service)

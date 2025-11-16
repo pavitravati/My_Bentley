@@ -1,5 +1,5 @@
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log, metric_log
+from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
 from time import sleep
 import random
 
@@ -294,6 +294,6 @@ def App_Registration_Pages_007():
 
 def App_Registration_Pages_008():
     try:
-        log("✅ - Cannot complete style guide testcases (temporary)")
+        blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "008", img_service)

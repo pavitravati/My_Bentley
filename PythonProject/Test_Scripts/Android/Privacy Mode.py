@@ -1,5 +1,5 @@
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log, metric_log
+from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
 from time import sleep
 from core.app_functions import app_login, app_logout
 
@@ -8,7 +8,7 @@ img_service = "Privacy Mode"
 # Feels redundant, why check the entire app works when it's been running other tests without privacy mode
 def Privacy_Mode_001():
     try:
-        log("✅")
+        blocked_log("Test blocked - Not written due to repetition")
     except Exception as e:
         error_log(e, "001", img_service)
 
@@ -67,12 +67,6 @@ def Privacy_Mode_002():
 # The next 3 test cases all have actions to be done/checked in the HMI
 def Privacy_Mode_003():
     try:
-        # app_logout()
-        # if app_login():
-        #     log("Login successful")
-        # else:
-        #     fail_log("Login failed", "003", img_service)
-
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
         sleep(6)
@@ -125,12 +119,6 @@ def Privacy_Mode_003():
 
 def Privacy_Mode_004():
     try:
-        # app_logout()
-        # if app_login():
-        #     log("Login successful")
-        # else:
-        #     fail_log("Login failed", "004", img_service)
-
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
         sleep(6)
@@ -188,12 +176,6 @@ def Privacy_Mode_004():
 
 def Privacy_Mode_005():
     try:
-        # app_logout()
-        # if app_login():
-        #     log("Login successful")
-        # else:
-        #     fail_log("Login failed", "005", img_service)
-
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.swipe_down()
         sleep(6)
@@ -253,6 +235,6 @@ def Privacy_Mode_005():
 
 def Privacy_Mode_006():
     try:
-        log("temp can't check style guide")
+        blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "006", img_service)

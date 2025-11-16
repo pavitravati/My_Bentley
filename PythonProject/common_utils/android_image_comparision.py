@@ -4,6 +4,7 @@ from common_utils.android_controller import DeviceController
 from skimage.metrics import structural_similarity as ssim
 import numpy as np
 controller = DeviceController()
+
 def compare_images(expected, actual, threshold=0.99):
     img1_path = controller.get_resource_path(expected)
     img2_path = actual

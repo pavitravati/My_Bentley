@@ -1,7 +1,8 @@
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log, metric_log
+from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
 from datetime import datetime, timedelta
 from time import sleep
+from core.globals import country
 
 img_service = "Notifications"
 
@@ -98,55 +99,45 @@ def Notifications_002():
 # All checked in 2, can't really check max of 10, unless very important
 def Notifications_003():
     try:
-        pass
+        blocked_log("Test blocked - Not written due to repetition")
     except Exception as e:
         error_log(e, "003", img_service)
 
 # Checked in 2
 def Notifications_004():
     try:
-        pass
+        blocked_log("Test blocked - Not written due to repetition")
     except Exception as e:
         error_log(e, "004", img_service)
 
 # Check if this can be skipped
 def Notifications_005():
     try:
-        pass
+        blocked_log("Test blocked - Not written due to repetition")
     except Exception as e:
         error_log(e, "005", img_service)
 
 def Notifications_006():
     try:
-        controller.click_by_image("Icons/New_Notification_icon.png")
-        controller.click_by_image("Icons/Notification_icon.png")
-        if controller.click_text("Alerts"):
-            log("Alerts tab clicked")
+        if country == "NAR":
+            pass
         else:
-            fail_log("Alerts tab not displayed", "006", img_service)
-
-        if controller.is_text_present("There are no new notifications to display") and compare_with_expected_crop("Images/no_notif.png"):
-            log("No notifications are displayed in the alert section, correctly")
-        # See what it is like when there are alerts
-        # elif...
-        else:
-            fail_log("Alerts section does not display correctly", "006", img_service)
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+            blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
         error_log(e, "006", img_service)
 
 # Can't really be automated, but check alerts screen when alerts are there to see if it can be just verified they exist and metric log what they say
 def Notifications_007():
     try:
-        controller.click_by_image("Icons/New_Notification_icon.png")
-        controller.click_by_image("Icons/Notification_icon.png")
-        controller.click_text("Alerts")
-
+        if country == "NAR":
+            pass
+        else:
+            blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
         error_log(e, "007", img_service)
 
 def Notifications_008():
     try:
-        log("Cannot complete style guide testcases (temporary)")
+        blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "008", img_service)

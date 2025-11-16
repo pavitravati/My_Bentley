@@ -2,9 +2,9 @@ import uiautomator2 as u2
 import time
 import cv2
 import os
-
+from core.globals import vehicle_type
+# from uiautomator2 import screenrecord as sr
 from scipy.stats import landau
-
 
 class DeviceController:
     def __init__(self):
@@ -289,7 +289,6 @@ class DeviceController:
                 if value.exists:
                     metrics["Bonnet"] = value.get_text()
 
-            # Fuel Range
             # Fuel Range
             if self.d(resourceId="uk.co.bentley.mybentley:id/textView_primary_range_title_vsr_combined_range").exists:
                 value = self.d(resourceId="uk.co.bentley.mybentley:id/textView_primary_range_vsr_combined_range")
@@ -589,6 +588,15 @@ class DeviceController:
         except Exception as e:
             print(f"❌ Error while extracting boot/bonnet details: {e}")
 
+    def extract_lights_status(self):
+        try:
+            if self.d(text="Lights").exists:
+                value = self.d(text="Lights").sibling(resourceId="uk.co.bentley.mybentley:id/textView_value_vsr_metrics_item")
+                if value.exists:
+                    return value.get_text()
+        except Exception as e:
+            pass
+
     def extract_service_status(self):
         service_status = {}
         try:
@@ -657,7 +665,7 @@ class DeviceController:
 
         return details
 
-    def extract_fuel_range_and_level(self, phev=False):
+    def extract_fuel_range_and_level(self):
         fuel_details = {}
         try:
             if self.d(resourceId="uk.co.bentley.mybentley:id/textView_level_vsr_fuel").exists:
@@ -670,9 +678,10 @@ class DeviceController:
 
             if self.d(resourceId="uk.co.bentley.mybentley:id/textView_value_vsr_metrics_item").exists:
                 total_mileage = self.d(resourceId="uk.co.bentley.mybentley:id/textView_value_vsr_metrics_item").get_text()
-                fuel_details["total mileage"] = total_mileage
+                if total_mileage != "Off" or total_mileage != "On":
+                    fuel_details["total mileage"] = total_mileage
 
-            if phev:
+            if vehicle_type == "phev":
                 try:
                     fuel_type = self.d(resourceId="uk.co.bentley.mybentley:id/textView_level_vsr_fuel")
                     if fuel_type.count > 1:
@@ -806,3 +815,21 @@ class DeviceController:
 
     def extract_svt_mybentley(self):
         pass
+
+    # def create_recorder(self, output_path):
+    #     rec = sr.Screenrecord(self.d)
+    #
+    #     def start():
+    #         self.rec._start(output_path)
+    #
+    #     def stop_save():
+    #         self.rec._stop()
+    #         print(f"Recording saved to {output_path}")
+    #
+    #     def stop_discard():
+    #         self.rec._stop()
+    #         if os.path.exists(output_path):
+    #             os.remove(output_path)
+    #             print("Recording stopped and deleted.")
+    #         else:
+    #             print("Recording stopped, but no file found.")

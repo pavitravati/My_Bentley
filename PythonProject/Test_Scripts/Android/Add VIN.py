@@ -1,5 +1,5 @@
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log
+from core.log_emitter import log, fail_log, error_log, blocked_log
 from time import sleep
 import random
 from core.globals import current_VIN
@@ -746,6 +746,6 @@ def Add_VIN_016():
 
 def Add_VIN_017():
     try:
-        log("Cannot verify style guide")
+        blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "017", img_service)

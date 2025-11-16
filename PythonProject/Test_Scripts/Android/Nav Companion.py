@@ -1,5 +1,7 @@
 from common_utils.android_image_comparision import *
 from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
+from gui.manual_check import manual_check
+from time import sleep
 
 img_service = "Nav Companion"
 
@@ -19,58 +21,65 @@ def identify_car():
 
 def Nav_Companion_001():
     try:
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-        if controller.click_by_image("Icons/navigation_icon.png"):
-            log("Clicked on navigation tab")
-        else:
-            fail_log("Clicked on navigation tab", "001", img_service)
+        # controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+        # if controller.click_by_image("Icons/navigation_icon.png"):
+        #     log("Clicked on navigation tab")
+        # else:
+        #     fail_log("Clicked on navigation tab", "001", img_service)
+        #
+        # controller.click_by_image("Images/Navigation_Allow.png")
+        #
+        # if controller.is_text_present("NAVIGATION"):
+        #     log("Navigation screen launched")
+        # else:
+        #     fail_log("Navigation screen not launched", "001", img_service)
+        #
+        # if compare_with_expected_crop("Images/Navigation_Search_Image.png"):
+        #     log("Search Window displayed")
+        # else:
+        #     fail_log("Search Window not displayed", "001", img_service)
+        #
+        # car_icon = False
+        # car_names = ['Bentayga', 'FlyingSpur', 'ContinentalGT', 'ContinentalGTC']
+        # for _ in range(4):
+        #     if compare_with_expected_crop(f"Images/Navigation_{car_names[_]}_Image.png"):
+        #         car_icon = True
+        #
+        # if controller.click_by_image("Images/Navigation_Car_Image.png"):
+        #     if car_icon:
+        #         log("Car Icon displayed and shows current location of vehicle")
+        #     else:
+        #         fail_log("Car Icon displayed but does not show current location of vehicle", "001", img_service)
+        # else:
+        #     fail_log("Car Icon not displayed", "001", img_service)
+        #
+        # if controller.click_by_image("Images/Navigation_User_Image.png") and compare_with_expected_crop("Images/Navigation_User_Icon.png"):
+        #     log("User Icon displayed and shows current location of user")
+        # else:
+        #     fail_log("User Icon not displayed", "001", img_service)
+        #
+        # if controller.click_by_image("Images/Navigation_Info_Image.png"):
+        #     if controller.is_text_present("Satellite") and controller.is_text_present("Show real time traffic data"):
+        #         log("Option to enable 'Satellite' and 'Real time traffic' displayed")
+        #     else:
+        #         fail_log("Option to enable 'Satellite' and 'Real time traffic' not displayed", "001", img_service)
+        # else:
+        #     fail_log("Option to enable 'Satellite' and 'Real time traffic' not displayed", "001", img_service)
+        # controller.click_by_image("Images/Navigation_Info_Image.png")
+        # controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
-        controller.click_by_image("Images/Navigation_Allow.png")
-
-        if controller.is_text_present("NAVIGATION"):
-            log("Navigation screen launched")
-        else:
-            fail_log("Navigation screen not launched", "001", img_service)
-
-        if compare_with_expected_crop("Images/Navigation_Search_Image.png"):
-            log("Search Window displayed")
-        else:
-            fail_log("Search Window not displayed", "001", img_service)
-
-        car_icon = False
-        car_names = ['Bentayga', 'FlyingSpur', 'ContinentalGT', 'ContinentalGTC']
-        for _ in range(4):
-            if compare_with_expected_crop(f"Images/Navigation_{car_names[_]}_Image.png"):
-                car_icon = True
-
-        if controller.click_by_image("Images/Navigation_Car_Image.png"):
-            if car_icon:
-                log("Car Icon displayed and shows current location of vehicle")
-            else:
-                fail_log("Car Icon displayed but does not show current location of vehicle", "001", img_service)
-        else:
-            fail_log("Car Icon not displayed", "001", img_service)
-
-        if controller.click_by_image("Images/Navigation_User_Image.png") and compare_with_expected_crop("Images/Navigation_User_Icon.png"):
-            log("User Icon displayed and shows current location of user")
-        else:
-            fail_log("User Icon not displayed", "001", img_service)
-
-        if controller.click_by_image("Images/Navigation_Info_Image.png"):
-            if controller.is_text_present("Satellite") and controller.is_text_present("Show real time traffic data"):
-                log("Option to enable 'Satellite' and 'Real time traffic' displayed")
-            else:
-                fail_log("Option to enable 'Satellite' and 'Real time traffic' not displayed", "001", img_service)
-        else:
-            fail_log("Option to enable 'Satellite' and 'Real time traffic' not displayed", "001", img_service)
-        controller.click_by_image("Images/Navigation_Info_Image.png")
-        controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-
+        manual_check(
+            instruction="to vehicle via My Bentley App can be accessed in vehicle\ncheck\ncheck\ncheck\n",
+            test_id="001",
+            service=img_service,
+            take_screenshot=False
+        )
     except Exception as e:
         error_log(e, "001", img_service)
 
 def Nav_Companion_002():
     try:
+        sleep(300)
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         controller.click_by_image("Icons/navigation_icon.png")
         controller.click_by_image("Images/Navigation_Allow.png")
@@ -111,9 +120,11 @@ def Nav_Companion_003():
         controller.click_by_image("Icons/location_back.png")
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
-        ##############
-        # wait for checking in car
-        ##############
+        manual_check(
+            instruction="Check whether the recently sent location to vehicle via My Bentley App can be accessed in vehicle",
+            test_id="003",
+            service=img_service
+        )
     except Exception as e:
         error_log(e, "003", img_service)
 
@@ -164,9 +175,11 @@ def Nav_Companion_005():
         else:
             fail_log("Location sent confirmation message not received", "005", img_service)
 
-        ##############
-        # wait for checking in car
-        ##############
+        manual_check(
+            instruction="",
+            test_id="005",
+            service=img_service
+        )
 
         controller.click_by_image("Icons/location_back.png")
         controller.click_by_image("Images/Navigation_Search_Image.png")
@@ -174,9 +187,11 @@ def Nav_Companion_005():
         controller.delete_favourite_location() # Kind of broken
         controller.click_by_image("Icons/location_back.png")
 
-        ##############
-        # wait for checking in car
-        ##############
+        manual_check(
+            instruction="",
+            test_id="005",
+            service=img_service
+        )
 
     except Exception as e:
         error_log(e, "005", img_service)
@@ -194,9 +209,11 @@ def Nav_Companion_006():
         controller.click_by_image("Icons/location_back.png")
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
-        ##########
-        # Wait for in car stuff
-        ##########
+        manual_check(
+            instruction="",
+            test_id="006",
+            service=img_service
+        )
 
         controller.click_by_image("Icons/navigation_icon.png")
         controller.click_by_image("Images/Navigation_Search_Image.png")
@@ -230,9 +247,11 @@ def Nav_Companion_007():
         controller.click_by_image("Icons/location_back.png")
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
-        ##########
-        # Wait for in car stuff
-        ##########
+        manual_check(
+            instruction="",
+            test_id="007",
+            service=img_service
+        )
 
         controller.click_by_image("Icons/navigation_icon.png")
         controller.click_by_image("Images/Navigation_Search_Image.png")
@@ -264,9 +283,11 @@ def Nav_Companion_008():
         controller.click_by_image("Icons/navigation_back.png")
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
-        ##########
-        # Wait for in car stuff
-        ##########
+        manual_check(
+            instruction="",
+            test_id="008",
+            service=img_service
+        )
 
         controller.click_by_image("Icons/navigation_icon.png")
         controller.click_by_image("Images/Navigation_Search_Image.png")
@@ -279,9 +300,11 @@ def Nav_Companion_008():
         controller.click_by_image("Icons/navigation_back.png")
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
-        ##########
-        # Check in car stuff
-        ##########
+        manual_check(
+            instruction="",
+            test_id="008",
+            service=img_service
+        )
 
     except Exception as e:
         error_log(e, "008", img_service)
@@ -310,9 +333,11 @@ def Nav_Companion_009():
         controller.click_by_image("Icons/navigation_back.png")
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
-        ##########
-        # Wait for in car stuff
-        ##########
+        manual_check(
+            instruction="",
+            test_id="009",
+            service=img_service
+        )
 
         controller.click_by_image("Icons/navigation_icon.png")
         controller.click_by_image("Images/Navigation_Search_Image.png")
@@ -325,9 +350,11 @@ def Nav_Companion_009():
         controller.click_by_image("Icons/navigation_back.png")
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
-        ##########
-        # Check in car stuff
-        ##########
+        manual_check(
+            instruction="",
+            test_id="009",
+            service=img_service
+        )
 
     except Exception as e:
         error_log(e, "009", img_service)
@@ -352,9 +379,12 @@ def Nav_Companion_010():
         controller.click_by_image("Icons/navigation_back.png")
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
-        ##########
-        # Check in car stuff
-        ##########
+        manual_check(
+            instruction="",
+            test_id="010",
+            service=img_service
+        )
+
     except Exception as e:
         error_log(e, "010", img_service)
 

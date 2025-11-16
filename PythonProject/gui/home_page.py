@@ -72,8 +72,6 @@ class HomePage(QWidget):
 
         # Creates logo item and adds to the horizontal layout
         logo = QLabel()
-        # img_path = Path(__file__).parent / "images" / "bentleylogo.png"
-        # pixmap = QPixmap(str(img_path))
         img_path = resource_path("gui/images/bentleylogo.png")
         pixmap = QPixmap(img_path)
         logo.setPixmap(pixmap)
@@ -301,46 +299,28 @@ class HomePage(QWidget):
 
         form_layout.addWidget(form_title)
 
-        self.name_input = QLineEdit()
-        if globals.current_name:
-            self.name_input.setText(globals.current_name)
-        else:
-            self.name_input.setPlaceholderText("Name")
-        self.name_input.setStyleSheet("margin-bottom: 5px;")
-        self.name_input.textChanged.connect(lambda: self.update_globals("name", self.name_input.text()))
-        self.name_input.textChanged.connect(lambda: self.update_run_btn(testcase_table))
+        def cred_field(text, global_var):
+            text_input = QLineEdit()
+            if global_var:
+                text_input.setText(global_var)
+            else:
+                text_input.setPlaceholderText(text)
+            text_input.setStyleSheet("margin-bottom: 5px;")
+            text_input.textChanged.connect(lambda: self.update_globals(text.lower(), text_input.text()))
+            text_input.textChanged.connect(lambda: self.update_run_btn(testcase_table))
+            return text_input
 
-        self.email_input = QLineEdit()
-        if globals.current_email:
-            self.email_input.setText(globals.current_email)
-        else:
-            self.email_input.setPlaceholderText("Email")
-        self.email_input.setStyleSheet("margin-bottom: 5px;")
-        self.email_input.textChanged.connect(lambda: self.update_globals("email", self.email_input.text()))
-        self.email_input.textChanged.connect(lambda: self.update_run_btn(testcase_table))
-
-        self.password_input = QLineEdit()
-        if globals.current_password:
-            self.password_input.setText(globals.current_password)
-        else:
-            self.password_input.setPlaceholderText("Password")
-        self.password_input.setStyleSheet("margin-bottom: 5px;")
-        self.password_input.textChanged.connect(lambda: self.update_globals("password", self.password_input.text()))
-        self.password_input.textChanged.connect(lambda: self.update_run_btn(testcase_table))
-
-        self.pin_input = QLineEdit()
-        if globals.current_pin:
-            self.pin_input.setText(globals.current_pin)
-        else:
-            self.pin_input.setPlaceholderText("PIN")
-        self.pin_input.setStyleSheet("margin-bottom: 5px;")
-        self.pin_input.textChanged.connect(lambda: self.update_globals("pin", self.pin_input.text()))
-        self.pin_input.textChanged.connect(lambda: self.update_run_btn(testcase_table))
+        self.name_input = cred_field("Name", globals.current_name)
+        self.email_input = cred_field("Email", globals.current_email)
+        self.password_input = cred_field("Password", globals.current_password)
+        self.pin_input = cred_field("PIN", globals.current_pin)
+        self.vin_input = cred_field("VIN", globals.current_vin)
 
         form_layout.addWidget(self.name_input)
         form_layout.addWidget(self.email_input)
         form_layout.addWidget(self.password_input)
         form_layout.addWidget(self.pin_input)
+        form_layout.addWidget(self.vin_input)
         form_layout.setContentsMargins(30, 30, 30, 30)
 
         platform_layout = QHBoxLayout()
@@ -423,7 +403,6 @@ class HomePage(QWidget):
         self.nar_btn.clicked.connect(lambda: self._select_country("nar"))
         self.chn_btn.clicked.connect(lambda: self._select_country("chn"))
 
-        print("country: ", globals.country)
         self.eur_btn.setChecked(True if globals.country == 'eur' else False)
         self.nar_btn.setChecked(True if globals.country == 'nar' else False)
         self.chn_btn.setChecked(True if globals.country == 'chn' else False)
@@ -615,7 +594,7 @@ class HomePage(QWidget):
         globals.country = country
 
     def open_service_tests(self, service):
-        fields = [globals.current_name, globals.current_email, globals.current_password, globals.current_pin, globals.vehicle_type, globals.phone_type, globals.country]
+        fields = [globals.current_name, globals.current_email, globals.current_password, globals.current_pin, globals.current_vin, globals.vehicle_type, globals.phone_type, globals.country]
         stored = service_details[service][1]
 
         if not any(not f and s for f, s in zip(fields, stored)):
@@ -624,6 +603,7 @@ class HomePage(QWidget):
     def all_tests_checkbox(self, checked, table):
         self.clear_checkboxes(table)
         self.enable_credentials(checked, table=table)
+        table.cellWidget(0, 1).findChild(QCheckBox).setChecked(checked)
         for row in range(4, table.rowCount()):
             cell_widget = table.cellWidget(row, 1)
             if cell_widget:
@@ -635,43 +615,46 @@ class HomePage(QWidget):
                     cb.setEnabled(not checked)
 
     def no_vehicle_tests_checkbox(self, checked, table):
-        self.clear_checkboxes(table, 1)
+        self.clear_checkboxes(table)
         self.enable_credentials(checked, table=table)
+        table.cellWidget(1, 1).findChild(QCheckBox).setChecked(checked)
         for row in range(4, table.rowCount()):
             cell_widget = table.cellWidget(row, 0).findChild(QLabel).text()
             plain_text = re.sub('<[^<]+?>', '', cell_widget)
-            if service_details[plain_text[0][0]]:
+            if service_details[plain_text][0][0] and not service_details[plain_text][0][2]:
                 cb = table.cellWidget(row, 1).findChild(QCheckBox)
                 if cb:
                     cb.setChecked(checked)
                     cb.setEnabled(not checked)
 
     def vehicle_tests_checkbox(self, checked, table):
-        self.clear_checkboxes(table, 2)
+        self.clear_checkboxes(table)
         self.enable_credentials(checked, table=table)
+        table.cellWidget(2, 1).findChild(QCheckBox).setChecked(checked)
         for row in range(4, table.rowCount()):
             cell_widget = table.cellWidget(row, 0).findChild(QLabel).text()
             plain_text = re.sub('<[^<]+?>', '', cell_widget)
-            if not service_details[plain_text[0][0]]:
+            if not service_details[plain_text][0][0] and not service_details[plain_text][0][2]:
                 cb = table.cellWidget(row, 1).findChild(QCheckBox)
                 if cb:
                     cb.setChecked(checked)
                     cb.setEnabled(not checked)
 
     def no_precondition_tests_checkbox(self, checked, table):
-        self.clear_checkboxes(table, 3)
+        self.clear_checkboxes(table)
         self.enable_credentials(checked, table=table)
+        table.cellWidget(3, 1).findChild(QCheckBox).setChecked(checked)
         for row in range(4, table.rowCount()):
             cell_widget = table.cellWidget(row, 0).findChild(QLabel).text()
             plain_text = re.sub('<[^<]+?>', '', cell_widget)
-            if service_details[plain_text[0][1]]:
+            if service_details[plain_text][0][1] and not service_details[plain_text][0][2]:
                 cb = table.cellWidget(row, 1).findChild(QCheckBox)
                 if cb:
                     cb.setChecked(checked)
                     cb.setEnabled(not checked)
 
     def clear_checkboxes(self, table, current=-1):
-        for row in range(1, table.rowCount()):
+        for row in range(0, table.rowCount()):
             if row is not current:
                 cell_widget = table.cellWidget(row, 1)
                 if cell_widget:
@@ -680,8 +663,8 @@ class HomePage(QWidget):
                         cb.setChecked(False)
                         cb.setEnabled(True)
 
-    def enable_credentials(self, checker=(1,1,1,1,1,1,1), table=None):
-        total_checked = (0,0,0,0,0,0,0)
+    def enable_credentials(self, checker=(1,1,1,1,1,1,1,1), table=None):
+        total_checked = (0,0,0,0,0,0,0,0)
         min_checked = False
         for row in range(table.rowCount()):
             cell_widget = table.cellWidget(row, 1)
@@ -689,7 +672,7 @@ class HomePage(QWidget):
                 cb = cell_widget.findChild(QCheckBox)
                 if cb.isChecked() and row < 4:
                     min_checked = True
-                    total_checked = (1,1,1,1,1,1,1)
+                    total_checked = (1,1,1,1,1,1,1,1)
                 elif cb.isChecked():
                     min_checked = True
                     total_checked = tuple(a or b for a, b in zip(total_checked, service_details[services[row-4]][1]))
@@ -699,6 +682,7 @@ class HomePage(QWidget):
             [self.email_input],
             [self.password_input],
             [self.pin_input],
+            [self.vin_input],
             [self.ice_btn, self.phev_btn],
             [self.android_btn, self.ios_btn],
             [self.chn_btn, self.eur_btn, self.nar_btn]
@@ -790,6 +774,8 @@ class HomePage(QWidget):
                 globals.current_password = value
             case "pin":
                 globals.current_pin = value
+            case "vin":
+                globals.current_vin = value
             case "ICE":
                 globals.vehicle_type = "ice"
             case "PHEV":

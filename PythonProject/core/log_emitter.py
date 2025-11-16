@@ -14,10 +14,11 @@ def metric_log(msg):
     print(msg)
     log_emitter.log_signal.emit(f"{msg}")
 
-def fail_log(msg, num, service):
+def fail_log(msg, num, service, screenshot=True):
     print(f"❌ - {msg}")
     log_emitter.log_signal.emit(f"❌ - {msg}")
-    controller.take_fail_screenshot(f"{service}-{msg}-{num}.png")
+    if screenshot:
+        controller.take_fail_screenshot(f"{service}-{msg}-{num}.png")
 
 def blocked_log(msg):
     print(f"🔒 - {msg}")

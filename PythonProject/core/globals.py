@@ -1,6 +1,6 @@
 import os
 
-current_name = current_email = current_password = current_pin = vehicle_type = phone_type = country = current_VIN = second_email = second_password = ""
+current_name = current_email = current_password = current_pin = vehicle_type = phone_type = country = current_vin = second_email = second_password = ""
 selected_services = []
 
 service_index = 0

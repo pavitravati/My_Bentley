@@ -77,8 +77,6 @@ class ServiceReport(QWidget):
             self.dropdown.addItem("Current test")
         else:
             self.dropdown.addItem("Select test")
-        # script_dir = os.path.dirname(os.path.abspath(__file__))
-        # results_folder = os.path.join(script_dir, "test_results")
         results_folder = globals.sharedrive_path
         folder_names = [name for name in os.listdir(results_folder) if
                         os.path.isdir(os.path.join(results_folder, name))]

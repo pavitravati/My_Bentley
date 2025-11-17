@@ -17,6 +17,12 @@ def cleanup_images():
     for file in glob.glob(os.path.join(image_dir, "*.png")):
         os.remove(file)
 
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    image_dir = os.path.join(base_dir, "manual_check_screenshots")
+
+    for file in glob.glob(os.path.join(image_dir, "*.png")):
+        os.remove(file)
+
 # Class of the Main window where the table is placed
 class MainWindow(QMainWindow):
     def __init__(self):

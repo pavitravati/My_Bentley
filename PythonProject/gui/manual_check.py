@@ -212,7 +212,7 @@ def _take_screenshot(test_id, service):
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        screenshot_dir = os.path.join(base_dir, "gui", "manual_check_screenshots")
+        screenshot_dir = os.path.join(base_dir, "manual_check_screenshots")
         os.makedirs(screenshot_dir, exist_ok=True)
 
         filename = f"manual_check_{service.replace(' ', '_')}_{test_id}_{timestamp}.png"

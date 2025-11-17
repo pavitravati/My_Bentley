@@ -72,7 +72,7 @@ def Nav_Companion_001():
             instruction="to vehicle via My Bentley App can be accessed in vehicle\ncheck\ncheck\ncheck\n",
             test_id="001",
             service=img_service,
-            take_screenshot=False
+            take_screenshot=True
         )
     except Exception as e:
         error_log(e, "001", img_service)

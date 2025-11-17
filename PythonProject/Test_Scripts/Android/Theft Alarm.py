@@ -2,6 +2,7 @@ from common_utils.android_image_comparision import *
 from core.log_emitter import log, fail_log, metric_log, error_log, blocked_log
 from time import sleep
 from core.globals import country
+from core.globals import manual_run
 
 img_service = "Theft Alarm"
 

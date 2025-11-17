@@ -4,6 +4,7 @@ from time import sleep
 import re
 from datetime import date, datetime
 from core.app_functions import remote_swipe
+from core.globals import manual_run
 
 img_service = "My Cabin Comfort"
 

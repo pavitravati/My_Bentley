@@ -3,6 +3,7 @@ from core.log_emitter import log, fail_log, error_log, blocked_log
 from core.app_functions import app_login
 from core.globals import *
 from time import sleep
+from core.globals import manual_run
 
 img_service = "Customer Enrollment"
 

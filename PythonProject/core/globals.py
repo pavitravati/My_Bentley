@@ -1,6 +1,7 @@
 import os
 
 current_name = current_email = current_password = current_pin = vehicle_type = phone_type = country = current_vin = second_email = second_password = ""
+manual_run = True
 selected_services = []
 
 service_index = 0

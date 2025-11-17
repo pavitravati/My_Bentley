@@ -3,6 +3,7 @@ from common_utils.android_image_comparision import *
 from core.globals import current_email
 from core.log_emitter import log, fail_log, metric_log, error_log, blocked_log
 from core.app_functions import app_logout, app_login
+from core.globals import manual_run
 
 # from common_utils.android_controller import ScreenRecorder
 

@@ -3,6 +3,7 @@ from common_utils.android_image_comparision import *
 from common_utils.android_controller import *
 from core.globals import country
 from core.log_emitter import log, fail_log, metric_log, error_log, blocked_log
+from core.globals import manual_run
 
 img_service = "Stolen Vehicle Locator"
 

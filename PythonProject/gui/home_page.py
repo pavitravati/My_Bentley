@@ -53,6 +53,8 @@ class HomePage(QWidget):
         else:
             self.screen = 'Laptop'
 
+        globals.manual_run = True
+
         # Adds a vertical layout for the window and sets the padding around it
         layout = QVBoxLayout(self)
         layout.setContentsMargins(30, 30, 30, 30)
@@ -719,6 +721,7 @@ class HomePage(QWidget):
         globals.log_history = {}
         globals.service_index = 0
         globals.selected_services = []
+        globals.manual_run = False
         for row in range(table.rowCount()):
             cell_widget = table.cellWidget(row, 1)
             if cell_widget:

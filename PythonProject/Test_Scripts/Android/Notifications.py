@@ -2,7 +2,7 @@ from common_utils.android_image_comparision import *
 from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
 from datetime import datetime, timedelta
 from time import sleep
-from core.globals import country
+from core.globals import country, manual_run
 
 img_service = "Notifications"
 

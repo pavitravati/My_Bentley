@@ -3,6 +3,7 @@ from common_utils.android_image_comparision import *
 from core.log_emitter import log, error_log, fail_log, blocked_log
 from core.app_functions import app_login, app_logout, enable_flight_mode, disable_flight_mode
 import core.globals as globals
+from core.globals import manual_run
 
 img_service = "App Log in-Log out"
 

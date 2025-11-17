@@ -3,6 +3,7 @@ from core.globals import vehicle_type
 from core.log_emitter import log, fail_log, metric_log, error_log, blocked_log
 from time import sleep
 from core.app_functions import remote_swipe
+from core.globals import manual_run
 
 img_service = "Roadside Assistance"
 

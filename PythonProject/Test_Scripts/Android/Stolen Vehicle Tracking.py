@@ -4,6 +4,8 @@ from time import sleep
 from core.app_functions import remote_swipe, enable_flight_mode, disable_flight_mode
 from core.globals import current_name, current_email, country
 from datetime import datetime
+from core.globals import manual_run
+from gui.manual_check import manual_check
 
 img_service = "Stolen Vehicle Tracking"
 
@@ -39,7 +41,12 @@ def Stolen_Vehicle_Tracking_003():
             else:
                 fail_log("Stolen vehicle tracking feature not displayed", "003", img_service)
 
-            # Call can't be automated
+            manual_check(
+                instruction="Call to VTS Customer Support Centre(i.e. Bentley Connected Car Contact Centre(B4C)) and request for VTS feature availability for 'UK' based vehicle",
+                test_id="003",
+                service=img_service,
+                take_screenshot=False
+            )
 
             controller.swipe_down(0.05)
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -51,7 +58,7 @@ def Stolen_Vehicle_Tracking_003():
 def Stolen_Vehicle_Tracking_004():
     try:
         if country == "eur":
-            # How to have no vts license
+            blocked_log("Test blocked - Unsure on how to complete testcase")
     
             controller.click_by_image("Icons/windows_icon.png")
             if not remote_swipe("STOLfEN VEHICLE TRACKING"):
@@ -69,6 +76,7 @@ def Stolen_Vehicle_Tracking_005():
     try:
         if country == "eur":
             # Best way to add vehicle with vts license
+            blocked_log("Test blocked - Unsure on how to complete testcase")
     
             controller.click_by_image("Icons/windows_icon.png")
             if remote_swipe("STOLfEN VEHICLE TRACKING"):
@@ -86,6 +94,8 @@ def Stolen_Vehicle_Tracking_006():
     try:
         if country == "eur":
             # No vts license
+            blocked_log("Test blocked - Unsure on how to complete testcase")
+
             controller.click_by_image("Icons/windows_icon.png")
             if remote_swipe("STOLEN VEHICLE TRACKING"):
                 Stolen_vehicle_tracking = controller.d(text="STOLEN VEHICLE TRACKING")
@@ -592,6 +602,8 @@ def Stolen_Vehicle_Tracking_015():
     try:
         if country == "eur":
             blocked_log("Test blocked - All done in car")
+        else:
+            blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
         error_log(e, "015", img_service)
 
@@ -599,6 +611,8 @@ def Stolen_Vehicle_Tracking_016():
     try:
         if country == "eur":
             blocked_log("Test blocked - All done in car")
+        else:
+            blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
         error_log(e, "016", img_service)
 
@@ -606,6 +620,8 @@ def Stolen_Vehicle_Tracking_017():
     try:
         if country == "eur":
             blocked_log("Test blocked - All done in car")
+        else:
+            blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
         error_log(e, "017", img_service)
 
@@ -613,13 +629,20 @@ def Stolen_Vehicle_Tracking_018():
     try:
         if country == "eur":
             blocked_log("Test blocked - All done in car")
+        else:
+            blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
         error_log(e, "018", img_service)
 
 def Stolen_Vehicle_Tracking_019():
     try:
         if country == "eur":
-            # After factory reset in vehicle...
+            manual_check(
+                instruction="1. Start the Vehicle(i.e. Ignition ON)\n2. Go to Vehicle Settings and Perform Full Factory Reset",
+                test_id="019",
+                service=img_service,
+                take_screenshot=False
+            )
             controller.click_by_image("Icons/windows_icon.png")
             if remote_swipe("STOLEN VEHICLE TRACKING"):
                 Stolen_vehicle_tracking = controller.d(text="STOLEN VEHICLE TRACKING")
@@ -688,7 +711,7 @@ def Stolen_Vehicle_Tracking_021():
     except Exception as e:
         error_log(e, "021", img_service)
 
-# This test sleeps till the time in which the timer says it will run out. change this so that it just check timer set 
+# This test sleeps till the time in which the timer says it will run out. ask if this should be changed this so that it just check timer set
 def Stolen_Vehicle_Tracking_022():
     try:
         if country == "eur":
@@ -1137,7 +1160,12 @@ def Stolen_Vehicle_Tracking_032():
 def Stolen_Vehicle_Tracking_033():
     try:
         if country == "eur":
-            # After call completed
+            manual_check(
+                instruction="1. Initiate a call to VTS Customer Support Team\n2. Request the VTS Customer Support Team to activate 'Transport Mode'",
+                test_id="033",
+                service=img_service,
+                take_screenshot=False
+            )
             controller.click_by_image("Icons/windows_icon.png")
             if remote_swipe("STOLEN VEHICLE TRACKING"):
                 controller.click_text("STOLEN VEHICLE TRACKING")
@@ -1192,9 +1220,12 @@ def Stolen_Vehicle_Tracking_034():
                     while controller.is_text_present("Sending message to car"):
                         sleep(1)
                     sleep(0.2)
-                    ##############
-                    # Wait for call
-                    ##############
+                    manual_check(
+                        instruction="1. Initiate a call to VTS Customer Support Team\n2. Request the VTS Customer Support Team to deactivate 'Garage Mode'/'Transport Mode'/'Deactivation Mode'",
+                        test_id="034",
+                        service=img_service,
+                        take_screenshot=False
+                    )
                 controller.click_text("STOLEN VEHICLE TRACKING")
                 controller.click_text("My Alerts")
                 sleep(0.2)
@@ -1405,9 +1436,12 @@ def Stolen_Vehicle_Tracking_051():
                 controller.click_by_image("Icons/phone_icon.png")
                 controller.wait_for_text("Call now")
                 controller.click_text("+44 333 122 2222")
-                ##########
-                # After call
-                ##########
+                manual_check(
+                    instruction="Check call should is initiated successfully to VTS Customer Care Centre",
+                    test_id="051",
+                    service=img_service,
+                    take_screenshot=False
+                )
                 controller.launch_app("uk.co.bentley.mybentley")
                 controller.click_text("Cancel")
             controller.click_by_image("Icons/back_icon.png")
@@ -1513,7 +1547,7 @@ def Stolen_Vehicle_Tracking_056():
 def Stolen_Vehicle_Tracking_057():
     try:
         if country == "eur":
-            pass
+            blocked_log("Test blocked - Unsure on how to complete testcase")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -1523,7 +1557,7 @@ def Stolen_Vehicle_Tracking_057():
 def Stolen_Vehicle_Tracking_058():
     try:
         if country == "eur":
-            pass
+            blocked_log("Test blocked - Unsure on how to complete testcase")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -1533,7 +1567,7 @@ def Stolen_Vehicle_Tracking_058():
 def Stolen_Vehicle_Tracking_059():
     try:
         if country == "eur":
-            pass
+            blocked_log("Test blocked - Unsure on how to complete testcase")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:

@@ -1,8 +1,9 @@
 from time import sleep
 from common_utils.android_image_comparision import *
 from core.log_emitter import log, fail_log, error_log, blocked_log
-from core.globals import current_VIN, vehicle_type, country
+from core.globals import current_vin, vehicle_type, country
 from core.app_functions import remote_swipe
+from core.globals import manual_run
 
 img_service = "Data Services"
 
@@ -20,13 +21,12 @@ def Data_Services_001():
 
                 controller.swipe_up(0.7)
                 controller.click_text("BUY DATA")
-                sleep(1)
-                if controller.click_text("Connect Now"):
+                if controller.wait_for_text_and_click("Connect Now"):
                     log("Data Service Provider web launched")
                 else:
                     fail_log("Data Service Provider web not launched", "001", img_service)
 
-                controller.enter_text(current_VIN)
+                controller.enter_text(current_vin)
                 controller.click_text("Verify")
                 # Finish when the VIN is recognised
 

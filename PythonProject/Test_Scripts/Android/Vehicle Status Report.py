@@ -3,6 +3,7 @@ from common_utils.android_image_comparision import *
 from core.globals import vehicle_type
 from core.log_emitter import log, metric_log, fail_log, error_log, blocked_log
 from datetime import datetime
+from core.globals import manual_run
 
 img_service = "Vehicle Status Report"
 

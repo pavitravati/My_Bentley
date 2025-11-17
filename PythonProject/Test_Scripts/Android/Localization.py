@@ -1,6 +1,7 @@
 from common_utils.android_image_comparision import *
 from core.log_emitter import blocked_log, error_log
 from time import sleep
+from core.globals import manual_run
 
 img_service = "Localization"
 

@@ -2,6 +2,7 @@ from common_utils.android_image_comparision import *
 from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
 from core.app_functions import remote_swipe
 from time import sleep
+from core.globals import manual_run
 
 img_service = "Remote Park Assist"
 

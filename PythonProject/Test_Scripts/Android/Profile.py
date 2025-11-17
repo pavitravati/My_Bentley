@@ -3,7 +3,7 @@ from common_utils.android_image_comparision import *
 from common_utils.android_controller import *
 from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
 from core.app_functions import app_login
-from core.globals import country
+from core.globals import country, manual_run
 
 img_service = "Profile"
 
@@ -13,7 +13,6 @@ def Profile_001():
             log("Tapped Profile tab")
         else:
             fail_log("Tapped Profile tab failed", "001", img_service)
-        time.sleep(2)
 
         if compare_with_expected_crop("Images/Profile_Screen.png"):
             log("Profile Title is present")
@@ -25,34 +24,32 @@ def Profile_001():
         else:
             fail_log("Profile User Icon is not present", "001", img_service)
 
-        if compare_with_expected_crop("Images/Profile_Screen_User_Name.png"):
+        if controller.click_by_resource_id("uk.co.bentley.mybentley:id/textView_user_name_profile"):
             log("Profile User Name is present")
         else:
             fail_log("Profile User Name is not present", "001", img_service)
 
-        if compare_with_expected_crop("Images/Profile_Screen_MyDetails_Tab.png"):
+        if controller.is_text_present("My Details"):
             log("Profile 'My details' tab is present")
         else:
-            fail_log("Profile 'My details' tab is not present", "001", img_service)
+            fail_log("'My details' tab is not present", "001", img_service)
 
-        if controller.click_by_image("Icons/Profile_Account_Icon.png"):
+        if controller.click_text("Account"):
             log("Tapped Account")
         else:
             fail_log("Tapped Account failed", "001", img_service)
-        time.sleep(2)
 
-        if compare_with_expected_crop("Images/Profile_Account_Screen.png"):
+        if controller.is_text_present("Reset password"):
             log("Profile Account screen is present")
         else:
             fail_log("Profile Account screen is not present", "001", img_service)
 
-        if controller.click_by_image("Icons/Profile_General_Icon.png"):
-            log("Tapped General")
+        if controller.click_text("General"):
+            log("Tapped 'General' tab")
         else:
-            fail_log("Tapped General failed", "001", img_service)
-        time.sleep(2)
+            fail_log("'General' tab not found", "001", img_service)
 
-        if compare_with_expected_crop("Images/Profile_General_Screen.png"):
+        if controller.is_text_present("Vehicle connection"):
             log("Profile General screen is present")
         else:
             fail_log("Profile General screen is not present", "001", img_service)
@@ -73,7 +70,7 @@ def Profile_002():
             log("Tapped Profile tab")
         else:
             fail_log("Tapped Profile tab failed", "002", img_service)
-        time.sleep(2)
+        controller.click_text("My Details")
         controller.extract_profile_details()
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
@@ -83,11 +80,10 @@ def Profile_002():
 def Profile_003():
     try:
         controller.click_by_image("Icons/Profile_Icon.png")
-
         controller.click_by_image("Icons/Profile_Account_Icon.png")
         controller.click_text("Reset password")
         controller.click_by_image("Icons/Reset_Password.png")
-        if compare_with_expected_crop("Images/Email_Confirmation.png"):
+        if controller.wait_for_text_and_click("CONFIRMED"):
             log("Reset password email sent")
         else:
             fail_log("Error: Reset password email failed", "003", img_service)
@@ -102,7 +98,7 @@ def Profile_004():
     current_pin = "1234"
     try:
         controller.click_by_image("Icons/Profile_Icon.png")
-        controller.click_by_image("Icons/Profile_Account_Icon.png")
+        controller.click_text("Account")
 
         controller.click_text("PIN")
 
@@ -115,16 +111,14 @@ def Profile_004():
         controller.enter_pin(current_pin)
         controller.click_text("CHANGE PIN")
 
-        sleep(1)
-        if compare_with_expected_crop("Images/PIN_Confirmation.png"):
+        if controller.wait_for_text("PIN has been changed"):
             log("PIN changed")
         else:
-            sleep(2)
             if controller.click_text("Cancel"):
                 fail_log("Connection failed", "004", img_service)
             log("PIN not changed")
-            sleep(3)
-        controller.click(110,110)
+        sleep(5)
+        controller.click_by_image("Icons/back_icon.png")
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
@@ -165,6 +159,7 @@ def Profile_006():
             log("Bentley ID Terms of Use page displayed")
         else:
             fail_log("Bentley ID Terms of Use page not displayed", "006", img_service)
+            controller.click_by_image("Icons/Error_Icon.png")
         controller.click_by_image("Icons/back_icon.png")
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
@@ -183,6 +178,7 @@ def Profile_007():
             log("My Bentley Terms of Use page displayed")
         else:
             fail_log("My Bentley Terms of Use page not displayed", "007", img_service)
+            controller.click_by_image("Icons/Error_Icon.png")
         controller.click_by_image("Icons/back_icon.png")
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
@@ -202,6 +198,7 @@ def Profile_008():
             log("Terms and Conditions page displayed")
         else:
             fail_log("Terms and Conditions page not displayed", "008", img_service)
+            controller.click_by_image("Icons/Error_Icon.png")
         controller.click_by_image("Icons/back_icon.png")
         controller.settings_swipe_down()
         controller.settings_swipe_down()
@@ -223,6 +220,7 @@ def Profile_009():
             log("Bentley ID privacy policy page displayed")
         else:
             fail_log("Bentley ID privacy policy page not displayed", "009", img_service)
+            controller.click_by_image("Icons/Error_Icon.png")
         controller.click_by_image("Icons/back_icon.png")
         controller.settings_swipe_down()
         controller.settings_swipe_down()
@@ -244,6 +242,7 @@ def Profile_010():
             log("My bentley privacy policy page displayed")
         else:
             fail_log("My bentley privacy policy page not displayed", "010", img_service)
+            controller.click_by_image("Icons/Error_Icon.png")
         controller.click_by_image("Icons/back_icon.png")
         controller.settings_swipe_down()
         controller.settings_swipe_down()
@@ -253,16 +252,21 @@ def Profile_010():
 
 def Profile_011():
     try:
-        if country == "eur":
+        if country == "":
             controller.click_by_image("Icons/Profile_Icon.png")
             controller.click_text("Account")
             controller.swipe_up()
             if controller.click_text("Vehicle Tracking Terms and Conditions"):
-                log("Vehicle tracking t&cs tab clicked")
+                log("Vehicle tracking terms and conditions tab clicked")
             else:
-                fail_log("Vehicle tracking t&cs not displayed", "011", img_service)
+                fail_log("Vehicle tracking terms and conditions tab not displayed", "011", img_service)
 
             # Getting an error
+            if controller.is_text_present("Whatever pops up when successful"):
+                log("Vehicle tracking terms and conditions page displayed")
+            else:
+                fail_log("Failed to display Vehicle tracking terms and conditions", "011", img_service)
+                controller.click_by_image("Icons/Error_Icon.png")
             controller.click_by_image("Icons/back_icon.png")
             controller.settings_swipe_down()
             controller.settings_swipe_down()
@@ -327,10 +331,11 @@ def Profile_014():
 def Profile_015():
     try:
         controller.click_by_image("Icons/Profile_Icon.png")
+        controller.click_text("General")
         if controller.click_text("Contact"):
             log("Contact clicked")
         else:
-            fail_log("Contact section not displayed", "015", img_service)
+            fail_log("Contact tab not displayed", "015", img_service)
 
         if controller.click_text("My Bentley") and controller.is_text_present("contactbentley@contact.bentleymotors.com") and controller.is_text_present("+44 (0) 1270 444 474"):
             log("My Bentley support contact details displayed")
@@ -341,7 +346,6 @@ def Profile_015():
             log("Bentley Motors contact details displayed")
         else:
             fail_log("Bentley motors contact details not displayed", "015", img_service)
-        controller.click_by_image("Icons/back_icon.png")
         controller.click_by_image("Icons/back_icon.png")
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:

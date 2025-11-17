@@ -2,21 +2,25 @@ from common_utils.android_image_comparision import *
 from core.log_emitter import log, fail_log, error_log, blocked_log
 from time import sleep
 import random
-from core.globals import current_vin
+from core.globals import current_vin, manual_run
+from gui.manual_check import manual_check
 
 img_service = "Add VIN"
 random_email = f"automation{str(random.random())[2:6]}@gqm.anonaddy.com"
+
+def logout_setup():
+    controller.click_by_image("Icons/Logout_Icon.png")
+    controller.click_by_image("Icons/Profile_Icon.png")
+    controller.click_text("General")
+    controller.click_by_image("Icons/Profile_Logout_Icon.png")
+    controller.click_by_image("Icons/Logout_btn.png")
+    controller.wait_for_text("LOGIN OR REGISTER")
 
 def Add_VIN_001():
     try:
         # If not on the login page, attempts to log out/exit demo mode
         if not compare_with_expected_crop("Images/My_Bentley_Login_Page.png"):
-            controller.click_by_image("Icons/Logout_Icon.png")
-            controller.click_by_image("Icons/Profile_Icon.png")
-            controller.click_text("General")
-            controller.click_by_image("Icons/Profile_Logout_Icon.png")
-            controller.click_by_image("Icons/Logout_btn.png")
-            sleep(5)
+            logout_setup()
 
         if controller.click_by_image("Icons/login_register_icon.png"):
             log("Login button clicked")
@@ -37,9 +41,12 @@ def Add_VIN_001():
                     controller.swipe_up()
                     controller.click_text("RETURN TO LOGIN")
                     controller.click_text("NEXT")
-                    ############
-                    # Wait for tester to click email verified
-                    ############
+                    manual_check(
+                        instruction=f"Verify the email of the new account created ({random_email}).",
+                        test_id="001",
+                        service=img_service,
+                        take_screenshot=True
+                    )
                     controller.enter_text(password)
                     sleep(5)
                     controller.swipe_up()
@@ -51,7 +58,7 @@ def Add_VIN_001():
                         controller.click_text("ADD A VEHICLE")
                         controller.swipe_up()
                         vin = 'SJAAE14V3TC029739'
-                        # vin = globals.current_VIN
+                        # vin = globals.current_vin
                         controller.enter_text(vin)
                         log("VIN entered") if controller.wait_for_text("YOUR PREFERRED BENTLEY RETAILER") else fail_log("VIN not entered", "001", img_service)
                         controller.click("Icons/Homescreen_Right_Arrow.png")
@@ -108,12 +115,7 @@ def Add_VIN_002():
     try:
         # If not on the login page, attempts to log out/exit demo mode
         if not compare_with_expected_crop("Images/My_Bentley_Login_Page.png"):
-            controller.click_by_image("Icons/Logout_Icon.png")
-            controller.click_by_image("Icons/Profile_Icon.png")
-            controller.click_text("General")
-            controller.click_by_image("Icons/Profile_Logout_Icon.png")
-            controller.click_by_image("Icons/Logout_btn.png")
-            sleep(5)
+            logout_setup()
 
         if controller.click_by_image("Icons/login_register_icon.png"):
             log("Login button clicked")
@@ -134,9 +136,12 @@ def Add_VIN_002():
                     controller.swipe_up()
                     controller.click_text("RETURN TO LOGIN")
                     controller.click_text("NEXT")
-                    ############
-                    # Wait for tester to click email verified
-                    ############
+                    manual_check(
+                        instruction=f"Verify the email of the new account created ({random_email}).",
+                        test_id="002",
+                        service=img_service,
+                        take_screenshot=True
+                    )
                     controller.enter_text(password)
                     sleep(5)
                     controller.swipe_up()
@@ -215,7 +220,7 @@ def Add_VIN_003():
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/button_add_dashboard_module_add_vehicle")
         controller.small_swipe_up()
         controller.click_text("Enter VIN manually")
-        controller.enter_text(current_VIN)
+        controller.enter_text(current_vin)
         if controller.click_by_image("Images/VIN_confirm_btn.png"):
             log("VIN entered manually")
         else:
@@ -245,7 +250,7 @@ def Add_VIN_004():
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/button_add_dashboard_module_add_vehicle")
         controller.small_swipe_up()
         controller.click_text("Enter VIN manually")
-        controller.enter_text(current_VIN)
+        controller.enter_text(current_vin)
         if controller.click_by_image("Images/VIN_confirm_btn.png"):
             log("Already existing VIN entered")
         else:
@@ -272,7 +277,6 @@ def Add_VIN_004():
 
     except Exception as e:
         error_log(e, "004", img_service)
-Add_VIN_004()
 
 def Add_VIN_005():
     try:
@@ -438,9 +442,12 @@ def Add_VIN_008():
         else:
             fail_log("'Centre your VIN' message not displayed", "008", img_service)
 
-        ###########
-        # wait for VIN to be scanned
-        ###########
+        manual_check(
+            instruction=f"Scan the VIN with the flash off.",
+            test_id="008",
+            service=img_service,
+            take_screenshot=True
+        )
 
         if controller.is_text_present("CONFIRM YOUR VIN") and not controller.is_text_present("Enter VIN manually"):
             log("VIN scanned and displayed in VIN field")
@@ -494,9 +501,12 @@ def Add_VIN_009():
         else:
             fail_log("'Centre your VIN' message not displayed", "009", img_service)
 
-        ###########
-        # wait for VIN to be scanned
-        ###########
+        manual_check(
+            instruction=f"Scan the VIN with the flash on.",
+            test_id="009",
+            service=img_service,
+            take_screenshot=True
+        )
 
         if controller.is_text_present("CONFIRM YOUR VIN") and not controller.is_text_present("Enter VIN manually"):
             log("VIN scanned and displayed in VIN field")
@@ -533,10 +543,12 @@ def Add_VIN_010():
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/button_add_dashboard_module_add_vehicle")
 
         if controller.is_text_present("Open Camera"):
-            pass
-            ##########
-            # Wait for tester to scan VIN
-            ##########
+            manual_check(
+                instruction=f"Scan the VIN.",
+                test_id="010",
+                service=img_service,
+                take_screenshot=True
+            )
 
             # automate the process of adding vin and checking car is displayed
 
@@ -597,9 +609,12 @@ def Add_VIN_011():
 
         if can_add_VIN:
             controller.click_text("Open Camera")
-            ##########
-            # Wait for tester to scan VIN
-            ##########
+            manual_check(
+                instruction=f"Scan the VIN.",
+                test_id="011",
+                service=img_service,
+                take_screenshot=True
+            )
 
             # automate the process of adding vin and checking car is displayed
 
@@ -675,9 +690,12 @@ def Add_VIN_014():
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/button_add_dashboard_module_add_vehicle")
         controller.click_text("Open Camera")
 
-        ################
-        # Wait for tester to scan
-        ################
+        manual_check(
+            instruction=f"Scan the VIN.",
+            test_id="010",
+            service=img_service,
+            take_screenshot=True
+        )
 
         if controller.click_text("Scan VIN again"):
             log("Scan again message displayed")

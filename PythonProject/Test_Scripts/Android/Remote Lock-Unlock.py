@@ -4,6 +4,7 @@ from core.log_emitter import log, fail_log, error_log, blocked_log
 from common_utils.android_controller import *
 from core.app_functions import enable_flight_mode, disable_flight_mode
 from datetime import datetime, timedelta
+from core.globals import manual_run
 
 img_service = "Remote Lock-Unlock"
 

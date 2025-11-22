@@ -13,7 +13,7 @@ def Audials_001():
         else:
             if app_login_setup():
 
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("AUDIALS"):
                     if controller.click_text("AUDIALS"):
                         log("Audials section clicked")

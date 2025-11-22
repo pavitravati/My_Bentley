@@ -31,7 +31,7 @@ def Stolen_Vehicle_Tracking_003():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     Stolen_vehicle_tracking = controller.d(text="STOLEN VEHICLE TRACKING")
                     status = Stolen_vehicle_tracking.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item").get_text()
@@ -72,7 +72,7 @@ def Stolen_Vehicle_Tracking_005():
             blocked_log("Test blocked - Unsure on how to complete testcase")
 
             # if app_login_setup():
-            #     controller.click_by_image("Icons/windows_icon.png")
+            #     controller.click_by_image("Icons/remote_icon.png")
             #     if remote_swipe("STOLEN VEHICLE TRACKING"):
             #         log("Stolen vehicle tracking feature displayed in car remote screen")
             #     else:
@@ -91,7 +91,7 @@ def Stolen_Vehicle_Tracking_006():
             blocked_log("Test blocked - Unsure on how to complete testcase")
 
             # if app_login_setup():
-            #     controller.click_by_image("Icons/windows_icon.png")
+            #     controller.click_by_image("Icons/remote_icon.png")
             #     if remote_swipe("STOLEN VEHICLE TRACKING"):
             #         Stolen_vehicle_tracking = controller.d(text="STOLEN VEHICLE TRACKING")
             #         status = Stolen_vehicle_tracking.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item").get_text()
@@ -106,7 +106,7 @@ def Stolen_Vehicle_Tracking_006():
             #     controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
             #
             #     # vts license pending
-            #     controller.click_by_image("Icons/windows_icon.png")
+            #     controller.click_by_image("Icons/remote_icon.png")
             #     if remote_swipe("STOLEN VEHICLE TRACKING"):
             #         Stolen_vehicle_tracking = controller.d(text="STOLEN VEHICLE TRACKING")
             #         status = Stolen_vehicle_tracking.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item").get_text()
@@ -121,7 +121,7 @@ def Stolen_Vehicle_Tracking_006():
             #     controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
             #
             #     # vts license active
-            #     controller.click_by_image("Icons/windows_icon.png")
+            #     controller.click_by_image("Icons/remote_icon.png")
             #     if remote_swipe("STOLEN VEHICLE TRACKING"):
             #         Stolen_vehicle_tracking = controller.d(text="STOLEN VEHICLE TRACKING")
             #         status = Stolen_vehicle_tracking.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item").get_text()
@@ -142,7 +142,7 @@ def Stolen_Vehicle_Tracking_007():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     if controller.is_text_present("My Alerts") and controller.is_text_present("Configure") and controller.click_text("My Details"):
@@ -181,7 +181,7 @@ def Stolen_Vehicle_Tracking_008():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Details")
@@ -221,7 +221,7 @@ def Stolen_Vehicle_Tracking_009():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Details")
@@ -354,7 +354,7 @@ def Stolen_Vehicle_Tracking_010():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Details")
@@ -413,7 +413,7 @@ def Stolen_Vehicle_Tracking_011():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Details")
@@ -485,7 +485,7 @@ def Stolen_Vehicle_Tracking_012():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     if controller.click_text("Configure"):
@@ -535,7 +535,7 @@ def Stolen_Vehicle_Tracking_013():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("Configure")
@@ -646,7 +646,7 @@ def Stolen_Vehicle_Tracking_019():
                     service=img_service,
                     take_screenshot=False
                 )
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     Stolen_vehicle_tracking = controller.d(text="STOLEN VEHICLE TRACKING")
                     status = Stolen_vehicle_tracking.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item").get_text()
@@ -666,7 +666,7 @@ def Stolen_Vehicle_Tracking_020():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     if controller.click_text("Configure"):
@@ -697,7 +697,7 @@ def Stolen_Vehicle_Tracking_021():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Alerts")
@@ -721,7 +721,7 @@ def Stolen_Vehicle_Tracking_022():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Alerts")
@@ -762,7 +762,7 @@ def Stolen_Vehicle_Tracking_023():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Alerts")
@@ -807,7 +807,7 @@ def Stolen_Vehicle_Tracking_024():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     if controller.click_text("Configure"):
@@ -838,7 +838,7 @@ def Stolen_Vehicle_Tracking_025():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Alerts")
@@ -861,7 +861,7 @@ def Stolen_Vehicle_Tracking_026():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Alerts")
@@ -903,7 +903,7 @@ def Stolen_Vehicle_Tracking_027():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Alerts")
@@ -949,7 +949,7 @@ def Stolen_Vehicle_Tracking_028():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     if controller.click_text("Configure"):
@@ -982,7 +982,7 @@ def Stolen_Vehicle_Tracking_029():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Alerts")
@@ -1005,7 +1005,7 @@ def Stolen_Vehicle_Tracking_030():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Alerts")
@@ -1051,7 +1051,7 @@ def Stolen_Vehicle_Tracking_031():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Alerts")
@@ -1101,7 +1101,7 @@ def Stolen_Vehicle_Tracking_032():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Alerts")
@@ -1183,7 +1183,7 @@ def Stolen_Vehicle_Tracking_033():
                     service=img_service,
                     take_screenshot=False
                 )
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Alerts")
@@ -1204,7 +1204,7 @@ def Stolen_Vehicle_Tracking_034():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Alerts")
@@ -1390,7 +1390,7 @@ def Stolen_Vehicle_Tracking_049():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Details")
@@ -1420,7 +1420,7 @@ def Stolen_Vehicle_Tracking_050():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Details")
@@ -1449,7 +1449,7 @@ def Stolen_Vehicle_Tracking_051():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Details")
@@ -1505,7 +1505,7 @@ def Stolen_Vehicle_Tracking_055():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Details")
@@ -1541,7 +1541,7 @@ def Stolen_Vehicle_Tracking_056():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("STOLEN VEHICLE TRACKING"):
                     controller.click_text("STOLEN VEHICLE TRACKING")
                     controller.click_text("My Details")

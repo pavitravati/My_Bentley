@@ -33,7 +33,7 @@ def Privacy_Mode_002():
             else:
                 fail_log("Car status information still available", "002", img_service)
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             section_titles = []
             for _ in range(2):
                 titles = controller.d.xpath('//android.widget.TextView[''following-sibling::*//*[@text="Function disabled" or @text="Function not available"]]').all()
@@ -87,7 +87,7 @@ def Privacy_Mode_003():
             else:
                 fail_log("Car status information still available", "003", img_service)
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             section_titles = []
             for _ in range(2):
                 titles = controller.d.xpath('//android.widget.TextView[''following-sibling::*//*[@text="Function disabled" or @text="Function not available"]]').all()
@@ -152,7 +152,7 @@ def Privacy_Mode_004():
             else:
                 fail_log("Car status information still unavailable", "004", img_service)
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             section_titles = []
             for _ in range(2):
                 titles = controller.d.xpath('//android.widget.TextView[''following-sibling::*//*[@text="Function disabled" or @text="Function not available"]]').all()
@@ -206,7 +206,7 @@ def Privacy_Mode_005():
             else:
                 fail_log("Car status information still unavailable", "005", img_service)
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             section_titles = []
             for _ in range(2):
                 titles = controller.d.xpath(
@@ -283,7 +283,7 @@ def Privacy_Mode_008():
             controller.swipe_down()
             sleep(8)
             controller.wait_for_text("Data successfully updated")
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             if compare_with_expected_crop("Images/cabin_comfort_disabled.png"):
@@ -304,7 +304,7 @@ def Privacy_Mode_009():
             while not (controller.is_text_present("Data successfully updated") or controller.is_text_present("Data not updated")):
                 sleep(0.5)
             controller.wait_for_text("Data successfully updated")
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
 
             if compare_with_expected_crop("Images/battery_charge_disabled.png"):
                 log("My battery charge service disabled in privacy mode")
@@ -388,7 +388,7 @@ def Privacy_Mode_012():
     try:
         blocked_log("Test blocked - Can't be automated")
         # if app_login_setup():
-        #     controller.click_by_image("Icons/windows_icon.png")
+        #     controller.click_by_image("Icons/remote_icon.png")
         #     if remote_swipe("REMOTE PARKING"):
         #         remote_parking = controller.d(text="REMOTE PARKING")
         #         status = remote_parking.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item").get_text()
@@ -413,7 +413,7 @@ def Privacy_Mode_013():
             if controller.wait_for_text("Data successfully updated"):
                 sleep(3)
             controller.click_by_image("Icons/Error_Icon.png")
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
 
             if compare_with_expected_crop("Images/car_statistics_disabled.png"):
                 log("My car statistics service disabled in remote screen")
@@ -432,8 +432,8 @@ def Privacy_Mode_014():
             controller.swipe_down()
             sleep(6)
             controller.click_by_image("Icons/Error_Icon.png")
-            controller.click_by_image("Icons/windows_icon.png")
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
 
             controller.click_text("MY CAR STATISTICS")
             if controller.is_text_present("Graphical view"):

@@ -9,7 +9,7 @@ img_service = "Remote Park Assist"
 def Remote_Park_Assist_001():
     try:
         blocked_log("Test blocked - Can't be automated")
-        # controller.click_by_image("Icons/windows_icon.png")
+        # controller.click_by_image("Icons/remote_icon.png")
         # if remote_swipe("REMOTE PARKING"):
         #     if compare_with_expected_crop("Images/Remote_Parking.png") and (controller.is_text_present("Park in and out your vehicle remotely") or controller.is_text_present("Preconditions not fulfilled")):
         #         log("Remote Parking feature displayed correctly")
@@ -27,7 +27,7 @@ def Remote_Park_Assist_001():
 def Remote_Park_Assist_002():
     try:
         blocked_log("Test blocked - Can't be automated")
-        # controller.click_by_image("Icons/windows_icon.png")
+        # controller.click_by_image("Icons/remote_icon.png")
         # if remote_swipe("REMOTE PARKING"):
         #     controller.click_text("REMOTE PARKING")
         #     controller.click_text("AGREE & CONTINUE")
@@ -44,7 +44,7 @@ def Remote_Park_Assist_002():
 def Remote_Park_Assist_003():
     try:
         blocked_log("Test blocked - Can't be automated")
-        # controller.click_by_image("Icons/windows_icon.png")
+        # controller.click_by_image("Icons/remote_icon.png")
         # if remote_swipe("REMOTE PARKING"):
         #     controller.click_text("REMOTE PARKING")
         #     controller.click_text("AGREE & CONTINUE")
@@ -80,7 +80,7 @@ def Remote_Park_Assist_003():
 def Remote_Park_Assist_004():
     try:
         blocked_log("Test blocked - Can't be automated")
-        # controller.click_by_image("Icons/windows_icon.png")
+        # controller.click_by_image("Icons/remote_icon.png")
         # if remote_swipe("REMOTE PARKING"):
         #     controller.click_text("REMOTE PARKING")
         #     controller.click_text("AGREE & CONTINUE")
@@ -366,7 +366,7 @@ def Remote_Park_Assist_049():
 def Remote_Park_Assist_050():
     try:
         blocked_log("Test blocked - Can't be automated")
-        # controller.click_by_image("Icons/windows_icon.png")
+        # controller.click_by_image("Icons/remote_icon.png")
         # if remote_swipe("REMOTE PARKING"):
         #     controller.click_text("REMOTE PARKING")
         #

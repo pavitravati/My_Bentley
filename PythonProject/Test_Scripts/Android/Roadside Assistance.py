@@ -14,7 +14,7 @@ def Roadside_Assistance_001():
             else:
                 blocked_log("Test blocked - Account logged out and credentials not provided")
 
-        controller.click_by_image("Icons/windows_icon.png")
+        controller.click_by_image("Icons/remote_icon.png")
         if remote_swipe("ROADSIDE ASSISTANCE"):
             if controller.click_text("ROADSIDE ASSISTANCE"):
                 log("Roadside assistance section clicked")

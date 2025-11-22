@@ -1,15 +1,18 @@
 from time import sleep
 from common_utils.android_image_comparision import *
-from core.globals import current_email, current_password, current_vin, second_email, second_password, current_name
+# from core.globals import current_email, current_password, current_vin, second_email, second_password, current_name
+import core.globals as globals
 from core.log_emitter import blocked_log, fail_log, log
 
 
-def app_login(email=current_email, password=current_password):
+def app_login(email=globals.current_email, password=globals.current_password):
     success_tracker = []
     sleep(1)
     success_tracker.append(1) if controller.click_by_image("Icons/login_register_icon.png") else success_tracker.append(0)
     controller.wait_for_text("WELCOME", 30)
     while controller.is_text_present("WELCOME"):
+        print(email)
+        print(globals.current_email)
         controller.enter_text(f"%s%s%s%s%s{email}")
         sleep(1)
     controller.wait_for_text("Log in – Enter password")
@@ -55,11 +58,11 @@ def remote_swipe(service):
 
 def app_login_setup(second_account=False):
     if controller.is_text_present("LOGIN OR REGISTER"):
-        if current_email and current_password:
+        if globals.current_email and globals.current_password:
             if not second_account:
-                login_check = app_login()
+                login_check = app_login(globals.current_email, globals.current_password)
             else:
-                login_check = app_login(second_email, second_password)
+                login_check = app_login(globals.second_email, globals.second_password)
             if login_check == "0":
                 blocked_log("Test blocked - Unable to login to begin testcase")
                 sleep(1)
@@ -133,14 +136,13 @@ def delete_vin():
         blocked_log("Test blocked - Unable to delete vin to complete testcase")
     sleep(1)
 
-
 def add_vin():
     if controller.wait_for_text("DASHBOARD"):
         controller.small_swipe_up()
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/button_add_dashboard_module_add_vehicle")
         controller.small_swipe_up()
         controller.click_text("Enter VIN manually")
-        controller.enter_text(current_vin)
+        controller.enter_text(globals.current_vin)
         controller.click_text("CONFIRM")
         controller.wait_for_text("YOUR PREFERRED BENTLEY RETAILER")
         controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
@@ -156,11 +158,11 @@ def add_vin():
         controller.click_by_resource_id("firstname")
         while controller.d(resourceId="firstname").get_text() != "":
             controller.clear_text(1)
-        controller.enter_text(current_name.split(" ")[0])
+        controller.enter_text(globals.current_name.split(" ")[0])
         controller.click_text("Next")
         while controller.d(resourceId="lastname").get_text() != "":
             controller.clear_text(1)
-        controller.enter_text(current_name.split(" ")[1])
+        controller.enter_text(globals.current_name.split(" ")[1])
         controller.click_text("YOUR DETAILS")
         controller.click_text("Continue")
         controller.click_text("Location")

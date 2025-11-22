@@ -12,7 +12,7 @@ img_service = "My Cabin Comfort"
 def My_Cabin_Comfort_001():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             cabin_comfort = controller.d(text="MY CABIN COMFORT")
@@ -36,7 +36,7 @@ def My_Cabin_Comfort_001():
 def My_Cabin_Comfort_002():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             if controller.click_text("MY CABIN COMFORT"):
@@ -65,7 +65,7 @@ def My_Cabin_Comfort_003():
     try:
         if app_login_setup():
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             if controller.click_text("MY CABIN COMFORT"):
@@ -108,7 +108,7 @@ def My_Cabin_Comfort_004():
     try:
         if app_login_setup():
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             if controller.click_text("MY CABIN COMFORT"):
@@ -142,7 +142,7 @@ def My_Cabin_Comfort_005():
     try:
         if app_login_setup():
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             if controller.click_text("MY CABIN COMFORT"):
@@ -166,7 +166,7 @@ def My_Cabin_Comfort_005():
 def My_Cabin_Comfort_006():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             if controller.click_text("MY CABIN COMFORT"):
@@ -225,7 +225,7 @@ def My_Cabin_Comfort_006():
 def My_Cabin_Comfort_007():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             if controller.click_text("MY CABIN COMFORT"):
@@ -297,7 +297,7 @@ def My_Cabin_Comfort_007():
 def My_Cabin_Comfort_008():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             if controller.click_text("MY CABIN COMFORT"):
@@ -368,7 +368,7 @@ def My_Cabin_Comfort_008():
 def My_Cabin_Comfort_009():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             if controller.click_text("MY CABIN COMFORT"):
@@ -439,7 +439,7 @@ def My_Cabin_Comfort_009():
 def My_Cabin_Comfort_010():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             if controller.click_text("MY CABIN COMFORT"):
@@ -510,7 +510,7 @@ def My_Cabin_Comfort_010():
 def My_Cabin_Comfort_011():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             if controller.click_text("MY CABIN COMFORT"):
@@ -581,7 +581,7 @@ def My_Cabin_Comfort_011():
 def My_Cabin_Comfort_012():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             if controller.click_text("MY CABIN COMFORT"):
@@ -617,7 +617,7 @@ def My_Cabin_Comfort_012():
 def My_Cabin_Comfort_013():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             if controller.click_text("MY CABIN COMFORT"):
@@ -675,7 +675,7 @@ def My_Cabin_Comfort_013():
 def My_Cabin_Comfort_014():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             if controller.click_text("MY CABIN COMFORT"):
@@ -714,7 +714,7 @@ def My_Cabin_Comfort_014():
 def My_Cabin_Comfort_015():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             if controller.click_text("MY CABIN COMFORT"):
@@ -778,7 +778,7 @@ def My_Cabin_Comfort_015():
 def My_Cabin_Comfort_016():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             if controller.click_text("MY CABIN COMFORT"):
@@ -856,7 +856,7 @@ def My_Cabin_Comfort_017():
                 service=img_service,
                 take_screenshot=False
             )
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
             cabin_comfort = controller.d(text="MY CABIN COMFORT")
             status = cabin_comfort.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
@@ -919,7 +919,7 @@ def My_Cabin_Comfort_019():
                 service=img_service,
                 take_screenshot=False
             )
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
             cabin_comfort = controller.d(text="MY CABIN COMFORT")
             status = cabin_comfort.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
@@ -953,7 +953,7 @@ def My_Cabin_Comfort_020():
                 service=img_service,
                 take_screenshot=True
             )
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
             cabin_comfort = controller.d(text="MY CABIN COMFORT")
             status = cabin_comfort.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
@@ -975,7 +975,7 @@ def My_Cabin_Comfort_021():
                 service=img_service,
                 take_screenshot=True
             )
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
             cabin_comfort = controller.d(text="MY CABIN COMFORT")
             status = cabin_comfort.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
@@ -1029,7 +1029,7 @@ def set_new_timer(index, testcase_idx):
 def My_Cabin_Comfort_022():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             if controller.click_text("MY CABIN COMFORT"):
@@ -1060,7 +1060,7 @@ def My_Cabin_Comfort_022():
 def My_Cabin_Comfort_023():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
 
             if controller.click_text("MY CABIN COMFORT"):
@@ -1112,7 +1112,7 @@ def My_Cabin_Comfort_024():
             controller.click_by_image("Icons/back_icon.png")
             controller.click_by_image("Icons/back_icon.png")
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
             if controller.click_text("MY CABIN COMFORT") and controller.is_text_present("Function disabled"):
                 log("Cabin comfort successfully disabled")
@@ -1131,7 +1131,7 @@ def My_Cabin_Comfort_024():
             controller.click_by_image("Icons/back_icon.png")
             controller.click_by_image("Icons/back_icon.png")
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY CABIN COMFORT")
             if controller.is_text_present("Quick start"):
                 log("Cabin comfort section enabled")

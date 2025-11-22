@@ -11,7 +11,7 @@ def Data_Services_001():
         if country == "EUR":
             if app_login_setup():
 
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 if remote_swipe("DATA SERVICES"):
                     controller.click_text("DATA SERVICES")
                     if controller.click_text("VISIT STORE"):

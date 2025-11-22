@@ -4,7 +4,6 @@ from PySide6.QtWidgets import (
     QHeaderView, QTableWidgetItem, QFrame, QLineEdit, QSizePolicy, QApplication, QToolButton
 )
 from PySide6.QtGui import QFont, QPixmap, QCursor
-
 from PySide6.QtCore import Qt, Signal
 from gui.excel import resource_path, load_data, services, service_details
 from gui.import_page import ImportResult
@@ -15,6 +14,9 @@ from datetime import datetime
 import shutil
 import core.globals as globals
 import os
+from Test_Scripts.Android.detail_collector import get_details
+from common_utils.android_image_comparision import *
+from time import sleep
 
 testcase_map = load_data()
 
@@ -54,6 +56,16 @@ class HomePage(QWidget):
             self.screen = 'Laptop'
 
         globals.manual_run = True
+
+        try:
+            controller.d.press("recent")
+            sleep(0.5)
+            controller.click_text("Close all")
+            controller.launch_app("uk.co.bentley.mybentley")
+            while not controller.is_text_present("DASHBOARD") and not controller.is_text_present("LOGIN OR REGISTER"):
+                sleep(0.2)
+        except:
+            pass
 
         # Adds a vertical layout for the window and sets the padding around it
         layout = QVBoxLayout(self)
@@ -293,13 +305,37 @@ class HomePage(QWidget):
                 """)
 
         form_layout = QVBoxLayout(credentials_frame)
+        form_header = QHBoxLayout()
+        form_header.setAlignment(Qt.AlignCenter)
 
         form_title = QLabel("Credentials")
-        form_title.setAlignment(Qt.AlignCenter)
         form_title.setFont(QFont("Arial", 22, QFont.Bold))
         form_title.setStyleSheet("color: #394d45; border: 0px solid #394d45;")
+        form_header.addWidget(form_title)
 
-        form_layout.addWidget(form_title)
+        self.auto_fill_btn = QToolButton()
+        self.auto_fill_btn.setText("Auto-fill")
+        self.auto_fill_btn.setEnabled((compare_with_expected_crop("Icons/Profile_Icon.png") or compare_with_expected_crop("Icons/navigation_icon.png")))
+        self.auto_fill_btn.setCursor(Qt.PointingHandCursor)
+        self.auto_fill_btn.clicked.connect(lambda: self.get_account_details())
+        self.auto_fill_btn.setStyleSheet("""
+                QToolButton {
+                    background-color: #485f56;
+                    color: white;
+                    font-weight: bold;
+                    font-size: 12px;
+                }
+                QToolButton:hover {
+                    background-color: #25312c;
+                }
+                QToolButton:disabled {
+                    background-color: #F4F6F6;
+                    color: #D9DADA;
+                }
+            """)
+        form_header.addWidget(self.auto_fill_btn)
+
+        form_layout.addLayout(form_header)
 
         def cred_field(text, global_var):
             text_input = QLineEdit()
@@ -312,16 +348,16 @@ class HomePage(QWidget):
             text_input.textChanged.connect(lambda: self.update_run_btn(testcase_table))
             return text_input
 
-        self.name_input = cred_field("Name", globals.current_name)
         self.email_input = cred_field("Email", globals.current_email)
         self.password_input = cred_field("Password", globals.current_password)
         self.pin_input = cred_field("PIN", globals.current_pin)
+        self.name_input = cred_field("Name", globals.current_name)
         self.vin_input = cred_field("VIN", globals.current_vin)
 
-        form_layout.addWidget(self.name_input)
         form_layout.addWidget(self.email_input)
         form_layout.addWidget(self.password_input)
         form_layout.addWidget(self.pin_input)
+        form_layout.addWidget(self.name_input)
         form_layout.addWidget(self.vin_input)
         form_layout.setContentsMargins(30, 30, 30, 30)
 
@@ -393,6 +429,9 @@ class HomePage(QWidget):
                 }
                 QToolButton:hover {
                     background-color: #cfd4d2;
+                }
+                QToolButton:checked:hover {
+                    background-color: #25312c;
                 }
                 QToolButton:disabled {
                     background-color: #F4F6F6;
@@ -714,7 +753,9 @@ class HomePage(QWidget):
                     checkbox_check = True
 
         can_submit = name_filled and email_filled and password_filled and pin_filled and vehicle_type and phone_type and checkbox_check and country
+        can_autofill = (email_filled and password_filled) or (compare_with_expected_crop("Icons/Profile_Icon.png") or compare_with_expected_crop("Icons/navigation_icon.png"))
 
+        self.auto_fill_btn.setEnabled(can_autofill)
         self.run_btn.setEnabled(can_submit)
 
     def run_selected_services(self, table):
@@ -793,3 +834,20 @@ class HomePage(QWidget):
                 globals.country = "nar"
             case "CHN":
                 globals.country = "chn"
+
+    def get_account_details(self):
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+        get_details()
+        self.setAttribute(Qt.WA_TransparentForMouseEvents, False)
+        QApplication.restoreOverrideCursor()
+        self.email_input.setText(globals.current_email)
+        self.vin_input.setText(globals.current_vin)
+        self.name_input.setText(globals.current_name)
+        self.password_input.setText("Password1!" if globals.current_password == "" else globals.current_password)
+        self.pin_input.setText("1234" if globals.current_pin == "" else globals.current_pin)
+        if globals.vehicle_type == "phev":
+            self.phev_btn.setChecked(True)
+        elif globals.vehicle_type == "ice":
+            self.ice_btn.setChecked(True)
+        QApplication.restoreOverrideCursor()

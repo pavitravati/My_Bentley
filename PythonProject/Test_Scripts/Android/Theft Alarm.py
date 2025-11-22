@@ -23,7 +23,7 @@ def Theft_Alarm_003():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 sleep(0.5)
                 controller.swipe_up(0.1)
                 sleep(1)
@@ -47,7 +47,7 @@ def Theft_Alarm_004():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 sleep(0.5)
                 controller.swipe_up(0.1)
                 sleep(1)
@@ -71,7 +71,7 @@ def Theft_Alarm_005():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 controller.swipe_up()
                 controller.click_text("STOLEN VEHICLE TRACKING")
                 # Check what the notification is in car
@@ -90,7 +90,7 @@ def Theft_Alarm_007():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 controller.swipe_up()
                 sleep(0.5)
                 controller.click_text("STOLEN VEHICLE TRACKING")
@@ -125,7 +125,7 @@ def Theft_Alarm_008():
     try:
         if country == "eur":
             if app_login_setup():
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 controller.swipe_up()
                 sleep(0.5)
                 controller.click_text("STOLEN VEHICLE TRACKING")
@@ -164,7 +164,7 @@ def Theft_Alarm_009():
                 controller.click_by_image("Icons/back_icon.png")
                 controller.click_by_image("Icons/back_icon.png")
 
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 controller.swipe_up()
                 sleep(0.5)
                 controller.click_text("STOLEN VEHICLE TRACKING")

@@ -185,7 +185,7 @@ def Service_Management_005():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.click_by_image("Icons/back_icon.png")
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 controller.swipe_up(0.3)
 
                 if controller.click_text("MY CABIN COMFORT"):
@@ -211,7 +211,7 @@ def Service_Management_005():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.click_by_image("Icons/back_icon.png")
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
 
                 if controller.click_text("MY CABIN COMFORT"):
                     log("Cabin comfort successfully enabled")
@@ -245,7 +245,7 @@ def Service_Management_006():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.click_by_image("Icons/back_icon.png")
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
 
                 if controller.click_text("MY CAR STATISTICS"):
                     car_statistics = controller.d(text="MY CAR STATISTICS")
@@ -270,7 +270,7 @@ def Service_Management_006():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.click_by_image("Icons/back_icon.png")
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
 
                 if controller.click_text("MY CAR STATISTICS") and controller.is_text_present("List view"):
                     log("Car statistics successfully enabled")
@@ -300,7 +300,7 @@ def Service_Management_007():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.click_by_image("Icons/back_icon.png")
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
 
                 if controller.click_text("MY BATTERY CHARGE"):
                     battery_charge = controller.d(text="MY BATTERY CHARGE")
@@ -324,7 +324,7 @@ def Service_Management_007():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.click_by_image("Icons/back_icon.png")
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
 
                 if controller.click_text("MY BATTERY CHARGE") and controller.is_text_present("Set timer"):
                     log("Battery charge successfully enabled")
@@ -354,7 +354,7 @@ def Service_Management_008():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.click_by_image("Icons/back_icon.png")
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
 
                 remote_swipe("STOLEN VEHICLE TRACKING")
                 controller.click_text("STOLEN VEHICLE TRACKING")
@@ -377,7 +377,7 @@ def Service_Management_008():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.click_by_image("Icons/back_icon.png")
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
 
                 controller.click_text("STOLEN VEHICLE TRACKING")
                 controller.click_text("My Alerts")
@@ -438,7 +438,7 @@ def Service_Management_012():
 
                     controller.click_by_image("Icons/back_icon.png")
                     controller.click_by_image("Icons/back_icon.png")
-                    controller.click_by_image("Icons/windows_icon.png")
+                    controller.click_by_image("Icons/remote_icon.png")
 
                     if controller.click_text("ACTIVATE HEATING"):
                         activate_heating = controller.d(text="ACTIVATE HEATING")
@@ -462,7 +462,7 @@ def Service_Management_012():
 
                     controller.click_by_image("Icons/back_icon.png")
                     controller.click_by_image("Icons/back_icon.png")
-                    controller.click_by_image("Icons/windows_icon.png")
+                    controller.click_by_image("Icons/remote_icon.png")
 
                     controller.click_text("ACTIVATE HEATING")
                     if controller.click_text("ACTIVATE HEATING") and controller.is_text_present("Quick start"):

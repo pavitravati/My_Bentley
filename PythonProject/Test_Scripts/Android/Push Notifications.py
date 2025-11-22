@@ -61,7 +61,7 @@ def Push_Notifications_002():
 def Push_Notifications_003():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
 
             controller.swipe_up()
             controller.click_text("MY CABIN COMFORT")

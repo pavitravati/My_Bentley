@@ -9,7 +9,7 @@ img_service = "My Car Statistics"
 def My_Car_Statistics_001():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             if controller.is_text_present("Last trip"):
                 last_trip = controller.d(resourceId="uk.co.bentley.mybentley:id/textView_info_car_remote_item").get_text()[2:]
                 log(f"Last trip status displayed: {last_trip}")
@@ -23,7 +23,7 @@ def My_Car_Statistics_001():
 def My_Car_Statistics_002():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY CAR STATISTICS")
             if controller.click_text("CONSUMPTION - ELECTRIC"):
                 log("Graphical view dropdown menu displayed:")
@@ -81,7 +81,7 @@ def My_Car_Statistics_002():
 def My_Car_Statistics_003():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY CAR STATISTICS")
             controller.click_text("CONSUMPTION - ELECTRIC")
 
@@ -137,7 +137,7 @@ def My_Car_Statistics_003():
 def My_Car_Statistics_004():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY CAR STATISTICS")
 
             if controller.is_text_present("CONSUMPTION - ELECTRIC"):
@@ -189,7 +189,7 @@ def My_Car_Statistics_004():
 def My_Car_Statistics_005():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY CAR STATISTICS")
             controller.click_text("CONSUMPTION - ELECTRIC")
 
@@ -244,7 +244,7 @@ def My_Car_Statistics_005():
 def My_Car_Statistics_006():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY CAR STATISTICS")
             controller.click_text("CONSUMPTION - ELECTRIC")
 
@@ -299,7 +299,7 @@ def My_Car_Statistics_006():
 def My_Car_Statistics_007():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY CAR STATISTICS")
             controller.click_text("CONSUMPTION - ELECTRIC")
 
@@ -356,7 +356,7 @@ def My_Car_Statistics_007():
 def My_Car_Statistics_008():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY CAR STATISTICS")
 
             if controller.click_by_image("Icons/share_icon.png"):
@@ -391,7 +391,7 @@ def My_Car_Statistics_009():
             controller.click_by_image("Icons/back_icon.png")
             controller.click_by_image("Icons/back_icon.png")
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             if controller.is_text_present("Function disabled"):
                 controller.click_text("MY CAR STATISTICS")
                 if controller.is_text_present("CAR REMOTE"):
@@ -423,7 +423,7 @@ def My_Car_Statistics_010():
             controller.click_text("Miles")
             controller.click_by_image("Icons/back_icon.png")
             controller.click_by_image("Icons/back_icon.png")
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY CAR STATISTICS")
 
             if controller.d(resourceId="uk.co.bentley.mybentley:id/textView_axis_labeling_graph").get_text() == "kWh/100mi":
@@ -438,7 +438,7 @@ def My_Car_Statistics_010():
             controller.click_text("Kilometres")
             controller.click_by_image("Icons/back_icon.png")
             controller.click_by_image("Icons/back_icon.png")
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY CAR STATISTICS")
             if controller.d(resourceId="uk.co.bentley.mybentley:id/textView_axis_labeling_graph").get_text() == "kWh/100km":
                 log("Metric units displayed in My car statistics screen")

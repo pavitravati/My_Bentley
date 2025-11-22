@@ -92,7 +92,7 @@ def Demo_Mode_004():
     try:
         if app_logout_setup(True):
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             sleep(1)
             if find_icon_in_screen("Images/Demo_Mode_Car_Remote_Screen.png"):
                 log("Car Remote screen visible")
@@ -134,7 +134,7 @@ def Demo_Mode_005():
     try:
         if app_logout_setup(True):
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             sleep(1)
             if controller.click_text("MY BATTERY CHARGE"):
                 screen_text = ['MY BATTERY CHARGE', 'Battery charge', 'Set timer', 'Battery status', 'Time remaining', 'QUICK START']

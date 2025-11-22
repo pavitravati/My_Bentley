@@ -1,9 +1,16 @@
 import os
 
-current_name = current_email = current_password = current_pin = vehicle_type = phone_type = country = current_vin = second_email = second_password = fuel_pct = battery_pct = ""
+current_name = current_email = current_password = current_pin = second_email = second_password = ""
+vehicle_type = current_vin = fuel_pct = battery_pct = current_car = ""
+app_version = device = phone_software = ""
+
 manual_run = True
 selected_services = []
 rear_seat_heating = False
+
+# For now, till I start ios/other regions
+phone_type = "android"
+country = "eur"
 
 service_index = 0
 log_history = {}
@@ -13,10 +20,10 @@ base_path = os.path.join(user_dir, "Volkswagen AG", "BY GQM - Smart Quality - Do
 sharedrive_path = base_path
 
 #temp
-current_email = "testdrive@gqm.anonaddy.com"
-current_password = "Password1!"
+# current_email = "testdrive@gqm.anonaddy.com"
+# current_password = "Password1!"
 # current_vin = "BBECEE4VZ25020601"
-current_vin = "SJAAE14V3TC029739"
-current_name = "Michael Scott"
+# current_vin = "SJAAE14V3TC029739"
+# current_name = "Michael Scott"
 # second_email = "testdrive1@gqm.anonaddy.com"
 # second_password = "Password1!"

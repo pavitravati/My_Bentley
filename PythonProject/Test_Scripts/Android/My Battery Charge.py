@@ -12,7 +12,7 @@ def My_Battery_Charge_001():
     try:
         if app_login_setup():
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             if compare_with_expected_crop("Images/my_battery_charge.png") or compare_with_expected_crop("Images/my_battery_charge_greyed.png"):
                 log("My battery charge section displayed correctly")
             else:
@@ -36,7 +36,7 @@ def My_Battery_Charge_002():
     try:
         if app_login_setup():
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY BATTERY CHARGE")
 
             if controller.is_text_present("Set timer"):
@@ -76,7 +76,7 @@ def My_Battery_Charge_003():
     try:
         if app_login_setup():
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY BATTERY CHARGE")
 
             if controller.click_text("QUICK START"):
@@ -119,7 +119,7 @@ def My_Battery_Charge_004():
     try:
         if app_login_setup():
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY BATTERY CHARGE")
 
             if controller.click_text("SWITCH TO TIMER MODE"):
@@ -163,7 +163,7 @@ def My_Battery_Charge_005():
     try:
         if app_login_setup():
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY BATTERY CHARGE")
             controller.click_text("Set timer")
 
@@ -251,7 +251,7 @@ def My_Battery_Charge_006():
     try:
         if app_login_setup():
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY BATTERY CHARGE")
             controller.click_text("Set timer")
             if controller.d(resourceId="uk.co.bentley.mybentley:id/textView_periodic_time_rbc_timer_item").exists:
@@ -358,7 +358,7 @@ def My_Battery_Charge_007():
     try:
         if app_login_setup():
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY BATTERY CHARGE")
             controller.click_text("Set timer")
             if controller.d(resourceId="uk.co.bentley.mybentley:id/textView_periodic_time_rbc_timer_item").exists:
@@ -436,7 +436,7 @@ def My_Battery_Charge_008():
     try:
         if app_login_setup():
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY BATTERY CHARGE")
             if controller.click_text("Set timer"):
                 if controller.d(resourceId="uk.co.bentley.mybentley:id/textView_periodic_time_rbc_timer_item").exists:
@@ -509,7 +509,7 @@ def My_Battery_Charge_010():
             controller.click_image("icons/back_icon.png")
             controller.click_image("icons/back_icon.png")
 
-            controller.click_by_image("Icons/windows_icon.png")
+            controller.click_by_image("Icons/remote_icon.png")
             if controller.click_text("MY BATTERY CHARGE") and controller.is_text_present("Function disabled") and not controller.is_text_present("Set timer"):
                 log("My battery charge successfully disabled")
             else:

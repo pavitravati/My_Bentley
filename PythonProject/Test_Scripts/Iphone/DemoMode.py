@@ -107,7 +107,7 @@ def Demo_Mode_004(ios):
     test_result.start_time = time.time()
 
     try:
-        ios.click_by_image("ios_Icons/ios_Windows_Icon.png", threshold=0.80)
+        ios.click_by_image("ios_Icons/ios_remote_icon.png", threshold=0.80)
         sleep(3)
         if find_icon_in_screen_ios(ios,"ios_Images/ios_Demo_Mode_Car_Remote_Screen.png"):
             test_result.log_step("Car Remote screen visible, Demo_Mode_004 Passed",True)
@@ -140,7 +140,7 @@ def Demo_Mode_005(ios):
     test_result.start_time = time.time()
 
     try:
-        ios.click_by_image("ios_Icons/ios_Windows_Icon.png", threshold=0.80)
+        ios.click_by_image("ios_Icons/ios_remote_icon.png", threshold=0.80)
         sleep(2)
         ios.click_by_text("MY CAR STATISTICS")
         sleep(3)

@@ -14,7 +14,7 @@ def Activate_Heating_001():
             if vehicle_type == "ice":
                 app_login_setup()
 
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
 
                 activate_heating = controller.d(text="ACTIVATE HEATING")
                 status = activate_heating.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
@@ -41,7 +41,7 @@ def Activate_Heating_002():
             if vehicle_type == "ice":
                 app_login_setup()
 
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 controller.click_text("ACTIVATE HEATING")
                 if controller.is_text_present("Quick start") and controller.is_text_present("Timers"):
                     log("'Quick start' and 'Timers' tabs displayed")
@@ -62,7 +62,7 @@ def Activate_Heating_003():
             if vehicle_type == "ice":
                 app_login_setup()
 
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 controller.click_text("ACTIVATE HEATING")
 
                 if controller.is_text_present("ACTIVATE HEATING") and controller.is_text_present("Quick start"):
@@ -106,7 +106,7 @@ def Activate_Heating_004():
             if vehicle_type == "ice":
                 app_login_setup()
 
-                controller.click_by_image("Icons/windows_icon.png")
+                controller.click_by_image("Icons/remote_icon.png")
                 controller.click_text("ACTIVATE HEATING")
 
                 if controller.click_text("Timers"):
@@ -149,7 +149,7 @@ def Activate_Heating_005():
             if vehicle_type == "ice":
                 if app_login_setup():
 
-                    controller.click_by_image("Icons/windows_icon.png")
+                    controller.click_by_image("Icons/remote_icon.png")
                     controller.click_text("ACTIVATE HEATING")
 
                     if controller.click_text("START"):
@@ -208,7 +208,7 @@ def Activate_Heating_006():
             if vehicle_type == "ice":
                 if app_login_setup():
 
-                    controller.click_by_image("Icons/windows_icon.png")
+                    controller.click_by_image("Icons/remote_icon.png")
                     controller.click_text("ACTIVATE HEATING")
 
                     if controller.click_text("STOP"):
@@ -243,7 +243,7 @@ def Activate_Heating_007():
             if vehicle_type == "ice":
                 if app_login_setup():
 
-                    controller.click_by_image("Icons/windows_icon.png")
+                    controller.click_by_image("Icons/remote_icon.png")
                     controller.click_text("ACTIVATE HEATING")
                     controller.click_text("Timers")
 
@@ -297,7 +297,7 @@ def Activate_Heating_007():
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
         error_log(e, "007", img_service)
-
+controller.dump_ui()
 def Activate_Heating_008():
     try:
         if country == "eur":

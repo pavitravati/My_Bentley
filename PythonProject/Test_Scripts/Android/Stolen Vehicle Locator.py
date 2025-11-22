@@ -12,7 +12,7 @@ def Stolen_Vehicle_Locator_001():
         if country == "eur":
             blocked_log("Test blocked - Region locked (NAR/CHN)")
         else:
-            pass
+            blocked_log("Test blocked - Not written (NAR/CHN)")
     except Exception as e:
         error_log(e, "001", img_service)
 
@@ -21,15 +21,12 @@ def Stolen_Vehicle_Locator_002():
         if country == "eur":
             blocked_log("Test blocked - Region locked (NAR/CHN)")
         else:
-            pass
+            blocked_log("Test blocked - Not written (NAR/CHN)")
     except Exception as e:
         error_log(e, "002", img_service)
 
 def Stolen_Vehicle_Locator_003():
     try:
-        if country == "eur":
-            blocked_log("Test blocked - Region locked (NAR/CHN)")
-        else:
-            blocked_log("Test blocked - Can't check style guide")
+        blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "003", img_service)

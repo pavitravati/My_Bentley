@@ -1,16 +1,12 @@
-from time import sleep
-from common_utils.android_image_comparision import *
-from common_utils.android_controller import *
-from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
+from core.log_emitter import error_log, blocked_log
 from core.globals import country
-from core.globals import manual_run
 
 img_service = "My Alerts"
 
 def My_Alerts_001():
     try:
         if country == "NAR":
-            pass
+            blocked_log("Test blocked - Not written (NAR)")
         else:
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
@@ -19,7 +15,7 @@ def My_Alerts_001():
 def My_Alerts_002():
     try:
         if country == "NAR":
-            pass
+            blocked_log("Test blocked - Not written (NAR)")
         else:
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
@@ -28,7 +24,7 @@ def My_Alerts_002():
 def My_Alerts_003():
     try:
         if country == "NAR":
-            pass
+            blocked_log("Test blocked - Not written (NAR)")
         else:
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
@@ -37,7 +33,7 @@ def My_Alerts_003():
 def My_Alerts_004():
     try:
         if country == "NAR":
-            pass
+            blocked_log("Test blocked - Not written (NAR)")
         else:
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
@@ -46,7 +42,7 @@ def My_Alerts_004():
 def My_Alerts_005():
     try:
         if country == "NAR":
-            pass
+            blocked_log("Test blocked - Not written (NAR)")
         else:
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
@@ -55,7 +51,7 @@ def My_Alerts_005():
 def My_Alerts_006():
     try:
         if country == "NAR":
-            pass
+            blocked_log("Test blocked - Not written (NAR)")
         else:
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
@@ -64,7 +60,7 @@ def My_Alerts_006():
 def My_Alerts_007():
     try:
         if country == "NAR":
-            pass
+            blocked_log("Test blocked - Not written (NAR)")
         else:
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
@@ -73,7 +69,7 @@ def My_Alerts_007():
 def My_Alerts_008():
     try:
         if country == "NAR":
-            pass
+            blocked_log("Test blocked - Not written (NAR)")
         else:
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
@@ -82,7 +78,7 @@ def My_Alerts_008():
 def My_Alerts_009():
     try:
         if country == "NAR":
-            pass
+            blocked_log("Test blocked - Not written (NAR)")
         else:
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
@@ -91,7 +87,7 @@ def My_Alerts_009():
 def My_Alerts_010():
     try:
         if country == "NAR":
-            pass
+            blocked_log("Test blocked - Not written (NAR)")
         else:
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
@@ -100,7 +96,7 @@ def My_Alerts_010():
 def My_Alerts_011():
     try:
         if country == "NAR":
-            pass
+            blocked_log("Test blocked - Not written (NAR)")
         else:
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
@@ -109,7 +105,7 @@ def My_Alerts_011():
 def My_Alerts_012():
     try:
         if country == "NAR":
-            pass
+            blocked_log("Test blocked - Not written (NAR)")
         else:
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
@@ -118,7 +114,7 @@ def My_Alerts_012():
 def My_Alerts_013():
     try:
         if country == "NAR":
-            pass
+            blocked_log("Test blocked - Not written (NAR)")
         else:
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
@@ -127,7 +123,7 @@ def My_Alerts_013():
 def My_Alerts_014():
     try:
         if country == "NAR":
-            pass
+            blocked_log("Test blocked - Not written (NAR)")
         else:
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
@@ -136,7 +132,7 @@ def My_Alerts_014():
 def My_Alerts_015():
     try:
         if country == "NAR":
-            pass
+            blocked_log("Test blocked - Not written (NAR)")
         else:
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
@@ -145,7 +141,7 @@ def My_Alerts_015():
 def My_Alerts_016():
     try:
         if country == "NAR":
-            pass
+            blocked_log("Test blocked - Not written (NAR)")
         else:
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:

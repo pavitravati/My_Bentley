@@ -1,6 +1,6 @@
 from common_utils.android_image_comparision import *
 from core.log_emitter import log, fail_log, error_log, blocked_log
-from core.app_functions import remote_swipe
+from core.app_functions import remote_swipe, app_login_setup
 from core.globals import vehicle_type, country
 from core.globals import manual_run
 
@@ -11,24 +11,26 @@ def Audials_001():
         if country == "chn":
             blocked_log("Test blocked - Region locked (NAR/EUR)")
         else:
-            controller.click_by_image("Icons/windows_icon.png")
-            if remote_swipe("AUDIALS"):
-                if controller.click_text("AUDIALS"):
-                    log("Audials section clicked")
+            if app_login_setup():
 
-                controller.click_text("OK")
-                if controller.wait_for_text_that_contains("audials.com"):
-                    log("Redirected to Audials.com")
-                else:
-                    fail_log("Failed to redirect to Audials.com", "001", img_service)
+                controller.click_by_image("Icons/windows_icon.png")
+                if remote_swipe("AUDIALS"):
+                    if controller.click_text("AUDIALS"):
+                        log("Audials section clicked")
 
-                controller.launch_app("uk.co.bentley.mybentley")
-                if vehicle_type == "phev":
-                    controller.swipe_down(0.19)
-                    controller.swipe_down(0.19)
-                elif vehicle_type == "ice":
-                    controller.swipe_down(0.1)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+                    controller.click_text("OK")
+                    if controller.wait_for_text_that_contains("audials.com"):
+                        log("Redirected to Audials.com")
+                    else:
+                        fail_log("Failed to redirect to Audials.com", "001", img_service)
+
+                    controller.launch_app("uk.co.bentley.mybentley")
+                    if vehicle_type == "phev":
+                        controller.swipe_down(0.19)
+                        controller.swipe_down(0.19)
+                    elif vehicle_type == "ice":
+                        controller.swipe_down(0.1)
+                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "001", img_service)
 

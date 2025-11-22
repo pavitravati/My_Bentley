@@ -209,7 +209,7 @@ class TestCaseTablePage(QWidget):
                 self.table.setItem(row, 0, make_item(""))
                 manual_run_btn = QPushButton("Run")
                 manual_run_btn.setCursor(Qt.PointingHandCursor)
-                manual_run_btn.clicked.connect(lambda checked, r=row: self.run_testcase_manual(r))
+                manual_run_btn.clicked.connect(lambda checked, r=row, s=service: self.run_testcase_manual(r, s))
                 self.table.setCellWidget(row, 0, manual_run_btn)
             # In column 0,1,3,4 the data from the test case in Region column is added to that column in the table
             self.table.setItem(row, 0 if auto_run else 1, make_item(case["Test Case Description"]))
@@ -495,7 +495,11 @@ class TestCaseTablePage(QWidget):
                 )
             )
 
-    def run_testcase_manual(self, row):
+    def run_testcase_manual(self, row, service):
+        try:
+            globals.log_history[service].pop(row+1)
+        except Exception:
+            pass
         """Run a single testcase manually on a background QThread."""
         self.thread = QThread()
         self.worker = TestRunnerWorker(self.service, 1)

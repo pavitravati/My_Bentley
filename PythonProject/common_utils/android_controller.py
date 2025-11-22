@@ -109,10 +109,24 @@ class DeviceController:
         end_y = int(height * 0.2)
         self.swipe(start_x, start_y, start_x, end_y, duration)
 
+    def extra_small_swipe_up(self, duration=0.05):
+        width, height = self.d.window_size()
+        start_x = width // 2
+        start_y = int(height * 0.38)
+        end_y = int(height * 0.2)
+        self.swipe(start_x, start_y, start_x, end_y, duration)
+
     def swipe_down(self, duration=0.2):
         width, height = self.d.window_size()
         start_x = width // 2
         start_y = int(height * 0.2)
+        end_y = int(height * 0.8)
+        self.swipe(start_x, start_y, start_x, end_y, duration)
+
+    def notif_refresh(self, duration=0.2):
+        width, height = self.d.window_size()
+        start_x = width // 2
+        start_y = int(height * 0.3)
         end_y = int(height * 0.8)
         self.swipe(start_x, start_y, start_x, end_y, duration)
 
@@ -674,6 +688,10 @@ class DeviceController:
 
             if self.d(resourceId="uk.co.bentley.mybentley:id/textView_primary_range_vsr_combined_range").exists:
                 fuel_range = self.d(resourceId="uk.co.bentley.mybentley:id/textView_primary_range_vsr_combined_range").get_text()
+                fuel_details["fuel range"] = fuel_range
+
+            if self.d(resourceId="uk.co.bentley.mybentley:id/textView_range_vsr_single_range").exists:
+                fuel_range = self.d(resourceId="uk.co.bentley.mybentley:id/textView_range_vsr_single_range").get_text()
                 fuel_details["fuel range"] = fuel_range
 
             if self.d(resourceId="uk.co.bentley.mybentley:id/textView_value_vsr_metrics_item").exists:

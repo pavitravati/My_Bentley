@@ -4,9 +4,9 @@ from openpyxl.utils import get_column_letter
 import sys
 import os
 
-# (name, email, password, pin, vehicle, phone, country)
+# (name, email, password, pin, vin, vehicle, phone, country)
 service_details = {'Demo Mode': [[1,1,"",""], (0,0,0,0,0,0,1,1)], 'Customer Enrollment': [[1,0,"Not finished",""], (1,1,1,1,0,1,1,1)], 'Add VIN': [[1,1,"Not finished",""], (1,1,1,1,1,1,1,1)],
-            'App Registration Pages': [[1,1,"",""], (1,1,1,1,1,1,1,1)], 'App Log in-Log out': [[1,0,"",""], (0,1,1,0,0,1,1,1)], 'Nickname': [[1,1,"",""], (0,0,0,0,0,1,1,1)],
+            'App Registration Pages': [[1,1,"",""], (0,0,0,0,1,0,1,1)], 'App Log in-Log out': [[1,0,"",""], (0,1,1,0,0,1,1,1)], 'Nickname': [[1,1,"",""], (0,0,0,0,0,1,1,1)],
             'Services and licenses': [[1,1,"",""], (0,0,0,0,0,1,1,1)], 'Vehicle Status Report': [[0,0,"",""], (0,0,0,0,0,1,1,1)], 'Remote Lock-Unlock': [[0,0,""], (0,0,0,1,0,1,1,1)],
             'Remote Honk & Flash': [[0,0,"Not finished","chn"], (0,0,0,0,0,1,1,1)], 'My Car Statistics': [[1,1,"",""], (0,0,0,0,0,1,1,1)], 'My Cabin Comfort': [[0,0,"",""], (0,0,0,0,0,1,1,1)],
             'My Battery Charge': [[0,0,"",""], (0,0,0,0,0,1,1,1)], 'Service Management': [[1,1,"",""], (0,0,0,0,0,1,1,1)], 'Activate Heating': [[0,0,"","eur"], (0,0,0,0,0,1,1,1)],

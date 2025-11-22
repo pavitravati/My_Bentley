@@ -366,6 +366,12 @@ class ServiceReport(QWidget):
         for row in range(1, current_sheet.max_row+1):
             cell_value = current_sheet[f'B{row}'].value
             result = '❌' if '❌' in str(cell_value) else '✅'
+            if '❌' in str(cell_value):
+                result = '❌'
+            elif '🔒' in str(cell_value):
+                result = '🔒'
+            else:
+                result = '✅'
 
             btn = QToolButton()
             test_description = str(current_sheet[f'A{row}'].value)
@@ -378,8 +384,10 @@ class ServiceReport(QWidget):
 
             if result == '✅':
                 btn.setStyleSheet("background-color: #394d45; font-size: 12px; color: white;")
-            else:
+            elif result == '❌':
                 btn.setStyleSheet("background-color: #7d232b; font-size: 12px; color: white;")
+            else:
+                btn.setStyleSheet("background-color: gray; font-size: 12px; color: white;")
 
             row_logs = current_sheet[f'B{row}']
             btn.clicked.connect(

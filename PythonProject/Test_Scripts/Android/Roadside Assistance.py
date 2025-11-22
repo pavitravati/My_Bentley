@@ -1,14 +1,19 @@
 from common_utils.android_image_comparision import *
-from core.globals import vehicle_type
-from core.log_emitter import log, fail_log, metric_log, error_log, blocked_log
-from time import sleep
+from core.globals import vehicle_type, current_email, current_password
+from core.log_emitter import log, fail_log, error_log, blocked_log
 from core.app_functions import remote_swipe
-from core.globals import manual_run
+from core.app_functions import app_login
 
 img_service = "Roadside Assistance"
 
 def Roadside_Assistance_001():
     try:
+        if controller.is_text_present("LOGIN OR REGISTER") and current_email and current_password:
+            if current_email and current_password:
+                app_login()
+            else:
+                blocked_log("Test blocked - Account logged out and credentials not provided")
+
         controller.click_by_image("Icons/windows_icon.png")
         if remote_swipe("ROADSIDE ASSISTANCE"):
             if controller.click_text("ROADSIDE ASSISTANCE"):

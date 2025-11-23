@@ -4,17 +4,17 @@ from openpyxl.utils import get_column_letter
 import sys
 import os
 
-# (name, email, password, pin, vin, vehicle, phone, country)
-service_details = {'Demo Mode': [[1,1,"",""], (0,0,0,0,0,0,1,1)], 'Customer Enrollment': [[1,0,"Not finished",""], (1,1,1,1,0,1,1,1)], 'Add VIN': [[1,1,"Not finished",""], (1,1,1,1,1,1,1,1)],
-            'App Registration Pages': [[1,1,"",""], (0,0,0,0,1,0,1,1)], 'App Log in-Log out': [[1,0,"",""], (0,1,1,0,0,1,1,1)], 'Nickname': [[1,1,"",""], (0,0,0,0,0,1,1,1)],
-            'Services and licenses': [[1,1,"",""], (0,0,0,0,0,1,1,1)], 'Vehicle Status Report': [[0,0,"",""], (0,0,0,0,0,1,1,1)], 'Remote Lock-Unlock': [[0,0,""], (0,0,0,1,0,1,1,1)],
-            'Remote Honk & Flash': [[0,0,"Not finished","chn"], (0,0,0,0,0,1,1,1)], 'My Car Statistics': [[1,1,"",""], (0,0,0,0,0,1,1,1)], 'My Cabin Comfort': [[0,0,"",""], (0,0,0,0,0,1,1,1)],
-            'My Battery Charge': [[0,0,"",""], (0,0,0,0,0,1,1,1)], 'Service Management': [[1,1,"",""], (0,0,0,0,0,1,1,1)], 'Activate Heating': [[0,0,"","eur"], (0,0,0,0,0,1,1,1)],
-            'Roadside Assistance': [[1,1,"",""], (0,0,0,0,0,1,1,1)], 'Data Services': [[1,1,"Broken",""], (0,0,0,0,0,1,1,1)], 'My Alerts': [[0,0,"Not finished","nar"], (0,0,0,0,0,1,1,1)],
-            'Theft Alarm': [[0,0,"","eur"], (0,0,0,0,0,1,1,1)], 'Stolen Vehicle Locator': [[1,1,"Not finished","nar chn"], (0,0,0,0,0,1,1,1)], 'Audials': [[1,1,"","eur nar"], (0,0,0,0,0,1,1,1)],
-            'Car Finder': [[0,1,"",""], (0,0,0,0,0,1,1,1)], 'Nav Companion': [[0,0,"",""], (0,0,0,0,0,1,1,1)], 'Notifications': [[1,0,"",""], (0,0,0,0,0,1,1,1)],
-            'Push Notifications': [[0,1,"Broken",""], (0,0,0,0,0,1,1,1)], 'Profile': [[1,1,"",""], (1,1,0,1,0,1,1,1)], 'Localization': [[1,1,"Not automatable",""], (0,0,0,0,0,1,1,1)],
-            'Privacy Mode': [[0,0,"",""], (1,1,1,1,0,1,1,1)], 'Remote Park Assist': [[0,0,"Not automatable",""], (1,1,1,1,0,1,1,1)], 'Stolen Vehicle Tracking': [[0,0,"","eur"], (0,0,0,0,0,1,1,1)]}
+# {'service name': [[needs vehicle 1=no,has preconditions 1=no,'reason for block', 'region locks'] (name, email, password, pin, vin, vehicle, phone, country)
+service_details = {'Demo Mode': [[1,1,"",""], (1,1,0,0,0,0,1,1)], 'Customer Enrollment': [[1,0,"Not finished",""], (1,1,1,1,0,1,1,1)], 'Add VIN': [[1,1,"Not finished",""], (1,1,1,1,1,1,1,1)],
+            'App Registration Pages': [[1,1,"",""], (1,1,0,0,1,0,1,1)], 'App Log in-Log out': [[1,0,"",""], (1,1,1,0,0,1,1,1)], 'Nickname': [[1,1,"",""], (1,1,0,0,0,1,1,1)],
+            'Services and licenses': [[1,1,"",""], (1,1,0,0,0,1,1,1)], 'Vehicle Status Report': [[0,0,"",""], (1,1,0,0,0,1,1,1)], 'Remote Lock-Unlock': [[0,0,""], (1,1,0,1,0,1,1,1)],
+            'Remote Honk & Flash': [[0,0,"Not finished","chn"], (1,1,0,0,0,1,1,1)], 'My Car Statistics': [[1,1,"",""], (1,1,0,0,0,1,1,1)], 'My Cabin Comfort': [[0,0,"",""], (1,1,0,0,0,1,1,1)],
+            'My Battery Charge': [[0,0,"",""], (1,1,0,0,0,1,1,1)], 'Service Management': [[1,1,"",""], (1,1,0,0,0,1,1,1)], 'Activate Heating': [[0,0,"","eur"], (1,1,0,0,0,1,1,1)],
+            'Roadside Assistance': [[1,1,"",""], (1,1,0,0,0,1,1,1)], 'Data Services': [[1,1,"Broken",""], (1,1,0,0,0,1,1,1)], 'My Alerts': [[0,0,"Not finished","nar"], (1,1,0,0,0,1,1,1)],
+            'Theft Alarm': [[0,0,"","eur"], (1,1,0,0,0,1,1,1)], 'Stolen Vehicle Locator': [[1,1,"Not finished","nar chn"], (1,1,0,0,0,1,1,1)], 'Audials': [[1,1,"","eur nar"], (1,1,0,0,0,1,1,1)],
+            'Car Finder': [[0,1,"",""], (1,1,0,0,0,1,1,1)], 'Nav Companion': [[0,0,"",""], (1,1,0,0,0,1,1,1)], 'Notifications': [[1,0,"",""], (1,1,0,0,0,1,1,1)],
+            'Push Notifications': [[0,1,"Broken",""], (1,1,0,0,0,1,1,1)], 'Profile': [[1,1,"",""], (1,1,0,1,0,1,1,1)], 'Localization': [[1,1,"Not automatable",""], (1,1,0,0,0,1,1,1)],
+            'Privacy Mode': [[0,0,"",""], (1,1,1,1,0,1,1,1)], 'Remote Park Assist': [[0,0,"Not automatable",""], (1,1,1,1,0,1,1,1)], 'Stolen Vehicle Tracking': [[0,0,"","eur"], (1,1,0,0,0,1,1,1)]}
 services = list(service_details.keys())
 
 def resource_path(relative_path):

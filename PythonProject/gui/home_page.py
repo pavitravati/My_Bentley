@@ -13,7 +13,6 @@ from openpyxl import Workbook
 from datetime import datetime
 import shutil
 import core.globals as globals
-import os
 from Test_Scripts.Android.detail_collector import get_details
 from common_utils.android_image_comparision import *
 from time import sleep
@@ -49,6 +48,7 @@ class HomePage(QWidget):
     def __init__(self, main_window, parent=None):
         super().__init__(parent)
         self.main_window = main_window
+        self.get_account_details_called = False
         QApplication.primaryScreen().size().width()
         if QApplication.primaryScreen().size().width() > 1500:
             self.screen = 'Monitor'
@@ -57,15 +57,15 @@ class HomePage(QWidget):
 
         globals.manual_run = True
 
-        try:
-            controller.d.press("recent")
-            sleep(0.5)
-            controller.click_text("Close all")
-            controller.launch_app("uk.co.bentley.mybentley")
-            while not controller.is_text_present("DASHBOARD") and not controller.is_text_present("LOGIN OR REGISTER"):
-                sleep(0.2)
-        except:
-            pass
+        # try:
+        #     controller.d.press("recent")
+        #     sleep(0.5)
+        #     controller.click_text("Close all")
+        #     controller.launch_app("uk.co.bentley.mybentley")
+        #     while not controller.is_text_present("DASHBOARD") and not controller.is_text_present("LOGIN OR REGISTER"):
+        #         sleep(0.2)
+        # except:
+        #     pass
 
         # Adds a vertical layout for the window and sets the padding around it
         layout = QVBoxLayout(self)
@@ -313,12 +313,12 @@ class HomePage(QWidget):
         form_title.setStyleSheet("color: #394d45; border: 0px solid #394d45;")
         form_header.addWidget(form_title)
 
-        self.auto_fill_btn = QToolButton()
-        self.auto_fill_btn.setText("Auto-fill")
-        self.auto_fill_btn.setEnabled((compare_with_expected_crop("Icons/Profile_Icon.png") or compare_with_expected_crop("Icons/navigation_icon.png")))
-        self.auto_fill_btn.setCursor(Qt.PointingHandCursor)
-        self.auto_fill_btn.clicked.connect(lambda: self.get_account_details())
-        self.auto_fill_btn.setStyleSheet("""
+        self.fill_req_details_btn = QToolButton()
+        self.fill_req_details_btn.setText("Get details")
+        self.fill_req_details_btn.setEnabled(False)
+        self.fill_req_details_btn.setCursor(Qt.PointingHandCursor)
+        self.fill_req_details_btn.clicked.connect(lambda: self.get_account_details())
+        self.fill_req_details_btn.setStyleSheet("""
                 QToolButton {
                     background-color: #485f56;
                     color: white;
@@ -333,8 +333,7 @@ class HomePage(QWidget):
                     color: #D9DADA;
                 }
             """)
-        form_header.addWidget(self.auto_fill_btn)
-
+        form_header.addWidget(self.fill_req_details_btn)
         form_layout.addLayout(form_header)
 
         def cred_field(text, global_var):
@@ -752,10 +751,10 @@ class HomePage(QWidget):
                 if cb.isChecked():
                     checkbox_check = True
 
-        can_submit = name_filled and email_filled and password_filled and pin_filled and vehicle_type and phone_type and checkbox_check and country
-        can_autofill = (email_filled and password_filled) or (compare_with_expected_crop("Icons/Profile_Icon.png") or compare_with_expected_crop("Icons/navigation_icon.png"))
+        can_submit = name_filled and email_filled and password_filled and pin_filled and vehicle_type and phone_type and checkbox_check and country and self.get_account_details_called
+        can_autofill = (globals.current_email != "" and globals.current_password != "")
 
-        self.auto_fill_btn.setEnabled(can_autofill)
+        self.fill_req_details_btn.setEnabled(can_autofill)
         self.run_btn.setEnabled(can_submit)
 
     def run_selected_services(self, table):
@@ -836,16 +835,14 @@ class HomePage(QWidget):
                 globals.country = "chn"
 
     def get_account_details(self):
+        self.get_account_details_called = True
         QApplication.setOverrideCursor(Qt.WaitCursor)
         self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
         get_details()
         self.setAttribute(Qt.WA_TransparentForMouseEvents, False)
         QApplication.restoreOverrideCursor()
-        self.email_input.setText(globals.current_email)
         self.vin_input.setText(globals.current_vin)
         self.name_input.setText(globals.current_name)
-        self.password_input.setText("Password1!" if globals.current_password == "" else globals.current_password)
-        self.pin_input.setText("1234" if globals.current_pin == "" else globals.current_pin)
         if globals.vehicle_type == "phev":
             self.phev_btn.setChecked(True)
         elif globals.vehicle_type == "ice":

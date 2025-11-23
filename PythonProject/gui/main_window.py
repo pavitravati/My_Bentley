@@ -2,7 +2,8 @@ from PySide6.QtWidgets import (
     QApplication, QMainWindow, QToolBar
 )
 from PySide6.QtGui import QAction, QActionGroup, QIcon
-from excel import services, service_details
+# from excel import services, service_details
+from service_details import service_details, services
 from test_case_page import TestCaseTablePage
 from core import globals
 from home_page import HomePage
@@ -52,7 +53,7 @@ class MainWindow(QMainWindow):
 
     def toolbar_button_clicked(self, service):
         fields = [globals.current_name, globals.current_email, globals.current_password, globals.current_pin, globals.vehicle_type, globals.phone_type, globals.country]
-        stored = service_details[service][1]
+        stored = service_details[service]['fields'].values()
 
         if not any(not f and s for f, s in zip(fields, stored)):
             self.service = service

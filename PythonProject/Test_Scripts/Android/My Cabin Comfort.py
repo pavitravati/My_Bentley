@@ -6,6 +6,7 @@ from datetime import date, datetime
 from core.app_functions import remote_swipe, app_login_setup
 from core.globals import manual_run
 from gui.manual_check import manual_check
+import core.globals as globals
 
 img_service = "My Cabin Comfort"
 
@@ -46,6 +47,9 @@ def My_Cabin_Comfort_002():
 
             if controller.is_text_present("Quick start"):
                 log("Quick start tab displayed")
+                controller.click_by_image("Icons/timer_toggle_off.png")
+                if controller.is_text_present("Rear left"):
+                    globals.rear_seat_heating = True
             else:
                 fail_log("Quick start tab not displayed", "002", img_service)
 
@@ -107,32 +111,34 @@ def My_Cabin_Comfort_003():
 def My_Cabin_Comfort_004():
     try:
         if app_login_setup():
+            if not globals.rear_seat_heating:
+                blocked_log("Test blocked - Vehicle should support rear heating")
+            else:
+                controller.click_by_image("Icons/remote_icon.png")
+                remote_swipe("MY CABIN COMFORT")
 
-            controller.click_by_image("Icons/remote_icon.png")
-            remote_swipe("MY CABIN COMFORT")
-
-            if controller.click_text("MY CABIN COMFORT"):
-                if compare_with_expected_crop("Images/default_heating.png", 0.99):
-                    log("Default seat heating options displayed")
-                else:
-                    controller.click_by_image("Icons/Front_right_seat_disabled.png", 1)
-                    controller.click_by_image("Icons/Front_left_seat_disabled.png", 1)
+                if controller.click_text("MY CABIN COMFORT"):
                     if compare_with_expected_crop("Images/default_heating.png", 0.99):
                         log("Default seat heating options displayed")
                     else:
-                        fail_log("Default seat heating options not displayed", "004", img_service)
+                        controller.click_by_image("Icons/Front_right_seat_disabled.png", 1)
+                        controller.click_by_image("Icons/Front_left_seat_disabled.png", 1)
+                        if compare_with_expected_crop("Images/default_heating.png", 0.99):
+                            log("Default seat heating options displayed")
+                        else:
+                            fail_log("Default seat heating options not displayed", "004", img_service)
 
-                if controller.click_by_image("Icons/Rear_left_seat_disabled.png") and compare_with_expected_crop("Icons/Rear_left_seat_enabled.png", 0.99):
-                    log("Rear seat heating options supported")
+                    if controller.click_by_image("Icons/Rear_left_seat_disabled.png") and compare_with_expected_crop("Icons/Rear_left_seat_enabled.png", 0.99):
+                        log("Rear seat heating options supported")
+                    else:
+                        fail_log("Rear seat heating options not supported", "004", img_service)
+
                 else:
-                    fail_log("Rear seat heating options not supported", "004", img_service)
+                    fail_log("Cabin comfort section could not be found", "004", img_service)
 
-            else:
-                fail_log("Cabin comfort section could not be found", "004", img_service)
-
-            controller.click_by_image("Icons/back_icon.png")
-            controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+                controller.click_by_image("Icons/back_icon.png")
+                controller.swipe_down()
+                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "004", img_service)
 
@@ -141,155 +147,169 @@ def My_Cabin_Comfort_005():
     temperatures = ["16", "17", "18", "19", "21"]
     try:
         if app_login_setup():
-
-            controller.click_by_image("Icons/remote_icon.png")
-            remote_swipe("MY CABIN COMFORT")
-
-            if controller.click_text("MY CABIN COMFORT"):
-                for i in range(1, 6):
-                    controller.click((100*i), 930)
-                    cabin_comfort = controller.d(text="Target temperature")
-                    temp = cabin_comfort.sibling(index="2").get_text()
-                    if temp == f"{temperatures[i-1]}.0 °C":
-                        log("Target temperature able to be set")
-                    else:
-                        fail_log("Target temperature unable to be set", "005", img_service)
+            if not globals.rear_seat_heating:
+                blocked_log("Test blocked - Vehicle should support rear heating")
             else:
-                fail_log("Cabin comfort section could not be found", "005", img_service)
+                controller.click_by_image("Icons/remote_icon.png")
+                remote_swipe("MY CABIN COMFORT")
 
-            controller.click_by_image("Icons/back_icon.png")
-            controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+                if controller.click_text("MY CABIN COMFORT"):
+                    for i in range(1, 6):
+                        controller.click((100*i), 930)
+                        cabin_comfort = controller.d(text="Target temperature")
+                        temp = cabin_comfort.sibling(index="2").get_text()
+                        if temp == f"{temperatures[i-1]}.0 °C":
+                            log("Target temperature able to be set")
+                        else:
+                            fail_log("Target temperature unable to be set", "005", img_service)
+                else:
+                    fail_log("Cabin comfort section could not be found", "005", img_service)
+
+                controller.click_by_image("Icons/back_icon.png")
+                controller.swipe_down()
+                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "005", img_service)
 
 def My_Cabin_Comfort_006():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/remote_icon.png")
-            remote_swipe("MY CABIN COMFORT")
-
-            if controller.click_text("MY CABIN COMFORT"):
-                controller.click(200, 930)
-                cabin_comfort = controller.d(text="Target temperature")
-                temp = cabin_comfort.sibling(index="2").get_text()
-                if temp == "17.0 °C":
-                    log("Target temperature set successfully")
-                else:
-                    fail_log("Target temperature not set", "006", img_service)
-
-                controller.click_by_image("Icons/Interior_heating_toggle.png")
-                if compare_with_expected_crop("Icons/timer_toggle_off.png"):
-                    log("Interior heating disabled")
-                else:
-                    fail_log("Interior heating not disabled", "006", img_service)
-
-                if controller.click_text("START"):
-                    log("Start button clicked")
-                else:
-                    fail_log("Start button not found", "006", img_service)
-                controller.wait_for_text("Sending message to car")
-                while controller.is_text_present("Sending message to car"):
-                    sleep(0.5)
-                if controller.is_text_present("Successfully sent to car"):
-                    log("Successfully sent to car status displayed")
-                else:
-                    fail_log("Successfully sent to car status not displayed", "006", img_service)
-                controller.wait_for_text("My cabin comfort is active")
-                if controller.is_text_present("My cabin comfort is active") and controller.is_text_present("- 10 min"):
-                    log("Active cabin comfort status displayed")
-                else:
-                    fail_log("Active cabin comfort not displayed", "006", img_service)
-                controller.click_text("MY CABIN COMFORT")
-                if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
-                    log("Stop button displayed when cabin comfort active")
-                    manual_check(
-                        instruction=f"Verify the time left matches remote RCP menu\nVerify MY CABIN COMFORT is active in the car",
-                        test_id="006",
-                        service=img_service,
-                        take_screenshot=True
-                    )
-                    controller.click_text("STOP")
-                else:
-                    fail_log("Stop button not found, or cabin comfort not active", "006", img_service)
+            if not globals.rear_seat_heating:
+                blocked_log("Test blocked - Vehicle should support rear heating")
             else:
-                fail_log("Cabin comfort section could not be found", "006", img_service)
+                if not int(globals.fuel_pct) >= 30:
+                    blocked_log("Test blocked - Vehicle should have at least 30% Fuel")
+                else:
+                    controller.click_by_image("Icons/remote_icon.png")
+                    remote_swipe("MY CABIN COMFORT")
 
-            controller.click_text("STOP")
-            controller.wait_for_text("Not active")
-            controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+                    if controller.click_text("MY CABIN COMFORT"):
+                        controller.click(200, 930)
+                        cabin_comfort = controller.d(text="Target temperature")
+                        temp = cabin_comfort.sibling(index="2").get_text()
+                        if temp == "17.0 °C":
+                            log("Target temperature set successfully")
+                        else:
+                            fail_log("Target temperature not set", "006", img_service)
+
+                        controller.click_by_image("Icons/Interior_heating_toggle.png")
+                        if compare_with_expected_crop("Icons/timer_toggle_off.png"):
+                            log("Interior heating disabled")
+                        else:
+                            fail_log("Interior heating not disabled", "006", img_service)
+
+                        if controller.click_text("START"):
+                            log("Start button clicked")
+                        else:
+                            fail_log("Start button not found", "006", img_service)
+                        controller.wait_for_text("Sending message to car")
+                        while controller.is_text_present("Sending message to car"):
+                            sleep(0.5)
+                        if controller.is_text_present("Successfully sent to car"):
+                            log("Successfully sent to car status displayed")
+                        else:
+                            fail_log("Successfully sent to car status not displayed", "006", img_service)
+                        controller.wait_for_text("My cabin comfort is active")
+                        if controller.is_text_present("My cabin comfort is active") and controller.is_text_present("- 10 min"):
+                            log("Active cabin comfort status displayed")
+                        else:
+                            fail_log("Active cabin comfort not displayed", "006", img_service)
+                        controller.click_text("MY CABIN COMFORT")
+                        if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
+                            log("Stop button displayed when cabin comfort active")
+                            manual_check(
+                                instruction=f"Verify the time left matches remote RCP menu\nVerify MY CABIN COMFORT is active in the car",
+                                test_id="006",
+                                service=img_service,
+                                take_screenshot=True
+                            )
+                            controller.click_text("STOP")
+                        else:
+                            fail_log("Stop button not found, or cabin comfort not active", "006", img_service)
+                    else:
+                        fail_log("Cabin comfort section could not be found", "006", img_service)
+
+                    controller.click_text("STOP")
+                    controller.wait_for_text("Not active")
+                    controller.swipe_down()
+                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "006", img_service)
 
 def My_Cabin_Comfort_007():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/remote_icon.png")
-            remote_swipe("MY CABIN COMFORT")
-
-            if controller.click_text("MY CABIN COMFORT"):
-                controller.click(300, 930)
-                cabin_comfort = controller.d(text="Target temperature")
-                temp = cabin_comfort.sibling(index="2").get_text()
-                if temp == "18.0 °C":
-                    log("Target temperature set successfully")
-                else:
-                    fail_log("Target temperature not set", "007", img_service)
-
-                controller.click_by_image("Icons/timer_toggle_off.png")
-                if compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
-                    log("Interior heating enabled")
-                else:
-                    fail_log("Interior heating not disabled", "007", img_service)
-
-                if compare_with_expected_crop("Images/default_heating.png", 0.99):
-                    log("Default seat heating options displayed")
-                else:
-                    fail_log("Default seat heating options not displayed", "007", img_service)
-
-                if controller.click_by_image("Icons/Front_left_seat_enabled.png") and compare_with_expected_crop("Icons/Front_left_seat_disabled.png", 0.99) and compare_with_expected_crop("Icons/Front_right_seat_enabled.png", 0.99):
-                    log("Driver seat heating enabled and passenger seat heating disabled successfully")
-                else:
-                    fail_log("Driver seat heating enabled and passenger seat heating disabled unsuccessfully", "007", img_service)
-
-                if controller.click_text("START"):
-                    log("Start button clicked")
-                else:
-                    fail_log("Start button not found", "007", img_service)
-
-                controller.wait_for_text("Sending message to car")
-                while controller.is_text_present("Sending message to car"):
-                    sleep(0.5)
-                if controller.is_text_present("Successfully sent to car"):
-                    log("Successfully sent to car status displayed")
-                else:
-                    fail_log("Successfully sent to car status not displayed", "007", img_service)
-                controller.wait_for_text("My cabin comfort is active")
-                if controller.is_text_present("My cabin comfort is active") and controller.is_text_present("- 10 min"):
-                    log("Active cabin comfort status displayed")
-                else:
-                    fail_log("Active cabin comfort not displayed", "007", img_service)
-                controller.click_text("MY CABIN COMFORT")
-                if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
-                    log("Stop button displayed when cabin comfort active")
-                    manual_check(
-                        instruction=f"Verify the time left matches remote RCP menu\nVerify MY CABIN COMFORT is active in the car",
-                        test_id="007",
-                        service=img_service,
-                        take_screenshot=True
-                    )
-                    controller.click_text("STOP")
-                    while controller.is_text_present("Sending message to car"):
-                        sleep(0.5)
-                else:
-                    fail_log("Stop button not found, or cabin comfort not active", "007", img_service)
+            if not globals.rear_seat_heating:
+                blocked_log("Test blocked - Vehicle should support rear heating")
             else:
-                fail_log("Cabin comfort section could not be found", "007", img_service)
+                if not int(globals.fuel_pct) >= 30:
+                    blocked_log("Test blocked - Vehicle should have at least 30% Fuel")
+                else:
+                    controller.click_by_image("Icons/remote_icon.png")
+                    remote_swipe("MY CABIN COMFORT")
 
-            controller.click_by_image("Icons/back_icon.png")
-            controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+                    if controller.click_text("MY CABIN COMFORT"):
+                        controller.click(300, 930)
+                        cabin_comfort = controller.d(text="Target temperature")
+                        temp = cabin_comfort.sibling(index="2").get_text()
+                        if temp == "18.0 °C":
+                            log("Target temperature set successfully")
+                        else:
+                            fail_log("Target temperature not set", "007", img_service)
+
+                        controller.click_by_image("Icons/timer_toggle_off.png")
+                        if compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
+                            log("Interior heating enabled")
+                        else:
+                            fail_log("Interior heating not disabled", "007", img_service)
+
+                        if compare_with_expected_crop("Images/default_heating.png", 0.99):
+                            log("Default seat heating options displayed")
+                        else:
+                            fail_log("Default seat heating options not displayed", "007", img_service)
+
+                        if controller.click_by_image("Icons/Front_left_seat_enabled.png") and compare_with_expected_crop("Icons/Front_left_seat_disabled.png", 0.99) and compare_with_expected_crop("Icons/Front_right_seat_enabled.png", 0.99):
+                            log("Driver seat heating enabled and passenger seat heating disabled successfully")
+                        else:
+                            fail_log("Driver seat heating enabled and passenger seat heating disabled unsuccessfully", "007", img_service)
+
+                        if controller.click_text("START"):
+                            log("Start button clicked")
+                        else:
+                            fail_log("Start button not found", "007", img_service)
+
+                        controller.wait_for_text("Sending message to car")
+                        while controller.is_text_present("Sending message to car"):
+                            sleep(0.5)
+                        if controller.is_text_present("Successfully sent to car"):
+                            log("Successfully sent to car status displayed")
+                        else:
+                            fail_log("Successfully sent to car status not displayed", "007", img_service)
+                        controller.wait_for_text("My cabin comfort is active")
+                        if controller.is_text_present("My cabin comfort is active") and controller.is_text_present("- 10 min"):
+                            log("Active cabin comfort status displayed")
+                        else:
+                            fail_log("Active cabin comfort not displayed", "007", img_service)
+                        controller.click_text("MY CABIN COMFORT")
+                        if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
+                            log("Stop button displayed when cabin comfort active")
+                            manual_check(
+                                instruction=f"Verify the time left matches remote RCP menu\nVerify MY CABIN COMFORT is active in the car",
+                                test_id="007",
+                                service=img_service,
+                                take_screenshot=True
+                            )
+                            controller.click_text("STOP")
+                            while controller.is_text_present("Sending message to car"):
+                                sleep(0.5)
+                        else:
+                            fail_log("Stop button not found, or cabin comfort not active", "007", img_service)
+                    else:
+                        fail_log("Cabin comfort section could not be found", "007", img_service)
+
+                    controller.click_by_image("Icons/back_icon.png")
+                    controller.swipe_down()
+                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "007", img_service)
@@ -297,319 +317,349 @@ def My_Cabin_Comfort_007():
 def My_Cabin_Comfort_008():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/remote_icon.png")
-            remote_swipe("MY CABIN COMFORT")
-
-            if controller.click_text("MY CABIN COMFORT"):
-                controller.click(300, 930)
-                cabin_comfort = controller.d(text="Target temperature")
-                temp = cabin_comfort.sibling(index="2").get_text()
-                if temp == "18.0 °C":
-                    log("Target temperature set successfully")
-                else:
-                    fail_log("Target temperature not set", "008", img_service)
-
-                controller.click_by_image("Icons/timer_toggle_off.png")
-                if compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
-                    log("Interior heating enabled")
-                else:
-                    fail_log("Interior heating not disabled", "008", img_service)
-
-                if compare_with_expected_crop("Images/default_heating.png", 0.99):
-                    log("Default seat heating options displayed")
-                else:
-                    fail_log("Default seat heating options not displayed", "008", img_service)
-
-                if controller.click_by_image("Icons/Front_right_seat_enabled.png") and compare_with_expected_crop("Icons/Front_right_seat_disabled.png", 0.99) and compare_with_expected_crop("Icons/Front_left_seat_enabled.png", 0.99):
-                    log("Driver seat heating disabled and passenger seat heating enabled successfully")
-                else:
-                    fail_log("Driver seat heating disabled and passenger seat heating enabled unsuccessfully", "008")
-
-                if controller.click_text("START"):
-                    log("Start button clicked")
-                else:
-                    fail_log("Start button not found", "008", img_service)
-
-                controller.wait_for_text("Sending message to car")
-                while controller.is_text_present("Sending message to car"):
-                    sleep(0.5)
-                if controller.is_text_present("Successfully sent to car"):
-                    log("Successfully sent to car status displayed")
-                else:
-                    fail_log("Successfully sent to car status not displayed", "008", img_service)
-                controller.wait_for_text("My cabin comfort is active")
-                if controller.is_text_present("My cabin comfort is active") and controller.is_text_present("- 10 min"):
-                    log("Active cabin comfort status displayed")
-                else:
-                    fail_log("Active cabin comfort not displayed", "008", img_service)
-                controller.click_text("MY CABIN COMFORT")
-                if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
-                    log("Stop button displayed when cabin comfort active")
-                    manual_check(
-                        instruction=f"Verify the time left matches remote RCP menu\nVerify MY CABIN COMFORT is active in the car",
-                        test_id="008",
-                        service=img_service,
-                        take_screenshot=True
-                    )
-                    controller.click_text("STOP")
-                    while controller.is_text_present("Sending message to car"):
-                        sleep(0.5)
-                else:
-                    fail_log("Stop button not found, or cabin comfort not active", "008", img_service)
+            if not globals.rear_seat_heating:
+                blocked_log("Test blocked - Vehicle should support rear heating")
             else:
-                fail_log("Cabin comfort section could not be found", "008", img_service)
+                if not int(globals.fuel_pct) >= 30:
+                    blocked_log("Test blocked - Vehicle should have at least 30% Fuel")
+                else:
+                    controller.click_by_image("Icons/remote_icon.png")
+                    remote_swipe("MY CABIN COMFORT")
 
-            controller.click_by_image("Icons/back_icon.png")
-            controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+                    if controller.click_text("MY CABIN COMFORT"):
+                        controller.click(300, 930)
+                        cabin_comfort = controller.d(text="Target temperature")
+                        temp = cabin_comfort.sibling(index="2").get_text()
+                        if temp == "18.0 °C":
+                            log("Target temperature set successfully")
+                        else:
+                            fail_log("Target temperature not set", "008", img_service)
+
+                        controller.click_by_image("Icons/timer_toggle_off.png")
+                        if compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
+                            log("Interior heating enabled")
+                        else:
+                            fail_log("Interior heating not disabled", "008", img_service)
+
+                        if compare_with_expected_crop("Images/default_heating.png", 0.99):
+                            log("Default seat heating options displayed")
+                        else:
+                            fail_log("Default seat heating options not displayed", "008", img_service)
+
+                        if controller.click_by_image("Icons/Front_right_seat_enabled.png") and compare_with_expected_crop("Icons/Front_right_seat_disabled.png", 0.99) and compare_with_expected_crop("Icons/Front_left_seat_enabled.png", 0.99):
+                            log("Driver seat heating disabled and passenger seat heating enabled successfully")
+                        else:
+                            fail_log("Driver seat heating disabled and passenger seat heating enabled unsuccessfully", "008")
+
+                        if controller.click_text("START"):
+                            log("Start button clicked")
+                        else:
+                            fail_log("Start button not found", "008", img_service)
+
+                        controller.wait_for_text("Sending message to car")
+                        while controller.is_text_present("Sending message to car"):
+                            sleep(0.5)
+                        if controller.is_text_present("Successfully sent to car"):
+                            log("Successfully sent to car status displayed")
+                        else:
+                            fail_log("Successfully sent to car status not displayed", "008", img_service)
+                        controller.wait_for_text("My cabin comfort is active")
+                        if controller.is_text_present("My cabin comfort is active") and controller.is_text_present("- 10 min"):
+                            log("Active cabin comfort status displayed")
+                        else:
+                            fail_log("Active cabin comfort not displayed", "008", img_service)
+                        controller.click_text("MY CABIN COMFORT")
+                        if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
+                            log("Stop button displayed when cabin comfort active")
+                            manual_check(
+                                instruction=f"Verify the time left matches remote RCP menu\nVerify MY CABIN COMFORT is active in the car",
+                                test_id="008",
+                                service=img_service,
+                                take_screenshot=True
+                            )
+                            controller.click_text("STOP")
+                            while controller.is_text_present("Sending message to car"):
+                                sleep(0.5)
+                        else:
+                            fail_log("Stop button not found, or cabin comfort not active", "008", img_service)
+                    else:
+                        fail_log("Cabin comfort section could not be found", "008", img_service)
+
+                    controller.click_by_image("Icons/back_icon.png")
+                    controller.swipe_down()
+                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "008", img_service)
 
 def My_Cabin_Comfort_009():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/remote_icon.png")
-            remote_swipe("MY CABIN COMFORT")
-
-            if controller.click_text("MY CABIN COMFORT"):
-                controller.click(300, 930)
-                cabin_comfort = controller.d(text="Target temperature")
-                temp = cabin_comfort.sibling(index="2").get_text()
-                if temp == "18.0 °C":
-                    log("Target temperature set successfully")
-                else:
-                    fail_log("Target temperature not set", "009", img_service)
-
-                controller.click_by_image("Icons/timer_toggle_off.png")
-                if compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
-                    log("Interior heating enabled")
-                else:
-                    fail_log("Interior heating not disabled", "009", img_service)
-
-                if compare_with_expected_crop("Images/default_heating.png", 0.99):
-                    log("Default seat heating options displayed")
-                else:
-                    fail_log("Default seat heating options not displayed", "009", img_service)
-
-                if controller.click_by_image("Icons/Rear_left_seat_disabled.png") and controller.click_by_image("Icons/Front_right_seat_enabled.png") and controller.click_by_image("Icons/Front_left_seat_enabled.png") and compare_with_expected_crop("Images/Rear_left_enabled_only.png", 0.99):
-                    log("Front seat heating disabled and rear left seat heating enabled successfully")
-                else:
-                    fail_log("Front seat heating disabled and rear left seat heating enabled unsuccessfully", "009", img_service)
-
-                if controller.click_text("START"):
-                    log("Start button clicked")
-                else:
-                    fail_log("Start button not found", "009", img_service)
-
-                controller.wait_for_text("Sending message to car")
-                while controller.is_text_present("Sending message to car"):
-                    sleep(0.5)
-                if controller.is_text_present("Successfully sent to car"):
-                    log("Successfully sent to car status displayed")
-                else:
-                    fail_log("Successfully sent to car status not displayed", "009", img_service)
-                controller.wait_for_text("My cabin comfort is active")
-                if controller.is_text_present("My cabin comfort is active") and controller.is_text_present("- 10 min"):
-                    log("Active cabin comfort status displayed")
-                else:
-                    fail_log("Active cabin comfort not displayed", "009", img_service)
-                controller.click_text("MY CABIN COMFORT")
-                if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
-                    log("Stop button displayed when cabin comfort active")
-                    manual_check(
-                        instruction=f"Verify the time left matches remote RCP menu\nVerify MY CABIN COMFORT is active in the car",
-                        test_id="009",
-                        service=img_service,
-                        take_screenshot=True
-                    )
-                    controller.click_text("STOP")
-                    while controller.is_text_present("Sending message to car"):
-                        sleep(0.5)
-                else:
-                    fail_log("Stop button not found, or cabin comfort not active", "009", img_service)
+            if not globals.rear_seat_heating:
+                blocked_log("Test blocked - Vehicle should support rear heating")
             else:
-                fail_log("Cabin comfort section could not be found", "009", img_service)
+                if not int(globals.fuel_pct) >= 30:
+                    blocked_log("Test blocked - Vehicle should have at least 30% Fuel")
+                else:
+                    controller.click_by_image("Icons/remote_icon.png")
+                    remote_swipe("MY CABIN COMFORT")
 
-            controller.click_by_image("Icons/back_icon.png")
-            controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+                    if controller.click_text("MY CABIN COMFORT"):
+                        controller.click(300, 930)
+                        cabin_comfort = controller.d(text="Target temperature")
+                        temp = cabin_comfort.sibling(index="2").get_text()
+                        if temp == "18.0 °C":
+                            log("Target temperature set successfully")
+                        else:
+                            fail_log("Target temperature not set", "009", img_service)
+
+                        controller.click_by_image("Icons/timer_toggle_off.png")
+                        if compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
+                            log("Interior heating enabled")
+                        else:
+                            fail_log("Interior heating not disabled", "009", img_service)
+
+                        if compare_with_expected_crop("Images/default_heating.png", 0.99):
+                            log("Default seat heating options displayed")
+                        else:
+                            fail_log("Default seat heating options not displayed", "009", img_service)
+
+                        if controller.click_by_image("Icons/Rear_left_seat_disabled.png") and controller.click_by_image("Icons/Front_right_seat_enabled.png") and controller.click_by_image("Icons/Front_left_seat_enabled.png") and compare_with_expected_crop("Images/Rear_left_enabled_only.png", 0.99):
+                            log("Front seat heating disabled and rear left seat heating enabled successfully")
+                        else:
+                            fail_log("Front seat heating disabled and rear left seat heating enabled unsuccessfully", "009", img_service)
+
+                        if controller.click_text("START"):
+                            log("Start button clicked")
+                        else:
+                            fail_log("Start button not found", "009", img_service)
+
+                        controller.wait_for_text("Sending message to car")
+                        while controller.is_text_present("Sending message to car"):
+                            sleep(0.5)
+                        if controller.is_text_present("Successfully sent to car"):
+                            log("Successfully sent to car status displayed")
+                        else:
+                            fail_log("Successfully sent to car status not displayed", "009", img_service)
+                        controller.wait_for_text("My cabin comfort is active")
+                        if controller.is_text_present("My cabin comfort is active") and controller.is_text_present("- 10 min"):
+                            log("Active cabin comfort status displayed")
+                        else:
+                            fail_log("Active cabin comfort not displayed", "009", img_service)
+                        controller.click_text("MY CABIN COMFORT")
+                        if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
+                            log("Stop button displayed when cabin comfort active")
+                            manual_check(
+                                instruction=f"Verify the time left matches remote RCP menu\nVerify MY CABIN COMFORT is active in the car",
+                                test_id="009",
+                                service=img_service,
+                                take_screenshot=True
+                            )
+                            controller.click_text("STOP")
+                            while controller.is_text_present("Sending message to car"):
+                                sleep(0.5)
+                        else:
+                            fail_log("Stop button not found, or cabin comfort not active", "009", img_service)
+                    else:
+                        fail_log("Cabin comfort section could not be found", "009", img_service)
+
+                    controller.click_by_image("Icons/back_icon.png")
+                    controller.swipe_down()
+                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "009", img_service)
 
 def My_Cabin_Comfort_010():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/remote_icon.png")
-            remote_swipe("MY CABIN COMFORT")
-
-            if controller.click_text("MY CABIN COMFORT"):
-                controller.click(300, 930)
-                cabin_comfort = controller.d(text="Target temperature")
-                temp = cabin_comfort.sibling(index="2").get_text()
-                if temp == "18.0 °C":
-                    log("Target temperature set successfully")
-                else:
-                    fail_log("Target temperature not set", "010", img_service)
-
-                controller.click_by_image("Icons/timer_toggle_off.png")
-                if compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
-                    log("Interior heating enabled")
-                else:
-                    fail_log("Interior heating not disabled", "010", img_service)
-
-                if compare_with_expected_crop("Images/default_heating.png", 0.99):
-                    log("Default seat heating options displayed")
-                else:
-                    fail_log("Default seat heating options not displayed", "010", img_service)
-
-                if controller.click_by_image("Icons/Rear_right_seat_disabled.png") and controller.click_by_image("Icons/Front_right_seat_enabled.png") and controller.click_by_image("Icons/Front_left_seat_enabled.png") and compare_with_expected_crop("Images/Rear_right_enabled_only.png", 0.99):
-                    log("Front seat heating disabled and rear right seat heating enabled successfully")
-                else:
-                    fail_log("Front seat heating disabled and rear right seat heating enabled unsuccessfully", "010", img_service)
-
-                if controller.click_text("START"):
-                    log("Start button clicked")
-                else:
-                    fail_log("Start button not found", "010", img_service)
-
-                controller.wait_for_text("Sending message to car")
-                while controller.is_text_present("Sending message to car"):
-                    sleep(0.5)
-                if controller.is_text_present("Successfully sent to car"):
-                    log("Successfully sent to car status displayed")
-                else:
-                    fail_log("Successfully sent to car status not displayed", "010", img_service)
-                controller.wait_for_text("My cabin comfort is active")
-                if controller.is_text_present("My cabin comfort is active") and controller.is_text_present("- 10 min"):
-                    log("Active cabin comfort status displayed")
-                else:
-                    fail_log("Active cabin comfort not displayed", "010", img_service)
-                controller.click_text("MY CABIN COMFORT")
-                if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
-                    log("Stop button displayed when cabin comfort active")
-                    manual_check(
-                        instruction=f"Verify the time left matches remote RCP menu\nVerify MY CABIN COMFORT is active in the car",
-                        test_id="010",
-                        service=img_service,
-                        take_screenshot=True
-                    )
-                    controller.click_text("STOP")
-                    while controller.is_text_present("Sending message to car"):
-                        sleep(0.5)
-                else:
-                    fail_log("Stop button not found, or cabin comfort not active", "010", img_service)
+            if not globals.rear_seat_heating:
+                blocked_log("Test blocked - Vehicle should support rear heating")
             else:
-                fail_log("Cabin comfort section could not be found", "010", img_service)
+                if not int(globals.fuel_pct) >= 30:
+                    blocked_log("Test blocked - Vehicle should have at least 30% Fuel")
+                else:
+                    controller.click_by_image("Icons/remote_icon.png")
+                    remote_swipe("MY CABIN COMFORT")
 
-            controller.click_by_image("Icons/back_icon.png")
-            controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+                    if controller.click_text("MY CABIN COMFORT"):
+                        controller.click(300, 930)
+                        cabin_comfort = controller.d(text="Target temperature")
+                        temp = cabin_comfort.sibling(index="2").get_text()
+                        if temp == "18.0 °C":
+                            log("Target temperature set successfully")
+                        else:
+                            fail_log("Target temperature not set", "010", img_service)
+
+                        controller.click_by_image("Icons/timer_toggle_off.png")
+                        if compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
+                            log("Interior heating enabled")
+                        else:
+                            fail_log("Interior heating not disabled", "010", img_service)
+
+                        if compare_with_expected_crop("Images/default_heating.png", 0.99):
+                            log("Default seat heating options displayed")
+                        else:
+                            fail_log("Default seat heating options not displayed", "010", img_service)
+
+                        if controller.click_by_image("Icons/Rear_right_seat_disabled.png") and controller.click_by_image("Icons/Front_right_seat_enabled.png") and controller.click_by_image("Icons/Front_left_seat_enabled.png") and compare_with_expected_crop("Images/Rear_right_enabled_only.png", 0.99):
+                            log("Front seat heating disabled and rear right seat heating enabled successfully")
+                        else:
+                            fail_log("Front seat heating disabled and rear right seat heating enabled unsuccessfully", "010", img_service)
+
+                        if controller.click_text("START"):
+                            log("Start button clicked")
+                        else:
+                            fail_log("Start button not found", "010", img_service)
+
+                        controller.wait_for_text("Sending message to car")
+                        while controller.is_text_present("Sending message to car"):
+                            sleep(0.5)
+                        if controller.is_text_present("Successfully sent to car"):
+                            log("Successfully sent to car status displayed")
+                        else:
+                            fail_log("Successfully sent to car status not displayed", "010", img_service)
+                        controller.wait_for_text("My cabin comfort is active")
+                        if controller.is_text_present("My cabin comfort is active") and controller.is_text_present("- 10 min"):
+                            log("Active cabin comfort status displayed")
+                        else:
+                            fail_log("Active cabin comfort not displayed", "010", img_service)
+                        controller.click_text("MY CABIN COMFORT")
+                        if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
+                            log("Stop button displayed when cabin comfort active")
+                            manual_check(
+                                instruction=f"Verify the time left matches remote RCP menu\nVerify MY CABIN COMFORT is active in the car",
+                                test_id="010",
+                                service=img_service,
+                                take_screenshot=True
+                            )
+                            controller.click_text("STOP")
+                            while controller.is_text_present("Sending message to car"):
+                                sleep(0.5)
+                        else:
+                            fail_log("Stop button not found, or cabin comfort not active", "010", img_service)
+                    else:
+                        fail_log("Cabin comfort section could not be found", "010", img_service)
+
+                    controller.click_by_image("Icons/back_icon.png")
+                    controller.swipe_down()
+                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "010", img_service)
 
 def My_Cabin_Comfort_011():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/remote_icon.png")
-            remote_swipe("MY CABIN COMFORT")
-
-            if controller.click_text("MY CABIN COMFORT"):
-                controller.click(300, 930)
-                cabin_comfort = controller.d(text="Target temperature")
-                temp = cabin_comfort.sibling(index="2").get_text()
-                if temp == "18.0 °C":
-                    log("Target temperature set successfully")
-                else:
-                    fail_log("Target temperature not set", "011", img_service)
-
-                controller.click_by_image("Icons/timer_toggle_off.png")
-                if compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
-                    log("Interior heating enabled")
-                else:
-                    fail_log("Interior heating not disabled", "011", img_service)
-
-                if compare_with_expected_crop("Images/default_heating.png", 0.99):
-                    log("Default seat heating options displayed")
-                else:
-                    fail_log("Default seat heating options not displayed", "011", img_service)
-
-                if controller.click_by_image("Icons/Rear_right_seat_disabled.png") and controller.click_by_image("Icons/Rear_left_seat_disabled.png") and compare_with_expected_crop("Images/all_seats_enabled.png", 0.99):
-                    log("Front seat heating disabled and rear right seat heating enabled successfully")
-                else:
-                    fail_log("Front seat heating disabled and rear right seat heating enabled unsuccessfully", "011", img_service)
-
-                if controller.click_text("START"):
-                    log("Start button clicked")
-                else:
-                    fail_log("Start button not found", "011", img_service)
-
-                controller.wait_for_text("Sending message to car")
-                while controller.is_text_present("Sending message to car"):
-                    sleep(0.5)
-                if controller.is_text_present("Successfully sent to car"):
-                    log("Successfully sent to car status displayed")
-                else:
-                    fail_log("Successfully sent to car status not displayed", "011", img_service)
-                controller.wait_for_text("My cabin comfort is active")
-                if controller.is_text_present("My cabin comfort is active") and controller.is_text_present("- 10 min"):
-                    log("Active cabin comfort status displayed")
-                else:
-                    fail_log("Active cabin comfort not displayed", "011", img_service)
-                controller.click_text("MY CABIN COMFORT")
-                if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
-                    log("Stop button displayed when cabin comfort active")
-                    manual_check(
-                        instruction=f"Verify the time left matches remote RCP menu\nVerify MY CABIN COMFORT is active in the car",
-                        test_id="011",
-                        service=img_service,
-                        take_screenshot=True
-                    )
-                    controller.click_text("STOP")
-                    while controller.is_text_present("Sending message to car"):
-                        sleep(0.5)
-                else:
-                    fail_log("Stop button not found, or cabin comfort not active", "011", img_service)
+            if not globals.rear_seat_heating:
+                blocked_log("Test blocked - Vehicle should support rear heating")
             else:
-                fail_log("Cabin comfort section could not be found", "010", img_service)
+                if not int(globals.fuel_pct) >= 30:
+                    blocked_log("Test blocked - Vehicle should have at least 30% Fuel")
+                else:
+                    controller.click_by_image("Icons/remote_icon.png")
+                    remote_swipe("MY CABIN COMFORT")
 
-            controller.click_by_image("Icons/back_icon.png")
-            controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+                    if controller.click_text("MY CABIN COMFORT"):
+                        controller.click(300, 930)
+                        cabin_comfort = controller.d(text="Target temperature")
+                        temp = cabin_comfort.sibling(index="2").get_text()
+                        if temp == "18.0 °C":
+                            log("Target temperature set successfully")
+                        else:
+                            fail_log("Target temperature not set", "011", img_service)
+
+                        controller.click_by_image("Icons/timer_toggle_off.png")
+                        if compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
+                            log("Interior heating enabled")
+                        else:
+                            fail_log("Interior heating not disabled", "011", img_service)
+
+                        if compare_with_expected_crop("Images/default_heating.png", 0.99):
+                            log("Default seat heating options displayed")
+                        else:
+                            fail_log("Default seat heating options not displayed", "011", img_service)
+
+                        if controller.click_by_image("Icons/Rear_right_seat_disabled.png") and controller.click_by_image("Icons/Rear_left_seat_disabled.png") and compare_with_expected_crop("Images/all_seats_enabled.png", 0.99):
+                            log("Front seat heating disabled and rear right seat heating enabled successfully")
+                        else:
+                            fail_log("Front seat heating disabled and rear right seat heating enabled unsuccessfully", "011", img_service)
+
+                        if controller.click_text("START"):
+                            log("Start button clicked")
+                        else:
+                            fail_log("Start button not found", "011", img_service)
+
+                        controller.wait_for_text("Sending message to car")
+                        while controller.is_text_present("Sending message to car"):
+                            sleep(0.5)
+                        if controller.is_text_present("Successfully sent to car"):
+                            log("Successfully sent to car status displayed")
+                        else:
+                            fail_log("Successfully sent to car status not displayed", "011", img_service)
+                        controller.wait_for_text("My cabin comfort is active")
+                        if controller.is_text_present("My cabin comfort is active") and controller.is_text_present("- 10 min"):
+                            log("Active cabin comfort status displayed")
+                        else:
+                            fail_log("Active cabin comfort not displayed", "011", img_service)
+                        controller.click_text("MY CABIN COMFORT")
+                        if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
+                            log("Stop button displayed when cabin comfort active")
+                            manual_check(
+                                instruction=f"Verify the time left matches remote RCP menu\nVerify MY CABIN COMFORT is active in the car",
+                                test_id="011",
+                                service=img_service,
+                                take_screenshot=True
+                            )
+                            controller.click_text("STOP")
+                            while controller.is_text_present("Sending message to car"):
+                                sleep(0.5)
+                        else:
+                            fail_log("Stop button not found, or cabin comfort not active", "011", img_service)
+                    else:
+                        fail_log("Cabin comfort section could not be found", "010", img_service)
+
+                    controller.click_by_image("Icons/back_icon.png")
+                    controller.swipe_down()
+                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "011", img_service)
 
 def My_Cabin_Comfort_012():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/remote_icon.png")
-            remote_swipe("MY CABIN COMFORT")
+            if not globals.rear_seat_heating:
+                blocked_log("Test blocked - Vehicle should support rear heating")
+            else:
+                if not int(globals.fuel_pct) >= 30:
+                    blocked_log("Test blocked - Vehicle should have at least 30% Fuel")
+                else:
+                    controller.click_by_image("Icons/remote_icon.png")
+                    remote_swipe("MY CABIN COMFORT")
 
-            if controller.click_text("MY CABIN COMFORT"):
-                if controller.click_text("START"):
-                    log("Start button clicked")
-                    sleep(0.5)
+                    if controller.click_text("MY CABIN COMFORT"):
+                        if controller.click_text("START"):
+                            log("Start button clicked")
+                            sleep(0.5)
+                            while controller.is_text_present("Sending message to car"):
+                                sleep(0.5)
+                        controller.wait_for_text_and_click("My cabin comfort is active")
+
+                    if controller.click_text("STOP"):
+                        log("Stop button clicked")
+                    else:
+                        fail_log("Stop button not found", "012", img_service)
+
                     while controller.is_text_present("Sending message to car"):
                         sleep(0.5)
-                controller.wait_for_text_and_click("My cabin comfort is active")
+                    controller.wait_for_text("Not active")
+                    controller.click_text("MY CABIN COMFORT")
 
-            if controller.click_text("STOP"):
-                log("Stop button clicked")
-            else:
-                fail_log("Stop button not found", "012", img_service)
+                    if controller.istext_present("START"):
+                        log("Stop button is now the start button")
+                    else:
+                        fail_log("Start button not found", "012", img_service)
 
-            while controller.is_text_present("Sending message to car"):
-                sleep(0.5)
-            controller.wait_for_text("Not active")
-            controller.click_text("MY CABIN COMFORT")
-
-            if controller.istext_present("START"):
-                log("Stop button is now the start button")
-            else:
-                fail_log("Start button not found", "012", img_service)
-
-            controller.click_by_image("Icons/back_icon.png")
-            controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+                    controller.click_by_image("Icons/back_icon.png")
+                    controller.swipe_down()
+                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "012", img_service)
 
@@ -675,175 +725,184 @@ def My_Cabin_Comfort_013():
 def My_Cabin_Comfort_014():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/remote_icon.png")
-            remote_swipe("MY CABIN COMFORT")
-
-            if controller.click_text("MY CABIN COMFORT"):
-                if controller.click_text("Set timer"):
-                    if controller.click_text("SETTINGS"):
-                        log("Settings button clicked")
-                        if controller.is_text_present("Interior surface heating") and compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
-                            log("Interior surface heating toggle displayed")
-                        else:
-                            fail_log("Interior surface heating not displayed", "014", img_service)
-
-                        if compare_with_expected_crop("Images/default_heating.png", 0.985):
-                            log("Default seat heating options displayed")
-                        else:
-                            fail_log("Default seat heating not displayed", "014", img_service)
-
-                        controller.click_by_image("Icons/Interior_heating_toggle.png")
-                        if not compare_with_expected_crop("Images/default_heating.png", 0.99):
-                            log("Default seat heating options hidden when heating tis toggled off")
-                        else:
-                            fail_log("Default seat heating options not hidden when heating tis toggled off", "014")
-                    else:
-                        fail_log("Settings button not clicked", "014", img_service)
-                else:
-                    fail_log("Set timer tab not found", "014", img_service)
+            if not globals.rear_seat_heating:
+                blocked_log("Test blocked - Vehicle should support rear heating")
             else:
-                fail_log("Cabin comfort section could not be found", "014", img_service)
+                controller.click_by_image("Icons/remote_icon.png")
+                remote_swipe("MY CABIN COMFORT")
 
-            controller.click_by_image("Icons/back_icon.png")
-            controller.click_by_image("Icons/back_icon.png")
-            controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+                if controller.click_text("MY CABIN COMFORT"):
+                    if controller.click_text("Set timer"):
+                        if controller.click_text("SETTINGS"):
+                            log("Settings button clicked")
+                            if controller.is_text_present("Interior surface heating") and compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
+                                log("Interior surface heating toggle displayed")
+                            else:
+                                fail_log("Interior surface heating not displayed", "014", img_service)
+
+                            if compare_with_expected_crop("Images/default_heating.png", 0.985):
+                                log("Default seat heating options displayed")
+                            else:
+                                fail_log("Default seat heating not displayed", "014", img_service)
+
+                            controller.click_by_image("Icons/Interior_heating_toggle.png")
+                            if not compare_with_expected_crop("Images/default_heating.png", 0.99):
+                                log("Default seat heating options hidden when heating tis toggled off")
+                            else:
+                                fail_log("Default seat heating options not hidden when heating tis toggled off", "014")
+                        else:
+                            fail_log("Settings button not clicked", "014", img_service)
+                    else:
+                        fail_log("Set timer tab not found", "014", img_service)
+                else:
+                    fail_log("Cabin comfort section could not be found", "014", img_service)
+
+                controller.click_by_image("Icons/back_icon.png")
+                controller.click_by_image("Icons/back_icon.png")
+                controller.swipe_down()
+                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "014", img_service)
 
 def My_Cabin_Comfort_015():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/remote_icon.png")
-            remote_swipe("MY CABIN COMFORT")
+            if not int(globals.fuel_pct) >= 30:
+                blocked_log("Test blocked - Vehicle should have at least 30% Fuel")
+            else:
+                controller.click_by_image("Icons/remote_icon.png")
+                remote_swipe("MY CABIN COMFORT")
 
-            if controller.click_text("MY CABIN COMFORT"):
-                controller.click_text("Quick start")
-                controller.click_by_image("Icons/Interior_heating_toggle.png")
-                if compare_with_expected_crop("Icons/timer_toggle_off.png"):
-                    log("Interior heating disabled in Quick start")
-                else:
-                    fail_log("Interior heating not disabled in Quick start", "015", img_service)
-                if controller.click_text("Set timer"):
-                    controller.click_text("SETTINGS")
+                if controller.click_text("MY CABIN COMFORT"):
+                    controller.click_text("Quick start")
                     controller.click_by_image("Icons/Interior_heating_toggle.png")
                     if compare_with_expected_crop("Icons/timer_toggle_off.png"):
-                        log("Interior heating disabled in timer settings")
+                        log("Interior heating disabled in Quick start")
                     else:
-                        fail_log("Interior heating not disabled in timer settings", "015", img_service)
-                    controller.click_by_image("Icons/back_icon.png")
-
-                    controller.click_by_image("Icons/timer_toggle_off.png")
-                    controller.click_text("SYNC TO CAR")
-                    sleep(0.5)
-                    while controller.is_text_present("Sending message to car"):
-                        sleep(0.5)
-                    if controller.is_text_present("Successfully sent to car"):
-                        log("Successfully sent to car status displayed")
-                    else:
-                        fail_log("Successfully sent to car status not displayed", "015", img_service)
-                    if controller.wait_for_text("My cabin comfort scheduled"):
-                        log("My cabin comfort scheduled status displayed")
-                    else:
-                        fail_log("My cabin comfort scheduled status not displayed", "015", img_service)
-
-                    # Removes the timers
-                    count=0
-                    while True:
-                        count+=1
-                        controller.click_text("MY CABIN COMFORT")
-                        controller.click_text("Set timer")
+                        fail_log("Interior heating not disabled in Quick start", "015", img_service)
+                    if controller.click_text("Set timer"):
+                        controller.click_text("SETTINGS")
                         controller.click_by_image("Icons/Interior_heating_toggle.png")
-                        controller.click_by_image("Icons/Interior_heating_toggle.png")
+                        if compare_with_expected_crop("Icons/timer_toggle_off.png"):
+                            log("Interior heating disabled in timer settings")
+                        else:
+                            fail_log("Interior heating not disabled in timer settings", "015", img_service)
+                        controller.click_by_image("Icons/back_icon.png")
+
+                        controller.click_by_image("Icons/timer_toggle_off.png")
                         controller.click_text("SYNC TO CAR")
+                        sleep(0.5)
                         while controller.is_text_present("Sending message to car"):
                             sleep(0.5)
                         if controller.is_text_present("Successfully sent to car"):
-                            break
-                        # Stop infinite loop
-                        if count > 5:
-                            break
+                            log("Successfully sent to car status displayed")
+                        else:
+                            fail_log("Successfully sent to car status not displayed", "015", img_service)
+                        if controller.wait_for_text("My cabin comfort scheduled"):
+                            log("My cabin comfort scheduled status displayed")
+                        else:
+                            fail_log("My cabin comfort scheduled status not displayed", "015", img_service)
 
+                        # Removes the timers
+                        count=0
+                        while True:
+                            count+=1
+                            controller.click_text("MY CABIN COMFORT")
+                            controller.click_text("Set timer")
+                            controller.click_by_image("Icons/Interior_heating_toggle.png")
+                            controller.click_by_image("Icons/Interior_heating_toggle.png")
+                            controller.click_text("SYNC TO CAR")
+                            while controller.is_text_present("Sending message to car"):
+                                sleep(0.5)
+                            if controller.is_text_present("Successfully sent to car"):
+                                break
+                            # Stop infinite loop
+                            if count > 5:
+                                break
+
+                    else:
+                        fail_log("Set timer tab not found", "015", img_service)
                 else:
-                    fail_log("Set timer tab not found", "015", img_service)
-            else:
-                fail_log("Cabin comfort section could not be found", "015", img_service)
+                    fail_log("Cabin comfort section could not be found", "015", img_service)
 
-            controller.click_by_image("Icons/back_icon.png")
-            controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+                controller.click_by_image("Icons/back_icon.png")
+                controller.swipe_down()
+                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "015", img_service)
 
 def My_Cabin_Comfort_016():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/remote_icon.png")
-            remote_swipe("MY CABIN COMFORT")
+            if not int(globals.fuel_pct) >= 30:
+                blocked_log("Test blocked - Vehicle should have at least 30% Fuel")
+            else:
+                controller.click_by_image("Icons/remote_icon.png")
+                remote_swipe("MY CABIN COMFORT")
 
-            if controller.click_text("MY CABIN COMFORT"):
-                controller.click_text("Quick start")
-                controller.click(300, 930)
-                cabin_comfort = controller.d(text="Target temperature")
-                temp = cabin_comfort.sibling(index="2").get_text()
-                if temp == "18.0 °C":
-                    log("Target temperature set successfully")
-                else:
-                    fail_log("Target temperature not set", "016", img_service)
-                controller.click_by_image("Icons/timer_toggle_off.png")
-                if compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
-                    log("Interior heating enabled in Quick start")
-                else:
-                    fail_log("Interior heating not enabled in Quick start", "016", img_service)
-                if controller.click_text("Set timer"):
-                    controller.click_text("SETTINGS")
+                if controller.click_text("MY CABIN COMFORT"):
+                    controller.click_text("Quick start")
+                    controller.click(300, 930)
+                    cabin_comfort = controller.d(text="Target temperature")
+                    temp = cabin_comfort.sibling(index="2").get_text()
+                    if temp == "18.0 °C":
+                        log("Target temperature set successfully")
+                    else:
+                        fail_log("Target temperature not set", "016", img_service)
                     controller.click_by_image("Icons/timer_toggle_off.png")
                     if compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
-                        log("Interior heating enabled in timer settings")
+                        log("Interior heating enabled in Quick start")
                     else:
-                        fail_log("Interior heating not enabled in timer settings", "016", img_service)
-                    controller.click_by_image("Icons/back_icon.png")
+                        fail_log("Interior heating not enabled in Quick start", "016", img_service)
+                    if controller.click_text("Set timer"):
+                        controller.click_text("SETTINGS")
+                        controller.click_by_image("Icons/timer_toggle_off.png")
+                        if compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
+                            log("Interior heating enabled in timer settings")
+                        else:
+                            fail_log("Interior heating not enabled in timer settings", "016", img_service)
+                        controller.click_by_image("Icons/back_icon.png")
 
-                    controller.click_by_image("Icons/timer_toggle_off.png")
-                    controller.click_text("SYNC TO CAR")
-                    sleep(0.5)
-                    while controller.is_text_present("Sending message to car"):
-                        sleep(0.5)
-                    if controller.is_text_present("Successfully sent to car"):
-                        log("Successfully sent to car status displayed")
-                    else:
-                        fail_log("Successfully sent to car status not displayed", "016", img_service)
-                    if controller.wait_for_text("My cabin comfort scheduled"):
-                        log("My cabin comfort scheduled status displayed")
-                    else:
-                        fail_log("My cabin comfort scheduled status not displayed", "016", img_service)
-
-                    # Removes the timers
-                    count = 0
-                    while True:
-                        count += 1
-                        controller.click_text("MY CABIN COMFORT")
-                        controller.click_text("Set timer")
-                        controller.click_by_image("Icons/Interior_heating_toggle.png")
-                        controller.click_by_image("Icons/Interior_heating_toggle.png")
+                        controller.click_by_image("Icons/timer_toggle_off.png")
                         controller.click_text("SYNC TO CAR")
+                        sleep(0.5)
                         while controller.is_text_present("Sending message to car"):
                             sleep(0.5)
                         if controller.is_text_present("Successfully sent to car"):
-                            break
-                        # Stop infinite loop
-                        if count > 5:
-                            fail_log("Failed to remove timer to allow for automation")
-                            break
+                            log("Successfully sent to car status displayed")
+                        else:
+                            fail_log("Successfully sent to car status not displayed", "016", img_service)
+                        if controller.wait_for_text("My cabin comfort scheduled"):
+                            log("My cabin comfort scheduled status displayed")
+                        else:
+                            fail_log("My cabin comfort scheduled status not displayed", "016", img_service)
 
+                        # Removes the timers
+                        count = 0
+                        while True:
+                            count += 1
+                            controller.click_text("MY CABIN COMFORT")
+                            controller.click_text("Set timer")
+                            controller.click_by_image("Icons/Interior_heating_toggle.png")
+                            controller.click_by_image("Icons/Interior_heating_toggle.png")
+                            controller.click_text("SYNC TO CAR")
+                            while controller.is_text_present("Sending message to car"):
+                                sleep(0.5)
+                            if controller.is_text_present("Successfully sent to car"):
+                                break
+                            # Stop infinite loop
+                            if count > 5:
+                                fail_log("Failed to remove timer to allow for automation")
+                                break
+
+                    else:
+                        fail_log("Set timer tab not found", "015", img_service)
                 else:
-                    fail_log("Set timer tab not found", "015", img_service)
-            else:
-                fail_log("Cabin comfort section could not be found", "015", img_service)
+                    fail_log("Cabin comfort section could not be found", "015", img_service)
 
-            controller.click_by_image("Icons/back_icon.png")
-            controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+                controller.click_by_image("Icons/back_icon.png")
+                controller.swipe_down()
+                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "016", img_service)
 
@@ -1029,71 +1088,77 @@ def set_new_timer(index, testcase_idx):
 def My_Cabin_Comfort_022():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/remote_icon.png")
-            remote_swipe("MY CABIN COMFORT")
-
-            if controller.click_text("MY CABIN COMFORT"):
-                if controller.click_text("Set timer"):
-                    # set first timer
-                    controller.click(500, 520)
-                    set_new_timer(1, "022")
-                    # set second timer
-                    controller.click(500, 720)
-                    set_new_timer(1, "022")
-                    if controller.is_text_present("Duplicate timer"):
-                        log("Duplicate timer warning message displayed")
-                    else:
-                        fail_log("Duplicate timer warning message not displayed", "022", img_service)
-                    controller.click_text("OK")
-                    controller.click_by_image("Icons/login_page_x.png")
-                else:
-                    fail_log("Set timer tab not found", "022", img_service)
+            if not int(globals.fuel_pct) >= 30:
+                blocked_log("Test blocked - Vehicle should have at least 30% Fuel")
             else:
-                fail_log("Cabin comfort section could not be found", "022", img_service)
+                controller.click_by_image("Icons/remote_icon.png")
+                remote_swipe("MY CABIN COMFORT")
 
-            controller.click_by_image("Icons/back_icon.png")
-            controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+                if controller.click_text("MY CABIN COMFORT"):
+                    if controller.click_text("Set timer"):
+                        # set first timer
+                        controller.click(500, 520)
+                        set_new_timer(1, "022")
+                        # set second timer
+                        controller.click(500, 720)
+                        set_new_timer(1, "022")
+                        if controller.is_text_present("Duplicate timer"):
+                            log("Duplicate timer warning message displayed")
+                        else:
+                            fail_log("Duplicate timer warning message not displayed", "022", img_service)
+                        controller.click_text("OK")
+                        controller.click_by_image("Icons/login_page_x.png")
+                    else:
+                        fail_log("Set timer tab not found", "022", img_service)
+                else:
+                    fail_log("Cabin comfort section could not be found", "022", img_service)
+
+                controller.click_by_image("Icons/back_icon.png")
+                controller.swipe_down()
+                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "022", img_service)
 
 def My_Cabin_Comfort_023():
     try:
         if app_login_setup():
-            controller.click_by_image("Icons/remote_icon.png")
-            remote_swipe("MY CABIN COMFORT")
-
-            if controller.click_text("MY CABIN COMFORT"):
-                if controller.click_text("Set timer"):
-                    controller.click(500, 520)
-                    set_new_timer(1, "023")
-                    controller.click(500, 720)
-                    set_new_timer(2, "023")
-                    controller.click_text("SYNC TO CAR")
-                    sleep(0.5)
-                    while controller.is_text_present("Sending message to car"):
-                        sleep(0.5)
-                    cabin_comfort = controller.d(text="MY CABIN COMFORT")
-                    status = cabin_comfort.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
-                    if status:
-                        log("Successfully sent to car status displayed")
-                    else:
-                        fail_log("Successfully sent to car status not displayed", "023", img_service)
-                    controller.wait_for_text("My cabin comfort is active")
-                    cabin_comfort = controller.d(text="MY CABIN COMFORT")
-                    status = cabin_comfort.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
-                    if status:
-                        log("Scheduled timer status displayed")
-                    else:
-                        fail_log("Scheduled timer status not displayed", "023", img_service)
-                else:
-                    fail_log("Set timer tab not found", "023", img_service)
+            if not int(globals.fuel_pct) >= 30:
+                blocked_log("Test blocked - Vehicle should have at least 30% Fuel")
             else:
-                fail_log("Cabin comfort section could not be found", "023", img_service)
+                controller.click_by_image("Icons/remote_icon.png")
+                remote_swipe("MY CABIN COMFORT")
 
-            controller.click_by_image("Icons/back_icon.png")
-            controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+                if controller.click_text("MY CABIN COMFORT"):
+                    if controller.click_text("Set timer"):
+                        controller.click(500, 520)
+                        set_new_timer(1, "023")
+                        controller.click(500, 720)
+                        set_new_timer(2, "023")
+                        controller.click_text("SYNC TO CAR")
+                        sleep(0.5)
+                        while controller.is_text_present("Sending message to car"):
+                            sleep(0.5)
+                        cabin_comfort = controller.d(text="MY CABIN COMFORT")
+                        status = cabin_comfort.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
+                        if status:
+                            log("Successfully sent to car status displayed")
+                        else:
+                            fail_log("Successfully sent to car status not displayed", "023", img_service)
+                        controller.wait_for_text("My cabin comfort is active")
+                        cabin_comfort = controller.d(text="MY CABIN COMFORT")
+                        status = cabin_comfort.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
+                        if status:
+                            log("Scheduled timer status displayed")
+                        else:
+                            fail_log("Scheduled timer status not displayed", "023", img_service)
+                    else:
+                        fail_log("Set timer tab not found", "023", img_service)
+                else:
+                    fail_log("Cabin comfort section could not be found", "023", img_service)
+
+                controller.click_by_image("Icons/back_icon.png")
+                controller.swipe_down()
+                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "023", img_service)
 

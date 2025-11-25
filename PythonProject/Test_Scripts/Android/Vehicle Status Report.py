@@ -1,7 +1,7 @@
 from time import sleep
 from common_utils.android_image_comparision import *
 from core.app_functions import app_login_setup, identify_car
-from core.globals import vehicle_type
+from core.globals import vehicle_type, fuel_pct, battery_pct
 from core.log_emitter import log, metric_log, fail_log, error_log, blocked_log
 from datetime import datetime
 from core.globals import manual_run
@@ -27,6 +27,8 @@ def Vehicle_Status_Report_001():
                 fail_log("Dashboard page not opened", "001", img_service)
 
             controller.swipe_up()
+            if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+                controller.extra_small_swipe_up()
             if controller.is_text_present("Fuel range"):
                 log("Status report is displayed")
             else:
@@ -36,6 +38,8 @@ def Vehicle_Status_Report_001():
             controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
             if compare_with_expected_crop("Icons/Remote_Lock.png"):
                 controller.swipe_up()
+                if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+                    controller.extra_small_swipe_up()
                 if controller.is_text_present("Fuel range"):
                     log("Status report is displayed for second vehicle on account")
                 else:
@@ -66,9 +70,13 @@ def Vehicle_Status_Report_002():
                 log("Vehicle lock status displayed") if controller.is_text_present("Vehicle unlocked") or controller.is_text_present("Vehicle locked") else fail_log("Vehicle lock status not displayed", "002", img_service)
                 if vehicle_type == "phev":
                     controller.swipe_up()
+                    if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+                        controller.extra_small_swipe_up()
                     log("Combined range section displayed") if controller.is_text_present("Combined range") else fail_log("Combined range section not displayed", "002", img_service)
                 elif vehicle_type == "ice":
-                    controller.swipe_up(0.3)
+                    controller.swipe_up()
+                    if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+                        controller.extra_small_swipe_up()
                 mileage_results = controller.extract_fuel_range_and_level()
                 results_str = "("
                 for key, value in mileage_results.items():
@@ -113,8 +121,12 @@ def Vehicle_Status_Report_003():
 
                 if vehicle_type == "phev":
                     controller.swipe_up()
+                    if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+                        controller.extra_small_swipe_up()
                 elif vehicle_type == "ice":
-                    controller.swipe_up(0.3)
+                    controller.swipe_up()
+                    if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+                        controller.extra_small_swipe_up()
                 metrics1 = controller.extract_dashboard_metrics()
                 controller.swipe_up()
                 metrics2 = controller.extract_dashboard_metrics()
@@ -167,33 +179,40 @@ def Vehicle_Status_Report_004():
 def Vehicle_Status_Report_005():
     try:
         if app_login_setup():
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            controller.swipe_down()
-            sleep(6)
-            if compare_with_expected_crop("Icons/Error_Icon.png"):
-                fail_log("Error displayed on refresh", "005", img_service)
-                controller.click_by_image("Icons/Error_Icon.png")
+            if not int(fuel_pct) > 0:
+                blocked_log("Test blocked - Car must have some fuel")
             else:
-                controller.click_by_image("Icons/Update_Vehicle_data.png")
-                if controller.wait_for_text("Vehicle status successfully retrieved", 30):
-                    log("Vehicle data updated")
-                else:
-                    fail_log("Vehicle data not updated", "005", img_service)
-
-                if vehicle_type == "phev":
-                    controller.swipe_up()
-                elif vehicle_type == "ice":
-                    controller.swipe_up(0.3)
-                fuel_details = controller.extract_fuel_range_and_level()
-                try:
-                    metric_log(f"Fuel level: {fuel_details["fuel level"]}")
-                    metric_log(f"Fuel range: {fuel_details['fuel range']}")
-                    log("Fuel level and range data extracted")
-
-                except Exception as e:
-                    error_log(e, "005", img_service)
-
+                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
                 controller.swipe_down()
+                sleep(6)
+                if compare_with_expected_crop("Icons/Error_Icon.png"):
+                    fail_log("Error displayed on refresh", "005", img_service)
+                    controller.click_by_image("Icons/Error_Icon.png")
+                else:
+                    controller.click_by_image("Icons/Update_Vehicle_data.png")
+                    if controller.wait_for_text("Vehicle status successfully retrieved", 30):
+                        log("Vehicle data updated")
+                    else:
+                        fail_log("Vehicle data not updated", "005", img_service)
+
+                    if vehicle_type == "phev":
+                        controller.swipe_up()
+                        if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+                            controller.extra_small_swipe_up()
+                    elif vehicle_type == "ice":
+                        controller.swipe_up()
+                        if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+                            controller.extra_small_swipe_up()
+                    fuel_details = controller.extract_fuel_range_and_level()
+                    try:
+                        metric_log(f"Fuel level: {fuel_details["fuel level"]}")
+                        metric_log(f"Fuel range: {fuel_details['fuel range']}")
+                        log("Fuel level and range data extracted")
+
+                    except Exception as e:
+                        error_log(e, "005", img_service)
+
+                    controller.swipe_down()
 
     except Exception as e:
         error_log(e, "005", img_service)
@@ -202,31 +221,36 @@ def Vehicle_Status_Report_006():
     try:
         if vehicle_type == "phev":
             if app_login_setup():
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-                controller.swipe_down()
-                sleep(6)
-                if compare_with_expected_crop("Icons/Error_Icon.png"):
-                    fail_log("Error displayed on refresh", "006", img_service)
-                    controller.click_by_image("Icons/Error_Icon.png")
+                if not int(fuel_pct) > 0 and not int(battery_pct) > 0:
+                    blocked_log("Test blocked - Car must have some fuel and battery charge")
                 else:
-                    controller.click_by_image("Icons/Update_Vehicle_data.png")
-                    if controller.wait_for_text("Vehicle status successfully retrieved", 30):
-                        log("Vehicle data updated")
-                    else:
-                        fail_log("Vehicle data not updated", "006", img_service)
-
-                    controller.swipe_up()
-                    fuel_details = controller.extract_fuel_range_and_level()
-                    try:
-                        metric_log(f"Fuel level: {fuel_details["fuel level"]}")
-                        metric_log(f"Fuel range: {fuel_details['fuel range']}")
-                        metric_log(f"Electricity level: {fuel_details['elec level']}")
-                        metric_log(f"Electricity range: {fuel_details['elec range']}")
-                        metric_log(f"Combined range: {fuel_details['combined range']}")
-                        log("All fuel and electricity data extracted")
-                    except Exception as e:
-                        error_log(e, "006", img_service)
+                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
                     controller.swipe_down()
+                    sleep(6)
+                    if compare_with_expected_crop("Icons/Error_Icon.png"):
+                        fail_log("Error displayed on refresh", "006", img_service)
+                        controller.click_by_image("Icons/Error_Icon.png")
+                    else:
+                        controller.click_by_image("Icons/Update_Vehicle_data.png")
+                        if controller.wait_for_text("Vehicle status successfully retrieved", 30):
+                            log("Vehicle data updated")
+                        else:
+                            fail_log("Vehicle data not updated", "006", img_service)
+
+                        controller.swipe_up()
+                        if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+                            controller.extra_small_swipe_up()
+                        fuel_details = controller.extract_fuel_range_and_level()
+                        try:
+                            metric_log(f"Fuel level: {fuel_details["fuel level"]}")
+                            metric_log(f"Fuel range: {fuel_details['fuel range']}")
+                            metric_log(f"Electricity level: {fuel_details['elec level']}")
+                            metric_log(f"Electricity range: {fuel_details['elec range']}")
+                            metric_log(f"Combined range: {fuel_details['combined range']}")
+                            log("All fuel and electricity data extracted")
+                        except Exception as e:
+                            error_log(e, "006", img_service)
+                        controller.swipe_down()
         elif vehicle_type == "ice":
             blocked_log("Test blocked - Must be a PHEV vehicle")
 
@@ -251,8 +275,12 @@ def Vehicle_Status_Report_007():
 
                 if vehicle_type == "phev":
                     controller.swipe_up()
+                    if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+                        controller.extra_small_swipe_up()
                 elif vehicle_type == "ice":
-                    controller.swipe_up(0.3)
+                    controller.swipe_up()
+                    if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+                        controller.extra_small_swipe_up()
                 fuel_details = controller.extract_fuel_range_and_level()
                 try:
                     metric_log(f"Total mileage: {fuel_details["total mileage"]}")
@@ -273,13 +301,16 @@ def Vehicle_Status_Report_007():
 def Vehicle_Status_Report_008():
     try:
         if app_login_setup():
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
             change_units("Kilometres")
 
             if vehicle_type == "phev":
                 controller.swipe_up()
+                if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+                    controller.extra_small_swipe_up()
             elif vehicle_type == "ice":
-                controller.swipe_up(0.3)
+                controller.swipe_up()
+                if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+                    controller.extra_small_swipe_up()
             if controller.check_units("km"):
                 log("Metrics displayed in metric units")
             else:
@@ -292,13 +323,16 @@ def Vehicle_Status_Report_008():
 def Vehicle_Status_Report_009():
     try:
         if app_login_setup():
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
             change_units("Miles")
 
             if vehicle_type == "phev":
                 controller.swipe_up()
+                if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+                    controller.extra_small_swipe_up()
             elif vehicle_type == "ice":
-                controller.swipe_up(0.3)
+                controller.swipe_up()
+                if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+                    controller.extra_small_swipe_up()
             if controller.check_units("mi"):
                 log("Metrics displayed in imperial units")
             else:
@@ -327,8 +361,12 @@ def Vehicle_Status_Report_010():
 
                 if vehicle_type == "phev":
                     controller.swipe_up()
+                    if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+                        controller.extra_small_swipe_up()
                 elif vehicle_type == "ice":
                     controller.swipe_up(0.3)
+                    if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+                        controller.extra_small_swipe_up()
                 metrics1 = controller.extract_dashboard_metrics()
                 controller.swipe_up()
                 metrics2 = controller.extract_dashboard_metrics()

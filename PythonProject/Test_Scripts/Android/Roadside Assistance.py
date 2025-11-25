@@ -50,7 +50,6 @@ def Roadside_Assistance_001():
             elif vehicle_type == "ice":
                 controller.swipe_down()
             controller.click_by_image("Icons/back_icon.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "001", img_service)
@@ -63,12 +62,6 @@ def Roadside_Assistance_002():
 
 def Roadside_Assistance_003():
     try:
-        blocked_log("Test blocked - Cannot be automated")
-    except Exception as e:
-        error_log(e, "003", img_service)
-
-def Roadside_Assistance_004():
-    try:
         blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
-        error_log(e, "004", img_service)
+        error_log(e, "003", img_service)

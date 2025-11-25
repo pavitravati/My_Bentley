@@ -56,14 +56,20 @@ def remote_swipe(service):
             return True
     return False
 
-def app_login_setup(second_account=False):
+def app_login_setup(demo=False, second_account=False):
     if controller.is_text_present("LOGIN OR REGISTER"):
-        if globals.current_email and globals.current_password:
+        if demo:
+            controller.click_text("DISCOVER MY BENTLEY")
+            if not controller.wait_for_text("Demo mode"):
+                blocked_log("Test blocked - Unable to launch demo mode to begin testcase")
+                sleep(1)
+                return False
+        elif globals.current_email and globals.current_password:
             if not second_account:
                 login_check = app_login(globals.current_email, globals.current_password)
             else:
                 login_check = app_login(globals.second_email, globals.second_password)
-            if login_check == "0":
+            if 0 in login_check:
                 blocked_log("Test blocked - Unable to login to begin testcase")
                 sleep(1)
                 return False
@@ -72,10 +78,11 @@ def app_login_setup(second_account=False):
             sleep(1)
             return False
     sleep(1)
+    dash_check()
     return True
 
-def app_logout_setup(demo=False):
-    if not controller.is_text_present("LOGIN OR REGISTER") and not demo:
+def app_logout_setup():
+    if not controller.is_text_present("LOGIN OR REGISTER"):
         if not controller.click_by_image("Icons/Logout_Icon.png"):
             controller.click_by_image("Icons/Profile_Icon.png")
             controller.click_text("General")
@@ -85,12 +92,6 @@ def app_logout_setup(demo=False):
             blocked_log("Test blocked - Unable to logout to begin testcase")
             sleep(1)
             return False
-        if demo:
-            controller.wait_for_text_and_click("DISCOVER MY BENTLEY")
-            if not controller.wait_for_text("Demo mode"):
-                blocked_log("Test blocked - Unable to launch demo mode to begin testcase")
-                sleep(1)
-                return False
     sleep(1)
     return True
 
@@ -132,12 +133,14 @@ def delete_vin():
     controller.click_by_image("Icons/info_btn.png")
     controller.click_text("Delete vehicle")
     controller.click_text("Delete")
-    if not controller.wait_for_text("", 30):
+    if not controller.wait_for_text("Vehicle details successfully submitted. Your request is now being validated. Once confirmed your vehicle will disappear from your virtual garage.", 30):
         blocked_log("Test blocked - Unable to delete vin to complete testcase")
     sleep(1)
 
 def add_vin():
     if controller.wait_for_text("DASHBOARD"):
+        while not controller.is_text_present("ADD A VEHICLE"):
+            controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
         controller.small_swipe_up()
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/button_add_dashboard_module_add_vehicle")
         controller.small_swipe_up()
@@ -154,39 +157,61 @@ def add_vin():
         controller.wait_for_text_and_click("CONFIRM")
         controller.wait_for_text("ADD YOUR BENTLEY")
         controller.wait_for_text_and_click("Continue")
+        if controller.is_text_present("VIN"):
+            controller.click_text("Continue")
+        first_name = controller.d(resourceId="firstname").get_text()
+        if not first_name == globals.current_name.split(" ")[0]:
+            controller.click_by_resource_id("firstname")
+            controller.clear_text(len(first_name))
+            controller.enter_text(globals.current_name.split(" ")[0])
+            controller.click_text("YOUR DETAILS")
+        last_name = controller.d(resourceId="lastname").get_text()
+        if not last_name == globals.current_name.split(" ")[1]:
+            controller.click_by_resource_id("lastname")
+            controller.clear_text(len(last_name))
+            controller.enter_text(globals.current_name.split(" ")[1])
+            controller.click_text("YOUR DETAILS")
         controller.click_text("Continue")
-        controller.click_by_resource_id("firstname")
-        while controller.d(resourceId="firstname").get_text() != "":
-            controller.clear_text(1)
-        controller.enter_text(globals.current_name.split(" ")[0])
-        controller.click_text("Next")
-        while controller.d(resourceId="lastname").get_text() != "":
-            controller.clear_text(1)
-        controller.enter_text(globals.current_name.split(" ")[1])
-        controller.click_text("YOUR DETAILS")
+        if controller.click_text("Location"):
+            controller.swipe_up(0.01)
+            controller.click_text("United Kingdom")
+            controller.click_text("Building")
+            controller.enter_text("Bentley")
+            controller.click_text("Next")
+            controller.enter_text("1")
+            controller.click_text("Next")
+            controller.enter_text("Pyms%slane")
+            controller.click_text("Next")
+            controller.enter_text("Crewe")
+            controller.click_text("Next")
+            controller.enter_text("CW1%s3PJ")
+            controller.click_by_image("Icons/vin_progress.png")
+        else:
+            controller.click_text("Continue")
+            controller.swipe_up(0.01)
         controller.click_text("Continue")
-        controller.click_text("Location")
-        controller.swipe_up(0.01)
-        controller.click_text("United Kingdom")
-        controller.click_text("Building")
-        controller.enter_text("Bentley")
-        controller.click_text("Next")
-        controller.enter_text("1")
-        controller.click_text("Next")
-        controller.enter_text("Pyms%slane")
-        controller.click_text("Next")
-        controller.enter_text("Crewe")
-        controller.click_text("Next")
-        controller.enter_text("CW1%s3PJ")
-        controller.click_by_image("Icons/vin_progress.png")
-        controller.click_text("Continue")
-        controller.wait_for_text_and_click("Area Code")
-        controller.swipe_up(0.035)
-        controller.click_text("+44")
-        controller.click_text("Mobile Phone")
-        controller.enter_text("07818014437")
+        controller.wait_for_text("Your Mobile Number")
+        if controller.click_text("Area Code"):
+            controller.swipe_up(0.035)
+            controller.click_text("+44")
+            controller.click_text("Mobile Phone")
+            controller.enter_text("07123456789")
+        else:
+            controller.click_text("Continue")
         controller.click_text("Continue")
         controller.wait_for_text("Request Submitted")
         controller.click_text("Continue")
         controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
         sleep(1)
+
+def service_reset():
+    controller.d.press("recent")
+    sleep(0.5)
+    controller.click_text("Close all")
+    controller.launch_app("uk.co.bentley.mybentley")
+    while not controller.is_text_present("DASHBOARD") and not controller.is_text_present("LOGIN OR REGISTER"):
+        sleep(0.2)
+
+def dash_check():
+    if not (compare_with_expected_crop("Icons/navigation_icon.png") or compare_with_expected_crop("Icons/home_icon.png")):
+        service_reset()

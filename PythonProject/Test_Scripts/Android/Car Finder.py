@@ -47,7 +47,6 @@ def Car_Finder_002():
                 log("Car map markers all displayed")
             else:
                 fail_log("Car map markers not displayed", "002", img_service)
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "002", img_service)
@@ -63,7 +62,6 @@ def Car_Finder_003():
                 log("User icon displayed on navigation page")
             else:
                 fail_log("User icon not displayed on navigation page", "003", img_service)
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "003", img_service)
@@ -81,7 +79,6 @@ def Car_Finder_004():
                 log("User location displayed on navigation page")
             else:
                 fail_log("User location not displayed on navigation page", "004", img_service)
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "004", img_service)
@@ -120,7 +117,6 @@ def Car_Finder_005():
                 log("car icon displayed on navigation page")
             else:
                 fail_log("car icon displayed on navigation page", "005", img_service)
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "005", img_service)
@@ -163,7 +159,6 @@ def Car_Finder_006():
                     fail_log("No vehicle visible on navigation page", "006", img_service)
 
             controller.click(500, 500)
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "006", img_service)
@@ -203,7 +198,6 @@ def Car_Finder_007():
 
             controller.launch_app("uk.co.bentley.mybentley")
             controller.click(500, 500)
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "007", img_service)

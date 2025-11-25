@@ -1,4 +1,4 @@
-service_details = {
+service_requirements = {
     "Demo Mode": {
         "requirements": {
             "needs_vehicle": False,
@@ -7,7 +7,7 @@ service_details = {
             "region_locks": []
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": False, "phone": True, "country": True
         }
     },
@@ -46,7 +46,7 @@ service_details = {
             "region_locks": []
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": True, "vehicle": False, "phone": True, "country": True
         }
     },
@@ -72,7 +72,7 @@ service_details = {
             "region_locks": []
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -85,7 +85,7 @@ service_details = {
             "region_locks": []
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -98,7 +98,7 @@ service_details = {
             "region_locks": []
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -111,7 +111,7 @@ service_details = {
             "region_locks": []
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": True,
+            "name": False, "email": True, "password": True, "pin": True,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -124,7 +124,7 @@ service_details = {
             "region_locks": ["chn"]
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -137,7 +137,7 @@ service_details = {
             "region_locks": []
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -150,7 +150,7 @@ service_details = {
             "region_locks": []
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -163,7 +163,7 @@ service_details = {
             "region_locks": []
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -176,7 +176,7 @@ service_details = {
             "region_locks": []
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -189,7 +189,7 @@ service_details = {
             "region_locks": ["eur"]
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -202,7 +202,7 @@ service_details = {
             "region_locks": []
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -215,7 +215,7 @@ service_details = {
             "region_locks": []
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -228,7 +228,7 @@ service_details = {
             "region_locks": ["nar"]
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -241,7 +241,7 @@ service_details = {
             "region_locks": ["eur"]
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -254,7 +254,7 @@ service_details = {
             "region_locks": ["nar", "chn"]
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -267,7 +267,7 @@ service_details = {
             "region_locks": ["eur", "nar"]
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -280,7 +280,7 @@ service_details = {
             "region_locks": []
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -293,7 +293,7 @@ service_details = {
             "region_locks": []
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -306,7 +306,7 @@ service_details = {
             "region_locks": []
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -319,7 +319,7 @@ service_details = {
             "region_locks": []
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -332,7 +332,7 @@ service_details = {
             "region_locks": []
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": True,
+            "name": False, "email": True, "password": True, "pin": True,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -345,7 +345,7 @@ service_details = {
             "region_locks": []
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     },
@@ -384,9 +384,9 @@ service_details = {
             "region_locks": ["eur"]
         },
         "fields": {
-            "name": True, "email": True, "password": False, "pin": False,
+            "name": False, "email": True, "password": True, "pin": False,
             "vin": False, "vehicle": True, "phone": True, "country": True
         }
     }
 }
-services = list(service_details.keys())
+all_services = list(service_requirements.keys())

@@ -3,8 +3,6 @@ import time
 import cv2
 import os
 from core.globals import vehicle_type
-# from uiautomator2 import screenrecord as sr
-from scipy.stats import landau
 
 class DeviceController:
     def __init__(self):
@@ -830,24 +828,3 @@ class DeviceController:
         self.swipe_down()
 
         return svt_details
-
-    def extract_svt_mybentley(self):
-        pass
-
-    # def create_recorder(self, output_path):
-    #     rec = sr.Screenrecord(self.d)
-    #
-    #     def start():
-    #         self.rec._start(output_path)
-    #
-    #     def stop_save():
-    #         self.rec._stop()
-    #         print(f"Recording saved to {output_path}")
-    #
-    #     def stop_discard():
-    #         self.rec._stop()
-    #         if os.path.exists(output_path):
-    #             os.remove(output_path)
-    #             print("Recording stopped and deleted.")
-    #         else:
-    #             print("Recording stopped, but no file found.")

@@ -4,6 +4,7 @@ from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
 from gui.manual_check import manual_check
 from time import sleep
 from core.globals import manual_run
+import core.globals as globals
 
 img_service = "Nav Companion"
 
@@ -54,7 +55,6 @@ def Nav_Companion_001():
             else:
                 fail_log("Option to enable 'Satellite' and 'Real time traffic' not displayed", "001", img_service)
             controller.click_by_image("Images/Navigation_Info_Image.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "001", img_service)
 
@@ -73,16 +73,12 @@ def Nav_Companion_002():
             else:
                 fail_log("Failed to search for a location", "002", img_service)
 
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-
     except Exception as e:
         error_log(e, "002", img_service)
 
 def Nav_Companion_003():
     try:
         if app_login_setup():
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            car = identify_car()
             controller.click_by_image("Icons/navigation_icon.png")
             controller.click_by_image("Images/Navigation_Allow.png")
             controller.click_by_image("Images/Navigation_Search_Image.png")
@@ -94,12 +90,11 @@ def Nav_Companion_003():
             else:
                 fail_log("Send to car button not displayed", "003", img_service)
 
-            if controller.wait_for_text(f"London sent successfully to {car}"):
+            if controller.wait_for_text(f"London sent successfully to {globals.current_car}"):
                 log("Location sent confirmation message received")
             else:
                 fail_log("Location sent confirmation message not received", "003", img_service)
             controller.click_by_image("Icons/location_back.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
             manual_check(
                 instruction="Check whether the recently sent location to vehicle via My Bentley App can be accessed in vehicle",
@@ -118,7 +113,12 @@ def Nav_Companion_004():
             controller.click_by_image("Images/Navigation_Search_Image.png")
             controller.click_text("NAVIGATION")
 
-            if controller.is_text_present("London"):
+            if not controller.is_text_present("London"):
+                controller.enter_text("London")
+                controller.click_by_resource_id("uk.co.bentley.mybentley:id/textView_list_item_poi_title")
+                controller.click_text("SEND TO CAR")
+                controller.wait_for_text(f"London sent successfully to {globals.current_car}")
+            else:
                 controller.delete_sent_location()
                 if controller.wait_for_text("Currently no places found. To find a destination use the search field."):
                     log("Sent location deleted from app")
@@ -126,7 +126,6 @@ def Nav_Companion_004():
                     fail_log("Sent location not deleted from app", "004", img_service)
 
             controller.click_by_image("Icons/location_back.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
             manual_check(
                 instruction="Check whether the recently deleted location via My Bentley App is deleted from vehicle",
@@ -228,7 +227,6 @@ def Nav_Companion_006():
                 fail_log("Recently deleted location not displayed under 'Sent destinations'", "006", img_service)
 
             controller.click_by_image("Icons/location_back.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "006", img_service)
@@ -268,7 +266,6 @@ def Nav_Companion_007():
                 fail_log("Favourite location not deleted from app", "007", img_service)
 
             controller.click_by_image("Icons/location_back.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "007", img_service)
 
@@ -303,7 +300,6 @@ def Nav_Companion_008():
             else:
                 fail_log("Sent location not deleted from app", "004", img_service)
             controller.click_by_image("Icons/navigation_back.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
             manual_check(
                 instruction="",
@@ -354,7 +350,6 @@ def Nav_Companion_009():
             else:
                 fail_log("Sent dealer not deleted from app", "009", img_service)
             controller.click_by_image("Icons/navigation_back.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
             manual_check(
                 instruction="",
@@ -384,7 +379,6 @@ def Nav_Companion_010():
             if controller.wait_for_text(f"{location} sent successfully to {car}"):
                 log("Location sent to car")
             controller.click_by_image("Icons/navigation_back.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
             manual_check(
                 instruction="",

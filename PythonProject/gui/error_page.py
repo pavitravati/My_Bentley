@@ -1,13 +1,32 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTextEdit, QScrollArea
+import os
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QTextEdit, QScrollArea, QToolButton
 from PySide6.QtGui import QFont, QPixmap
 from pathlib import Path
-from PySide6.QtWidgets import QApplication
-from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QApplication, QVBoxLayout, QWidget
+from PySide6.QtCore import Qt, QUrl
+from core.kpm_creater import download_kpm
+from PySide6.QtMultimedia import QMediaPlayer
+from PySide6.QtMultimediaWidgets import QVideoWidget
+
+class ClickableVideoWidget(QVideoWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.parent_player = None
+
+    def mouseReleaseEvent(self, event):
+        if self.parent_player:
+            if self.parent_player.playbackState() == QMediaPlayer.PlayingState:
+                self.parent_player.pause()
+            else:
+                self.parent_player.play()
+        super().mouseReleaseEvent(event)
 
 class ErrorPage(QWidget):
-    def __init__(self, title: str, logs: list[str], images: list[str], parent=None):
+    def __init__(self, title: str, logs: list[str], images: list[str], service, row, parent=None):
         super().__init__(parent)
-
+        self.title = title
+        self.service = service
+        self.row = row
         screen = QApplication.primaryScreen()
         screen_size = screen.availableGeometry()
         width = int(screen_size.width() * 0.7)
@@ -27,8 +46,27 @@ class ErrorPage(QWidget):
         title.setFont(QFont("Arial", 25, QFont.Bold))
         title.setStyleSheet("margin-left: 20px; margin-bottom: 20px;")
         top_layout.addWidget(title)
-
         top_layout.addStretch()
+
+        kpm_btn = QToolButton()
+        kpm_btn.setText("Generate KPM")
+        kpm_btn.setCursor(Qt.PointingHandCursor)
+        kpm_btn.setStyleSheet("""
+                    QToolButton {
+                        background-color: #394d45;
+                        font-size: 16px;
+                        font-weight: bold;
+                        width: 180px;
+                        height: 40px;
+                        color: white;
+                    }
+                    QToolButton:hover {
+                        background-color: #25312c;
+                        cursor: pointer;
+                    }
+                """)
+        kpm_btn.clicked.connect(self.generate_kpm)
+        top_layout.addWidget(kpm_btn)
 
         logo = QLabel()
         img_path = Path(__file__).parent / "images" / "bentleylogo.png"
@@ -45,8 +83,14 @@ class ErrorPage(QWidget):
 
         self.log_textbox = QTextEdit()
         self.log_textbox.setReadOnly(True)
+        cleaned_logs = []
+        for log in logs:
+            if log.startswith("$"):
+                self.kpm_log = log[1:]
+            else:
+                cleaned_logs.append(log)
 
-        logs_combined = "\n".join(logs)
+        logs_combined = "\n".join(cleaned_logs)
 
         self.log_textbox.setPlainText(logs_combined)
         self.log_textbox.setFont(QFont("Arial", 13))
@@ -60,6 +104,21 @@ class ErrorPage(QWidget):
         images_layout = QHBoxLayout(container)
         images_layout.setSpacing(5)
         images_layout.setContentsMargins(20, 0, 20, 0)
+
+        self.media_player = QMediaPlayer(self)
+        self.video_widget = ClickableVideoWidget()
+        self.video_widget.setFixedWidth(220)
+        self.video_widget.setFixedHeight(478)
+        self.video_widget.setCursor(Qt.PointingHandCursor)
+        self.video_widget.parent_player = self.media_player
+        self.media_player.setVideoOutput(self.video_widget)
+
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        screenshot_dir = os.path.join(base_dir, "fail_images")
+        video_url = QUrl.fromLocalFile(f"{screenshot_dir}/Demo Mode-001.mp4")
+        self.media_player.setSource(video_url)
+
+        images_layout.addWidget(self.video_widget)
 
         for img_path_str in images:
             internal_container = QWidget()
@@ -100,3 +159,6 @@ class ErrorPage(QWidget):
         detail_layout.addWidget(scroll_area)
 
         layout.addLayout(detail_layout)
+
+    def generate_kpm(self):
+        download_kpm(self.service,self.row,manual=True)

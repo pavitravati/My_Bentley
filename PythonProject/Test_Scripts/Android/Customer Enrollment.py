@@ -51,8 +51,7 @@ def Customer_Enrollment_001():
                 controller.enter_pin("1234")
 
                 timeout_check = 0
-                while not controller.is_text_present("Successfully unlocked") or compare_with_expected_crop(
-                        "Icons/Error_Icon.png"):
+                while not controller.is_text_present("Successfully unlocked") or compare_with_expected_crop("Icons/Error_Icon.png"):
                     sleep(1)
                     timeout_check += 1
                     if timeout_check > 40:
@@ -122,7 +121,7 @@ def Customer_Enrollment_003():
     except Exception as e:
         error_log(e, "003", img_service)
 add_vin()
-
+# controller.dump_ui()
 def Customer_Enrollment_004():
     try:
         if country == "chn":

@@ -15,7 +15,6 @@ def My_Car_Statistics_001():
                 log(f"Last trip status displayed: {last_trip}")
             else:
                 fail_log("Last trip status not displayed", "001", img_service)
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "001", img_service)
@@ -73,7 +72,6 @@ def My_Car_Statistics_002():
                 fail_log("List view of selected option not displayed", "002", img_service)
 
             controller.click(110,110)
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "002", img_service)
@@ -129,7 +127,6 @@ def My_Car_Statistics_003():
             controller.click_text("CONSUMPTION - COMBUSTION")
             controller.click_text("Consumption - electric")
             controller.click(110,110)
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "003", img_service)
@@ -181,7 +178,6 @@ def My_Car_Statistics_004():
                 fail_log("Consumption - electric option not displayed in bold", "004", img_service)
 
             controller.click(110,110)
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "004", img_service)
@@ -236,7 +232,6 @@ def My_Car_Statistics_005():
             controller.click_text("DISTANCE - DRIVEN")
             controller.click_text("Consumption - electric")
             controller.click(110, 110)
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "005", img_service)
@@ -291,7 +286,6 @@ def My_Car_Statistics_006():
             controller.click_text("DISTANCE - TIME")
             controller.click_text("Consumption - electric")
             controller.click(110, 110)
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "006", img_service)
@@ -348,7 +342,6 @@ def My_Car_Statistics_007():
             controller.click_text("AVERAGE SPEED")
             controller.click_text("Consumption - electric")
             controller.click(110, 110)
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "007", img_service)
@@ -370,7 +363,6 @@ def My_Car_Statistics_008():
 
             controller.click(500, 800)
             controller.click(110, 110)
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "008", img_service)
@@ -445,8 +437,6 @@ def My_Car_Statistics_010():
             else:
                 fail_log("Metric units not displayed in My car statistics screen", "010", img_service)
             controller.click(110, 110)
-
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "010", img_service)

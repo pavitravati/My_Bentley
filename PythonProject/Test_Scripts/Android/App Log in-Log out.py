@@ -45,7 +45,6 @@ def App_Log_in_Log_out_002():
 def App_Log_in_Log_out_003():
     try:
         if app_login_setup():
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
             if controller.click_by_image("Icons/Profile_Icon.png"):
                 log("Profile icon clicked")
             else:
@@ -132,7 +131,6 @@ def App_Log_in_Log_out_005():
 def App_Log_in_Log_out_006():
     try:
         if app_login_setup():
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
             enable_flight_mode()
             sleep(1)
             if controller.click_by_image("Icons/Profile_Icon.png"):

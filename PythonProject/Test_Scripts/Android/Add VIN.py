@@ -306,6 +306,9 @@ def Add_VIN_006():
     try:
         if app_login_setup():
 
+            controller.d.press("recent")
+            sleep(0.5)
+            controller.click_text("Close all")
             controller.launch_app("com.android.settings")
             if controller.click_by_image("Icons/settings_search.png"):
                 controller.enter_text("Bentley")
@@ -363,6 +366,9 @@ def Add_VIN_007():
         if app_login_setup():
 
             # if manual:
+            controller.d.press("recent")
+            sleep(0.5)
+            controller.click_text("Close all")
             controller.launch_app("com.android.settings")
             if controller.click_by_image("Icons/settings_search.png"):
                 controller.enter_text("Bentley")
@@ -409,6 +415,9 @@ def Add_VIN_008():
         if app_login_setup():
 
             # if manual:
+            controller.d.press("recent")
+            sleep(0.5)
+            controller.click_text("Close all")
             controller.launch_app("com.android.settings")
             if controller.click_by_image("Icons/settings_search.png"):
                 controller.enter_text("Bentley")
@@ -469,6 +478,9 @@ def Add_VIN_009():
     try:
         if app_login_setup():
             # if manual:
+            controller.d.press("recent")
+            sleep(0.5)
+            controller.click_text("Close all")
             controller.launch_app("com.android.settings")
             if controller.click_by_image("Icons/settings_search.png"):
                 controller.enter_text("Bentley")
@@ -529,6 +541,9 @@ def Add_VIN_010():
     try:
         if app_login_setup():
 
+            controller.d.press("recent")
+            sleep(0.5)
+            controller.click_text("Close all")
             controller.launch_app("com.android.settings")
             if controller.click_by_image("Icons/settings_search.png"):
                 controller.enter_text("Bentley")
@@ -563,6 +578,9 @@ def Add_VIN_011():
     try:
         if app_login_setup():
             # if manual:
+            controller.d.press("recent")
+            sleep(0.5)
+            controller.click_text("Close all")
             controller.launch_app("com.android.settings")
             if controller.click_by_image("Icons/settings_search.png"):
                 controller.enter_text("Bentley")
@@ -641,6 +659,9 @@ def Add_VIN_013():
     try:
         if app_login_setup():
             # if manual:
+            controller.d.press("recent")
+            sleep(0.5)
+            controller.click_text("Close all")
             controller.launch_app("com.android.settings")
             if controller.click_by_image("Icons/settings_search.png"):
                 controller.enter_text("Bentley")
@@ -680,6 +701,9 @@ def Add_VIN_014():
     try:
         if app_login_setup():
             # if manual:
+            controller.d.press("recent")
+            sleep(0.5)
+            controller.click_text("Close all")
             controller.launch_app("com.android.settings")
             if controller.click_by_image("Icons/settings_search.png"):
                 controller.enter_text("Bentley")

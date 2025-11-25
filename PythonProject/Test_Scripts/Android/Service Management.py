@@ -115,7 +115,6 @@ def Service_Management_003():
                 log("Car finder successfully enabled")
             else:
                 fail_log("Car finder failed to be enabled", "003", img_service)
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "003", img_service)
@@ -220,7 +219,6 @@ def Service_Management_005():
                     fail_log("Cabin comfort failed to be enabled", "005", img_service)
 
                 controller.swipe_down()
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         elif vehicle_type == "ice":
             blocked_log("Test blocked - Must be a PHEV vehicle")
 
@@ -277,7 +275,6 @@ def Service_Management_006():
                     controller.click_by_image("Icons/back_icon.png")
                 else:
                     fail_log("Car statistics failed to be enabled", "006", img_service)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         elif vehicle_type == "ice":
             blocked_log("Test blocked - Must be a PHEV vehicle")
     except Exception as e:
@@ -331,7 +328,6 @@ def Service_Management_007():
                     controller.click_by_image("Icons/back_icon.png")
                 else:
                     fail_log("Battery charge failed to be enabled", "007", img_service)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         elif vehicle_type == "ice":
             blocked_log("Test blocked - Must be a PHEV vehicle")
     except Exception as e:
@@ -387,7 +383,6 @@ def Service_Management_008():
                     fail_log("Theft alert failed to be enabled", "008", img_service)
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -470,7 +465,6 @@ def Service_Management_012():
                         controller.click_by_image("Icons/back_icon.png")
                     else:
                         fail_log("Activate heating failed to be enabled", "012", img_service)
-                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
             elif vehicle_type == "phev":
                 blocked_log("Test blocked - Must be an ICE vehicle")
         else:

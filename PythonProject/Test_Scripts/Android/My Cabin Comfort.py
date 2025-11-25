@@ -29,7 +29,6 @@ def My_Cabin_Comfort_001():
                 fail_log("Cabin comfort section not displayed", "001", img_service)
 
             controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "001", img_service)
@@ -60,7 +59,6 @@ def My_Cabin_Comfort_002():
 
             controller.click_by_image("Icons/back_icon.png")
             controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "002", img_service)
@@ -102,7 +100,6 @@ def My_Cabin_Comfort_003():
 
             controller.click_by_image("Icons/back_icon.png")
             controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "003", img_service)
@@ -138,7 +135,6 @@ def My_Cabin_Comfort_004():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down()
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "004", img_service)
 
@@ -167,7 +163,6 @@ def My_Cabin_Comfort_005():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down()
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "005", img_service)
 
@@ -232,7 +227,6 @@ def My_Cabin_Comfort_006():
                     controller.click_text("STOP")
                     controller.wait_for_text("Not active")
                     controller.swipe_down()
-                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "006", img_service)
 
@@ -309,7 +303,6 @@ def My_Cabin_Comfort_007():
 
                     controller.click_by_image("Icons/back_icon.png")
                     controller.swipe_down()
-                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "007", img_service)
@@ -387,7 +380,6 @@ def My_Cabin_Comfort_008():
 
                     controller.click_by_image("Icons/back_icon.png")
                     controller.swipe_down()
-                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "008", img_service)
 
@@ -464,7 +456,6 @@ def My_Cabin_Comfort_009():
 
                     controller.click_by_image("Icons/back_icon.png")
                     controller.swipe_down()
-                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "009", img_service)
 
@@ -541,7 +532,6 @@ def My_Cabin_Comfort_010():
 
                     controller.click_by_image("Icons/back_icon.png")
                     controller.swipe_down()
-                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "010", img_service)
 
@@ -618,7 +608,6 @@ def My_Cabin_Comfort_011():
 
                     controller.click_by_image("Icons/back_icon.png")
                     controller.swipe_down()
-                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "011", img_service)
 
@@ -659,7 +648,6 @@ def My_Cabin_Comfort_012():
 
                     controller.click_by_image("Icons/back_icon.png")
                     controller.swipe_down()
-                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "012", img_service)
 
@@ -718,7 +706,6 @@ def My_Cabin_Comfort_013():
 
             controller.click_by_image("Icons/back_icon.png")
             controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "013", img_service)
 
@@ -760,7 +747,6 @@ def My_Cabin_Comfort_014():
                 controller.click_by_image("Icons/back_icon.png")
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down()
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "014", img_service)
 
@@ -827,7 +813,6 @@ def My_Cabin_Comfort_015():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down()
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "015", img_service)
 
@@ -902,7 +887,6 @@ def My_Cabin_Comfort_016():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down()
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "016", img_service)
 
@@ -959,7 +943,6 @@ def My_Cabin_Comfort_017():
 
             controller.click_by_image("Icons/back_icon.png")
             controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "017", img_service)
 
@@ -999,18 +982,31 @@ def My_Cabin_Comfort_019():
             controller.click_by_image("Icons/back_icon.png")
             controller.click_by_image("Icons/back_icon.png")
             controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "019", img_service)
 
 def My_Cabin_Comfort_020():
     try:
         if app_login_setup():
+            controller.click_by_image("Icons/remote_icon.png")
+            remote_swipe("MY CABIN COMFORT")
+            controller.click_text("MY CABIN COMFORT")
+            controller.click_text("START")
+            controller.wait_for_text("Sending message to car")
+            while controller.is_text_present("Sending message to car"):
+                sleep(0.5)
+            manual_check(
+                instruction="Make sure 'MY CABIN COMFORT' is active under 'Climate - Auxiliary climate' screen\nIf not, it has been sent by the app so wait for that or manually activate",
+                test_id="020",
+                service=img_service,
+                take_screenshot=False
+            )
+            sleep(1)
             manual_check(
                 instruction="Click on 'Temperature - Icon' button under 'Immediate Start' section in 'Climate - Auxiliary Climate' screen to deactivate",
                 test_id="020",
                 service=img_service,
-                take_screenshot=True
+                take_screenshot=False
             )
             controller.click_by_image("Icons/remote_icon.png")
             remote_swipe("MY CABIN COMFORT")
@@ -1021,7 +1017,6 @@ def My_Cabin_Comfort_020():
             else:
                 fail_log("Not active status not displayed", "020", img_service)
             controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "020", img_service)
 
@@ -1029,7 +1024,7 @@ def My_Cabin_Comfort_021():
     try:
         if app_login_setup():
             manual_check(
-                instruction="1. Select either 'Timer-1'/'Timer-2' under 'Timer Programming' section of 'Climate - Auxiliary climate' screen\nSelect 'Timer-1'/'Timer-2' and select the 'Departure date'(Ex : Sun 30 July 2023) and press 'Continue' button\nNow set the 'Departure time'(Ex: 30.07.2023 :: 11:05) and press 'Ok' button\nNotice that the recently updated timer('Timer-1'/'Timer-2') is ticked ",
+                instruction="1. Select either 'Timer-1'/'Timer-2' under 'Timer Programming' section of 'Climate - Auxiliary climate' screen\nSelect 'Timer-1'/'Timer-2' and select the 'Departure date'(Ex : Sun 30 July 2023) and press 'Continue' button\nNow set the 'Departure time'(Ex: 30.07.2023 :: 11:05) and press 'Ok' button\nNotice that the recently updated timer('Timer-1'/'Timer-2') is ticked\nNote: Set a specific temperature and desired seat heating so it can be compared to the app",
                 test_id="021 ",
                 service=img_service,
                 take_screenshot=True
@@ -1059,7 +1054,6 @@ def My_Cabin_Comfort_021():
             )
             controller.click_by_image("Icons/back_icon.png")
             controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "021", img_service)
 
@@ -1115,7 +1109,6 @@ def My_Cabin_Comfort_022():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down()
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "022", img_service)
 
@@ -1158,7 +1151,6 @@ def My_Cabin_Comfort_023():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down()
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "023", img_service)
 
@@ -1205,7 +1197,6 @@ def My_Cabin_Comfort_024():
 
             controller.click_by_image("Icons/back_icon.png")
             controller.swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "024", img_service)
 

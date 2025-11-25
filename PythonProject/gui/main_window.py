@@ -2,10 +2,8 @@ from PySide6.QtWidgets import (
     QApplication, QMainWindow, QToolBar
 )
 from PySide6.QtGui import QAction, QActionGroup, QIcon
-# from excel import services, service_details
-from service_details import service_details, services
+from service_details import service_requirements, all_services
 from test_case_page import TestCaseTablePage
-from core import globals
 from home_page import HomePage
 import sys
 import os, glob
@@ -15,8 +13,9 @@ def cleanup_images():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     image_dir = os.path.join(base_dir, "fail_images")
 
-    for file in glob.glob(os.path.join(image_dir, "*.png")):
-        os.remove(file)
+    for file_type in ['png', 'mp4']:
+        for file in glob.glob(os.path.join(image_dir, f"*.{file_type}")):
+            os.remove(file)
 
     base_dir = os.path.dirname(os.path.abspath(__file__))
     image_dir = os.path.join(base_dir, "manual_check_screenshots")
@@ -28,7 +27,10 @@ def cleanup_images():
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        image_dir = os.path.join(base_dir, "fail_images")
+        for file in glob.glob(os.path.join(image_dir, "*.mp4")):
+            os.remove(file)
         self.setWindowTitle("Test Case Viewer")
         self.setStyleSheet("background-color: white;")
 
@@ -42,7 +44,7 @@ class MainWindow(QMainWindow):
         action_group.setExclusive(True)
 
         # Adds each service to the toolbar
-        for service in services:
+        for service in all_services:
             action = QAction(service, self)
             action.setCheckable(True)
             action.triggered.connect(lambda checked, svc=service: self.toolbar_button_clicked(svc))
@@ -53,9 +55,9 @@ class MainWindow(QMainWindow):
 
     def toolbar_button_clicked(self, service):
         fields = [globals.current_name, globals.current_email, globals.current_password, globals.current_pin, globals.vehicle_type, globals.phone_type, globals.country]
-        stored = service_details[service]['fields'].values()
+        stored = service_requirements[service]['fields'].values()
 
-        if not any(not f and s for f, s in zip(fields, stored)):
+        if not any(not f and s for f, s in zip(fields, stored)) and globals.get_account_details_called:
             self.service = service
             self.setCentralWidget(TestCaseTablePage(self, service, auto_run=False))
 
@@ -112,7 +114,7 @@ if __name__ == "__main__":
     QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
         background: none;
     """
-
+    os.environ["QT_LOGGING_RULES"] = "qt.multimedia.ffmpeg=false"
     app.setStyleSheet(scrollbar_style)
     app.setStyle("Fusion")
     icon_path = os.path.join(os.path.dirname(__file__), "images", "bentleyicon.png")

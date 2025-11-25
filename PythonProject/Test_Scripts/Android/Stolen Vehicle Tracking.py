@@ -50,7 +50,6 @@ def Stolen_Vehicle_Tracking_003():
                 )
 
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -171,7 +170,6 @@ def Stolen_Vehicle_Tracking_007():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -210,7 +208,6 @@ def Stolen_Vehicle_Tracking_008():
                 controller.click_by_image("Icons/back_icon.png")
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -344,7 +341,6 @@ def Stolen_Vehicle_Tracking_009():
                     controller.swipe_down()
                     controller.click_by_image("Icons/back_icon.png")
                     controller.swipe_down(0.05)
-                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -403,7 +399,6 @@ def Stolen_Vehicle_Tracking_010():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -475,7 +470,6 @@ def Stolen_Vehicle_Tracking_011():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -525,7 +519,6 @@ def Stolen_Vehicle_Tracking_012():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -585,7 +578,6 @@ def Stolen_Vehicle_Tracking_013():
                         sleep(1)
 
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -656,7 +648,6 @@ def Stolen_Vehicle_Tracking_019():
                         fail_log("Stolen vehicle tracking feature is not displayed as active", "019", img_service)
 
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -687,7 +678,6 @@ def Stolen_Vehicle_Tracking_020():
                     sleep(0.2)
 
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -710,7 +700,6 @@ def Stolen_Vehicle_Tracking_021():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -752,7 +741,6 @@ def Stolen_Vehicle_Tracking_022():
                         fail_log("Garage mode not disabled after timer runs out", "022", img_service)
                     controller.click_by_image("Icons/back_icon.png")
                     controller.swipe_down(0.05)
-                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -797,7 +785,6 @@ def Stolen_Vehicle_Tracking_023():
                         fail_log("Garage mode not disabled", "023", img_service)
                     controller.click_by_image("Icons/back_icon.png")
                     controller.swipe_down(0.05)
-                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -828,7 +815,6 @@ def Stolen_Vehicle_Tracking_024():
                     sleep(0.2)
 
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -851,7 +837,6 @@ def Stolen_Vehicle_Tracking_025():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -893,7 +878,6 @@ def Stolen_Vehicle_Tracking_026():
                         fail_log("Transport mode not disabled after timer runs out", "026", img_service)
                     controller.click_by_image("Icons/back_icon.png")
                     controller.swipe_down(0.05)
-                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -939,7 +923,6 @@ def Stolen_Vehicle_Tracking_027():
                         fail_log("Transport mode not disabled", "027", img_service)
                     controller.click_by_image("Icons/back_icon.png")
                     controller.swipe_down(0.05)
-                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -972,7 +955,6 @@ def Stolen_Vehicle_Tracking_028():
                     sleep(0.2)
 
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -995,7 +977,6 @@ def Stolen_Vehicle_Tracking_029():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -1041,7 +1022,6 @@ def Stolen_Vehicle_Tracking_030():
                         fail_log("Deactivation mode not disabled after timer runs out", "030", img_service)
                     controller.click_by_image("Icons/back_icon.png")
                     controller.swipe_down(0.05)
-                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -1090,7 +1070,6 @@ def Stolen_Vehicle_Tracking_031():
                         fail_log("Deactivation mode not disabled", "031", img_service)
                     controller.click_by_image("Icons/back_icon.png")
                     controller.swipe_down(0.05)
-                    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -1167,7 +1146,6 @@ def Stolen_Vehicle_Tracking_032():
                     sleep(0.2)
 
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -1194,7 +1172,6 @@ def Stolen_Vehicle_Tracking_033():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -1254,7 +1231,6 @@ def Stolen_Vehicle_Tracking_034():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:

@@ -1,53 +1,59 @@
 from time import sleep
+import os
+os.environ["QT_LOGGING_RULES"] = "qt.multimedia.ffmpeg=false"
 from common_utils.android_image_comparision import *
 from core.globals import current_email
 from core.log_emitter import log, fail_log, metric_log, error_log, blocked_log
-from core.app_functions import app_logout_setup, app_login
+from core.app_functions import app_logout_setup, app_login, app_login_setup, dash_check
 from core.globals import manual_run
-
-# from common_utils.android_controller import ScreenRecorder
+from core.screenrecord import ScreenRecorder
 
 img_service = "Demo Mode"
-
-# recorder.start("test.mp4")
-# sleep(3)
-# recorder.stop_save()
+recorder = ScreenRecorder(device_serial=controller.d.serial)
 
 def Demo_Mode_001():
     try:
+        recorder.start(f"{img_service}-001")
         # If not on the login page, attempts to log out/exit demo mode
         if app_logout_setup():
-
             if controller.wait_for_text_and_click("DISCOVER MY BENTLEY"):
-                log("Demo Mode link clicked")
+                fail_log("Demo Mode link clicked", "001", img_service)
             else:
                 fail_log("Demo Mode link not found", "001", img_service)
             sleep(1)
 
             if find_icon_in_screen("Images/My_Bentley_Demo_Mode_Page.png"):
-                log("Demo Mode Launched successfully")
+                fail_log("Demo Mode Launched successfully", "001", img_service)
             else:
                 fail_log("Dashboard screen not detected", "001", img_service)
+        recorder.stop(True)
 
     except Exception as e:
         error_log(e, "001", img_service)
 
 def Demo_Mode_002():
     try:
-        if app_logout_setup(True):
+        if not controller.wait_for_text("Demo mode"):
+            app_logout_setup()
+            app_login_setup(True)
 
+        if controller.wait_for_text("Demo mode"):
             if find_icon_in_screen("Images/My_Bentley_Demo_Mode_Page.png"):
                 log("Demo mode dashboard visible")
             else:
                 fail_log("Dashboard screen not detected", "002", img_service)
-
     except Exception as e:
         error_log(e, "002", img_service)
 
 def Demo_Mode_003():
     try:
-        if app_logout_setup(True):
+        if not controller.is_text_present("Demo mode"):
+            app_logout_setup()
+            app_login_setup(True)
+        else:
+            dash_check()
 
+        if controller.wait_for_text("Demo mode"):
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
             images = [
                 "Images/My_Bentley_Demo_Mode_Page.png",
@@ -84,14 +90,18 @@ def Demo_Mode_003():
 
             for _ in range(2):
                 controller.swipe_down()
-
     except Exception as e:
-        error_log(e, "003", img_service)#
+        error_log(e, "003", img_service)
 
 def Demo_Mode_004():
     try:
-        if app_logout_setup(True):
+        if not controller.is_text_present("Demo mode"):
+            app_logout_setup()
+            app_login_setup(True)
+        else:
+            dash_check()
 
+        if controller.wait_for_text("Demo mode"):
             controller.click_by_image("Icons/remote_icon.png")
             sleep(1)
             if find_icon_in_screen("Images/Demo_Mode_Car_Remote_Screen.png"):
@@ -124,16 +134,19 @@ def Demo_Mode_004():
 
             for _ in range(2):
                 controller.swipe_down(0.1)
-
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-
     except Exception as e:
         error_log(e, "004", img_service)
 
 def Demo_Mode_005():
     try:
-        if app_logout_setup(True):
+        if not controller.is_text_present("Demo mode"):
+            app_logout_setup()
+            app_login_setup(True)
+        else:
+            dash_check()
 
+        if controller.wait_for_text("Demo mode"):
             controller.click_by_image("Icons/remote_icon.png")
             sleep(1)
             if controller.click_text("MY BATTERY CHARGE"):
@@ -153,14 +166,18 @@ def Demo_Mode_005():
 
             controller.click_by_image("Icons/back_icon.png")
             controller.click_by_image("Icons/home_icon.png")
-
     except Exception as e:
         error_log(e, "005", img_service)
 
 def Demo_Mode_006():
     try:
-        if app_logout_setup(True):
+        if not controller.is_text_present("Demo mode"):
+            app_logout_setup()
+            app_login_setup(True)
+        else:
+            dash_check()
 
+        if controller.wait_for_text("Demo mode"):
             controller.click_by_image("Icons/navigation_icon.png")
             controller.click_text("ALLOW")
 
@@ -187,14 +204,18 @@ def Demo_Mode_006():
                 fail_log("Satellite traffic screen did not match", "006", img_service)
 
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-
     except Exception as e:
         error_log(e, "006", img_service)
 
 def Demo_Mode_007():
     try:
-        if app_logout_setup(True):
+        if not controller.is_text_present("Demo mode"):
+            app_logout_setup()
+            app_login_setup(True)
+        else:
+            dash_check()
 
+        if controller.wait_for_text("Demo mode"):
             controller.click_by_image("Icons/New_Notification_icon.png")
             controller.click_by_image("Icons/Notification_icon.png")
             sleep(1)
@@ -229,14 +250,18 @@ def Demo_Mode_007():
                 fail_log("Actions and Alerts tabs not displayed", "007", img_service)
 
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-
     except Exception as e:
         error_log(e, "007", img_service)
 
 def Demo_Mode_008():
     try:
-        if app_logout_setup(True):
+        if not controller.is_text_present("Demo mode"):
+            app_logout_setup()
+            app_login_setup(True)
+        else:
+            dash_check()
 
+        if controller.wait_for_text("Demo mode"):
             if controller.click_by_image("Icons/Profile_Icon.png"):
                 log("Tapped Profile tab")
             else:
@@ -289,14 +314,18 @@ def Demo_Mode_008():
 
             controller.click_text("My Details")
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-
     except Exception as e:
         error_log(e, "008", img_service)
 
 def Demo_Mode_009():
     try:
-        if app_logout_setup(True):
+        if not controller.is_text_present("Demo mode"):
+            app_logout_setup()
+            app_login_setup(True)
+        else:
+            dash_check()
 
+        if controller.wait_for_text("Demo mode"):
             controller.click_by_image("Icons/Profile_Icon.png")
             controller.click_by_image("Icons/Profile_Screen_Setting_Icon.png")
             log("User tracking section displayed") if controller.is_text_present("User tracking") else fail_log("User tracking section not displayed", "009", img_service)
@@ -310,14 +339,18 @@ def Demo_Mode_009():
 
             controller.click_by_image("Icons/back_icon.png")
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-
     except Exception as e:
         error_log(e, "009", img_service)
 
 def Demo_Mode_010():
     try:
-        if app_logout_setup(True):
+        if not controller.is_text_present("Demo mode"):
+            app_logout_setup()
+            app_login_setup(True)
+        else:
+            dash_check()
 
+        if controller.wait_for_text("Demo mode"):
             for _ in range(4):
                 controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
 
@@ -344,7 +377,6 @@ def Demo_Mode_010():
                 controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
 
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-
     except Exception as e:
         error_log(e, "010", img_service)
 
@@ -356,8 +388,13 @@ def Demo_Mode_011():
 
 def Demo_Mode_012():
     try:
-        if app_logout_setup(True):
+        if not controller.is_text_present("Demo mode"):
+            app_logout_setup()
+            app_login_setup(True)
+        else:
+            dash_check()
 
+        if controller.wait_for_text("Demo mode"):
             controller.click_by_image("Icons/Profile_Icon.png")
             compare_with_expected_crop("Images/Profile_Screen.png")
             controller.click_by_image("Icons/Profile_General_Icon.png")
@@ -373,14 +410,18 @@ def Demo_Mode_012():
             else:
                 fail_log("Sign in page not visible", "012", img_service)
             controller.wait_for_text("Demo mode", 30)
-
     except Exception as e:
         error_log(e, "012", img_service)
 
 def Demo_Mode_013():
     try:
-        if app_logout_setup(True):
+        if not controller.is_text_present("Demo mode"):
+            app_logout_setup()
+            app_login_setup(True)
+        else:
+            dash_check()
 
+        if controller.wait_for_text("Demo mode"):
             if controller.click_by_image("Icons/logout_icon.png"):
                 log("Demo mode exiting")
             else:
@@ -393,7 +434,6 @@ def Demo_Mode_013():
 
             if current_email != "":
                 app_login()
-
     except Exception as e:
         error_log(e, "013", img_service)
 

@@ -30,8 +30,6 @@ def Notifications_001():
             else:
                 fail_log("Last updated status not displayed", "001", img_service)
 
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-
     except Exception as e:
         error_log(e, "001", img_service)
 
@@ -95,7 +93,6 @@ def Notifications_002():
                 log("Notifications displayed from newest to oldest")
             else:
                 fail_log("Notifications not displayed from oldest to newest", "002", img_service)
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "002", img_service)
 

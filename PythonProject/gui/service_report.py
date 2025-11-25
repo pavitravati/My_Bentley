@@ -5,10 +5,13 @@ from PySide6.QtCore import Qt
 from pathlib import Path
 from PySide6.QtWidgets import QApplication
 from openpyxl.reader.excel import load_workbook
+
+from core.kpm_creater import download_kpm
 from excel import load_data
 import os
 import glob
 from core import globals
+from gui.kpm_page import KPMPage
 
 testcase_map = load_data()
 
@@ -158,24 +161,25 @@ class ServiceReport(QWidget):
                 btn.setFixedHeight(45)
                 btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Minimum)
 
-                is_fail = False
                 if result == '✅':
                     btn.setStyleSheet("background-color: #394d45; font-size: 12px; color: white;")
-                else:
-                    is_fail = True
+                elif result == '❌':
                     btn.setStyleSheet("background-color: #7d232b; font-size: 12px; color: white;")
+                else:
+                    btn.setStyleSheet("background-color: gray; font-size: 12px; color: white;")
 
                 row_logs = globals.log_history[self.service][case]
-                logs_combined = "\n".join(row_logs)
+                cleaned_logs = []
+                for log in row_logs:
+                    if log.startswith("$"):
+                        self.kpm_log = log[1:]
+                    else:
+                        cleaned_logs.append(log)
+                logs_combined = "\n".join(cleaned_logs)
                 btn.clicked.connect(
                     lambda checked, c=test_description, l=logs_combined, r=row + 1, s=self.service:
                     self.on_test_clicked(c, l, r, s)
                 )
-                if is_fail:
-                    btn.clicked.connect(
-                        lambda checked, c=test_description, l=logs_combined, r=row + 1, s=self.service:
-                        self.failed_test_clicked(c, l, r, s)
-                    )
                 testcase_layout.addWidget(btn)
 
         testcase_scroll.setWidget(testcase_container)
@@ -184,6 +188,7 @@ class ServiceReport(QWidget):
 
         detail_layout = QVBoxLayout()
 
+        self.log_container = QHBoxLayout()
         self.log_textbox = QTextEdit()
         parent_height = self.parent().height() if self.parent() else 800
         screen_size = QApplication.primaryScreen().size()
@@ -193,16 +198,18 @@ class ServiceReport(QWidget):
         else:
             multi = 0.25
         self.log_textbox.setFixedHeight(int(parent_height * multi))
+        # self.log_textbox.setFixedWidth(int(available_width * 0.5))
         self.log_textbox.setReadOnly(True)
         self.log_textbox.setFont(QFont("Arial", 12))
+        self.log_container.addWidget(self.log_textbox)
+        self.log_container.setSpacing(0)
 
-        detail_layout.addWidget(self.log_textbox)
+        detail_layout.addLayout(self.log_container)
 
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
 
         container = QWidget()
-        container.setStyleSheet("background: white")
         self.images_layout = QHBoxLayout(container)
         self.images_layout.setSpacing(5)
         self.images_layout.setContentsMargins(20, 0, 20, 0)
@@ -216,11 +223,51 @@ class ServiceReport(QWidget):
         layout.addLayout(container_layout)
 
     def on_test_clicked(self, test_case, logs_combined, row, service, imported_test=False, folder_name=None):
-        self.log_textbox.append(test_case)
-        if type(logs_combined) == str:
-            self.log_textbox.setPlainText(logs_combined)
-        else:
-            self.log_textbox.setPlainText(str(logs_combined.value))
+
+        self.log_textbox.setPlainText(test_case)
+        self.log_textbox.append(logs_combined)
+        self.log_textbox.setStyleSheet("""
+                    QTextEdit {
+                        border: 0.8px solid #c0c0c0;
+                    }
+                """)
+
+        if getattr(self, "btn_container", None) is not None:
+            self.log_container.removeWidget(self.btn_container)
+            self.btn_container.deleteLater()
+            self.btn_container = None
+
+        self.btn_container = QWidget()
+        self.btn_container.setStyleSheet("background-color: white; border-top: 0.8px solid #c0c0c0; border-right: 0.8px solid #c0c0c0; border-bottom: 0.8px solid #c0c0c0;")
+        if '❌' in logs_combined:
+            self.kpm_container = QVBoxLayout(self.btn_container)
+            kpm_btn = QToolButton()
+            kpm_btn.setText("Generate KPM")
+            kpm_btn.setCursor(Qt.PointingHandCursor)
+            kpm_btn.setStyleSheet("""
+                                QToolButton {
+                                    background-color: #394d45;
+                                    font-size: 16px;
+                                    font-weight: bold;
+                                    width: 180px;
+                                    height: 40px;
+                                    color: white;
+                                }
+                                QToolButton:hover {
+                                    background-color: #25312c;
+                                }
+                            """)
+            kpm_btn.clicked.connect(lambda: self.generate_kpm(row))
+            self.kpm_container.addWidget(kpm_btn, alignment=Qt.AlignTop)
+            self.log_container.addWidget(self.btn_container)
+            self.log_textbox.setStyleSheet("""
+                QTextEdit {
+                    border: none;
+                    border-top: 0.8px solid #c0c0c0; 
+                    border-left: 0.8px solid #c0c0c0; 
+                    border-bottom: 0.8px solid #c0c0c0;
+                }
+            """)
 
         while self.images_layout.count():
             item = self.images_layout.takeAt(0)
@@ -365,7 +412,6 @@ class ServiceReport(QWidget):
 
         for row in range(1, current_sheet.max_row+1):
             cell_value = current_sheet[f'B{row}'].value
-            result = '❌' if '❌' in str(cell_value) else '✅'
             if '❌' in str(cell_value):
                 result = '❌'
             elif '🔒' in str(cell_value):
@@ -390,8 +436,18 @@ class ServiceReport(QWidget):
                 btn.setStyleSheet("background-color: gray; font-size: 12px; color: white;")
 
             row_logs = current_sheet[f'B{row}']
+            row_logs = str(row_logs.value).split('\n')
+            cleaned_logs = []
+            for i, log in enumerate(row_logs):
+                if log.startswith("$"):
+                    joined_kpm = "\n".join(row_logs[i:])
+                    self.kpm_log = joined_kpm[1:]
+                    break
+                else:
+                    cleaned_logs.append(log)
+            logs_combined = "\n".join(cleaned_logs)
             btn.clicked.connect(
-                lambda checked, c=test_description, l=row_logs, r=row, s=self.service:
+                lambda checked, c=test_description, l=logs_combined, r=row, s=self.service:
                 self.on_test_clicked(c, l, r, s, True, test_folder_path)
             )
             testcase_layout.addWidget(btn)
@@ -402,6 +458,7 @@ class ServiceReport(QWidget):
 
         detail_layout = QVBoxLayout()
 
+        self.log_container = QHBoxLayout()
         self.log_textbox = QTextEdit()
         parent_height = self.parent().height() if self.parent() else 800
         screen_size = QApplication.primaryScreen().size()
@@ -413,8 +470,9 @@ class ServiceReport(QWidget):
         self.log_textbox.setFixedHeight(int(parent_height * multi))
         self.log_textbox.setReadOnly(True)
         self.log_textbox.setFont(QFont("Arial", 12))
+        self.log_container.addWidget(self.log_textbox)
 
-        detail_layout.addWidget(self.log_textbox)
+        detail_layout.addLayout(self.log_container)
 
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
@@ -432,5 +490,5 @@ class ServiceReport(QWidget):
 
         layout.addLayout(container_layout)
 
-    def failed_test_clicked(self, test_case, logs_combined, row, service, imported_test=False, folder_name=None):
-        pass
+    def generate_kpm(self, row):
+        download_kpm(self.service, row, manual=True)

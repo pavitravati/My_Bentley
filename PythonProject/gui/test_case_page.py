@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QFont, QPixmap, QColor, QBrush, QIcon
 from PySide6.QtCore import Qt, QTimer, Slot, QThread, QSize
-from excel import load_data, service_details, resource_path
+from excel import load_data, resource_path
 from core.log_emitter import log_emitter
 from utils import make_item
 from widgets import PaddingDelegate
@@ -134,7 +134,7 @@ class TestCaseTablePage(QWidget):
                 }
             """)
 
-            label = QLabel(text)
+            label = QLabel(text.replace("|", "\n"))
             label.setWordWrap(True)
             label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
             label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
@@ -403,14 +403,14 @@ class TestCaseTablePage(QWidget):
         image_paths = []
         row_num = f"0{row}" if row < 10 else f"{row}"
 
-        for file_path in glob.glob(os.path.join(image_dir, "*.png")):
-            filename = os.path.basename(file_path)
-            if row_num in filename:
-                image_paths.append(file_path)
+        for file_type in ["*.png", "*.mp4"]:
+            for file_path in glob.glob(os.path.join(image_dir, file_type)):
+                filename = os.path.basename(file_path)
+                if row_num in filename and self.service in filename:
+                    image_paths.append(file_path)
 
         test_title = self.table.item(row, 0 if self.auto_run else 1).text()
-
-        self.error_window = ErrorPage(title=test_title, logs=globals.log_history[self.service][row], images=image_paths)
+        self.error_window = ErrorPage(title=test_title, logs=globals.log_history[self.service][row], images=image_paths, service=self.service, row=row)
         self.error_window.show()
 
     def open_blocked_case(self, row):
@@ -426,7 +426,7 @@ class TestCaseTablePage(QWidget):
         self.metric_window.show()
 
     def on_need_precondition(self, row):
-        print(f"⚠️ Waiting for preconditions at row {row}")
+        print(f"Waiting for preconditions at row {row}")
 
         precondition_widget = self.table.cellWidget(row - 1, 1 if self.auto_run else 2)
         if precondition_widget:
@@ -435,7 +435,7 @@ class TestCaseTablePage(QWidget):
                     child.setEnabled(True)
 
     def precondition_button_clicked(self, row):
-        print(f"✅ Preconditions met for row {row}, resuming test...")
+        print(f"Preconditions met for row {row}, resuming test...")
 
         if hasattr(self, "worker") and self.worker:
             self.worker.resume()

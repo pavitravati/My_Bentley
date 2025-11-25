@@ -5,7 +5,9 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QFont, QPixmap, QCursor
 from PySide6.QtCore import Qt, Signal
-from gui.excel import resource_path, load_data, services, service_details
+# from gui.excel import resource_path, load_data, services, service_details
+from gui.excel import resource_path, load_data
+from service_details import all_services, service_requirements
 from gui.import_page import ImportResult
 from test_case_page import TestCaseTablePage
 from service_report import ServiceReport
@@ -48,7 +50,6 @@ class HomePage(QWidget):
     def __init__(self, main_window, parent=None):
         super().__init__(parent)
         self.main_window = main_window
-        self.get_account_details_called = False
         QApplication.primaryScreen().size().width()
         if QApplication.primaryScreen().size().width() > 1500:
             self.screen = 'Monitor'
@@ -139,7 +140,7 @@ class HomePage(QWidget):
         header.setSectionResizeMode(QHeaderView.Fixed)
         header.setFixedHeight(40)
         testcase_table.verticalHeader().setVisible(False)
-        testcase_table.setRowCount(len(services)+4)
+        testcase_table.setRowCount(len(all_services)+4)
         testcase_table.setWordWrap(True)
         testcase_table.setEditTriggers(QTableWidget.NoEditTriggers)
         if self.screen == 'Monitor':
@@ -180,7 +181,7 @@ class HomePage(QWidget):
         header_font = QFont("Arial", 15, QFont.Bold)
         testcase_table.horizontalHeader().setFont(header_font)
 
-        for row in range(len(services)+4):
+        for row in range(len(all_services)+4):
             checkbox = QCheckBox()
             # checkbox.clicked.connect(lambda: self.update_run_btn(testcase_table))
             checkbox.setCursor(Qt.PointingHandCursor)
@@ -210,37 +211,37 @@ class HomePage(QWidget):
                 item.setFont(QFont("Arial", 12, QFont.Bold))
                 testcase_table.setItem(row, 0, item)
                 testcase_table.setCellWidget(row, 1, cell_widget)
-                checkbox.toggled.connect(lambda checked, t=testcase_table: self.all_tests_checkbox(checked, t))
+                checkbox.clicked.connect(lambda checked, t=testcase_table: self.all_tests_checkbox(checked, t))
                 checkbox.clicked.connect(lambda: self.update_run_btn(testcase_table))
             elif row == 1:
                 item = QTableWidgetItem("No Vehicle services")
                 item.setFont(QFont("Arial", 12, QFont.Bold))
                 testcase_table.setItem(row, 0, item)
                 testcase_table.setCellWidget(row, 1, cell_widget)
-                checkbox.toggled.connect(lambda checked, t=testcase_table: self.no_vehicle_tests_checkbox(checked, t))
+                checkbox.clicked.connect(lambda checked, t=testcase_table: self.no_vehicle_tests_checkbox(checked, t))
                 checkbox.clicked.connect(lambda: self.update_run_btn(testcase_table))
             elif row == 2:
                 item = QTableWidgetItem("Only Vehicle services")
                 item.setFont(QFont("Arial", 12, QFont.Bold))
                 testcase_table.setItem(row, 0, item)
                 testcase_table.setCellWidget(row, 1, cell_widget)
-                checkbox.toggled.connect(lambda checked, t=testcase_table: self.vehicle_tests_checkbox(checked, t))
+                checkbox.clicked.connect(lambda checked, t=testcase_table: self.vehicle_tests_checkbox(checked, t))
                 checkbox.clicked.connect(lambda: self.update_run_btn(testcase_table))
             elif row == 3:
                 item = QTableWidgetItem("No precondition services")
                 item.setFont(QFont("Arial", 12, QFont.Bold))
                 testcase_table.setItem(row, 0, item)
                 testcase_table.setCellWidget(row, 1, cell_widget)
-                checkbox.toggled.connect(lambda checked, t=testcase_table: self.no_precondition_tests_checkbox(checked, t))
+                checkbox.clicked.connect(lambda checked, t=testcase_table: self.no_precondition_tests_checkbox(checked, t))
                 checkbox.clicked.connect(lambda: self.update_run_btn(testcase_table))
             else:
-                if service_details[services[row-4]][0][2] == "":
-                    label = ClickableLabel(services[row - 4])
-                    label.clicked.connect(lambda r=row: self.open_service_tests(services[r - 4]))
-                    checkbox.clicked.connect(lambda _=None, check=service_details[services[row-4]][1], t=testcase_table: self.enable_credentials(check, t))
+                if service_requirements[all_services[row - 4]]['requirements']['reason_for_block'] == "":
+                    label = ClickableLabel(all_services[row - 4])
+                    label.clicked.connect(lambda r=row: self.open_service_tests(all_services[r - 4]))
+                    checkbox.clicked.connect(lambda _=None, check=service_requirements[all_services[row-4]]['fields'], t=testcase_table: self.enable_credentials(check, t))
                     checkbox.clicked.connect(lambda: self.update_run_btn(testcase_table))
                 else:
-                    label = BlockedLabel(services[row - 4], service_details[services[row - 4]][0][2])
+                    label = BlockedLabel(all_services[row - 4], service_requirements[all_services[row - 4]]['requirements']['reason_for_block'])
                     checkbox.setDisabled(True)
 
 
@@ -635,9 +636,9 @@ class HomePage(QWidget):
 
     def open_service_tests(self, service):
         fields = [globals.current_name, globals.current_email, globals.current_password, globals.current_pin, globals.current_vin, globals.vehicle_type, globals.phone_type, globals.country]
-        stored = service_details[service][1]
+        stored = service_requirements[service]['fields'].values()
 
-        if not any(not f and s for f, s in zip(fields, stored)):
+        if not any(not f and s for f, s in zip(fields, stored)) and globals.get_account_details_called:
             self.main_window.show_test_cases(service)
 
     def all_tests_checkbox(self, checked, table):
@@ -650,7 +651,7 @@ class HomePage(QWidget):
                 cb = cell_widget.findChild(QCheckBox)
                 text_widget = table.cellWidget(row, 0).findChild(QLabel).text()
                 plain_text = re.sub('<[^<]+?>', '', text_widget)
-                if cb and service_details[plain_text][0][2] == "":
+                if cb and service_requirements[plain_text]['requirements']['reason_for_block'] == "":
                     cb.setChecked(checked)
                     cb.setEnabled(not checked)
 
@@ -661,7 +662,7 @@ class HomePage(QWidget):
         for row in range(4, table.rowCount()):
             cell_widget = table.cellWidget(row, 0).findChild(QLabel).text()
             plain_text = re.sub('<[^<]+?>', '', cell_widget)
-            if service_details[plain_text][0][0] and not service_details[plain_text][0][2]:
+            if not service_requirements[plain_text]['requirements']['needs_vehicle'] and not service_requirements[plain_text]['requirements']['reason_for_block']:
                 cb = table.cellWidget(row, 1).findChild(QCheckBox)
                 if cb:
                     cb.setChecked(checked)
@@ -674,7 +675,7 @@ class HomePage(QWidget):
         for row in range(4, table.rowCount()):
             cell_widget = table.cellWidget(row, 0).findChild(QLabel).text()
             plain_text = re.sub('<[^<]+?>', '', cell_widget)
-            if not service_details[plain_text][0][0] and not service_details[plain_text][0][2]:
+            if service_requirements[plain_text]['requirements']['needs_vehicle'] and not service_requirements[plain_text]['requirements']['reason_for_block']:
                 cb = table.cellWidget(row, 1).findChild(QCheckBox)
                 if cb:
                     cb.setChecked(checked)
@@ -687,21 +688,24 @@ class HomePage(QWidget):
         for row in range(4, table.rowCount()):
             cell_widget = table.cellWidget(row, 0).findChild(QLabel).text()
             plain_text = re.sub('<[^<]+?>', '', cell_widget)
-            if service_details[plain_text][0][1] and not service_details[plain_text][0][2]:
+            if not service_requirements[plain_text]['requirements']['has_preconditions'] and not service_requirements[plain_text]['requirements']['reason_for_block']:
                 cb = table.cellWidget(row, 1).findChild(QCheckBox)
                 if cb:
                     cb.setChecked(checked)
                     cb.setEnabled(not checked)
 
-    def clear_checkboxes(self, table, current=-1):
+    def clear_checkboxes(self, table):
         for row in range(0, table.rowCount()):
-            if row is not current:
-                cell_widget = table.cellWidget(row, 1)
-                if cell_widget:
-                    cb = cell_widget.findChild(QCheckBox)
-                    if cb:
-                        cb.setChecked(False)
-                        cb.setEnabled(True)
+            cell_widget = table.cellWidget(row, 1)
+            if cell_widget:
+                cb = cell_widget.findChild(QCheckBox)
+                if cb:
+                    cb.setChecked(False)
+                    if row > 3:
+                        if service_requirements[all_services[row - 4]]['requirements']['reason_for_block'] == "":
+                            cb.setEnabled(True)
+                        else:
+                            cb.setDisabled(True)
 
     def enable_credentials(self, checker=(1,1,1,1,1,1,1,1), table=None):
         total_checked = (0,0,0,0,0,0,0,0)
@@ -715,7 +719,7 @@ class HomePage(QWidget):
                     total_checked = (1,1,1,1,1,1,1,1)
                 elif cb.isChecked():
                     min_checked = True
-                    total_checked = tuple(a or b for a, b in zip(total_checked, service_details[services[row-4]][1]))
+                    total_checked = tuple(a or b for a, b in zip(total_checked, service_requirements[all_services[row-4]]['fields'].values()))
 
         widget_groups = [
             [self.name_input],
@@ -751,7 +755,7 @@ class HomePage(QWidget):
                 if cb.isChecked():
                     checkbox_check = True
 
-        can_submit = name_filled and email_filled and password_filled and pin_filled and vehicle_type and phone_type and checkbox_check and country and self.get_account_details_called
+        can_submit = name_filled and email_filled and password_filled and pin_filled and vehicle_type and phone_type and checkbox_check and country and globals.get_account_details_called
         can_autofill = (globals.current_email != "" and globals.current_password != "")
 
         self.fill_req_details_btn.setEnabled(can_autofill)
@@ -767,8 +771,8 @@ class HomePage(QWidget):
             if cell_widget:
                 cb = cell_widget.findChild(QCheckBox)
                 if cb.isChecked():
-                    if service_details[services[row-4]][0][3] == "" or globals.country in service_details[services[row-4]][0][3]:
-                        globals.selected_services.append(services[row - 4])
+                    if len(service_requirements[all_services[row-4]]['requirements']['region_locks']) == 0 or globals.country in service_requirements[all_services[row-4]]['requirements']['region_locks']:
+                        globals.selected_services.append(all_services[row - 4])
 
         self.main_window.setCentralWidget(TestCaseTablePage(self.main_window, globals.selected_services[globals.service_index]))
 
@@ -835,7 +839,7 @@ class HomePage(QWidget):
                 globals.country = "chn"
 
     def get_account_details(self):
-        self.get_account_details_called = True
+        globals.get_account_details_called = True
         QApplication.setOverrideCursor(Qt.WaitCursor)
         self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
         get_details()

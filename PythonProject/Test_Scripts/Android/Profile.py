@@ -3,8 +3,10 @@ from common_utils.android_image_comparision import *
 from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
 from core.app_functions import app_login, app_login_setup
 from core.globals import country, manual_run, current_pin
+from core.screenrecord import ScreenRecorder
 
 img_service = "Profile"
+recorder = ScreenRecorder(device_serial=controller.d.serial)
 
 def Profile_001():
     try:
@@ -59,8 +61,6 @@ def Profile_001():
             else:
                 fail_log("Profile Settings icon is not present", "001", img_service)
 
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-
     except Exception as e:
         error_log(e, "001", img_service)
 
@@ -73,7 +73,6 @@ def Profile_002():
                 fail_log("Tapped Profile tab failed", "002", img_service)
             controller.click_text("My Details")
             controller.extract_profile_details()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "002", img_service)
@@ -91,7 +90,6 @@ def Profile_003():
                 fail_log("Error: Reset password email failed", "003", img_service)
 
             controller.click_by_image("Icons/back_icon.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "003", img_service)
@@ -121,7 +119,6 @@ def Profile_004():
                 log("PIN not changed")
             sleep(5)
             controller.click_by_image("Icons/back_icon.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "004", img_service)
@@ -164,7 +161,6 @@ def Profile_006():
                 fail_log("Bentley ID Terms of Use page not displayed", "006", img_service)
                 controller.click_by_image("Icons/Error_Icon.png")
             controller.click_by_image("Icons/back_icon.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "006", img_service)
 
@@ -184,7 +180,6 @@ def Profile_007():
                 fail_log("My Bentley Terms of Use page not displayed", "007", img_service)
                 controller.click_by_image("Icons/Error_Icon.png")
             controller.click_by_image("Icons/back_icon.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "007", img_service)
 
@@ -207,7 +202,6 @@ def Profile_008():
             controller.click_by_image("Icons/back_icon.png")
             controller.settings_swipe_down()
             controller.settings_swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "008", img_service)
 
@@ -230,7 +224,6 @@ def Profile_009():
             controller.click_by_image("Icons/back_icon.png")
             controller.settings_swipe_down()
             controller.settings_swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "009", img_service)
 
@@ -253,7 +246,6 @@ def Profile_010():
             controller.click_by_image("Icons/back_icon.png")
             controller.settings_swipe_down()
             controller.settings_swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "010", img_service)
 
@@ -278,7 +270,6 @@ def Profile_011():
                 controller.click_by_image("Icons/back_icon.png")
                 controller.settings_swipe_down()
                 controller.settings_swipe_down()
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
             else:
                 blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -302,7 +293,6 @@ def Profile_012():
             controller.click_by_image("Icons/back_icon.png")
             controller.settings_swipe_down()
             controller.settings_swipe_down()
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "012", img_service)
 
@@ -327,7 +317,6 @@ def Profile_013():
             else:
                 fail_log("Vehicle connection screen displayed incorrectly", "013", img_service)
             controller.click_by_image("Icons/back_icon.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "013", img_service)
 
@@ -358,7 +347,6 @@ def Profile_015():
             else:
                 fail_log("Bentley motors contact details not displayed", "015", img_service)
             controller.click_by_image("Icons/back_icon.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "015", img_service)
 
@@ -398,8 +386,6 @@ def Profile_016():
                 fail_log("Temperature units not displayed or selectable", "016", img_service)
             controller.click_by_image("Icons/back_icon.png")
             controller.click_by_image("Icons/back_icon.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-
     except Exception as e:
         error_log(e, "016", img_service)
 
@@ -419,7 +405,6 @@ def Profile_017():
                 fail_log("Permissions page not displayed", "017", img_service)
             controller.click_by_image("Icons/back_icon.png")
             controller.click_by_image("Icons/back_icon.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "017", img_service)
 
@@ -447,13 +432,16 @@ def Profile_018():
                 else:
                     fail_log("Last mile notification cannot be disabled/enabled", "006", img_service)
             controller.click_by_image("Icons/back_icon.png")
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
     except Exception as e:
         error_log(e, "018", img_service)
 
 def Profile_019():
     try:
+        recorder.start("test_profile")
+        controller.swipe_up()
+        controller.swipe_down()
+        recorder.stop(save=True)
         blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "019", img_service)

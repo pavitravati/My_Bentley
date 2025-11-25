@@ -36,7 +36,6 @@ def Theft_Alarm_003():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -60,7 +59,6 @@ def Theft_Alarm_004():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -115,7 +113,6 @@ def Theft_Alarm_007():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -143,7 +140,6 @@ def Theft_Alarm_008():
 
                 controller.click_by_image("Icons/back_icon.png")
                 controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:

@@ -409,18 +409,18 @@ class TestCaseTablePage(QWidget):
                 if row_num in filename and self.service in filename:
                     image_paths.append(file_path)
 
-        test_title = self.table.item(row, 0 if self.auto_run else 1).text()
+        test_title = self.table.item(row-1, 0 if self.auto_run else 1).text()
         self.error_window = ErrorPage(title=test_title, logs=globals.log_history[self.service][row], images=image_paths, service=self.service, row=row)
         self.error_window.show()
 
     def open_blocked_case(self, row):
-        test_title = self.table.item(row, 0 if self.auto_run else 1).text()
+        test_title = self.table.item(row-1, 0 if self.auto_run else 1).text()
 
         self.metric_window = MetricPage(title=test_title, logs=globals.log_history[self.service][row])
         self.metric_window.show()
 
     def open_test_case_metrics(self, row, metrics):
-        test_title = self.table.item(row, 0 if self.auto_run else 1).text()
+        test_title = self.table.item(row-1, 0 if self.auto_run else 1).text()
 
         self.metric_window = MetricPage(title=test_title, logs=metrics)
         self.metric_window.show()

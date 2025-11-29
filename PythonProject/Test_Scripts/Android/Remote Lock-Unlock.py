@@ -60,12 +60,12 @@ def Remote_Lock_Unlock_001():
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            if (compare_with_expected_crop("Icons/Remote_Lock.png")):
+            if compare_with_expected_crop("Icons/Remote_Lock.png"):
                 log("Lock button visible")
             else:
                 fail_log("Lock button not visible", "001", img_service)
     
-            if (compare_with_expected_crop("Icons/Remote_Unlock.png")):
+            if compare_with_expected_crop("Icons/Remote_Unlock.png"):
                 log("Unlock button visible")
             else:
                 fail_log("Unlock button not visible", "001", img_service)
@@ -73,16 +73,17 @@ def Remote_Lock_Unlock_001():
     except Exception as e:
         error_log(e, "001", img_service)
 
+
 def Remote_Lock_Unlock_002():
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            controller.click_by_image("Icons/lock_Icon.png")
+            controller.click_by_image("Icons/unlock_Icon.png")
             sleep(1)
             controller.enter_pin(current_pin)
 
             timeout_check = 0
-            while not controller.is_text_present("Successfully locked") and not compare_with_expected_crop(
+            while not controller.is_text_present("Successfully unlocked") and not compare_with_expected_crop(
                     "Icons/Error_Icon.png"):
                 sleep(1)
                 timeout_check += 1
@@ -90,28 +91,51 @@ def Remote_Lock_Unlock_002():
                     fail_log("Remote lock took longer than 60 seconds so test timed out", "002", img_service)
                     break
 
-            if controller.is_text_present("Successfully locked"):
-                log("Lock message displayed")
-                if controller.wait_for_text("Successfully locked"):
-                    log("Lock notification displayed")
+            if controller.is_text_present("Successfully unlocked"):
+                log("Unlock message displayed")
+                if controller.wait_for_text("Successfully unlocked"):
+                    log("Unlock notification displayed")
                 else:
-                    fail_log("Lock notification not displayed", "002", img_service)
+                    fail_log("Unlock notification not displayed", "002", img_service)
 
-                if controller.wait_for_text("Vehicle locked"):
+                if controller.wait_for_text("Vehicle unlocked"):
                     log("Lock status changed")
                 else:
                     fail_log("Lock status not changed", "002", img_service)
 
-                check_notif("locked", "005")
+                check_notif("unlocked", "002")
             elif compare_with_expected_crop("Icons/Error_Icon.png"):
                 fail_log("Error message displayed when unlocking", "002", img_service)
             else:
-                fail_log("Lock message not displayed", "002", img_service)
+                fail_log("Unlock message not displayed", "002", img_service)
 
     except Exception as e:
         error_log(e, "002", img_service)
 
 def Remote_Lock_Unlock_003():
+    try:
+        if app_login_setup():
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+            controller.click_by_image("Icons/unlock_icon.png")
+            sleep(1)
+            controller.enter_pin(current_pin)
+            timeout_check = 0
+            while not controller.is_text_present("Successfully unlocked") and not compare_with_expected_crop("Icons/Error_Icon.png"):
+                sleep(1)
+                timeout_check += 1
+                if timeout_check > 65:
+                    fail_log("Remote lock took longer than 60 seconds so test timed out", "003", img_service)
+                    break
+            if controller.is_text_present("Successfully unlocked"):
+                log("Remote unlock worked while unlocked")
+                check_notif("unlocked", "003")
+            else:
+                fail_log("Remote unlock failed while unlocked", "003", img_service)
+
+    except Exception as e:
+        error_log(e, "003", img_service)
+
+def Remote_Lock_Unlock_004():
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -124,40 +148,92 @@ def Remote_Lock_Unlock_003():
                 sleep(1)
                 timeout_check += 1
                 if timeout_check > 65:
-                    fail_log("Remote lock took longer than 60 seconds so test timed out", "003", img_service)
+                    fail_log("Remote lock took longer than 60 seconds so test timed out", "004", img_service)
                     break
             if controller.is_text_present("Vehicle could not be locked"):
                 log("Remote lock blocked when ignition on")
                 if controller.wait_for_text("Vehicle unlocked"):
                     log("Lock status unchanged")
                 else:
-                    fail_log("Lock status not unchanged", "003", img_service)
+                    fail_log("Lock status not unchanged", "004", img_service)
                 controller.click_by_image("Icons/Error_Icon.png")
 
-                check_notif("Failed to lock", "003", True)
+                check_notif("Failed to lock", "004", True)
             else:
-                fail_log("Remote lock not blocked", "003", img_service)
-
-    except Exception as e:
-        error_log(e, "003", img_service)
-
-def Remote_Lock_Unlock_004():
-    try:
-        if app_login_setup():
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            controller.click_by_image("Icons/lock_icon.png")
-            sleep(1)
-            controller.enter_pin("0000" if current_pin != "0000" else "0001")
-            if controller.wait_for_text("Invalid PIN. Please try again."):
-                log("Remote lock/unlock invalid PIN message displayed")
-            else:
-                fail_log("Remote lock/unlock invalid PIN message not displayed", "004", img_service)
-            controller.click(500, 500)
+                fail_log("Remote lock not blocked", "004", img_service)
 
     except Exception as e:
         error_log(e, "004", img_service)
 
 def Remote_Lock_Unlock_005():
+    try:
+        if app_login_setup():
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+            latency_time = time.time()
+            controller.click_by_image("Icons/lock_Icon.png")
+            sleep(1)
+            controller.enter_pin(current_pin)
+
+            timeout_check = 0
+            while not controller.is_text_present("Successfully locked") and not compare_with_expected_crop(
+                    "Icons/Error_Icon.png"):
+                sleep(1)
+                timeout_check += 1
+                if timeout_check > 65:
+                    fail_log("Remote lock took longer than 60 seconds so test timed out", "005", img_service)
+                    break
+
+            if controller.is_text_present("Successfully locked"):
+                latency_time = time.time() - latency_time
+                if latency_time < 40:
+                    log(f"Latency time: {latency_time}")
+                else:
+                    fail_log(f"Latency time: {latency_time}", "005", img_service)
+
+                log("Lock message displayed")
+                if controller.wait_for_text("Successfully locked"):
+                    log("Lock notification displayed")
+                else:
+                    fail_log("Lock notification not displayed", "005", img_service)
+
+                if controller.wait_for_text("Vehicle locked"):
+                    log("Lock status changed")
+                else:
+                    fail_log("Lock status not changed", "005", img_service)
+
+                check_notif("locked", "005")
+            elif compare_with_expected_crop("Icons/Error_Icon.png"):
+                fail_log("Error message displayed when unlocking", "005", img_service)
+            else:
+                fail_log("Lock message not displayed", "005", img_service)
+
+    except Exception as e:
+        error_log(e, "005", img_service)
+
+def Remote_Lock_Unlock_006():
+    try:
+        if app_login_setup():
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+            controller.click_by_image("Icons/lock_icon.png")
+            sleep(1)
+            controller.enter_pin(current_pin)
+            timeout_check = 0
+            while not controller.is_text_present("Successfully locked") and not compare_with_expected_crop("Icons/Error_Icon.png"):
+                sleep(1)
+                timeout_check += 1
+                if timeout_check > 65:
+                    fail_log("Remote lock took longer than 60 seconds so test timed out", "006", img_service)
+                    break
+            if controller.is_text_present("Successfully locked"):
+                log("Remote lock worked while locked")
+                check_notif("locked", "006")
+            else:
+                fail_log("Remote lock failed while locked", "006", img_service)
+
+    except Exception as e:
+        error_log(e, "006", img_service)
+
+def Remote_Lock_Unlock_007():
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -170,75 +246,19 @@ def Remote_Lock_Unlock_005():
                 sleep(1)
                 timeout_check += 1
                 if timeout_check > 65:
-                    fail_log("Remote lock took longer than 60 seconds so test timed out", "005", img_service)
+                    fail_log("Remote unlock took longer than 60 seconds so test timed out", "007", img_service)
                     break
             if controller.is_text_present("Vehicle could not be unlocked"):
                 log("Remote unlock blocked when ignition on")
                 if controller.wait_for_text("Vehicle locked"):
                     log("Lock status unchanged")
                 else:
-                    fail_log("Lock status not unchanged", "005", img_service)
+                    fail_log("Lock status not unchanged", "007", img_service)
                 controller.click_by_image("Icons/Error_Icon.png")
 
-                check_notif("Failed to unlock", "005", True)
+                check_notif("Failed to unlock", "007", True)
             else:
-                fail_log("Remote lock not blocked", "005", img_service)
-
-    except Exception as e:
-        error_log(e, "005", img_service)
-
-def Remote_Lock_Unlock_006():
-    try:
-        if app_login_setup():
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            controller.click_by_image("Icons/unlock_Icon.png")
-            sleep(1)
-            controller.enter_pin(current_pin)
-    
-            timeout_check=0
-            while not controller.is_text_present("Successfully unlocked") and not compare_with_expected_crop("Icons/Error_Icon.png"):
-                sleep(1)
-                timeout_check += 1
-                if timeout_check > 65:
-                    fail_log("Remote lock took longer than 60 seconds so test timed out", "006", img_service)
-                    break
-
-            if controller.is_text_present("Successfully unlocked"):
-                log("Unlock message displayed")
-                if controller.wait_for_text("Successfully unlocked"):
-                    log("Unlock notification displayed")
-                else:
-                    fail_log("Unlock notification not displayed", "006", img_service)
-    
-                if controller.wait_for_text("Vehicle unlocked"):
-                    log("Lock status changed")
-                else:
-                    fail_log("Lock status not changed", "006", img_service)
-    
-                check_notif("unlocked", "006")
-            elif compare_with_expected_crop("Icons/Error_Icon.png"):
-                fail_log("Error message displayed when unlocking", "006", img_service)
-            else:
-                fail_log("Unlock message not displayed", "006", img_service)
-
-    except Exception as e:
-        error_log(e, "006", img_service)
-
-def Remote_Lock_Unlock_007():
-    try:
-        if app_login_setup():
-            controller.click_by_image("Icons/New_Notification_icon.png")
-            controller.click_by_image("Icons/Notification_icon.png")
-
-            notifs = controller.d.xpath('//android.widget.TextView[following-sibling::*[1][contains(@text, ":")] or contains(@text, ":") or preceding-sibling::*[1][contains(@text, ":")]]').all()
-            if len(notifs) > 2:
-                log("Past notifications displayed")
-                start = 2 if "Last updated" in notifs[1].attrib.get("text") else 1
-                for i in range(start, len(notifs), 3):
-                    if i + 2 < len(notifs):
-                        log(f"{notifs[i].attrib.get("text")} - {notifs[i + 2].attrib.get("text")} ({notifs[i + 1].attrib.get("text")})")
-            else:
-                fail_log("Past notifications not displayed", "007", img_service)
+                fail_log("Remote lock not blocked", "007", img_service)
 
     except Exception as e:
         error_log(e, "007", img_service)
@@ -247,25 +267,14 @@ def Remote_Lock_Unlock_008():
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            latency_time = time.time()
             controller.click_by_image("Icons/lock_icon.png")
             sleep(1)
-            controller.enter_pin(current_pin)
-            timeout_check=0
-            while not controller.is_text_present("Successfully locked") or not compare_with_expected_crop("Icons/Error_Icon.png"):
-                sleep(1)
-                timeout_check += 1
-                if timeout_check > 65:
-                    fail_log("Remote lock took longer than 60 seconds so test timed out", "008", img_service)
-                    break
-            if controller.is_text_present("Successfully locked"):
-                latency_time = time.time() - latency_time
-                if latency_time < 40:
-                    log(f"Latency time: {latency_time}")
-                else:
-                    fail_log(f"Latency time: {latency_time}", "008", img_service)
+            controller.enter_pin("0000" if current_pin != "0000" else "0001")
+            if controller.wait_for_text("Invalid PIN. Please try again."):
+                log("Remote lock/unlock invalid PIN message displayed")
             else:
-                fail_log("Timed out - Car took too long", "008", img_service)
+                fail_log("Remote lock/unlock invalid PIN message not displayed", "008", img_service)
+            controller.click(500, 500)
 
     except Exception as e:
         error_log(e, "008", img_service)
@@ -274,21 +283,25 @@ def Remote_Lock_Unlock_009():
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            controller.click_by_image("Icons/lock_icon.png")
+            controller.click_by_image("Icons/unlock_Icon.png")
             sleep(1)
             controller.enter_pin(current_pin)
             timeout_check = 0
-            while not controller.is_text_present("Successfully locked") and not compare_with_expected_crop("Icons/Error_Icon.png"):
+            while not controller.is_text_present("Successfully unlocked") or not compare_with_expected_crop("Icons/Error_Icon.png"):
                 sleep(1)
                 timeout_check += 1
                 if timeout_check > 65:
                     fail_log("Remote lock took longer than 60 seconds so test timed out", "009", img_service)
                     break
-            if controller.is_text_present("Successfully locked"):
-                log("Remote lock worked while locked")
-                check_notif("locked", "009")
+            if controller.wait_for_text("Successfully unlocked"):
+                log("Unlock message displayed when key fob inside vehicle")
+                if controller.wait_for_text("Vehicle unlocked"):
+                    log("Lock status changed")
+                else:
+                    fail_log("Lock status not changed", "009", img_service)
+                check_notif("unlocked", "009")
             else:
-                fail_log("Remote lock failed while locked", "009", img_service)
+                fail_log("Unlock message not displayed when key fob inside vehicle", "009", img_service)
 
     except Exception as e:
         error_log(e, "009", img_service)
@@ -297,21 +310,25 @@ def Remote_Lock_Unlock_010():
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            controller.click_by_image("Icons/unlock_icon.png")
+            controller.click_by_image("Icons/lock_Icon.png")
             sleep(1)
             controller.enter_pin(current_pin)
             timeout_check = 0
-            while not controller.is_text_present("Successfully unlocked") and not compare_with_expected_crop("Icons/Error_Icon.png"):
+            while not controller.is_text_present("Successfully unlocked") or not compare_with_expected_crop("Icons/Error_Icon.png"):
                 sleep(1)
                 timeout_check += 1
                 if timeout_check > 65:
                     fail_log("Remote lock took longer than 60 seconds so test timed out", "010", img_service)
                     break
             if controller.is_text_present("Successfully unlocked"):
-                log("Remote unlock worked while unlocked")
-                check_notif("unlocked", "010")
+                log("Lock message displayed when key fob in vehicle")
+                if controller.wait_for_text("Vehicle locked"):
+                    log("Lock status changed")
+                else:
+                    fail_log("Lock status not changed", "010", img_service)
+                check_notif("locked", "010")
             else:
-                fail_log("Remote unlock failed while unlocked", "010", img_service)
+                fail_log("Lock message not displayed when key fob in vehicle", "010", img_service)
 
     except Exception as e:
         error_log(e, "010", img_service)
@@ -342,97 +359,46 @@ def Remote_Lock_Unlock_012():
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            controller.click_by_image("Icons/lock_Icon.png")
-            sleep(1)
-            controller.enter_pin(current_pin)
-            timeout_check = 0
-            while not controller.is_text_present("Successfully unlocked") or not compare_with_expected_crop("Icons/Error_Icon.png"):
-                sleep(1)
-                timeout_check += 1
-                if timeout_check > 65:
-                    fail_log("Remote lock took longer than 60 seconds so test timed out", "012", img_service)
-                    break
-            if controller.is_text_present("Successfully unlocked"):
-                log("Lock message displayed when fob key in vehicle")
-                if controller.wait_for_text("Vehicle locked"):
-                    log("Lock status changed")
-                else:
-                    fail_log("Lock status not changed", "012", img_service)
-                check_notif("locked", "012")
-            else:
-                fail_log("Lock message not displayed when fob key in vehicle", "012", img_service)
-
-    except Exception as e:
-        error_log(e, "012", img_service)
-
-def Remote_Lock_Unlock_013():
-    try:
-        if app_login_setup():
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
             controller.click_by_image("Icons/unlock_Icon.png")
             sleep(1)
             controller.enter_pin(current_pin)
             timeout_check = 0
-            while not controller.is_text_present("Successfully unlocked") or not compare_with_expected_crop("Icons/Error_Icon.png"):
+            while not controller.is_text_present("Successfully unlocked") or not compare_with_expected_crop(
+                    "Icons/Error_Icon.png"):
                 sleep(1)
                 timeout_check += 1
                 if timeout_check > 65:
-                    fail_log("Remote lock took longer than 60 seconds so test timed out", "013", img_service)
+                    fail_log("Remote unlock took longer than 60 seconds so test timed out", "012", img_service)
                     break
             if controller.wait_for_text("Successfully unlocked"):
-                log("Unlock message displayed when fob key inside vehicle")
+                log("Remote unlock worked when vehicle locked by key fob")
                 if controller.wait_for_text("Vehicle unlocked"):
                     log("Lock status changed")
                 else:
-                    fail_log("Lock status not changed", "013", img_service)
-                check_notif("unlocked", "013")
+                    fail_log("Lock status not changed", "012", img_service)
+
+                check_notif("unlocked", "012")
             else:
-                fail_log("Unlock message not displayed when fob key inside vehicle", "013", img_service)
+                fail_log("Unlock message not displayed when vehicle locked by key fob", "012", img_service)
 
     except Exception as e:
-        error_log(e, "013", img_service)
+        error_log(e, "012", img_service)
 
-def Remote_Lock_Unlock_014():
-    try:
-        if app_login_setup():
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            controller.click_by_image("Icons/lock_Icon.png")
-            sleep(1)
-            controller.enter_pin(current_pin)
-            timeout_check = 0
-            while not controller.is_text_present("Successfully locked") or not compare_with_expected_crop("Icons/Error_Icon.png"):
-                sleep(1)
-                timeout_check += 1
-                if timeout_check > 65:
-                    fail_log("Remote lock took longer than 60 seconds so test timed out", "014", img_service)
-                    break
-            if controller.wait_for_text("Successfully locked"):
-                log("Lock message displayed when fob key inside vehicle")
-                if controller.wait_for_text("Vehicle locked"):
-                    log("Lock status changed")
-                else:
-                    fail_log("Lock status not changed", "014", img_service)
 
-                check_notif("locked", "014")
-            else:
-                fail_log("Lock message not displayed when fob key inside vehicle", "014", img_service)
-
-    except Exception as e:
-        error_log(e, "014", img_service)
-
-def Remote_Lock_Unlock_015():
+def Remote_Lock_Unlock_013():
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
             controller.click_by_image("Icons/lock_icon.png")
             sleep(1)
             controller.enter_pin(current_pin)
-            timeout_check=0
-            while not controller.is_text_present("Vehicle could not be locked") or not compare_with_expected_crop("Icons/Error_Icon.png"):
+            timeout_check = 0
+            while not controller.is_text_present("Vehicle could not be locked") or not compare_with_expected_crop(
+                    "Icons/Error_Icon.png"):
                 sleep(1)
                 timeout_check += 1
                 if timeout_check > 65:
-                    fail_log("Remote lock took longer than 60 seconds so test timed out", "015", img_service)
+                    fail_log("Remote lock took longer than 60 seconds so test timed out", "013", img_service)
                     break
             # below has error message is it always going to happen
             if controller.wait_for_text_that_contains("Please close the driver's door"):
@@ -440,48 +406,69 @@ def Remote_Lock_Unlock_015():
                 if controller.wait_for_text("Vehicle unlocked"):
                     log("Lock status unchanged")
                 else:
-                    fail_log("Lock status not unchanged", "015", img_service)
+                    fail_log("Lock status not unchanged", "013", img_service)
                 controller.click_by_image("Icons/Error_Icon.png")
 
                 # Check what is said in the notif
-                check_notif("Failed to lock", "015", True)
+                check_notif("Failed to lock", "013", True)
             else:
-                fail_log("Remote lock not blocked", "015", img_service)
+                fail_log("Remote lock not blocked", "013", img_service)
 
     except Exception as e:
-        error_log(e, "015", img_service)
+        error_log(e, "013", img_service)
 
-def Remote_Lock_Unlock_016():
+
+def Remote_Lock_Unlock_014():
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
             controller.click_by_image("Icons/lock_icon.png")
             sleep(1)
             controller.enter_pin(current_pin)
-            timeout_check=0
-            while not controller.is_text_present("Partially locked") or not compare_with_expected_crop("Icons/Error_Icon.png"):
+            timeout_check = 0
+            while not controller.is_text_present("Partially locked") or not compare_with_expected_crop(
+                    "Icons/Error_Icon.png"):
                 sleep(1)
                 timeout_check += 1
                 if timeout_check > 65:
-                    fail_log("Remote lock took longer than 60 seconds so test timed out", "016", img_service)
+                    fail_log("Remote lock took longer than 60 seconds so test timed out", "014", img_service)
                     break
             if controller.is_text_present("Partially locked"):
                 log("The vehicle was partially locked")
                 if controller.wait_for_text("Vehicle is not completely locked"):
                     log("Status correctly displays 'vehicle is not completely locked'")
                 else:
-                    fail_log("'Vehicle is not completely locked' status not displayed", "016", img_service)
+                    fail_log("'Vehicle is not completely locked' status not displayed", "014", img_service)
                 controller.click_by_image("Icons/Error_Icon.png")
-    
-                check_notif("locked", "016")
+
+                check_notif("locked", "014")
             else:
-                fail_log("Remote unlock not partially locked", "016", img_service)
+                fail_log("Remote unlock not partially locked", "014", img_service)
 
     except Exception as e:
-        error_log(e, "016", img_service)
+        error_log(e, "014", img_service)
 
-def Remote_Lock_Unlock_017():
+def Remote_Lock_Unlock_015():
+    try:
+        if app_login_setup():
+            controller.click_by_image("Icons/New_Notification_icon.png")
+            controller.click_by_image("Icons/Notification_icon.png")
+
+            notifs = controller.d.xpath('//android.widget.TextView[following-sibling::*[1][contains(@text, ":")] or contains(@text, ":") or preceding-sibling::*[1][contains(@text, ":")]]').all()
+            if len(notifs) > 2:
+                log("Past notifications displayed")
+                start = 2 if "Last updated" in notifs[1].attrib.get("text") else 1
+                for i in range(start, len(notifs), 3):
+                    if i + 2 < len(notifs):
+                        log(f"{notifs[i].attrib.get("text")} - {notifs[i + 2].attrib.get("text")} ({notifs[i + 1].attrib.get("text")})")
+            else:
+                fail_log("Past notifications not displayed", "015", img_service)
+
+    except Exception as e:
+        error_log(e, "015", img_service)
+
+def Remote_Lock_Unlock_016():
     try:
         blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
-        error_log(e, "017", img_service)
+        error_log(e, "016", img_service)

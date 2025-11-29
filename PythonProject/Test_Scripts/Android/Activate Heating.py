@@ -100,7 +100,6 @@ def Activate_Heating_004():
         if country == "eur":
             if vehicle_type == "ice":
                 app_login_setup()
-
                 controller.click_by_image("Icons/remote_icon.png")
                 controller.click_text("ACTIVATE HEATING")
 
@@ -166,12 +165,8 @@ def Activate_Heating_005():
                             log("Heating information successfully sent to the car")
                         else:
                             fail_log("Heating information not sent to the car", "005", img_service)
-                        sleep(2)
 
-                        activate_heating = controller.d(text="ACTIVATE HEATING")
-                        status = activate_heating.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
-                        time_remaining = activate_heating.sibling(resourceId="uk.co.bentley.mybentley:id/textView_info_car_remote_item")
-                        if status.exists and status.get_text() == "Remaining running time" and time_remaining.get_text() == "- 10 min":
+                        if controller.wait_for_text("Remaining running time") and controller.is_text_present("- 10 min"):
                             log("Active status is shown correctly")
                         else:
                             fail_log("Active status is not shown correctly", "005", img_service)
@@ -213,6 +208,15 @@ def Activate_Heating_006():
                         else:
                             fail_log("Stop button not displayed", "006", img_service)
 
+                        while not controller.is_text_present("Successfully sent to car"):
+                            sleep(0.5)
+
+                        if controller.wait_for_text("Not active"):
+                            log("Activate heating deactivated")
+                        else:
+                            fail_log("Activate heating not displayed as deactivated", "006", img_service)
+
+                        controller.click_text("ACTIVATE HEATING")
                         if controller.wait_for_text("START"):
                             log("Start button displayed")
                         else:
@@ -238,9 +242,9 @@ def Activate_Heating_007():
         if country == "eur":
             if vehicle_type == "ice":
                 if app_login_setup():
-                    if not int(globals.fuel_pct) >= 30:
-                        blocked_log("Test blocked - Vehicle should have at least 30% Fuel")
-                    else:
+                    # if not int(globals.fuel_pct) >= 30:
+                    #     blocked_log("Test blocked - Vehicle should have at least 30% Fuel")
+                    # else:
                         controller.click_by_image("Icons/remote_icon.png")
                         controller.click_text("ACTIVATE HEATING")
                         controller.click_text("Timers")
@@ -258,7 +262,7 @@ def Activate_Heating_007():
                             new_hour = hour if minute < 40 else hour + 1
                             controller.click_by_content_desc(str(new_hour))
                             new_minute = minute + 20 if minute < 40 else 10
-                            controller.click_by_content_desc(str(new_minute))
+                            controller.click_by_content_desc(str(new_minute - (new_minute % 5)))
                             controller.click_text("OK")
                             if controller.click_text("Save"):
                                 log("Timer set")
@@ -270,20 +274,24 @@ def Activate_Heating_007():
 
                             if controller.click_text("SYNC TO CAR"):
                                 if controller.click_text("VEHICLE IS PARKED SAFELY"):
-                                    if controller.enter_pin("1234"):
-                                        while not controller.is_text_present("Successfully sent to car"):
-                                            sleep(0.5)
-                                        controller.wait_for_text("Successfully sent to car")
-                                        sleep(2)
+                                    controller.enter_pin("1234")
+                                    while not controller.is_text_present("Successfully sent to car"):
+                                        sleep(0.5)
+                                    controller.wait_for_text("Successfully sent to car")
+
+                                    if controller.wait_for_text("Scheduled"):
                                         activate_heating = controller.d(text="ACTIVATE HEATING")
-                                        status = activate_heating.sibling(resourceId="uk.co.bentley.mybentley:id/textView_status_car_remote_item")
                                         schedule = activate_heating.sibling(resourceId="uk.co.bentley.mybentley:id/textView_info_car_remote_item")
-                                        if status.exists and status.get_text() == "Scheduled":
-                                            log(f"Scheduled status is displayed for {schedule}")
-                                        else:
-                                            fail_log("Status is not 'Scheduled'", "007", img_service)
+                                        log(f"Scheduled status is displayed for {schedule.get_text()}")
                                     else:
-                                        fail_log("Failed to enter PIN", "007", img_service)
+                                        fail_log("Status is not 'Scheduled'", "007", img_service)
+
+                                    controller.click_text("ACTIVATE HEATING")
+                                    controller.click_text("Timers")
+                                    controller.click_by_image("Icons/Interior_heating_toggle.png")
+                                    controller.click_text("SYNC TO CAR")
+                                    while not controller.is_text_present("Successfully sent to car"):
+                                        sleep(0.5)
                                 else:
                                     fail_log("Parked safely button not displayed", "007", img_service)
                             else:
@@ -294,7 +302,7 @@ def Activate_Heating_007():
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
         error_log(e, "007", img_service)
-controller.dump_ui()
+
 def Activate_Heating_008():
     try:
         if country == "eur":

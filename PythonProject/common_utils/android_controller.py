@@ -142,6 +142,13 @@ class DeviceController:
         end_y = int(height * 0.4)
         self.swipe(start_x, start_y, start_x, end_y, duration)
 
+    def extra_small_swipe_down(self, duration=0.05):
+        width, height = self.d.window_size()
+        start_x = width // 2
+        start_y = int(height * 0.2)
+        end_y = int(height * 0.3)
+        self.swipe(start_x, start_y, start_x, end_y, duration)
+
     def swipe_left(self, duration=0.2):
         width, height = self.d.window_size()
         start_y = height // 2
@@ -445,12 +452,12 @@ class DeviceController:
             if license_value.exists:
                 licenses[label] = f"{license_value.get_text()}"
 
-            label = "MyBentley in-car services"
+            label = "My Bentley in-car services"
             license_value = self.d(text=label).sibling(className="android.widget.TextView", instance=1)
             if license_value.exists:
                 licenses[label] = f"{license_value.get_text()}"
 
-            label = "MyBentley remote services"
+            label = "My Bentley remote services"
             license_value = self.d(text=label).sibling(className="android.widget.TextView", instance=1)
             if license_value.exists:
                 licenses[label] = f"{license_value.get_text()}"
@@ -606,6 +613,8 @@ class DeviceController:
                 value = self.d(text="Lights").sibling(resourceId="uk.co.bentley.mybentley:id/textView_value_vsr_metrics_item")
                 if value.exists:
                     return value.get_text()
+                else:
+                    return "Failed to be extracted"
         except Exception as e:
             pass
 
@@ -702,15 +711,19 @@ class DeviceController:
                     fuel_type = self.d(resourceId="uk.co.bentley.mybentley:id/textView_level_vsr_fuel")
                     if fuel_type.count > 1:
                         elec_percentage = fuel_type[1].get_text()
+                        print(elec_percentage)
                         fuel_details["elec level"] = elec_percentage
 
                     if self.d(resourceId="uk.co.bentley.mybentley:id/textView_secondary_range_vsr_combined_range").exists:
                         elec_range = self.d(resourceId="uk.co.bentley.mybentley:id/textView_secondary_range_vsr_combined_range").get_text()
+                        print(elec_range)
                         fuel_details["elec range"] = elec_range
 
                     if self.d(resourceId="uk.co.bentley.mybentley:id/textView_combined_range_vsr_combined_range").exists:
                         fuel_range = self.d(resourceId="uk.co.bentley.mybentley:id/textView_combined_range_vsr_combined_range").get_text()
+                        print(fuel_range)
                         fuel_details["combined range"] = fuel_range
+                    print(fuel_details)
                 except:
                     pass
 

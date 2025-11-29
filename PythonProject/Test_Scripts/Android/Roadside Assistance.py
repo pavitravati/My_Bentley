@@ -1,5 +1,5 @@
 from common_utils.android_image_comparision import *
-from core.globals import vehicle_type, current_email, current_password
+from core.globals import vehicle_type, current_email, current_password, country
 from core.log_emitter import log, fail_log, error_log, blocked_log
 from core.app_functions import remote_swipe
 from core.app_functions import app_login
@@ -34,11 +34,12 @@ def Roadside_Assistance_001():
                 else:
                     fail_log("NA assistance number not validated", "001", img_service)
 
-                # check that is how its actually displayed
-                if controller.is_text_present("+864000032877"):
-                    log("China assistance number validated")
-                else:
-                    fail_log("China assistance number not validated", "001", img_service)
+                if country == "chn":
+                    # check that is how its actually displayed
+                    if controller.is_text_present("+864000032877"):
+                        log("China assistance number validated")
+                    else:
+                        fail_log("China assistance number not validated", "001", img_service)
 
                 controller.click_text("Cancel")
                 controller.click_by_image("Icons/back_icon.png")

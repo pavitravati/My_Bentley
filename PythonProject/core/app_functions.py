@@ -3,16 +3,18 @@ from common_utils.android_image_comparision import *
 # from core.globals import current_email, current_password, current_vin, second_email, second_password, current_name
 import core.globals as globals
 from core.log_emitter import blocked_log, fail_log, log
+from gui.manual_check import manual_check
 
-
-def app_login(email=globals.current_email, password=globals.current_password):
+def app_login(email="", password=""):
+    if email == "":
+        email = globals.current_email
+    if password == "":
+        password = globals.current_password
     success_tracker = []
     sleep(1)
     success_tracker.append(1) if controller.click_by_image("Icons/login_register_icon.png") else success_tracker.append(0)
     controller.wait_for_text("WELCOME", 30)
     while controller.is_text_present("WELCOME"):
-        print(email)
-        print(globals.current_email)
         controller.enter_text(f"%s%s%s%s%s{email}")
         sleep(1)
     controller.wait_for_text("Log in – Enter password")
@@ -88,31 +90,12 @@ def app_logout_setup():
             controller.click_text("General")
             controller.click_by_image("Icons/Profile_Logout_Icon.png")
             controller.click_by_image("Icons/Logout_btn.png")
-        if not controller.wait_for_text("LOGIN OR REGISTER", 30):
+        if not controller.wait_for_text("LOGIN OR REGISTER", 60):
             blocked_log("Test blocked - Unable to logout to begin testcase")
             sleep(1)
             return False
     sleep(1)
     return True
-
-def app_refresh(num, service):
-    controller.swipe_down()
-    sleep(6)
-    if compare_with_expected_crop("Icons/Error_Icon.png"):
-        fail_log("Error displayed on refresh", num, service)
-        controller.click_by_image("Icons/Error_Icon.png")
-        sleep(1)
-        return False
-    else:
-        controller.click_by_image("Icons/Update_Vehicle_data.png")
-        if controller.wait_for_text("Vehicle status successfully retrieved", 30):
-            log("Vehicle data updated")
-            sleep(1)
-            return True
-        else:
-            fail_log("Vehicle data not updated", num, service)
-            sleep(1)
-            return False
 
 def identify_car():
     if compare_with_expected_crop("Icons/Bentayga.png"):
@@ -128,7 +111,6 @@ def identify_car():
 
     return car
 
-# Finish
 def delete_vin():
     controller.click_by_image("Icons/info_btn.png")
     controller.click_text("Delete vehicle")
@@ -137,17 +119,42 @@ def delete_vin():
         blocked_log("Test blocked - Unable to delete vin to complete testcase")
     sleep(1)
 
-def add_vin():
+def add_vin(num , img_service, optical=False, settings_check=False):
     if controller.wait_for_text("DASHBOARD"):
         while not controller.is_text_present("ADD A VEHICLE"):
             controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
         controller.small_swipe_up()
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/button_add_dashboard_module_add_vehicle")
-        controller.small_swipe_up()
-        controller.click_text("Enter VIN manually")
-        controller.enter_text(globals.current_vin)
+        if optical:
+            if not controller.click_text("Open Camera"):
+                if controller.click_text("Go to settings"):
+                    log("Camera permissions not enabled")
+                else:
+                    fail_log("Camera option not displayed", num, img_service)
+                if settings_check and controller.click_text("Permissions"):
+                    log("Settings page opens on expected page")
+                elif settings_check and not controller.click_text("Permissions"):
+                    fail_log("Settings page does not open on expected page", num, img_service)
+                controller.click_text("Camera")
+                controller.click_text("Allow only while using the app")
+                controller.launch_app("uk.co.bentley.mybentley")
+                if controller.click_text("Open Camera"):
+                    log("Camera permissions enabled")
+                else:
+                    fail_log("Camera option not displayed after enabling permission", num, img_service)
+            manual_check(
+                instruction="Scan the VIN via 'Optical Character Recognition(OCR)",
+                test_id=num,
+                service=img_service,
+                take_screenshot=False
+            )
+        else:
+            controller.small_swipe_up()
+            controller.click_text("Enter VIN manually")
+            controller.enter_text(globals.current_vin)
         controller.click_text("CONFIRM")
-        controller.wait_for_text("YOUR PREFERRED BENTLEY RETAILER")
+        log("VIN entered") if controller.wait_for_text("YOUR PREFERRED BENTLEY RETAILER") else fail_log(
+            "VIN not entered", num, img_service)
         controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
         while not compare_with_expected_crop("Images/retailer_search.png"):
             sleep(0.5)
@@ -155,7 +162,8 @@ def add_vin():
         controller.enter_text("Manchester")
         controller.click_text("Bentley Manchester")
         controller.wait_for_text_and_click("CONFIRM")
-        controller.wait_for_text("ADD YOUR BENTLEY")
+        log("Retailer selected") if controller.wait_for_text("ADD YOUR BENTLEY") else fail_log(
+            "Retailer failed to be selected", num, img_service)
         controller.wait_for_text_and_click("Continue")
         if controller.is_text_present("VIN"):
             controller.click_text("Continue")
@@ -171,6 +179,7 @@ def add_vin():
             controller.clear_text(len(last_name))
             controller.enter_text(globals.current_name.split(" ")[1])
             controller.click_text("YOUR DETAILS")
+        log("Name entered") if controller.click_text("Continue") else fail_log("Name not entered", num, img_service)
         controller.click_text("Continue")
         if controller.click_text("Location"):
             controller.swipe_up(0.01)
@@ -191,6 +200,8 @@ def add_vin():
             controller.swipe_up(0.01)
         controller.click_text("Continue")
         controller.wait_for_text("Your Mobile Number")
+        log("Location details entered") if controller.wait_for_text_and_click(
+            "Your Mobile Number") else fail_log("Location details not entered", num, img_service)
         if controller.click_text("Area Code"):
             controller.swipe_up(0.035)
             controller.click_text("+44")
@@ -199,9 +210,11 @@ def add_vin():
         else:
             controller.click_text("Continue")
         controller.click_text("Continue")
-        controller.wait_for_text("Request Submitted")
+        log("Phone number added") if controller.wait_for_text("Request Submitted") else fail_log(
+            "Phone number not added", num, img_service)
         controller.click_text("Continue")
-        controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
+        log("Vehicle added to new account") if controller.click_by_image(
+            "Icons/Homescreen_Left_Arrow.png") else fail_log("Vehicle not added to new account", num, img_service)
         sleep(1)
 
 def service_reset():
@@ -215,3 +228,27 @@ def service_reset():
 def dash_check():
     if not (compare_with_expected_crop("Icons/navigation_icon.png") or compare_with_expected_crop("Icons/home_icon.png")):
         service_reset()
+
+def app_refresh(num, img_service, msg="", wait=0):
+    controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
+    sleep(wait)
+    controller.swipe_down()
+
+    while (not compare_with_expected_crop("Icons/Error_Icon.png") and not controller.is_text_present("Update vehicle data")) or controller.is_text_present("Updating..."):
+        sleep(3)
+
+    if compare_with_expected_crop("Icons/Error_Icon.png"):
+        fail_log("Error displayed on refresh", num, img_service)
+        controller.click_by_image("Icons/Error_Icon.png")
+    else:
+        controller.click_text("Update vehicle data")
+        sleep(1)
+        while controller.is_text_present("Updating..."):
+            sleep(1)
+        while not compare_with_expected_crop("Icons/Error_Icon.png") and not controller.is_text_present("Vehicle status successfully retrieved"):
+            sleep(1)
+        if controller.is_text_present("Vehicle status successfully retrieved"):
+            log(f"Vehicle data updated {msg}")
+        else:
+            fail_log(f"Vehicle data not updated {msg}", num, img_service)
+        controller.click_by_image("Icons/Error_Icon.png")

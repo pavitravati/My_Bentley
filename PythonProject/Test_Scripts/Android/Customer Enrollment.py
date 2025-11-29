@@ -103,7 +103,7 @@ def Customer_Enrollment_003():
             if app_login_setup():
                 controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
                 delete_vin()
-                add_vin()
+                add_vin("003", img_service)
                 controller.small_swipe_up()
                 log("Set primary user title displayed") if controller.is_text_present("SET YOUR PRIMARY USER") else fail_log("Set primary user title not displayed", "003", img_service)
                 if controller.is_text_present("To set yourself as a primary user, a vehicle code will be generated in the next step. Please enter it in your Bentley infotainment system."):
@@ -112,7 +112,7 @@ def Customer_Enrollment_003():
                     fail_log("Set primary user text not displayed correctly", "003", img_service)
                 log("Generate vehicle code button displayed") if controller.is_text_present("GENERATE VEHICLE CODE") else fail_log("Generate vehicle code button not displayed", "003", img_service)
                 controller.click_by_image("Icons/info_btn.png")
-                if controller.is_text_present("Generate a unique vehicle code* in My Bentley app. "):
+                if controller.is_text_present("Generate a unique vehicle code in My Bentley app. "):
                     log("Primary user instructions displayed")
                 else:
                     fail_log("Primary user instructions not displayed", "003", img_service)
@@ -120,8 +120,7 @@ def Customer_Enrollment_003():
                 controller.small_swipe_down()
     except Exception as e:
         error_log(e, "003", img_service)
-add_vin()
-# controller.dump_ui()
+
 def Customer_Enrollment_004():
     try:
         if country == "chn":
@@ -130,7 +129,7 @@ def Customer_Enrollment_004():
             if app_login_setup():
                 controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
                 delete_vin()
-                add_vin()
+                add_vin("004", img_service)
                 controller.small_swipe_up()
                 controller.click_text("GENERATE VEHICLE CODE")
                 if controller.wait_for_text("The vehicle code on the scratch tag will be invalidated"):
@@ -197,7 +196,7 @@ def Customer_Enrollment_006():
             if app_login_setup():
                 controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
                 delete_vin()
-                add_vin()
+                add_vin("006", img_service)
                 enable_flight_mode()
                 controller.small_swipe_up()
                 if controller.click_text("GENERATE VEHICLE CODE"):
@@ -300,7 +299,7 @@ def Customer_Enrollment_010():
             if app_login_setup():
                 controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
                 delete_vin()
-                add_vin()
+                add_vin("010", img_service)
                 controller.small_swipe_up()
                 if controller.click_text("GENERATE VEHICLE CODE"):
                     controller.click_text("Generate vehicle code")
@@ -335,7 +334,7 @@ def Customer_Enrollment_011():
             if app_login_setup():
                 controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
                 delete_vin()
-                add_vin()
+                add_vin("011", img_service)
                 controller.small_swipe_up()
                 if controller.click_text("GENERATE VEHICLE CODE"):
                     controller.click_text("Generate vehicle code")
@@ -370,7 +369,7 @@ def Customer_Enrollment_012():
             if app_login_setup():
                 controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
                 delete_vin()
-                add_vin()
+                add_vin("012", img_service)
                 controller.small_swipe_up()
                 manual_check(
                     instruction="Click on 'GENERATE VEHICLE CODE'\nIncoming call/SMS/Alarm received during generation",
@@ -521,7 +520,7 @@ def Customer_Enrollment_017():
                         fail_log("View vehicle code button not displayed", "017", img_service)
                     controller.small_swipe_down()
                     delete_vin()
-                    add_vin()
+                    add_vin("017", img_service)
                     if app_refresh("017", img_service):
                         check_services_unavailable("017", img_service)
                         controller.small_swipe_up()
@@ -724,7 +723,7 @@ def Customer_Enrollment_023():
                             controller.swipe_up()
                             controller.enter_text(current_vin)
                             controller.wait_for_text("YOUR PREFERRED BENTLEY RETAILER")
-                            controller.click("Icons/Homescreen_Right_Arrow.png")
+                            controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
                             controller.wait_for_text_and_click("Search by retailer name or location")
                             controller.enter_text("Manchester")
                             controller.click_text("Bentley Manchester")

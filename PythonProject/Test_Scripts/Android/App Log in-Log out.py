@@ -86,19 +86,21 @@ def App_Log_in_Log_out_004():
                 while controller.is_text_present("WELCOME"):
                     controller.enter_text(f"%s%s%s%s%s{current_email}")
                     sleep(1)
-                sleep(2)
+                sleep(1)
                 controller.enter_text("Wrongpassword")
                 log("Email and incorrect Password entered")
             else:
                 fail_log("Email and incorrect Password not entered", "004", img_service)
-
-            controller.click_by_image("Icons/login_logo.png")
             sleep(1)
+            controller.click(500, 500)
             if compare_with_expected_crop("Icons/wrong_password.png") or compare_with_expected_crop("Icons/wrong_password_2.png"):
                 log("Incorrect password error message displayed")
             else:
                 fail_log("Incorrect password error message not displayed", "004", img_service)
             sleep(1)
+            controller.click_by_image("Images/password_back.png")
+            sleep(1)
+            controller.click_text("NEXT")
             controller.enter_text(current_password)
             controller.wait_for_text("DASHBOARD")
 

@@ -6,13 +6,6 @@ from core.globals import manual_run
 
 img_service = "Privacy Mode"
 
-# Feels redundant, why check the entire app works when it's been running other tests without privacy mode
-# def Privacy_Mode_001():
-#     try:
-#         blocked_log("Test blocked - Not written due to repetition")
-#     except Exception as e:
-#         error_log(e, "001", img_service)
-
 def Privacy_Mode_001():
     try:
         if app_login_setup():

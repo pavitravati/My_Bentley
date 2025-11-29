@@ -40,13 +40,13 @@ def Services_and_licenses_004():
 
             if licenses:
                 log("Extracted Licenses:")
+                print(licenses)
                 for license, date in licenses:
                     license_date = datetime.datetime.strptime(date[-10:], "%d/%m/%Y").date()
                     if license_date >= date_limit:
-                        metric_log(f"{license}: {date}")
+                        log(f"{license}: {date}")
                     else:
-                        fail_log(f"{license}: {date.replace("/", "-")} - Less than 3 years", "004", img_service)
-                        metric_log(f"{license}: {date} - Less than 3 years ❌")
+                        fail_log(f"{license.replace("-", "")} expire in less than 3 years", "004", img_service)
             else:
                 fail_log("Metrics not extracted", "004", img_service)
             backspace(2)
@@ -125,9 +125,14 @@ def Services_and_licenses_006():
             service_titles = {
                 "Local hazard information": False, "Map update": False, "Natural speech interaction": False, "News": False,
                 "Online POI search": False, "Online radio": False, "Realtime traffic information": False,
-                "Remote destination import": False, "Satellite Map": False, "Song recognition": False,
-                "Traffic sign recognition": False, "Weather": False, "SiriusXM": False, "Personal Navigation Assistant": False
+                "Remote destination import": False, "Satellite Map": False, "Song recognition": False, "Weather": False
             }
+            if country == "chn":
+                service_titles['Personal Navigation Assistant'] = False
+            elif country == "nar":
+                service_titles['SiriusXM'] = False
+            elif country == "germany":
+                service_titles['Traffic sign recognition'] = False
 
             if controller.is_text_present("SERVICES"):
                 log("Services are listed")

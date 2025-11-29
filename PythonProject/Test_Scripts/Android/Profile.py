@@ -4,6 +4,7 @@ from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
 from core.app_functions import app_login, app_login_setup
 from core.globals import country, manual_run, current_pin
 from core.screenrecord import ScreenRecorder
+from gui.manual_check import manual_check
 
 img_service = "Profile"
 recorder = ScreenRecorder(device_serial=controller.d.serial)
@@ -88,8 +89,14 @@ def Profile_003():
                 log("Reset password email sent")
             else:
                 fail_log("Error: Reset password email failed", "003", img_service)
-
             controller.click_by_image("Icons/back_icon.png")
+
+            # manual_check(
+            #     instruction="Wait for the password reset email and reset the password\nLogin using the new password",
+            #     test_id="003",
+            #     service=img_service,
+            #     take_screenshot=False
+            # )
 
     except Exception as e:
         error_log(e, "003", img_service)
@@ -438,10 +445,6 @@ def Profile_018():
 
 def Profile_019():
     try:
-        recorder.start("test_profile")
-        controller.swipe_up()
-        controller.swipe_down()
-        recorder.stop(save=True)
         blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "019", img_service)
@@ -451,7 +454,7 @@ def Profile_020():
         if app_login_setup():
             controller.click_by_image("Icons/Profile_Icon.png")
             controller.click_text("Log out")
-            if controller.click_text("Log out"):
+            if controller.click_by_image("Icons/logout_btn.png"):
                 log("Log out process started")
             else:
                 fail_log("Could not find log out button", "020", img_service)
@@ -462,6 +465,7 @@ def Profile_020():
                 fail_log("Log out process failed", "020", img_service)
 
             # End the test case back logged in
-            app_login()
+            if not manual_run:
+                app_login()
     except Exception as e:
         error_log(e, "020", img_service)

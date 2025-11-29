@@ -33,6 +33,7 @@ def Notifications_001():
     except Exception as e:
         error_log(e, "001", img_service)
 
+# Maybe check that a maximum of 10 notifications are displayed if important
 def Notifications_002():
     try:
         if app_login_setup():
@@ -96,48 +97,27 @@ def Notifications_002():
     except Exception as e:
         error_log(e, "002", img_service)
 
-# All checked in 2, can't really check max of 10, unless very important
 def Notifications_003():
     try:
-        blocked_log("Test blocked - Not written due to repetition")
+        if country == "NAR":
+            blocked_log("Test blocked - Not written")
+        else:
+            blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
         error_log(e, "003", img_service)
 
-# Checked in 2
+# Can't really be automated, but check alerts screen when alerts are there to see if it can be just verified they exist and metric log what they say
 def Notifications_004():
     try:
-        blocked_log("Test blocked - Not written due to repetition")
+        if country == "NAR":
+            blocked_log("Test blocked - Not written")
+        else:
+            blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
         error_log(e, "004", img_service)
 
-# Check if this can be skipped
 def Notifications_005():
-    try:
-        blocked_log("Test blocked - Not written due to repetition")
-    except Exception as e:
-        error_log(e, "005", img_service)
-
-def Notifications_006():
-    try:
-        if country == "NAR":
-            blocked_log("Test blocked - Not written")
-        else:
-            blocked_log("Test blocked - Region locked (NAR)")
-    except Exception as e:
-        error_log(e, "006", img_service)
-
-# Can't really be automated, but check alerts screen when alerts are there to see if it can be just verified they exist and metric log what they say
-def Notifications_007():
-    try:
-        if country == "NAR":
-            blocked_log("Test blocked - Not written")
-        else:
-            blocked_log("Test blocked - Region locked (NAR)")
-    except Exception as e:
-        error_log(e, "007", img_service)
-
-def Notifications_008():
     try:
         blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
-        error_log(e, "008", img_service)
+        error_log(e, "005", img_service)

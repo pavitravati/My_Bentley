@@ -6,8 +6,6 @@ from core.globals import manual_run
 
 img_service = "Nickname"
 
-# Swapped around testcase 4 and 5 here and in the Excel sheet I used
-
 def nickname_page(num):
     if controller.click_by_image("Icons/info_btn.png"):
         log("Info icon clicked")
@@ -56,7 +54,23 @@ def Nickname_003():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
             car_name = identify_car()
 
-            nickname_page("003")
+            if controller.click_by_image("Icons/info_btn.png"):
+                log("Info icon clicked")
+            else:
+                fail_log("Info icon not clicked", "003", img_service)
+
+            current_nickname = controller.d.xpath('//android.widget.TextView[@text="Vehicle name"]/following-sibling::android.widget.TextView[1]').get_text()
+            if not current_nickname == car_name:
+                controller.click_by_image("Icons/edit_name.png")
+                controller.clear_text(len(current_nickname))
+                controller.swipe_down()
+                controller.click_by_image("Icons/save_enabled.png")
+                sleep(3)
+
+            if controller.click_by_image("Icons/edit_name.png"):
+                log("Edit button clicked")
+            else:
+                fail_log("Edit button not clicked", "003", img_service)
 
             controller.swipe_down()
 
@@ -89,8 +103,8 @@ def Nickname_004():
             controller.enter_text(f"{car_name}123")
             sleep(1)
             if controller.click_by_image("Icons/save_enabled.png"):
-                sleep(2)
                 log("Nickname edited successfully")
+                sleep(3)
             else:
                 fail_log("Nickname edited unsuccessfully", "004", img_service)
                 controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
@@ -99,7 +113,15 @@ def Nickname_004():
             if controller.wait_for_text(f"{car_name.upper()}123") and controller.is_text_present("DASHBOARD"):
                 log("Nickname displayed successfully")
             else:
-                fail_log("Nickname displayed unsuccessfully", "004", img_service)
+                fail_log("Nickname displayed unsuccessfully", "004", img_service)#
+
+            if manual_run:
+                nickname_page("004")
+                controller.clear_text(len(f"{car_name}123"))
+                controller.swipe_down()
+                controller.click_by_image("Icons/save_enabled.png")
+                sleep(3)
+                controller.click_by_image("Icons/back_icon.png")
 
     except Exception as e:
         error_log(e, "004", img_service)
@@ -108,7 +130,26 @@ def Nickname_005():
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            nickname_page("005")
+            car_name = identify_car()
+
+            if controller.click_by_image("Icons/info_btn.png"):
+                log("Info icon clicked")
+            else:
+                fail_log("Info icon not clicked", "005", img_service)
+
+            current_nickname = controller.d.xpath('//android.widget.TextView[@text="Vehicle name"]/following-sibling::android.widget.TextView[1]').get_text()
+            if current_nickname == car_name:
+                controller.click_by_image("Icons/edit_name.png")
+                controller.clear_text(len(current_nickname))
+                controller.enter_text(f"{car_name}123")
+                controller.swipe_down()
+                controller.click_by_image("Icons/save_enabled.png")
+                sleep(3)
+
+            if controller.click_by_image("Icons/edit_name.png"):
+                log("Edit button clicked")
+            else:
+                fail_log("Edit button not clicked", "005", img_service)
             controller.swipe_down()
 
             if compare_with_expected_crop("Icons/save_disabled.png"):
@@ -117,7 +158,24 @@ def Nickname_005():
                 fail_log("Save button is not present or disabled when name unedited", "005", img_service)
 
             controller.click_by_image("Icons/back_icon.png")
+            controller.click_by_image("Icons/edit_name.png")
+            controller.clear_text(1)
+            controller.swipe_down()
+            if compare_with_expected_crop("Icons/save_enabled.png"):
+                log("Save button is present and enabled when name edited")
+            else:
+                fail_log("Save button is not present or enabled when name edited", "005", img_service)
+
             controller.click_by_image("Icons/back_icon.png")
+            controller.click_by_image("Icons/back_icon.png")
+
+            if manual_run:
+                nickname_page("005")
+                controller.clear_text(len(f"{car_name}123"))
+                controller.swipe_down()
+                controller.click_by_image("Icons/save_enabled.png")
+                sleep(3)
+                controller.click_by_image("Icons/back_icon.png")
 
     except Exception as e:
         error_log(e, "005", img_service)
@@ -126,23 +184,40 @@ def Nickname_006():
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            nickname_page("006")
-            controller.clear_text(19)
-            controller.enter_text("testingnickname1234")
+            if controller.click_by_image("Icons/info_btn.png"):
+                log("Info icon clicked")
+            else:
+                fail_log("Info icon not clicked", "006", img_service)
+
+            current_nickname = controller.d.xpath('//android.widget.TextView[@text="Vehicle name"]/following-sibling::android.widget.TextView[1]').get_text()
+
+            if controller.click_by_image("Icons/edit_name.png"):
+                log("Edit button clicked")
+            else:
+                fail_log("Edit button not clicked", "006", img_service)
+            controller.clear_text(len(current_nickname))
+            controller.enter_text("testingnickname12345")
             sleep(1)
 
             if controller.click_by_image("Icons/save_enabled.png"):
                 log("19 Character nickname edited successfully")
-                sleep(2)
+                sleep(3)
             else:
                 fail_log("19 Character nickname edited unsuccessfully", "006", img_service)
                 controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
-
             controller.click_by_image("Icons/back_icon.png")
             if controller.is_text_present("TESTINGNICKNAME1234") and controller.is_text_present("DASHBOARD"):
                 log("19 Character nickname displayed successfully")
             else:
                 fail_log("19 Character nickname displayed unsuccessfully", "006", img_service)
+
+            if manual_run:
+                nickname_page("006")
+                controller.clear_text(len(f"testingnickname1234"))
+                controller.swipe_down()
+                controller.click_by_image("Icons/save_enabled.png")
+                sleep(3)
+                controller.click_by_image("Icons/back_icon.png")
 
     except Exception as e:
         error_log(e, "006", img_service)
@@ -152,9 +227,18 @@ def Nickname_007():
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            nickname_page("007")
+            if controller.click_by_image("Icons/info_btn.png"):
+                log("Info icon clicked")
+            else:
+                fail_log("Info icon not clicked", "007", img_service)
 
-            controller.clear_text(19)
+            current_nickname = controller.d.xpath('//android.widget.TextView[@text="Vehicle name"]/following-sibling::android.widget.TextView[1]').get_text()
+
+            if controller.click_by_image("Icons/edit_name.png"):
+                log("Edit button clicked")
+            else:
+                fail_log("Edit button not clicked", "007", img_service)
+            controller.clear_text(len(current_nickname))
             controller.click_by_image("Icons/special_char_icon.png")
             controller.click_text("!")
             controller.click_by_image("Icons/emoji_icon.png")
@@ -163,7 +247,7 @@ def Nickname_007():
 
             if controller.click_by_image("Icons/save_enabled.png"):
                 log("Special character nickname edited successfully")
-                sleep(2)
+                sleep(3)
             else:
                 fail_log("Special character nickname edited unsuccessfully", "007", img_service)
                 controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
@@ -174,6 +258,14 @@ def Nickname_007():
             else:
                 fail_log("Special character nickname displayed unsuccessfully", "007", img_service)
 
+            if manual_run:
+                nickname_page("007")
+                controller.clear_text(2)
+                controller.swipe_down()
+                controller.click_by_image("Icons/save_enabled.png")
+                sleep(3)
+                controller.click_by_image("Icons/back_icon.png")
+
     except Exception as e:
         error_log(e, "007", img_service)
 
@@ -182,9 +274,18 @@ def Nickname_008():
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            nickname_page("008")
+            if controller.click_by_image("Icons/info_btn.png"):
+                log("Info icon clicked")
+            else:
+                fail_log("Info icon not clicked", "008", img_service)
 
-            controller.clear_text(19)
+            current_nickname = controller.d.xpath('//android.widget.TextView[@text="Vehicle name"]/following-sibling::android.widget.TextView[1]').get_text()
+
+            if controller.click_by_image("Icons/edit_name.png"):
+                log("Edit button clicked")
+            else:
+                fail_log("Edit button not clicked", "008", img_service)
+            controller.clear_text(len(current_nickname))
             controller.click_by_image("Icons/uk_space_icon.png")
             controller.swipe_down()
 
@@ -205,9 +306,18 @@ def Nickname_009():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
             car_name = identify_car()
 
-            nickname_page("009")
+            if controller.click_by_image("Icons/info_btn.png"):
+                log("Info icon clicked")
+            else:
+                fail_log("Info icon not clicked", "009", img_service)
 
-            controller.clear_text(19)
+            current_nickname = controller.d.xpath('//android.widget.TextView[@text="Vehicle name"]/following-sibling::android.widget.TextView[1]').get_text()
+
+            if controller.click_by_image("Icons/edit_name.png"):
+                log("Edit button clicked")
+            else:
+                fail_log("Edit button not clicked", "009", img_service)
+            controller.clear_text(len(current_nickname))
             controller.enter_text(f"{car_name}123")
             sleep(1)
             if controller.click_by_image("Icons/save_enabled.png"):
@@ -215,7 +325,7 @@ def Nickname_009():
             else:
                 fail_log("Nickname edited unsuccessfully", "009", img_service)
                 controller.click_by_image("Icons/back_icon.png")
-            sleep(2)
+            sleep(3)
             controller.click_by_image("Icons/back_icon.png")
 
             if app_logout_setup():
@@ -223,7 +333,6 @@ def Nickname_009():
             else:
                 log("Failed to log out")
 
-            sleep(3)
             app_login()
             if compare_with_expected_crop("Images/My_Bentley_Dashboard.png"):
                 log("Logged in")

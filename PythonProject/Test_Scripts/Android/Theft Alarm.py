@@ -1,5 +1,5 @@
 from common_utils.android_image_comparision import *
-from core.app_functions import app_login_setup, identify_car
+from core.app_functions import app_login_setup, identify_car, remote_swipe
 from core.log_emitter import log, fail_log, metric_log, error_log, blocked_log
 from time import sleep
 from core.globals import country
@@ -24,9 +24,7 @@ def Theft_Alarm_003():
         if country == "eur":
             if app_login_setup():
                 controller.click_by_image("Icons/remote_icon.png")
-                sleep(0.5)
-                controller.swipe_up(0.1)
-                sleep(1)
+                remote_swipe("STOLEN VEHICLE TRACKING")
                 controller.click_text("STOLEN VEHICLE TRACKING")
 
                 if controller.is_text_present("NO MESSAGES"):
@@ -47,9 +45,7 @@ def Theft_Alarm_004():
         if country == "eur":
             if app_login_setup():
                 controller.click_by_image("Icons/remote_icon.png")
-                sleep(0.5)
-                controller.swipe_up(0.1)
-                sleep(1)
+                remote_swipe("STOLEN VEHICLE TRACKING")
                 controller.click_text("STOLEN VEHICLE TRACKING")
 
                 if compare_with_expected_crop("Images/vehicle_alarm_image.png"):
@@ -68,11 +64,7 @@ def Theft_Alarm_004():
 def Theft_Alarm_005():
     try:
         if country == "eur":
-            if app_login_setup():
-                controller.click_by_image("Icons/remote_icon.png")
-                controller.swipe_up()
-                controller.click_text("STOLEN VEHICLE TRACKING")
-                # Check what the notification is in car
+            blocked_log("Test blocked - Push notifications not working")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
@@ -89,8 +81,7 @@ def Theft_Alarm_007():
         if country == "eur":
             if app_login_setup():
                 controller.click_by_image("Icons/remote_icon.png")
-                controller.swipe_up()
-                sleep(0.5)
+                remote_swipe("STOLEN VEHICLE TRACKING")
                 controller.click_text("STOLEN VEHICLE TRACKING")
 
                 if compare_with_expected_crop("Images/red_alarm.png"):
@@ -123,14 +114,13 @@ def Theft_Alarm_008():
         if country == "eur":
             if app_login_setup():
                 controller.click_by_image("Icons/remote_icon.png")
-                controller.swipe_up()
-                sleep(0.5)
+                remote_swipe("STOLEN VEHICLE TRACKING")
                 controller.click_text("STOLEN VEHICLE TRACKING")
 
                 controller.click_by_image("Icons/clear_alert.png")
                 if controller.click_text("Clear"):
                     log("Theft alert clear button clicked")
-                    sleep(3)
+                    sleep(2)
                     if controller.is_text_present("There are no alerts to display"):
                         log("Theft alerts cleared")
                     else:
@@ -148,47 +138,8 @@ def Theft_Alarm_008():
 def Theft_Alarm_009():
     try:
         if country == "eur":
-            if app_login_setup():
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-                controller.click_by_image("Icons/info_btn.png")
-                controller.click_text("Service Management")
-                if controller.click_text("Theft alert"):
-                    log("Theft alert service disabled in service management")
-                    sleep(6)
-                else:
-                    fail_log("Theft alert service failed to be disabled in service management", "009", img_service)
-                controller.click_by_image("Icons/back_icon.png")
-                controller.click_by_image("Icons/back_icon.png")
-
-                controller.click_by_image("Icons/remote_icon.png")
-                controller.swipe_up()
-                sleep(0.5)
-                controller.click_text("STOLEN VEHICLE TRACKING")
-
-                if controller.is_text_present("This service is unavailable. It can be switched on in the Service Management screen for this vehicle."):
-                    log("Theft alert service successfully disabled")
-                else:
-                    fail_log("Theft alert service not disabled", "009", img_service)
-                controller.click_by_image("Icons/back_icon.png")
-                controller.swipe_down(0.05)
-                controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-
-                controller.click_by_image("Icons/info_btn.png")
-                controller.click_text("Service Management")
-                controller.click_text("Theft alert")
-                sleep(6)
-                controller.click_by_image("Icons/back_icon.png")
-                controller.click_by_image("Icons/back_icon.png")
-        else:
-            blocked_log("Test blocked - Region locked (EUR)")
-    except Exception as e:
-        error_log(e, "009", img_service)
-
-def Theft_Alarm_010():
-    try:
-        if country == "eur":
             blocked_log("Test blocked - Can't check style guide")
         else:
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
-        error_log(e, "010", img_service)
+        error_log(e, "009", img_service)

@@ -16,7 +16,7 @@ service_requirements = {
         "requirements": {
             "needs_vehicle": False,
             "has_preconditions": True,
-            "reason_for_block": "Not finished",
+            "reason_for_block": "",
             "region_locks": []
         },
         "fields": {
@@ -29,7 +29,7 @@ service_requirements = {
         "requirements": {
             "needs_vehicle": False,
             "has_preconditions": False,
-            "reason_for_block": "Not finished",
+            "reason_for_block": "",
             "region_locks": []
         },
         "fields": {
@@ -73,7 +73,7 @@ service_requirements = {
         },
         "fields": {
             "name": False, "email": True, "password": True, "pin": False,
-            "vin": False, "vehicle": True, "phone": True, "country": True
+            "vin": False, "vehicle": False, "phone": True, "country": True
         }
     },
 

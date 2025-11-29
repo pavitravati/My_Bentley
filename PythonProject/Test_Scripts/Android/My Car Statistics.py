@@ -370,44 +370,6 @@ def My_Car_Statistics_008():
 def My_Car_Statistics_009():
     try:
         if app_login_setup():
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            controller.click_by_image("Icons/info_btn.png")
-            controller.click_text("Service Management")
-            controller.swipe_up()
-            if controller.click_text("My car statistics"):
-                log("My car statistics service disabled")
-                sleep(3)
-            else:
-                fail_log("My car statistics service not disabled", "009", img_service)
-
-            controller.click_by_image("Icons/back_icon.png")
-            controller.click_by_image("Icons/back_icon.png")
-
-            controller.click_by_image("Icons/remote_icon.png")
-            if controller.is_text_present("Function disabled"):
-                controller.click_text("MY CAR STATISTICS")
-                if controller.is_text_present("CAR REMOTE"):
-                    log("My car statistics service disabled in remote screen")
-                else:
-                    fail_log("My car statistics service not disabled in remote screen", "009", img_service)
-            else:
-                fail_log("My car statistics service not disabled in remote screen", "009", img_service)
-
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            controller.click_by_image("Icons/info_btn.png")
-            controller.click_text("Service Management")
-            controller.swipe_up()
-            controller.click_text("My car statistics")
-            sleep(3)
-            controller.click_by_image("Icons/back_icon.png")
-            controller.click_by_image("Icons/back_icon.png")
-
-    except Exception as e:
-        error_log(e, "009", img_service)
-
-def My_Car_Statistics_010():
-    try:
-        if app_login_setup():
             controller.click_by_image("Icons/Profile_Icon.png")
             controller.click_by_image("Icons/Profile_Screen_Setting_Icon.png")
             controller.click_text("Units")
@@ -421,7 +383,7 @@ def My_Car_Statistics_010():
             if controller.d(resourceId="uk.co.bentley.mybentley:id/textView_axis_labeling_graph").get_text() == "kWh/100mi":
                 log("Imperial units displayed in My car statistics screen")
             else:
-                fail_log("Imperial units not displayed in My car statistics screen", "010", img_service)
+                fail_log("Imperial units not displayed in My car statistics screen", "009", img_service)
 
             controller.click(110,110)
             controller.click_by_image("Icons/Profile_Icon.png")
@@ -435,14 +397,8 @@ def My_Car_Statistics_010():
             if controller.d(resourceId="uk.co.bentley.mybentley:id/textView_axis_labeling_graph").get_text() == "kWh/100km":
                 log("Metric units displayed in My car statistics screen")
             else:
-                fail_log("Metric units not displayed in My car statistics screen", "010", img_service)
+                fail_log("Metric units not displayed in My car statistics screen", "009", img_service)
             controller.click(110, 110)
 
     except Exception as e:
-        error_log(e, "010", img_service)
-
-def My_Car_Statistics_011():
-    try:
-        blocked_log("Test blocked - Can't check style guide")
-    except Exception as e:
-        error_log(e, "011", img_service)
+        error_log(e, "009", img_service)

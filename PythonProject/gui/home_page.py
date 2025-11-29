@@ -569,11 +569,18 @@ class HomePage(QWidget):
         result_btn.setText("Results")
         result_btn.setCursor(Qt.PointingHandCursor)
         result_btn.clicked.connect(self.result_btn_clicked)
+        imports_exist = any(
+            os.path.isdir(os.path.join(globals.sharedrive_path, item))
+            for item in os.listdir(globals.sharedrive_path)
+        )
+        result_btn.setEnabled(True if globals.log_history or imports_exist else False)
+
         export_btn = QToolButton()
-        export_btn.setEnabled(False) if tests_run == 0 else export_btn.setEnabled(True)
+        export_btn.setEnabled(False if tests_run == 0 else True)
         export_btn.setText("Export")
         export_btn.setCursor(Qt.PointingHandCursor)
         export_btn.clicked.connect(self.export_result)
+
         import_btn = QToolButton()
         import_btn.setText("Import")
         import_btn.setCursor(Qt.PointingHandCursor)

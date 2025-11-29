@@ -1,32 +1,31 @@
 from time import sleep
-import os
-os.environ["QT_LOGGING_RULES"] = "qt.multimedia.ffmpeg=false"
 from common_utils.android_image_comparision import *
 from core.globals import current_email
 from core.log_emitter import log, fail_log, metric_log, error_log, blocked_log
 from core.app_functions import app_logout_setup, app_login, app_login_setup, dash_check
 from core.globals import manual_run
 from core.screenrecord import ScreenRecorder
+from gui.manual_check import manual_check
 
 img_service = "Demo Mode"
 recorder = ScreenRecorder(device_serial=controller.d.serial)
 
 def Demo_Mode_001():
     try:
-        recorder.start(f"{img_service}-001")
+        # recorder.start(f"{img_service}-001")
         # If not on the login page, attempts to log out/exit demo mode
         if app_logout_setup():
             if controller.wait_for_text_and_click("DISCOVER MY BENTLEY"):
-                fail_log("Demo Mode link clicked", "001", img_service)
+                log("Demo Mode link clicked")
             else:
                 fail_log("Demo Mode link not found", "001", img_service)
             sleep(1)
 
             if find_icon_in_screen("Images/My_Bentley_Demo_Mode_Page.png"):
-                fail_log("Demo Mode Launched successfully", "001", img_service)
+                log("Demo Mode Launched successfully")
             else:
                 fail_log("Dashboard screen not detected", "001", img_service)
-        recorder.stop(True)
+        # recorder.stop(True)
 
     except Exception as e:
         error_log(e, "001", img_service)
@@ -127,6 +126,8 @@ def Demo_Mode_004():
             log("Remote parking displayed") if compare_with_expected_crop(remote_images[3], 0.9) else fail_log("Remote parking not displayed", "004", img_service)
             controller.small_swipe_up()
             log("Theft alarm displayed") if compare_with_expected_crop(remote_images[4], 0.9) else fail_log("Theft alarm not displayed", "004", img_service)
+            if not compare_with_expected_crop(remote_images[5]):
+                controller.extra_small_swipe_up()
             log("Roadside assistance displayed") if compare_with_expected_crop(remote_images[5], 0.9) else fail_log("Roadside assistance not displayed", "004", img_service)
             controller.swipe_up()
             log("Data services displayed") if compare_with_expected_crop(remote_images[6], 0.9) else fail_log("Data services not displayed", "004", img_service)
@@ -432,7 +433,7 @@ def Demo_Mode_013():
             else:
                 fail_log("Sign in page is visible", "013", img_service)
 
-            if current_email != "":
+            if not manual_run and current_email != "":
                 app_login()
     except Exception as e:
         error_log(e, "013", img_service)

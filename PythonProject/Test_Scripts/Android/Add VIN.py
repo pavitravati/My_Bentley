@@ -24,14 +24,17 @@ def Add_VIN_001():
                 password = "Password1!"
                 controller.enter_text(password)
                 controller.click_text("CREATE")
-                sleep(1)
+                while not compare_with_expected_crop("Icons/accept_icon.png"):
+                    sleep(0.5)
                 if controller.click_by_image("Icons/accept_icon.png"):
                     log("Email and Password entered")
                     if controller.wait_for_text("CHECK YOUR INBOX"):
                         log("Email verification sent")
                         controller.swipe_up()
                         controller.click_text("RETURN TO LOGIN")
-                        controller.click_text("NEXT")
+                        while not compare_with_expected_crop("Icons/next_icon.png"):
+                            sleep(0.5)
+                        controller.click_by_image("Images/next_icon.png")
                         manual_check(
                             instruction=f"Verify the email of the new account created ({random_email}).",
                             test_id="001",
@@ -347,7 +350,7 @@ def Add_VIN_008():
             if compare_with_expected_crop("Icons/flash_clicked.png"):
                 log("Flash button enabled successfully")
             else:
-                fail_log("Flash button could not be enabeld", "008", img_service)
+                fail_log("Flash button could not be enabled", "008", img_service)
 
             manual_check(
                 instruction=f"Scan the VIN with the flash on.",
@@ -355,7 +358,6 @@ def Add_VIN_008():
                 service=img_service,
                 take_screenshot=False
             )
-
             if controller.is_text_present("CONFIRM YOUR VIN") and not controller.is_text_present("Enter VIN manually"):
                 log("VIN scanned and displayed in VIN field")
             else:
@@ -391,6 +393,7 @@ def Add_VIN_010():
             controller.click_text("My Bentley")
             sleep(0.2)
             controller.click_text("Permissions")
+            sleep(0.2)
             controller.click_text("Camera")
             controller.click_text("Don't allow")
             controller.launch_app("uk.co.bentley.mybentley")
@@ -484,7 +487,7 @@ def Add_VIN_013():
                 )
         else:
             manual_check(
-                instruction=f"Verify vehicle request email received to {current_email}, from previouse testcases.",
+                instruction=f"Verify vehicle request email received to {current_email}, from previous testcases.",
                 test_id="013",
                 service=img_service,
                 take_screenshot=False

@@ -405,8 +405,6 @@ def Nav_Companion_011():
 
     except Exception as e:
         error_log(e, "011", img_service)
-Nav_Companion_010()
-Nav_Companion_011()
 
 def Nav_Companion_012():
     try:

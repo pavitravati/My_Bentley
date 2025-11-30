@@ -165,8 +165,7 @@ def add_vin(num , img_service, optical=False, settings_check=False):
             controller.click_text("Enter VIN manually")
             controller.enter_text(globals.current_vin)
         controller.click_text("CONFIRM")
-        log("VIN entered") if controller.wait_for_text("YOUR PREFERRED BENTLEY RETAILER") else fail_log(
-            "VIN not entered", num, img_service)
+        log("VIN entered") if controller.wait_for_text("YOUR PREFERRED BENTLEY RETAILER") else fail_log("VIN not entered", num, img_service)
         controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
         while not compare_with_expected_crop("Images/retailer_search.png"):
             sleep(0.5)
@@ -174,8 +173,7 @@ def add_vin(num , img_service, optical=False, settings_check=False):
         controller.enter_text("Manchester")
         controller.click_text("Bentley Manchester")
         controller.wait_for_text_and_click("CONFIRM")
-        log("Retailer selected") if controller.wait_for_text("ADD YOUR BENTLEY") else fail_log(
-            "Retailer failed to be selected", num, img_service)
+        log("Retailer selected") if controller.wait_for_text("ADD YOUR BENTLEY") else fail_log("Retailer failed to be selected", num, img_service)
         controller.wait_for_text_and_click("Continue")
         if controller.is_text_present("VIN"):
             controller.click_text("Continue")
@@ -192,8 +190,8 @@ def add_vin(num , img_service, optical=False, settings_check=False):
             controller.enter_text(globals.current_name.split(" ")[1])
             controller.click_text("YOUR DETAILS")
         log("Name entered") if controller.click_text("Continue") else fail_log("Name not entered", num, img_service)
-        controller.click_text("Continue")
-        if controller.click_text("Location"):
+        if not controller.is_text_present("YOUR ADDRESS"):
+            controller.click_text("Location")
             controller.swipe_up(0.01)
             controller.click_text("United Kingdom")
             controller.click_text("Building")
@@ -212,8 +210,7 @@ def add_vin(num , img_service, optical=False, settings_check=False):
             controller.swipe_up(0.01)
         controller.click_text("Continue")
         controller.wait_for_text("Your Mobile Number")
-        log("Location details entered") if controller.wait_for_text_and_click(
-            "Your Mobile Number") else fail_log("Location details not entered", num, img_service)
+        log("Location details entered") if controller.wait_for_text_and_click("Your Mobile Number") else fail_log("Location details not entered", num, img_service)
         if controller.click_text("Area Code"):
             controller.swipe_up(0.035)
             controller.click_text("+44")
@@ -222,12 +219,18 @@ def add_vin(num , img_service, optical=False, settings_check=False):
         else:
             controller.click_text("Continue")
         controller.click_text("Continue")
-        log("Phone number added") if controller.wait_for_text("Request Submitted") else fail_log(
-            "Phone number not added", num, img_service)
+        timeout_check = 0
+        while not controller.is_text_present("Request Submitted"):
+            sleep(0.5)
+            timeout_check += 1
+            if timeout_check > 100:
+                break
+        log("Phone number added") if controller.is_text_present("Request Submitted") else fail_log("Phone number not added", num, img_service)
         controller.click_text("Continue")
-        log("Vehicle added to new account") if controller.click_by_image(
-            "Icons/Homescreen_Left_Arrow.png") else fail_log("Vehicle not added to new account", num, img_service)
+        log("Vehicle added to new account") if controller.is_text_present("DASHBOARD") else fail_log("Vehicle not added to new account", num, img_service)
         sleep(1)
+        while compare_with_expected_crop("Icons/Homescreen_Left_Arrow.png"):
+            controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
 
 def service_reset():
     controller.d.press("recent")

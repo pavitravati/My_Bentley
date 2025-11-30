@@ -6,7 +6,8 @@ app_version = device = phone_software = ""
 
 manual_run = True
 selected_services = []
-rear_seat_heating = False
+# rear_seat_heating = False
+rear_seat_heating = True
 
 get_account_details_called = False
 
@@ -22,11 +23,11 @@ base_path = os.path.join(user_dir, "Volkswagen AG", "BY GQM - Smart Quality - Do
 sharedrive_path = base_path
 
 # temp
-vehicle_type = "ice"
-# current_email = "testdrive@gqm.anonaddy.com"
-# current_password = "Password1!"
+current_name = "test gqm"
+vehicle_type = "phev"
+current_email = "testdrive@gqm.anonaddy.com"
+current_password = "Password1!"
 # current_pin = "1234"
 # current_vin = "SJAAE14V3TC029739"
 # current_name = "Michael Scott"
-# second_email = "testdrive1@gqm.anonaddy.com"
-# second_password = "Password1!"
+fuel_pct = "80"

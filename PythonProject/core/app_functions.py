@@ -5,7 +5,7 @@ import core.globals as globals
 from core.log_emitter import blocked_log, fail_log, log
 from gui.manual_check import manual_check
 
-def app_login(email="", password=""):
+def app_login(email="", password="", safe_type = False):
     if email == "":
         email = globals.current_email
     if password == "":
@@ -20,7 +20,7 @@ def app_login(email="", password=""):
     controller.wait_for_text("Log in – Enter password")
     if not controller.is_text_present("CREATE ACCOUNT"):
         while controller.is_text_present("Log in – Enter password"):
-            controller.enter_text(password)
+            controller.enter_text(password, safe_type=safe_type)
             sleep(2)
             if controller.is_text_present("Sorry, wrong password. Please try again"):
                 success_tracker.append(0)
@@ -112,12 +112,24 @@ def identify_car():
     return car
 
 def delete_vin():
-    controller.click_by_image("Icons/info_btn.png")
+    while compare_with_expected_crop("Icons/Homescreen_Left_Arrow.png"):
+        controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
+    while True:
+        controller.click_by_image("Icons/info_btn.png")
+        if controller.is_text_present(globals.current_vin):
+            break
+        controller.click_by_image("Icons/back_icon.png")
+        controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
+        if controller.is_text_present("ADD A VEHICLE"):
+            blocked_log("Test blocked - vehicle with given vin not found on account")
+            break
     controller.click_text("Delete vehicle")
-    controller.click_text("Delete")
-    if not controller.wait_for_text("Vehicle details successfully submitted. Your request is now being validated. Once confirmed your vehicle will disappear from your virtual garage.", 30):
-        blocked_log("Test blocked - Unable to delete vin to complete testcase")
-    sleep(1)
+    if controller.click_text("Delete"):
+        if not controller.wait_for_text("Vehicle details successfully submitted. Your request is now being validated. Once confirmed your vehicle will disappear from your virtual garage.", 30):
+            blocked_log("Test blocked - Unable to delete vin to complete testcase")
+        sleep(1)
+    else:
+        service_reset()
 
 def add_vin(num , img_service, optical=False, settings_check=False):
     if controller.wait_for_text("DASHBOARD"):

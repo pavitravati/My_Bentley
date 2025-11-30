@@ -272,8 +272,12 @@ class DeviceController:
         if press_enter:
             os.system("adb shell input keyevent 66")
 
-    def enter_text(self, text: str, press_enter: bool = True):
-        os.system(f"adb shell input text {text}")
+    def enter_text(self, text: str, press_enter: bool = True, safe_type: bool = False):
+        if safe_type:
+            for char in text:
+                os.system(f"adb shell input text {char}")
+        else:
+            os.system(f"adb shell input text {text}")
         if press_enter:
             os.system("adb shell input keyevent 66")
 

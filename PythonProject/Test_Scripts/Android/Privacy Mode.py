@@ -1,8 +1,8 @@
 from common_utils.android_image_comparision import *
 from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
 from time import sleep
-from core.app_functions import remote_swipe, app_login_setup
-from core.globals import manual_run
+from core.app_functions import remote_swipe, app_login_setup, app_refresh
+from core.globals import manual_run, vehicle_type
 
 img_service = "Privacy Mode"
 
@@ -195,12 +195,7 @@ def Privacy_Mode_008():
 def Privacy_Mode_009():
     try:
         if app_login_setup():
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            controller.swipe_down()
-            sleep(6)
-            if controller.click_by_image("Icons/Update_Vehicle_data.png"):
-                controller.wait_for_text("Vehicle status successfully retrieved")
-            controller.click_by_image("Icons/Error_Icon.png")
+            app_refresh("009", img_service)
 
             if controller.find_img("Icons/Remote_Lock_Unavailable_Icon.png", 0.75):
                 log("Remote lock unlock unavailable")
@@ -247,16 +242,7 @@ def Privacy_Mode_009():
 def Privacy_Mode_010():
     try:
         if app_login_setup():
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            controller.swipe_down()
-            sleep(6)
-            if controller.is_text_present("Vehicle location could not be updated"):
-                controller.click_by_image("Icons/Error_Icon.png")
-                controller.swipe_down()
-                sleep(6)
-            if controller.click_by_image("Icons/Update_Vehicle_data.png"):
-                controller.wait_for_text("Vehicle status successfully retrieved")
-            controller.click_by_image("Icons/Error_Icon.png")
+            app_refresh("010", img_service)
 
             controller.click_by_image("Icons/navigation_icon.png")
             controller.click_by_image("Images/Navigation_Allow.png")
@@ -304,12 +290,7 @@ def Privacy_Mode_010():
 def Privacy_Mode_011():
     try:
         if app_login_setup():
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            controller.swipe_down()
-            sleep(6)
-            if controller.click_by_image("Icons/Update_Vehicle_data.png"):
-                controller.wait_for_text("Vehicle status successfully retrieved")
-            controller.click_by_image("Icons/Error_Icon.png")
+            app_refresh("011", img_service)
 
             controller.click_by_image("Icons/navigation_icon.png")
             controller.click_by_image("Images/Navigation_Allow.png")
@@ -363,12 +344,7 @@ def Privacy_Mode_011():
 # def Privacy_Mode_007():
 #     try:
 #         if app_login_setup():
-#             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-#             controller.swipe_down()
-#             sleep(6)
-#             if controller.click_by_image("Icons/Update_Vehicle_data.png"):
-#                 controller.wait_for_text("Vehicle status successfully retrieved")
-#             controller.click_by_image("Icons/Error_Icon.png")
+#             app_refresh("007", img_service)
 #
 #             if compare_with_expected_crop("Icons/Remote_Lock.png"):
 #                 log("Remote lock unlock available when privacy mode deactivated")
@@ -382,10 +358,7 @@ def Privacy_Mode_011():
 def Privacy_Mode_012():
     try:
         if app_login_setup():
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            controller.swipe_down()
-            sleep(6)
-            controller.click_by_image("Icons/Error_Icon.png")
+            app_refresh("012", img_service)
 
             controller.click_by_image("Icons/navigation_icon.png")
             controller.click_by_image("Images/Navigation_Allow.png")
@@ -414,21 +387,18 @@ def Privacy_Mode_012():
 
 def Privacy_Mode_013():
     try:
-        if app_login_setup():
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            controller.swipe_down()
-            sleep(6)
-            controller.click_by_image("Icons/Error_Icon.png")
-            controller.click_by_image("Icons/remote_icon.png")
-            controller.click_by_image("Icons/remote_icon.png")
-
-            controller.click_text("MY CAR STATISTICS")
-            if controller.is_text_present("Graphical view"):
-                log("My car statistics screen accessible")
-                controller.click(110,110)
-            else:
-                fail_log("My car statistics screen not accessible", "013", img_service)
-
+        if vehicle_type == "phev":
+            if app_login_setup():
+                app_refresh("013", img_service)
+                controller.click_by_image("Icons/remote_icon.png")
+                controller.click_text("MY CAR STATISTICS")
+                if controller.is_text_present("Graphical view"):
+                    log("My car statistics screen accessible")
+                    controller.click(110,110)
+                else:
+                    fail_log("My car statistics screen not accessible", "013", img_service)
+        else:
+            blocked_log("Test blocked - Vehicle must be a phev")
     except Exception as e:
         error_log(e, "013", img_service)
 

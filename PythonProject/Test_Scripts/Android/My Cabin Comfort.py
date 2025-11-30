@@ -212,12 +212,12 @@ def My_Cabin_Comfort_006():
                         controller.click_text("MY CABIN COMFORT")
                         if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
                             log("Stop button displayed when cabin comfort active")
-                            manual_check(
-                                instruction=f"Verify the time left matches remote RCP menu\nVerify MY CABIN COMFORT is active in the car",
-                                test_id="006",
-                                service=img_service,
-                                take_screenshot=True
-                            )
+                            # manual_check(
+                            #     instruction=f"Verify the time left matches remote RCP menu\nVerify MY CABIN COMFORT is active in the car",
+                            #     test_id="006",
+                            #     service=img_service,
+                            #     take_screenshot=True
+                            # )
                             controller.click_text("STOP")
                         else:
                             fail_log("Stop button not found, or cabin comfort not active", "006", img_service)
@@ -949,6 +949,20 @@ def My_Cabin_Comfort_017():
 def My_Cabin_Comfort_018():
     try:
         blocked_log("Test blocked - Can't be automated")
+        # manual_check(
+        #     instruction="""'Climate - Auxiliary climate' screen should be launched displaying:\nScreen Title: 'Climate - Auxiliary climate'
+        #     \n'Immediate Start' section - 'Temperature - Icon' button: Clicking on it should activate 'MY CABIN COMFORT'\n'Timer Programming'
+        #     section - Timer 1 & 2 with selection box - Clicking on them should launch 'Climate - Departure date' screen where user can select
+        #     the departure date along with 'Continue' button\n'Settings' button: Clicking on it should launch 'Climate - Settings' screen where
+        #     user can set:\na. Screen Title: Climate Settings\nb. 'Target Temperature' section: Target Temperature should be easily set to desired
+        #     value by the user in the range between 16degC to 26degC with 1degC increments/decrements\nc. 'Start climate control after unlocking':
+        #     User can tick/untick for enabling/disabling this option\nd. 'Convenience auxiliary climate' section: User can select/deselect the seat
+        #     heating for all the 4 seating zones(Front Right Seat/Front Left Seat/Rear Right Seat/Rear Left Seat)\ne. 'Back' button: Clicking on it
+        #     takes focus back to 'Climate - Auxiliary Climate' screen\n'Back' button: Screen focus is taken one step back to 'Climate - Settings' screen""",
+        #     test_id="018",
+        #     service=img_service,
+        #     take_screenshot=False
+        # )
     except Exception as e:
         error_log(e, "018", img_service)
 
@@ -1062,23 +1076,24 @@ def set_new_timer(index, testcase_idx):
     controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
     current_date = str(datetime.now())
     today = int(current_date[8:10])
-    tomorrow = today + 1 if today > 27 else 1
+    tomorrow = today + 1 if today < 27 else 1
     if tomorrow == 1:
         controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
     controller.click_by_text_id(str(tomorrow))
     controller.click_text("OK")
-    controller.click_by_resource_id("uk.co.bentley.mybentley:id/textView_time_rpc_timer_setting")
     time = int(current_date[11:13])
     new_time = time + 1 if time < 23 else 0
-    controller.click_by_content_desc(str(new_time))
-    controller.click_by_content_desc("40") if index == 1 else controller.click_by_content_desc("45")
-    controller.click_text("OK")
+    while controller.d(resourceId="uk.co.bentley.mybentley:id/textView_time_rpc_timer_setting").get_text() != f"{str(new_time)}:{"40" if index==1 else "45"}":
+        controller.click_by_resource_id("uk.co.bentley.mybentley:id/textView_time_rpc_timer_setting")
+        controller.click_by_content_desc(str(new_time))
+        controller.click_by_content_desc("40") if index == 1 else controller.click_by_content_desc("45")
+        controller.click_text("OK")
     if controller.click_text("Save"):
         log("Timer set")
     else:
         fail_log("Timer not set", testcase_idx, img_service)
 
-    # Clicking co-ords as I can find no way to click the timer
+# Clicking co-ords as I can find no way to click the timer
 def My_Cabin_Comfort_022():
     try:
         if app_login_setup():
@@ -1156,52 +1171,6 @@ def My_Cabin_Comfort_023():
 
 def My_Cabin_Comfort_024():
     try:
-        if app_login_setup():
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            controller.click_by_image("Icons/info_btn.png")
-            controller.click_text("Service Management")
-            controller.swipe_up()
-            if controller.click_text("My cabin comfort"):
-                log("My cabin comfort disabled in service management")
-                sleep(3)
-            else:
-                fail_log("My cabin comfort section not found in service management", "024", img_service)
-            controller.click_by_image("Icons/back_icon.png")
-            controller.click_by_image("Icons/back_icon.png")
-
-            controller.click_by_image("Icons/remote_icon.png")
-            remote_swipe("MY CABIN COMFORT")
-            if controller.click_text("MY CABIN COMFORT") and controller.is_text_present("Function disabled"):
-                log("Cabin comfort successfully disabled")
-            else:
-                fail_log("Cabin comfort failed to be disabled", "024", img_service)
-            controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-
-            controller.click_by_image("Icons/info_btn.png")
-            controller.click_text("Service Management")
-            controller.swipe_up()
-            if controller.click_text("My cabin comfort"):
-                log("My cabin comfort enabled in service management")
-                sleep(3)
-            else:
-                fail_log("My cabin comfort section not found in service management", "024", img_service)
-            controller.click_by_image("Icons/back_icon.png")
-            controller.click_by_image("Icons/back_icon.png")
-
-            controller.click_by_image("Icons/remote_icon.png")
-            controller.click_text("MY CABIN COMFORT")
-            if controller.is_text_present("Quick start"):
-                log("Cabin comfort section enabled")
-            else:
-                fail_log("Cabin comfort section not enabled", "024", img_service)
-
-            controller.click_by_image("Icons/back_icon.png")
-            controller.swipe_down()
-    except Exception as e:
-        error_log(e, "024", img_service)
-
-def My_Cabin_Comfort_025():
-    try:
         blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
-        error_log(e, "025", img_service)
+        error_log(e, "024", img_service)

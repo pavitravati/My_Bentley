@@ -192,6 +192,8 @@ class ServiceReport(QWidget):
                 for log in row_logs:
                     if log.startswith("$"):
                         self.kpm_log = log[1:]
+                    elif log.startswith("⌛"):
+                        cleaned_logs.append(f"Testcase duration: {log[4:]} seconds")
                     else:
                         cleaned_logs.append(log)
                 logs_combined = "\n".join(cleaned_logs)

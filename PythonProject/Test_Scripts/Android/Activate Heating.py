@@ -1,15 +1,18 @@
 from time import sleep
 from common_utils.android_image_comparision import *
-from core.log_emitter import error_log, fail_log, metric_log, log, blocked_log
+from core.log_emitter import error_log, fail_log, metric_log, log, blocked_log, runtime_log
 from datetime import datetime, timedelta
 from core.globals import vehicle_type, country, manual_run
 from gui.manual_check import manual_check
-from core.app_functions import app_login_setup
-import core.globals as globals
+from core.app_functions import app_login_setup, service_reset
+from core.screenrecord import ScreenRecorder
+from core import globals
 
 img_service = "Activate Heating"
+recorder = ScreenRecorder(device_serial=controller.d.serial)
 
 def Activate_Heating_001():
+    recorder.start(f"{img_service}-001")
     try:
         if country == "eur":
             if vehicle_type == "ice":
@@ -32,8 +35,14 @@ def Activate_Heating_001():
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
         error_log(e, "001", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Activate_Heating_002():
+    recorder.start(f"{img_service}-002")
     try:
         if country == "eur":
             if vehicle_type == "ice":
@@ -52,8 +61,14 @@ def Activate_Heating_002():
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
         error_log(e, "002", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Activate_Heating_003():
+    recorder.start(f"{img_service}-003")
     try:
         if country == "eur":
             if vehicle_type == "ice":
@@ -94,8 +109,14 @@ def Activate_Heating_003():
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
         error_log(e, "003", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Activate_Heating_004():
+    recorder.start(f"{img_service}-004")
     try:
         if country == "eur":
             if vehicle_type == "ice":
@@ -135,8 +156,14 @@ def Activate_Heating_004():
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
         error_log(e, "004", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Activate_Heating_005():
+    recorder.start(f"{img_service}-005")
     try:
         if country == "eur":
             if vehicle_type == "ice":
@@ -191,8 +218,14 @@ def Activate_Heating_005():
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
         error_log(e, "005", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Activate_Heating_006():
+    recorder.start(f"{img_service}-006")
     try:
         if country == "eur":
             if vehicle_type == "ice":
@@ -236,15 +269,21 @@ def Activate_Heating_006():
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
         error_log(e, "006", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Activate_Heating_007():
+    recorder.start(f"{img_service}-007")
     try:
         if country == "eur":
             if vehicle_type == "ice":
                 if app_login_setup():
-                    # if not int(globals.fuel_pct) >= 30:
-                    #     blocked_log("Test blocked - Vehicle should have at least 30% Fuel")
-                    # else:
+                    if not int(globals.fuel_pct) >= 30:
+                        blocked_log("Test blocked - Vehicle should have at least 30% Fuel")
+                    else:
                         controller.click_by_image("Icons/remote_icon.png")
                         controller.click_text("ACTIVATE HEATING")
                         controller.click_text("Timers")
@@ -302,8 +341,14 @@ def Activate_Heating_007():
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
         error_log(e, "007", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Activate_Heating_008():
+    recorder.start(f"{img_service}-008")
     try:
         if country == "eur":
             if vehicle_type == "ice":
@@ -314,3 +359,8 @@ def Activate_Heating_008():
             blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
         error_log(e, "008", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False

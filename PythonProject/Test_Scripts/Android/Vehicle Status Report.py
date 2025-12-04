@@ -1,13 +1,15 @@
 from time import sleep
 from common_utils.android_image_comparision import *
-from core.app_functions import app_login_setup, identify_car, app_refresh
+from core.app_functions import app_login_setup, identify_car, app_refresh, service_reset
 from core.globals import vehicle_type, fuel_pct, battery_pct
-from core.log_emitter import log, metric_log, fail_log, error_log, blocked_log
+from core.log_emitter import log, metric_log, fail_log, error_log, blocked_log, runtime_log
 from datetime import datetime
-from core.globals import manual_run
+from core.screenrecord import ScreenRecorder
+from core import globals
 from gui.manual_check import manual_check
 
 img_service = "Vehicle Status Report"
+recorder = ScreenRecorder(device_serial=controller.d.serial)
 
 def change_units(units):
     controller.click_by_image("Icons/Profile_Icon.png")
@@ -26,6 +28,7 @@ def metric_checker(metric, metric_dict,  num):
         return ""
 
 def Vehicle_Status_Report_001():
+    recorder.start(f"{img_service}-001")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -62,8 +65,14 @@ def Vehicle_Status_Report_001():
 
     except Exception as e:
         error_log(e, "001", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_002():
+    recorder.start(f"{img_service}-002")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -115,8 +124,14 @@ def Vehicle_Status_Report_002():
 
     except Exception as e:
         error_log(e, "002", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_003():
+    recorder.start(f"{img_service}-003")
     try:
         if app_login_setup():
             app_refresh("003", img_service)
@@ -141,8 +156,14 @@ def Vehicle_Status_Report_003():
 
     except Exception as e:
         error_log(e, "003", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_004():
+    recorder.start(f"{img_service}-004")
     try:
         if app_login_setup():
             app_refresh("004", img_service, "when ignition is off", 45)
@@ -167,8 +188,14 @@ def Vehicle_Status_Report_004():
 
     except Exception as e:
         error_log(e, "004", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_005():
+    recorder.start(f"{img_service}-005")
     try:
         if app_login_setup():
             if not int(fuel_pct) > 0:
@@ -199,8 +226,14 @@ def Vehicle_Status_Report_005():
 
     except Exception as e:
         error_log(e, "005", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_006():
+    recorder.start(f"{img_service}-006")
     try:
         if vehicle_type == "phev":
             if app_login_setup():
@@ -236,8 +269,14 @@ def Vehicle_Status_Report_006():
 
     except Exception as e:
         error_log(e, "006", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_007():
+    recorder.start(f"{img_service}-007")
     try:
         if app_login_setup():
             app_refresh("007", img_service)
@@ -268,8 +307,14 @@ def Vehicle_Status_Report_007():
 
     except Exception as e:
         error_log(e, "007", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_008():
+    recorder.start(f"{img_service}-008")
     try:
         if app_login_setup():
             change_units("Kilometres")
@@ -297,8 +342,14 @@ def Vehicle_Status_Report_008():
 
     except Exception as e:
         error_log(e, "008", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_009():
+    recorder.start(f"{img_service}-009")
     try:
         if app_login_setup():
             change_units("Miles")
@@ -326,11 +377,17 @@ def Vehicle_Status_Report_009():
 
     except Exception as e:
         error_log(e, "009", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_010():
+    recorder.start(f"{img_service}-010")
     try:
         if app_login_setup():
-            app_refresh("004", img_service, "when ignition is on", 45)
+            app_refresh("010", img_service, "when ignition is on", 45)
 
             if vehicle_type == "phev":
                 controller.swipe_up()
@@ -352,8 +409,14 @@ def Vehicle_Status_Report_010():
 
     except Exception as e:
         error_log(e, "010", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_011():
+    recorder.start(f"{img_service}-011")
     try:
         if app_login_setup():
             app_refresh("011", img_service, "when engine is running", 45)
@@ -378,6 +441,11 @@ def Vehicle_Status_Report_011():
 
     except Exception as e:
         error_log(e, "011", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def door_status_check(expected_status, num):
     controller.swipe_up()
@@ -401,6 +469,7 @@ def door_status_check(expected_status, num):
     controller.swipe_down(0.15)
 
 def Vehicle_Status_Report_012():
+    recorder.start(f"{img_service}-012")
     try:
         if app_login_setup():
             app_refresh("012", img_service)
@@ -410,8 +479,14 @@ def Vehicle_Status_Report_012():
 
     except Exception as e:
         error_log(e, "012", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_013():
+    recorder.start(f"{img_service}-013")
     try:
         if app_login_setup():
             app_refresh("013", img_service)
@@ -419,8 +494,14 @@ def Vehicle_Status_Report_013():
 
     except Exception as e:
         error_log(e, "013", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_014():
+    recorder.start(f"{img_service}-014")
     try:
         if app_login_setup():
             app_refresh("014", img_service)
@@ -428,8 +509,14 @@ def Vehicle_Status_Report_014():
 
     except Exception as e:
         error_log(e, "014", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_015():
+    recorder.start(f"{img_service}-015")
     try:
         if app_login_setup():
             app_refresh("015", img_service)
@@ -437,8 +524,14 @@ def Vehicle_Status_Report_015():
 
     except Exception as e:
         error_log(e, "015", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_016():
+    recorder.start(f"{img_service}-016")
     try:
         if app_login_setup():
             app_refresh("016", img_service)
@@ -446,6 +539,11 @@ def Vehicle_Status_Report_016():
 
     except Exception as e:
         error_log(e, "016", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def window_status_check(expected_status, num, sunroof=False):
     controller.swipe_up()
@@ -479,6 +577,7 @@ def window_status_check(expected_status, num, sunroof=False):
     controller.swipe_down(0.15)
 
 def Vehicle_Status_Report_017():
+    recorder.start(f"{img_service}-017")
     try:
         if app_login_setup():
             app_refresh("017", img_service)
@@ -486,8 +585,14 @@ def Vehicle_Status_Report_017():
 
     except Exception as e:
         error_log(e, "017", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_018():
+    recorder.start(f"{img_service}-018")
     try:
         if app_login_setup():
             app_refresh("018", img_service)
@@ -495,8 +600,14 @@ def Vehicle_Status_Report_018():
 
     except Exception as e:
         error_log(e, "018", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_019():
+    recorder.start(f"{img_service}-019")
     try:
         if app_login_setup():
             app_refresh("019", img_service)
@@ -504,8 +615,14 @@ def Vehicle_Status_Report_019():
 
     except Exception as e:
         error_log(e, "019", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_020():
+    recorder.start(f"{img_service}-020")
     try:
         if app_login_setup():
             app_refresh("020", img_service)
@@ -513,8 +630,14 @@ def Vehicle_Status_Report_020():
 
     except Exception as e:
         error_log(e, "020", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_021():
+    recorder.start(f"{img_service}-021")
     try:
         if app_login_setup():
             app_refresh("021", img_service)
@@ -522,8 +645,14 @@ def Vehicle_Status_Report_021():
 
     except Exception as e:
         error_log(e, "021", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_022():
+    recorder.start(f"{img_service}-022")
     try:
         if app_login_setup():
             app_refresh("022", img_service)
@@ -531,6 +660,11 @@ def Vehicle_Status_Report_022():
 
     except Exception as e:
         error_log(e, "022", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def boot_bonnet_status_check(expected_status, num):
     controller.swipe_up()
@@ -551,6 +685,7 @@ def boot_bonnet_status_check(expected_status, num):
     controller.swipe_down(0.15)
 
 def Vehicle_Status_Report_023():
+    recorder.start(f"{img_service}-023")
     try:
         if app_login_setup():
             app_refresh("023", img_service)
@@ -558,8 +693,14 @@ def Vehicle_Status_Report_023():
 
     except Exception as e:
         error_log(e, "023", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_024():
+    recorder.start(f"{img_service}-024")
     try:
         if app_login_setup():
             app_refresh("024", img_service)
@@ -567,8 +708,14 @@ def Vehicle_Status_Report_024():
 
     except Exception as e:
         error_log(e, "024", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_025():
+    recorder.start(f"{img_service}-025")
     try:
         if app_login_setup():
             app_refresh("025", img_service)
@@ -576,8 +723,14 @@ def Vehicle_Status_Report_025():
 
     except Exception as e:
         error_log(e, "025", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_026():
+    recorder.start(f"{img_service}-026")
     try:
         if app_login_setup():
             app_refresh("026", img_service)
@@ -597,8 +750,14 @@ def Vehicle_Status_Report_026():
 
     except Exception as e:
         error_log(e, "026", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_027():
+    recorder.start(f"{img_service}-027")
     try:
         if app_login_setup():
             app_refresh("027", img_service)
@@ -618,8 +777,14 @@ def Vehicle_Status_Report_027():
 
     except Exception as e:
             error_log(e, "027", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_028():
+    recorder.start(f"{img_service}-028")
     try:
         if app_login_setup():
             app_refresh("028", img_service)
@@ -643,8 +808,14 @@ def Vehicle_Status_Report_028():
 
     except Exception as e:
         error_log(e, "028", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_029():
+    recorder.start(f"{img_service}-029")
     try:
         if app_login_setup():
             app_refresh("029", img_service)
@@ -668,10 +839,15 @@ def Vehicle_Status_Report_029():
 
     except Exception as e:
         error_log(e, "029", img_service)
-Vehicle_Status_Report_029()
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 # No notifications received
 def Vehicle_Status_Report_030():
+    recorder.start(f"{img_service}-030")
     try:
         blocked_log("Test blocked - Push notification not working")
         # if app_login_setup():
@@ -689,9 +865,20 @@ def Vehicle_Status_Report_030():
         #     fail_log("Not getting a notification", "030", img_service)
     except Exception as e:
         error_log(e, "030", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Vehicle_Status_Report_031():
+    recorder.start(f"{img_service}-031")
     try:
         blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "031", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False

@@ -1,14 +1,15 @@
 from common_utils.android_image_comparision import *
-from core.app_functions import app_login_setup, identify_car
-from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
+from core.app_functions import app_login_setup, identify_car, service_reset
+from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log, runtime_log
 from gui.manual_check import manual_check
-from time import sleep
-from core.globals import manual_run
 import core.globals as globals
+from core.screenrecord import ScreenRecorder
 
 img_service = "Nav Companion"
+recorder = ScreenRecorder(device_serial=controller.d.serial)
 
 def Nav_Companion_001():
+    recorder.start(f"{img_service}-001")
     try:
         if app_login_setup():
             if controller.click_by_image("Icons/navigation_icon.png"):
@@ -56,8 +57,14 @@ def Nav_Companion_001():
             controller.click_by_image("Images/Navigation_Info_Image.png")
     except Exception as e:
         error_log(e, "001", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Nav_Companion_002():
+    recorder.start(f"{img_service}-002")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/navigation_icon.png")
@@ -104,11 +111,16 @@ def Nav_Companion_002():
             )
             controller.click_by_image("Icons/location_back.png")
 
-
     except Exception as e:
         error_log(e, "002", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Nav_Companion_003():
+    recorder.start(f"{img_service}-003")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -174,8 +186,14 @@ def Nav_Companion_003():
 
     except Exception as e:
         error_log(e, "003", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Nav_Companion_004():
+    recorder.start(f"{img_service}-004")
     try:
         if app_login_setup():
             manual_check(
@@ -202,8 +220,14 @@ def Nav_Companion_004():
 
     except Exception as e:
         error_log(e, "004", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Nav_Companion_005():
+    recorder.start(f"{img_service}-005")
     try:
         if app_login_setup():
             # if manual
@@ -240,8 +264,14 @@ def Nav_Companion_005():
             controller.click_by_image("Icons/location_back.png")
     except Exception as e:
         error_log(e, "005", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Nav_Companion_006():
+    recorder.start(f"{img_service}-006")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/navigation_icon.png")
@@ -281,8 +311,14 @@ def Nav_Companion_006():
 
     except Exception as e:
         error_log(e, "006", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Nav_Companion_007():
+    recorder.start(f"{img_service}-007")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -331,8 +367,14 @@ def Nav_Companion_007():
 
     except Exception as e:
         error_log(e, "007", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Nav_Companion_008():
+    recorder.start(f"{img_service}-008")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -360,6 +402,11 @@ def Nav_Companion_008():
 
     except Exception as e:
         error_log(e, "008", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Nav_Companion_009():
     try:
@@ -368,6 +415,7 @@ def Nav_Companion_009():
         error_log(e, "009", img_service)
 
 def Nav_Companion_010():
+    recorder.start(f"{img_service}-010")
     try:
         controller.click_by_image("Icons/navigation_icon.png")
         controller.click_by_image("Images/Navigation_Allow.png")
@@ -385,8 +433,14 @@ def Nav_Companion_010():
         controller.click_by_image("Icons/navigation_back.png")
     except Exception as e:
         error_log(e, "010", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Nav_Companion_011():
+    recorder.start(f"{img_service}-011")
     try:
         controller.click_by_image("Icons/navigation_icon.png")
         controller.click_by_image("Images/Navigation_Allow.png")
@@ -405,9 +459,20 @@ def Nav_Companion_011():
 
     except Exception as e:
         error_log(e, "011", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Nav_Companion_012():
+    recorder.start(f"{img_service}-012")
     try:
         blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "012", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False

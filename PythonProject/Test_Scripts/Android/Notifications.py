@@ -1,13 +1,17 @@
 from common_utils.android_image_comparision import *
-from core.app_functions import app_login_setup
-from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
+from core.app_functions import app_login_setup, service_reset
+from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log, runtime_log
 from datetime import datetime, timedelta
 from time import sleep
 from core.globals import country, manual_run
+from core.screenrecord import ScreenRecorder
+from core import globals
 
 img_service = "Notifications"
+recorder = ScreenRecorder(device_serial=controller.d.serial)
 
 def Notifications_001():
+    recorder.start(f"{img_service}-001")
     try:
         if app_login_setup():
             if controller.click_by_image("Icons/New_Notification_icon.png") or controller.click_by_image("Icons/Notification_icon.png"):
@@ -32,9 +36,15 @@ def Notifications_001():
 
     except Exception as e:
         error_log(e, "001", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 # Maybe check that a maximum of 10 notifications are displayed if important
 def Notifications_002():
+    recorder.start(f"{img_service}-002")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/New_Notification_icon.png")
@@ -96,8 +106,14 @@ def Notifications_002():
                 fail_log("Notifications not displayed from oldest to newest", "002", img_service)
     except Exception as e:
         error_log(e, "002", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Notifications_003():
+    recorder.start(f"{img_service}-003")
     try:
         if country == "NAR":
             blocked_log("Test blocked - Not written")
@@ -105,9 +121,15 @@ def Notifications_003():
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
         error_log(e, "003", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 # Can't really be automated, but check alerts screen when alerts are there to see if it can be just verified they exist and metric log what they say
 def Notifications_004():
+    recorder.start(f"{img_service}-004")
     try:
         if country == "NAR":
             blocked_log("Test blocked - Not written")
@@ -115,9 +137,20 @@ def Notifications_004():
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
         error_log(e, "004", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Notifications_005():
+    recorder.start(f"{img_service}-005")
     try:
         blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "005", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False

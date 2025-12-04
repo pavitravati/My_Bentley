@@ -1,9 +1,9 @@
 from time import sleep
 from common_utils.android_image_comparision import *
 from core.globals import current_email
-from core.log_emitter import log, fail_log, metric_log, error_log, blocked_log
-from core.app_functions import app_logout_setup, app_login, app_login_setup, dash_check
-from core.globals import manual_run
+from core.log_emitter import log, fail_log, metric_log, error_log, blocked_log, runtime_log
+from core.app_functions import app_logout_setup, app_login, app_login_setup, dash_check, service_reset
+from core import globals
 from core.screenrecord import ScreenRecorder
 from gui.manual_check import manual_check
 
@@ -11,26 +11,31 @@ img_service = "Demo Mode"
 recorder = ScreenRecorder(device_serial=controller.d.serial)
 
 def Demo_Mode_001():
+    recorder.start(f"{img_service}-001")
     try:
-        # recorder.start(f"{img_service}-001")
-        # If not on the login page, attempts to log out/exit demo mode
-        if app_logout_setup():
-            if controller.wait_for_text_and_click("DISCOVER MY BENTLEY"):
-                log("Demo Mode link clicked")
-            else:
-                fail_log("Demo Mode link not found", "001", img_service)
-            sleep(1)
-
-            if find_icon_in_screen("Images/My_Bentley_Demo_Mode_Page.png"):
-                log("Demo Mode Launched successfully")
-            else:
-                fail_log("Dashboard screen not detected", "001", img_service)
-        # recorder.stop(True)
+        # if app_logout_setup():
+        #     if controller.wait_for_text_and_click("DISCOVER MY BENTLEY"):
+        #         log("Demo Mode link clicked")
+        #     else:
+        #         fail_log("Demo Mode link not found", "001", img_service)
+        #     sleep(1)
+        #
+        #     if find_icon_in_screen("Images/My_Bentley_Demo_Mode_Page.png"):
+        #         log("Demo Mode Launched successfully")
+        #     else:
+        #         fail_log("Dashboard screen not detected", "001", img_service)
+        fail_log("test", "001", img_service)
 
     except Exception as e:
         error_log(e, "001", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Demo_Mode_002():
+    recorder.start(f"{img_service}-002")
     try:
         if not controller.wait_for_text("Demo mode"):
             app_logout_setup()
@@ -43,8 +48,15 @@ def Demo_Mode_002():
                 fail_log("Dashboard screen not detected", "002", img_service)
     except Exception as e:
         error_log(e, "002", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
+
 
 def Demo_Mode_003():
+    recorder.start(f"{img_service}-003")
     try:
         if not controller.is_text_present("Demo mode"):
             app_logout_setup()
@@ -54,25 +66,16 @@ def Demo_Mode_003():
 
         if controller.wait_for_text("Demo mode"):
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
-            images = [
-                "Images/My_Bentley_Demo_Mode_Page.png",
-                "Images/Demo_Vehicle_Image.png",
-                "Images/Demo_Greetings.png",
-                "Images/Demo_Lock_Button.png",
-                "Images/Demo_Unlock_Button.png",
-                "Images/Demo_Vehicle_Last_Contact.png",
-                "Images/Demo_Vehicle_Name.png"
-            ]
 
-            if all(compare_with_expected_crop(img, 0.9) for img in images):
-                log("All initial UI images validated")
+            log("Demo Mode dashboard visible") if controller.is_text_present("DASHBOARD") else fail_log("Demo Mode dashboard not visible", "003", img_service)
+            log("Vehicle image displayed") if compare_with_expected_crop("Images/Demo_Vehicle_Image.png", 0.9) else fail_log("Vehicle image not displayed", "003", img_service)
+            log("Greeting message displayed") if controller.wait_for_text_that_contains("Good", 3) else fail_log("Greeting message not displayed", "003", img_service)
+            log("Vehicle name displayed") if controller.wait_for_text("BENTAYGA", 3) else fail_log("Vehicle name not displayed", "003", img_service)
+            log("Last contact message displayed") if controller.wait_for_text_that_contains("Last vehicle contact", 3) else fail_log("Last contact message displayed", "003", img_service)
+            if (compare_with_expected_crop("Images/Demo_Lock.png", 0.9) and compare_with_expected_crop("Images/Demo_Unlock.png", 0.9)) or (compare_with_expected_crop("Images/Demo_Lock_2.png", 0.9) and compare_with_expected_crop("Images/Demo_Unlock_2.png", 0.9)):
+                log("Demo lock and unlock button displayed")
             else:
-                fail_log("Initial UI images not validated", "003", img_service)
-                for img in images:
-                    if compare_with_expected_crop(img):
-                        log(f"{img[7:]}")
-                    else:
-                        fail_log(f"{img[7:]} not found", "003", img_service)
+                fail_log("Demo lock and unlock buttons not displayed", "003", img_service)
 
             metrics = []
             for _ in range(2):
@@ -91,8 +94,14 @@ def Demo_Mode_003():
                 controller.swipe_down()
     except Exception as e:
         error_log(e, "003", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Demo_Mode_004():
+    recorder.start(f"{img_service}-004")
     try:
         if not controller.is_text_present("Demo mode"):
             app_logout_setup()
@@ -138,8 +147,14 @@ def Demo_Mode_004():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "004", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Demo_Mode_005():
+    recorder.start(f"{img_service}-005")
     try:
         if not controller.is_text_present("Demo mode"):
             app_logout_setup()
@@ -169,8 +184,14 @@ def Demo_Mode_005():
             controller.click_by_image("Icons/home_icon.png")
     except Exception as e:
         error_log(e, "005", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Demo_Mode_006():
+    recorder.start(f"{img_service}-006")
     try:
         if not controller.is_text_present("Demo mode"):
             app_logout_setup()
@@ -207,8 +228,14 @@ def Demo_Mode_006():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "006", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Demo_Mode_007():
+    recorder.start(f"{img_service}-007")
     try:
         if not controller.is_text_present("Demo mode"):
             app_logout_setup()
@@ -253,8 +280,14 @@ def Demo_Mode_007():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "007", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Demo_Mode_008():
+    recorder.start(f"{img_service}-008")
     try:
         if not controller.is_text_present("Demo mode"):
             app_logout_setup()
@@ -317,8 +350,14 @@ def Demo_Mode_008():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "008", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Demo_Mode_009():
+    recorder.start(f"{img_service}-009")
     try:
         if not controller.is_text_present("Demo mode"):
             app_logout_setup()
@@ -342,8 +381,14 @@ def Demo_Mode_009():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "009", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Demo_Mode_010():
+    recorder.start(f"{img_service}-010")
     try:
         if not controller.is_text_present("Demo mode"):
             app_logout_setup()
@@ -380,14 +425,26 @@ def Demo_Mode_010():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "010", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Demo_Mode_011():
+    recorder.start(f"{img_service}-011")
     try:
         blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "011", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Demo_Mode_012():
+    recorder.start(f"{img_service}-012")
     try:
         if not controller.is_text_present("Demo mode"):
             app_logout_setup()
@@ -400,11 +457,11 @@ def Demo_Mode_012():
             compare_with_expected_crop("Images/Profile_Screen.png")
             controller.click_by_image("Icons/Profile_General_Icon.png")
             compare_with_expected_crop("Images/Profile_General_Screen.png")
-            if controller.click_by_image("Icons/Profile_Logout_Icon.png"):
+            if controller.click_text("Log out"):
                 log("Demo mode exiting")
             else:
                 fail_log("Demo mode not exiting", "012", img_service)
-            sleep(1)
+            sleep(2)
 
             if controller.wait_for_text_and_click("DISCOVER MY BENTLEY", 30):
                 log("Sign in page is visible")
@@ -413,8 +470,14 @@ def Demo_Mode_012():
             controller.wait_for_text("Demo mode", 30)
     except Exception as e:
         error_log(e, "012", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Demo_Mode_013():
+    recorder.start(f"{img_service}-013")
     try:
         if not controller.is_text_present("Demo mode"):
             app_logout_setup()
@@ -428,18 +491,29 @@ def Demo_Mode_013():
             else:
                 fail_log("Demo mode not exiting", "013", img_service)
             sleep(1)
-            if controller.wait_for_text("DISCOVER MY BENTLEY"):
+            if controller.wait_for_text("DISCOVER MY BENTLEY", 30):
                 log("Sign in page is visible")
             else:
                 fail_log("Sign in page is visible", "013", img_service)
 
-            if not manual_run and current_email != "":
+            if not globals.manual_run and current_email != "":
                 app_login()
     except Exception as e:
         error_log(e, "013", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Demo_Mode_014():
+    recorder.start(f"{img_service}-014")
     try:
         blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "014", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False

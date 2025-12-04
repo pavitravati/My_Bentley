@@ -1,12 +1,14 @@
 from common_utils.android_image_comparision import *
-from core.app_functions import app_login_setup
-from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
-from time import sleep
-from core.globals import manual_run
+from core.app_functions import app_login_setup, service_reset
+from core.log_emitter import log, fail_log, error_log, runtime_log
+from core import globals
+from core.screenrecord import ScreenRecorder
 
 img_service = "My Car Statistics"
+recorder = ScreenRecorder(device_serial=controller.d.serial)
 
 def My_Car_Statistics_001():
+    recorder.start(f"{img_service}-001")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/remote_icon.png")
@@ -18,8 +20,14 @@ def My_Car_Statistics_001():
 
     except Exception as e:
         error_log(e, "001", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Car_Statistics_002():
+    recorder.start(f"{img_service}-002")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/remote_icon.png")
@@ -70,13 +78,18 @@ def My_Car_Statistics_002():
                     fail_log("List view of selected option not displayed", "002", img_service)
             else:
                 fail_log("List view of selected option not displayed", "002", img_service)
-
             controller.click(110,110)
 
     except Exception as e:
         error_log(e, "002", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Car_Statistics_003():
+    recorder.start(f"{img_service}-003")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/remote_icon.png")
@@ -130,8 +143,14 @@ def My_Car_Statistics_003():
 
     except Exception as e:
         error_log(e, "003", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Car_Statistics_004():
+    recorder.start(f"{img_service}-004")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/remote_icon.png")
@@ -181,8 +200,14 @@ def My_Car_Statistics_004():
 
     except Exception as e:
         error_log(e, "004", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Car_Statistics_005():
+    recorder.start(f"{img_service}-005")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/remote_icon.png")
@@ -235,8 +260,14 @@ def My_Car_Statistics_005():
 
     except Exception as e:
         error_log(e, "005", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Car_Statistics_006():
+    recorder.start(f"{img_service}-006")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/remote_icon.png")
@@ -289,8 +320,14 @@ def My_Car_Statistics_006():
 
     except Exception as e:
         error_log(e, "006", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Car_Statistics_007():
+    recorder.start(f"{img_service}-007")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/remote_icon.png")
@@ -345,8 +382,14 @@ def My_Car_Statistics_007():
 
     except Exception as e:
         error_log(e, "007", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Car_Statistics_008():
+    recorder.start(f"{img_service}-008")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/remote_icon.png")
@@ -366,8 +409,14 @@ def My_Car_Statistics_008():
 
     except Exception as e:
         error_log(e, "008", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Car_Statistics_009():
+    recorder.start(f"{img_service}-009")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/Profile_Icon.png")
@@ -402,3 +451,8 @@ def My_Car_Statistics_009():
 
     except Exception as e:
         error_log(e, "009", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False

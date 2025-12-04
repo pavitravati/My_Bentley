@@ -1,12 +1,15 @@
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log, blocked_log
-from core.app_functions import remote_swipe, app_login_setup
+from core.log_emitter import log, fail_log, error_log, blocked_log, runtime_log
+from core.app_functions import remote_swipe, app_login_setup, service_reset
 from core.globals import vehicle_type, country
-from core.globals import manual_run
+from core.screenrecord import ScreenRecorder
+from core import globals
 
 img_service = "Audials"
+recorder = ScreenRecorder(device_serial=controller.d.serial)
 
 def Audials_001():
+    recorder.start(f"{img_service}-001")
     try:
         if country == "chn":
             blocked_log("Test blocked - Region locked (NAR/EUR)")
@@ -33,8 +36,14 @@ def Audials_001():
                     controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
     except Exception as e:
         error_log(e, "001", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Audials_002():
+    recorder.start(f"{img_service}-002")
     try:
         if country == "chn":
             blocked_log("Test blocked - Region locked (NAR/EUR)")
@@ -42,3 +51,8 @@ def Audials_002():
             blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "002", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False

@@ -1,16 +1,19 @@
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
+from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log, runtime_log
 from time import sleep
 import re
 from datetime import date, datetime
-from core.app_functions import remote_swipe, app_login_setup
-from core.globals import manual_run
+from core.app_functions import remote_swipe, app_login_setup, service_reset
+from core.globals import manual_run, current_pin
 from gui.manual_check import manual_check
 import core.globals as globals
+from core.screenrecord import ScreenRecorder
 
 img_service = "My Cabin Comfort"
+recorder = ScreenRecorder(device_serial=controller.d.serial)
 
 def My_Cabin_Comfort_001():
+    recorder.start(f"{img_service}-001")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/remote_icon.png")
@@ -27,13 +30,18 @@ def My_Cabin_Comfort_001():
                     fail_log("Status is not 'Not active'", "001", img_service)
             else:
                 fail_log("Cabin comfort section not displayed", "001", img_service)
-
             controller.swipe_down()
 
     except Exception as e:
         error_log(e, "001", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_002():
+    recorder.start(f"{img_service}-002")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/remote_icon.png")
@@ -62,8 +70,14 @@ def My_Cabin_Comfort_002():
 
     except Exception as e:
         error_log(e, "002", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_003():
+    recorder.start(f"{img_service}-003")
     try:
         if app_login_setup():
 
@@ -103,9 +117,14 @@ def My_Cabin_Comfort_003():
 
     except Exception as e:
         error_log(e, "003", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
-# Test in car with rear seat heating...
 def My_Cabin_Comfort_004():
+    recorder.start(f"{img_service}-004")
     try:
         if app_login_setup():
             if not globals.rear_seat_heating:
@@ -137,9 +156,15 @@ def My_Cabin_Comfort_004():
                 controller.swipe_down()
     except Exception as e:
         error_log(e, "004", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 # this is tested using co-ords, so different phones may not work, can't think of another way to interact with bar
 def My_Cabin_Comfort_005():
+    recorder.start(f"{img_service}-005")
     temperatures = ["16", "17", "18", "19", "21"]
     try:
         if app_login_setup():
@@ -165,8 +190,14 @@ def My_Cabin_Comfort_005():
                 controller.swipe_down()
     except Exception as e:
         error_log(e, "005", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_006():
+    recorder.start(f"{img_service}-006")
     try:
         if app_login_setup():
             if not globals.rear_seat_heating:
@@ -212,12 +243,12 @@ def My_Cabin_Comfort_006():
                         controller.click_text("MY CABIN COMFORT")
                         if controller.is_text_present("STOP") and controller.is_text_present("Currently active"):
                             log("Stop button displayed when cabin comfort active")
-                            # manual_check(
-                            #     instruction=f"Verify the time left matches remote RCP menu\nVerify MY CABIN COMFORT is active in the car",
-                            #     test_id="006",
-                            #     service=img_service,
-                            #     take_screenshot=True
-                            # )
+                            manual_check(
+                                instruction=f"Verify the time left matches remote RCP menu\nVerify MY CABIN COMFORT is active in the car",
+                                test_id="006",
+                                service=img_service,
+                                take_screenshot=True
+                            )
                             controller.click_text("STOP")
                         else:
                             fail_log("Stop button not found, or cabin comfort not active", "006", img_service)
@@ -229,8 +260,14 @@ def My_Cabin_Comfort_006():
                     controller.swipe_down()
     except Exception as e:
         error_log(e, "006", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_007():
+    recorder.start(f"{img_service}-007")
     try:
         if app_login_setup():
             if not globals.rear_seat_heating:
@@ -306,8 +343,14 @@ def My_Cabin_Comfort_007():
 
     except Exception as e:
         error_log(e, "007", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_008():
+    recorder.start(f"{img_service}-008")
     try:
         if app_login_setup():
             if not globals.rear_seat_heating:
@@ -382,8 +425,14 @@ def My_Cabin_Comfort_008():
                     controller.swipe_down()
     except Exception as e:
         error_log(e, "008", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_009():
+    recorder.start(f"{img_service}-009")
     try:
         if app_login_setup():
             if not globals.rear_seat_heating:
@@ -458,8 +507,14 @@ def My_Cabin_Comfort_009():
                     controller.swipe_down()
     except Exception as e:
         error_log(e, "009", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_010():
+    recorder.start(f"{img_service}-010")
     try:
         if app_login_setup():
             if not globals.rear_seat_heating:
@@ -534,8 +589,14 @@ def My_Cabin_Comfort_010():
                     controller.swipe_down()
     except Exception as e:
         error_log(e, "010", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_011():
+    recorder.start(f"{img_service}-011")
     try:
         if app_login_setup():
             if not globals.rear_seat_heating:
@@ -610,8 +671,14 @@ def My_Cabin_Comfort_011():
                     controller.swipe_down()
     except Exception as e:
         error_log(e, "011", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_012():
+    recorder.start(f"{img_service}-012")
     try:
         if app_login_setup():
             if not globals.rear_seat_heating:
@@ -650,9 +717,15 @@ def My_Cabin_Comfort_012():
                     controller.swipe_down()
     except Exception as e:
         error_log(e, "012", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 # Verifying the timers exist is dodgy as no unique resource ids so used an image of the toggles and then returned the timers as metrics.
 def My_Cabin_Comfort_013():
+    recorder.start(f"{img_service}-013")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/remote_icon.png")
@@ -708,8 +781,14 @@ def My_Cabin_Comfort_013():
             controller.swipe_down()
     except Exception as e:
         error_log(e, "013", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_014():
+    recorder.start(f"{img_service}-014")
     try:
         if app_login_setup():
             if not globals.rear_seat_heating:
@@ -749,8 +828,14 @@ def My_Cabin_Comfort_014():
                 controller.swipe_down()
     except Exception as e:
         error_log(e, "014", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_015():
+    recorder.start(f"{img_service}-015")
     try:
         if app_login_setup():
             if not int(globals.fuel_pct) >= 30:
@@ -777,6 +862,8 @@ def My_Cabin_Comfort_015():
 
                         controller.click_by_image("Icons/timer_toggle_off.png")
                         controller.click_text("SYNC TO CAR")
+                        sleep(0.5)
+                        controller.enter_pin(current_pin)
                         sleep(0.5)
                         while controller.is_text_present("Sending message to car"):
                             sleep(0.5)
@@ -815,8 +902,14 @@ def My_Cabin_Comfort_015():
                 controller.swipe_down()
     except Exception as e:
         error_log(e, "015", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_016():
+    recorder.start(f"{img_service}-016")
     try:
         if app_login_setup():
             if not int(globals.fuel_pct) >= 30:
@@ -889,8 +982,14 @@ def My_Cabin_Comfort_016():
                 controller.swipe_down()
     except Exception as e:
         error_log(e, "016", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_017():
+    recorder.start(f"{img_service}-017")
     try:
         if app_login_setup():
             manual_check(
@@ -945,28 +1044,39 @@ def My_Cabin_Comfort_017():
             controller.swipe_down()
     except Exception as e:
         error_log(e, "017", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_018():
     try:
         blocked_log("Test blocked - Can't be automated")
-        # manual_check(
-        #     instruction="""'Climate - Auxiliary climate' screen should be launched displaying:\nScreen Title: 'Climate - Auxiliary climate'
-        #     \n'Immediate Start' section - 'Temperature - Icon' button: Clicking on it should activate 'MY CABIN COMFORT'\n'Timer Programming'
-        #     section - Timer 1 & 2 with selection box - Clicking on them should launch 'Climate - Departure date' screen where user can select
-        #     the departure date along with 'Continue' button\n'Settings' button: Clicking on it should launch 'Climate - Settings' screen where
-        #     user can set:\na. Screen Title: Climate Settings\nb. 'Target Temperature' section: Target Temperature should be easily set to desired
-        #     value by the user in the range between 16degC to 26degC with 1degC increments/decrements\nc. 'Start climate control after unlocking':
-        #     User can tick/untick for enabling/disabling this option\nd. 'Convenience auxiliary climate' section: User can select/deselect the seat
-        #     heating for all the 4 seating zones(Front Right Seat/Front Left Seat/Rear Right Seat/Rear Left Seat)\ne. 'Back' button: Clicking on it
-        #     takes focus back to 'Climate - Auxiliary Climate' screen\n'Back' button: Screen focus is taken one step back to 'Climate - Settings' screen""",
-        #     test_id="018",
-        #     service=img_service,
-        #     take_screenshot=False
-        # )
+        manual_check(
+            instruction="""'Climate - Auxiliary climate' screen should be launched(HMI->Climate->"Climate" screen launched->Select settings button->"Climate - Settings" screen launched->Select "Auxiliary Climate"->"Climate - Auxiliary climate" launched) displaying:
+            \nScreen Title: 'Climate - Auxiliary climate'\n'Immediate Start' section: 'Temperature - Icon' button: Clicking on it should activate 'MY CABIN COMFORT'
+            \n'Timer Programming' section: Timer 1 & 2 with selection box, clicking them should launch 'Climate - Departure date' screen where user can select
+            departure date and a continue button\n'Settings' button: Clicking it should launch 'Climate - Settings' screen where
+            user can set:\na. Screen Title: Climate Settings\nb. 'Target Temperature' section: Target Temperature can be set to desired
+            value by user in range 16degC to 26degC with 1degC increments/decrements\nc. 'Start climate control after unlocking':
+            User can tick/untick for enabling/disabling this option\nd. 'Convenience auxiliary climate' section: User can select/deselect the seat
+            heating for all 4 seating zones(Front Right/Front Left/Rear Right/Rear Left)\ne. 'Back' button: Clicking it
+            takes focus back to 'Climate - Auxiliary Climate' screen\n'Back' button: Screen focus is taken one step back to 'Climate - Settings' screen""",
+            test_id="018",
+            service=img_service,
+            take_screenshot=False
+        )
     except Exception as e:
         error_log(e, "018", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_019():
+    recorder.start(f"{img_service}-019")
     try:
         if app_login_setup():
             manual_check(
@@ -998,8 +1108,14 @@ def My_Cabin_Comfort_019():
             controller.swipe_down()
     except Exception as e:
         error_log(e, "019", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_020():
+    recorder.start(f"{img_service}-020")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/remote_icon.png")
@@ -1033,8 +1149,14 @@ def My_Cabin_Comfort_020():
             controller.swipe_down()
     except Exception as e:
         error_log(e, "020", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_021():
+    recorder.start(f"{img_service}-021")
     try:
         if app_login_setup():
             manual_check(
@@ -1070,6 +1192,11 @@ def My_Cabin_Comfort_021():
             controller.swipe_down()
     except Exception as e:
         error_log(e, "021", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def set_new_timer(index, testcase_idx):
     controller.click_by_resource_id("uk.co.bentley.mybentley:id/textView_date_rpc_timer_setting")
@@ -1095,6 +1222,7 @@ def set_new_timer(index, testcase_idx):
 
 # Clicking co-ords as I can find no way to click the timer
 def My_Cabin_Comfort_022():
+    recorder.start(f"{img_service}-022")
     try:
         if app_login_setup():
             if not int(globals.fuel_pct) >= 30:
@@ -1126,8 +1254,14 @@ def My_Cabin_Comfort_022():
                 controller.swipe_down()
     except Exception as e:
         error_log(e, "022", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_023():
+    recorder.start(f"{img_service}-023")
     try:
         if app_login_setup():
             if not int(globals.fuel_pct) >= 30:
@@ -1168,9 +1302,20 @@ def My_Cabin_Comfort_023():
                 controller.swipe_down()
     except Exception as e:
         error_log(e, "023", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Cabin_Comfort_024():
+    recorder.start(f"{img_service}-024")
     try:
         blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "024", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False

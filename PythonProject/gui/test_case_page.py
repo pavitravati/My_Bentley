@@ -314,39 +314,33 @@ class TestCaseTablePage(QWidget):
     @Slot(int)
     def set_current_row(self, row: int):
         self.current_row = row
-        self.test_start_times[row] = QTime.currentTime()
+        # self.test_start_times[row] = QTime.currentTime()
 
     def on_row_finished(self, row: int):
         colors = []
 
-        if row in self.test_start_times:
-            start_time = self.test_start_times[row]
-            end_time = QTime.currentTime()
-            duration_ms = start_time.msecsTo(end_time)
-
-            # convert to mm:ss
-            mins, secs = divmod(duration_ms // 1000, 60)
-            if secs < 1:
-                secs = 1
-            duration_str = f"{mins:02d}:{secs:02d}"
-
-            # put it into column 5 ("Duration")
-            duration_item = self.table.item(row - 1, 4 if self.auto_run else 5)
-            if duration_item:
-                duration_item.setText(duration_str)
-                duration_item.setFont(QFont("Arial", 10))
+        duration = float(globals.log_history[self.service][row][-1][4:])
+        minutes = int(duration // 60)
+        seconds = int(duration % 60)
+        duration_str = f"{minutes}:{"0" if seconds < 10 else ""}{seconds}"
+        duration_item = self.table.item(row - 1, 4 if self.auto_run else 5)
+        if duration_item:
+            duration_item.setText(duration_str)
+            duration_item.setFont(QFont("Arial", 10))
 
         metrics = []
         for i in range(len(globals.log_history[self.service][row])):
-            symbol = globals.log_history[self.service][row][i][0]
-            if symbol == '✅':
+            current_log = globals.log_history[self.service][row][i]
+            if current_log.startswith('✅'):
                 colors.append('green')
-            elif symbol == '❌':
+            elif current_log.startswith('❌'):
                 colors.append('red')
-            elif symbol == '⚠':
+            elif current_log.startswith('⚠'):
                 colors.append('yellow')
-            elif symbol == '🔒':
+            elif current_log.startswith('🔒'):
                 colors.append('grey')
+            elif current_log.startswith('⌛'):
+                pass
             else:
                 metrics.append(globals.log_history[self.service][row][i])
 
@@ -410,7 +404,7 @@ class TestCaseTablePage(QWidget):
                     image_paths.append(file_path)
 
         test_title = self.table.item(row-1, 0 if self.auto_run else 1).text()
-        self.error_window = ErrorPage(title=test_title, logs=globals.log_history[self.service][row], images=image_paths, service=self.service, row=row)
+        self.error_window = ErrorPage(title=test_title, logs=globals.log_history[self.service][row][:-1], images=image_paths, service=self.service, row=row)
         self.error_window.show()
 
     def open_blocked_case(self, row):
@@ -500,7 +494,7 @@ class TestCaseTablePage(QWidget):
             globals.log_history[service].pop(row+1)
         except Exception:
             pass
-        """Run a single testcase manually on a background QThread."""
+
         self.thread = QThread()
         self.worker = TestRunnerWorker(self.service, 1)
         self.worker.moveToThread(self.thread)

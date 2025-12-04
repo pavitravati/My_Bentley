@@ -1,15 +1,16 @@
 from common_utils.android_image_comparision import *
-from core.app_functions import app_login_setup, identify_car
-from core.log_emitter import log, fail_log, error_log, blocked_log
+from core.app_functions import app_login_setup, identify_car, service_reset
+from core.log_emitter import log, fail_log, error_log, blocked_log, runtime_log
 from core.globals import country
-from core.globals import manual_run
+from core.screenrecord import ScreenRecorder
+from core import globals
 
 img_service = "Push Notifications"
-
-# Having a lot of problems with android notifications, need to ask about this and find out if it's a lost cause
+recorder = ScreenRecorder(device_serial=controller.d.serial)
 
 # Need to do in car to see what a notification is like and how to click
 def Push_Notifications_001():
+    recorder.start(f"{img_service}-001")
     try:
         if country == "eur":
             if app_login_setup():
@@ -30,8 +31,14 @@ def Push_Notifications_001():
 
     except Exception as e:
         error_log(e, "001", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Push_Notifications_002():
+    recorder.start(f"{img_service}-002")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -56,9 +63,15 @@ def Push_Notifications_002():
 
     except Exception as e:
         error_log(e, "002", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 # Get the notification but says cannot be done as vehicle error
 def Push_Notifications_003():
+    recorder.start(f"{img_service}-003")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/remote_icon.png")
@@ -71,20 +84,38 @@ def Push_Notifications_003():
             controller.wait_for_text_and_click("")
     except Exception as e:
         error_log(e, "003", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Push_Notifications_004():
+    recorder.start(f"{img_service}-004")
     try:
         blocked_log("Test blocked - Not written due to error")
     except Exception as e:
         error_log(e, "004", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Push_Notifications_005():
+    recorder.start(f"{img_service}-005")
     try:
         blocked_log("Test blocked - Can't be automated")
     except Exception as e:
         error_log(e, "005", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Push_Notifications_006():
+    recorder.start(f"{img_service}-006")
     try:
         if country == "nar":
             blocked_log("Test blocked - Not written (NAR)")
@@ -92,8 +123,14 @@ def Push_Notifications_006():
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
         error_log(e, "006", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Push_Notifications_007():
+    recorder.start(f"{img_service}-007")
     try:
         if country == "nar":
             blocked_log("Test blocked - Not written (NAR)")
@@ -101,8 +138,14 @@ def Push_Notifications_007():
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
         error_log(e, "007", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Push_Notifications_008():
+    recorder.start(f"{img_service}-008")
     try:
         if country == "nar":
             blocked_log("Test blocked - Not written (NAR)")
@@ -110,8 +153,14 @@ def Push_Notifications_008():
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
         error_log(e, "008", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Push_Notifications_009():
+    recorder.start(f"{img_service}-009")
     try:
         if country == "nar":
             blocked_log("Test blocked - Not written (NAR)")
@@ -119,9 +168,20 @@ def Push_Notifications_009():
             blocked_log("Test blocked - Region locked (NAR)")
     except Exception as e:
         error_log(e, "009", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Push_Notifications_010():
+    recorder.start(f"{img_service}-010")
     try:
         blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "010", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False

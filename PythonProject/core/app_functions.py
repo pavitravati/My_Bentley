@@ -2,6 +2,7 @@ from time import sleep
 from common_utils.android_image_comparision import *
 # from core.globals import current_email, current_password, current_vin, second_email, second_password, current_name
 import core.globals as globals
+from core.globals import current_vin, current_email
 from core.log_emitter import blocked_log, fail_log, log
 from gui.manual_check import manual_check
 
@@ -12,11 +13,14 @@ def app_login(email="", password="", safe_type = False):
         password = globals.current_password
     success_tracker = []
     sleep(1)
-    success_tracker.append(1) if controller.click_by_image("Icons/login_register_icon.png") else success_tracker.append(0)
+    success_tracker.append(1) if controller.wait_for_text_and_click("LOGIN OR REGISTER") else success_tracker.append(0)
     controller.wait_for_text("WELCOME", 30)
     while controller.is_text_present("WELCOME"):
         controller.enter_text(f"%s%s%s%s%s{email}")
         sleep(1)
+        if controller.is_text_present("Email must be a valid email address"):
+            controller.click_by_image("Icons/login_page_x.png")
+        controller.wait_for_text_and_click("LOGIN OR REGISTER")
     controller.wait_for_text("Log in – Enter password")
     if not controller.is_text_present("CREATE ACCOUNT"):
         while controller.is_text_present("Log in – Enter password"):
@@ -88,8 +92,9 @@ def app_logout_setup():
         if not controller.click_by_image("Icons/Logout_Icon.png"):
             controller.click_by_image("Icons/Profile_Icon.png")
             controller.click_text("General")
-            controller.click_by_image("Icons/Profile_Logout_Icon.png")
-            controller.click_by_image("Icons/Logout_btn.png")
+            controller.click_text("Log out")
+            controller.click_by_resource_id("uk.co.bentley.mybentley:id/button_alert_dialog_positive")
+
         if not controller.wait_for_text("LOGIN OR REGISTER", 60):
             blocked_log("Test blocked - Unable to logout to begin testcase")
             sleep(1)
@@ -131,13 +136,13 @@ def delete_vin():
     else:
         service_reset()
 
-def add_vin(num , img_service, optical=False, settings_check=False):
+def add_vin(num , img_service, optical=False, settings_check=False, optical_check=False):
     if controller.wait_for_text("DASHBOARD"):
         while not controller.is_text_present("ADD A VEHICLE"):
             controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
         controller.small_swipe_up()
         controller.click_by_resource_id("uk.co.bentley.mybentley:id/button_add_dashboard_module_add_vehicle")
-        if optical:
+        if optical or optical_check:
             if not controller.click_text("Open Camera"):
                 if controller.click_text("Go to settings"):
                     log("Camera permissions not enabled")
@@ -150,16 +155,26 @@ def add_vin(num , img_service, optical=False, settings_check=False):
                 controller.click_text("Camera")
                 controller.click_text("Allow only while using the app")
                 controller.launch_app("uk.co.bentley.mybentley")
-                if controller.click_text("Open Camera"):
-                    log("Camera permissions enabled")
-                else:
-                    fail_log("Camera option not displayed after enabling permission", num, img_service)
+            if controller.click_text("Open Camera"):
+                log("Camera permissions enabled")
+            else:
+                fail_log("Camera option not displayed after enabling permission", num, img_service)
+            if controller.is_text_present("Centre your VIN in the box above"):
+                log("Optical character recognition opened as expected")
+            else:
+                fail_log("Optical character recognition failed to be opened", num, img_service)
             manual_check(
                 instruction="Scan the VIN via 'Optical Character Recognition(OCR)",
                 test_id=num,
                 service=img_service,
                 take_screenshot=False
             )
+            if optical_check:
+                controller.click_by_image("Icons/back_icon.png")
+                controller.click_by_text("ADD A VEHICLE")
+                controller.small_swipe_up()
+                controller.click_text("Enter VIN manually")
+                controller.enter_text(globals.current_vin)
         else:
             controller.small_swipe_up()
             controller.click_text("Enter VIN manually")
@@ -173,7 +188,7 @@ def add_vin(num , img_service, optical=False, settings_check=False):
         controller.enter_text("Manchester")
         controller.click_text("Bentley Manchester")
         controller.wait_for_text_and_click("CONFIRM")
-        log("Retailer selected") if controller.wait_for_text("ADD YOUR BENTLEY") else fail_log("Retailer failed to be selected", num, img_service)
+        log("Retailer selected") if controller.wait_for_text("ADD YOUR BENTLEY", 60) else fail_log("Retailer failed to be selected", num, img_service)
         controller.wait_for_text_and_click("Continue")
         if controller.is_text_present("VIN"):
             controller.click_text("Continue")
@@ -229,19 +244,18 @@ def add_vin(num , img_service, optical=False, settings_check=False):
         controller.click_text("Continue")
         log("Vehicle added to new account") if controller.is_text_present("DASHBOARD") else fail_log("Vehicle not added to new account", num, img_service)
         sleep(1)
-        while compare_with_expected_crop("Icons/Homescreen_Left_Arrow.png"):
-            controller.click_by_image("Icons/Homescreen_Left_Arrow.png")
+        return find_car()
 
 def service_reset():
     controller.d.press("recent")
     sleep(0.5)
-    controller.click_text("Close all")
+    controller.wait_for_text_and_click("Close all")
     controller.launch_app("uk.co.bentley.mybentley")
     while not controller.is_text_present("DASHBOARD") and not controller.is_text_present("LOGIN OR REGISTER"):
         sleep(0.2)
 
 def dash_check():
-    if not (compare_with_expected_crop("Icons/navigation_icon.png") or compare_with_expected_crop("Icons/home_icon.png")):
+    if not (compare_with_expected_crop("Icons/navigation_icon.png", 0.9) or compare_with_expected_crop("Icons/home_icon.png", 0.9)):
         service_reset()
 
 def app_refresh(num, img_service, msg="", wait=0):
@@ -267,3 +281,68 @@ def app_refresh(num, img_service, msg="", wait=0):
         else:
             fail_log(f"Vehicle data not updated {msg}", num, img_service)
         controller.click_by_image("Icons/Error_Icon.png")
+
+def find_car(add_car=False, num=None, img_service=None):
+    timeout_check = 0
+    while controller.is_text_present("ADD A VEHICLE"):
+        sleep(1)
+        timeout_check += 1
+        if timeout_check > 10:
+            break
+    controller.click_by_image("Icons/info_btn.png")
+    if not controller.is_text_present(current_vin):
+        controller.click_by_image("Icons/back_icon.png")
+    else:
+        controller.click_by_image("Icons/back_icon.png")
+        return True
+    while controller.click_by_image("Icons/Homescreen_Left_Arrow.png"):
+        pass
+    while compare_with_expected_crop("Icons/Homescreen_Right_Arrow.png"):
+        if controller.click_by_image("Icons/info_btn.png"):
+            if not controller.is_text_present(current_vin):
+                controller.click_by_image("Icons/back_icon.png")
+            else:
+                controller.click_by_image("Icons/back_icon.png")
+                return True
+        else:
+            break
+        controller.click_by_image("Icons/Homescreen_Right_Arrow.png")
+    if add_car:
+        return add_vin(num, img_service)
+    else:
+        return False
+
+def primary_user_check(num, img_service, vts_check=True):
+    find_car(True, num, img_service)
+    controller.small_swipe_up()
+    if controller.is_text_present("PRIMARY USER ALREADY SET"):
+        fail_log("Another user is already primary user for this VIN", num, img_service)
+        return False
+    if controller.is_text_present("SET YOUR PRIMARY USER"):
+        if not controller.is_text_present("VIEW VEHICLE CODE"):
+            controller.click_text("GENERATE VEHICLE CODE")
+            controller.wait_for_text_and_click("Generate vehicle code")
+            controller.wait_for_text("VEHICLE CODE", 30)
+        else:
+            controller.click_text("VIEW VEHICLE CODE")
+            controller.wait_for_text("VEHICLE CODE", 30)
+        vehicle_code = controller.d.xpath('//*[@text="Please enter following vehicle code in your Bentley infotainment system to set your primary user:"]/following-sibling::android.widget.TextView[1]').get_text()
+        manual_check(
+            instruction=f"On vehicle HMI navigate to Primary user page\nSuccessfully set the primary user for the vin({current_vin}) using the vehicle code: {vehicle_code} and email: {current_email}",
+            test_id=num,
+            service=img_service,
+            take_screenshot=False
+        )
+        service_reset()
+        if vts_check:
+            controller.small_swipe_up()
+            if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+                fail_log("Stolen vehicle tracking not activated", num, img_service)
+                return False
+        return True
+    else:
+        if controller.is_text_present("ACTIVATE STOLEN VEHICLE TRACKING"):
+            fail_log("Stolen vehicle tracking not activated", num, img_service)
+            return False
+        controller.small_swipe_down()
+        return True

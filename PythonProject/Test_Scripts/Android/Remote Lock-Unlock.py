@@ -1,12 +1,15 @@
 from time import sleep
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log, blocked_log
+from core.log_emitter import log, fail_log, error_log, blocked_log, runtime_log
 from common_utils.android_controller import *
-from core.app_functions import enable_flight_mode, disable_flight_mode, app_login_setup, identify_car
+from core.app_functions import enable_flight_mode, disable_flight_mode, app_login_setup, identify_car, service_reset
 from datetime import datetime, timedelta
 from core.globals import manual_run, current_pin
+from core.screenrecord import ScreenRecorder
+from core import globals
 
 img_service = "Remote Lock-Unlock"
+recorder = ScreenRecorder(device_serial=controller.d.serial)
 
 def check_notif(text, num, is_fail=False):
     car = identify_car()
@@ -14,9 +17,9 @@ def check_notif(text, num, is_fail=False):
     controller.click_by_image("Icons/Notification_icon.png")
     controller.notif_refresh()
     sleep(1)
-    while controller.is_text_present("updating..."):
+    while not controller.is_text_present("Update vehicle data") and not compare_with_expected_crop("Icons/Error_Icon.png"):
         sleep(1)
-    controller.wait_for_text_and_click("Update vehicle data")
+    controller.click_text("Update vehicle data")
     controller.click_by_image("Icons/Error_Icon.png")
 
     notifications = controller.d.xpath('//android.widget.TextView').all()
@@ -46,10 +49,6 @@ def check_notif(text, num, is_fail=False):
     last_minute = displayed_time.strftime("%H:%M") == (now - timedelta(minutes=1)).strftime("%H:%M")
 
     expected_msg = f"{car} {text}" if not is_fail else f"{text} {car}"
-    print(events[0]['title'])
-    print(expected_msg)
-    print(same_minute)
-    print(last_minute)
     if events[0]['title'] == expected_msg and (same_minute or last_minute):
         log(f"Remote {text} notification displayed correctly")
     else:
@@ -57,6 +56,7 @@ def check_notif(text, num, is_fail=False):
     controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
 
 def Remote_Lock_Unlock_001():
+    recorder.start(f"{img_service}-001")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -72,9 +72,14 @@ def Remote_Lock_Unlock_001():
 
     except Exception as e:
         error_log(e, "001", img_service)
-
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Remote_Lock_Unlock_002():
+    recorder.start(f"{img_service}-002")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -111,8 +116,14 @@ def Remote_Lock_Unlock_002():
 
     except Exception as e:
         error_log(e, "002", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Remote_Lock_Unlock_003():
+    recorder.start(f"{img_service}-003")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -134,8 +145,14 @@ def Remote_Lock_Unlock_003():
 
     except Exception as e:
         error_log(e, "003", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Remote_Lock_Unlock_004():
+    recorder.start(f"{img_service}-004")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -164,8 +181,14 @@ def Remote_Lock_Unlock_004():
 
     except Exception as e:
         error_log(e, "004", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Remote_Lock_Unlock_005():
+    recorder.start(f"{img_service}-005")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -204,13 +227,20 @@ def Remote_Lock_Unlock_005():
                 check_notif("locked", "005")
             elif compare_with_expected_crop("Icons/Error_Icon.png"):
                 fail_log("Error message displayed when unlocking", "005", img_service)
+                controller.click_by_image("Icons/Error_Icon.png")
             else:
                 fail_log("Lock message not displayed", "005", img_service)
 
     except Exception as e:
         error_log(e, "005", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Remote_Lock_Unlock_006():
+    recorder.start(f"{img_service}-006")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -232,8 +262,14 @@ def Remote_Lock_Unlock_006():
 
     except Exception as e:
         error_log(e, "006", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Remote_Lock_Unlock_007():
+    recorder.start(f"{img_service}-007")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -262,8 +298,14 @@ def Remote_Lock_Unlock_007():
 
     except Exception as e:
         error_log(e, "007", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Remote_Lock_Unlock_008():
+    recorder.start(f"{img_service}-008")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -278,8 +320,14 @@ def Remote_Lock_Unlock_008():
 
     except Exception as e:
         error_log(e, "008", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Remote_Lock_Unlock_009():
+    recorder.start(f"{img_service}-009")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -305,8 +353,14 @@ def Remote_Lock_Unlock_009():
 
     except Exception as e:
         error_log(e, "009", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Remote_Lock_Unlock_010():
+    recorder.start(f"{img_service}-010")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -332,8 +386,14 @@ def Remote_Lock_Unlock_010():
 
     except Exception as e:
         error_log(e, "010", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Remote_Lock_Unlock_011():
+    recorder.start(f"{img_service}-011")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -353,9 +413,15 @@ def Remote_Lock_Unlock_011():
             sleep(1)
 
     except Exception as e:
-        error_log(f"⚠️ - Unexpected error: {e}", "011", img_service)
+        error_log(e, "011", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Remote_Lock_Unlock_012():
+    recorder.start(f"{img_service}-012")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -383,9 +449,14 @@ def Remote_Lock_Unlock_012():
 
     except Exception as e:
         error_log(e, "012", img_service)
-
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Remote_Lock_Unlock_013():
+    recorder.start(f"{img_service}-013")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -416,9 +487,14 @@ def Remote_Lock_Unlock_013():
 
     except Exception as e:
         error_log(e, "013", img_service)
-
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Remote_Lock_Unlock_014():
+    recorder.start(f"{img_service}-014")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -447,8 +523,14 @@ def Remote_Lock_Unlock_014():
 
     except Exception as e:
         error_log(e, "014", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Remote_Lock_Unlock_015():
+    recorder.start(f"{img_service}-015")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/New_Notification_icon.png")
@@ -466,9 +548,20 @@ def Remote_Lock_Unlock_015():
 
     except Exception as e:
         error_log(e, "015", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Remote_Lock_Unlock_016():
+    recorder.start(f"{img_service}-016")
     try:
         blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "016", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False

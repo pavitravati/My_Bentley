@@ -1,15 +1,17 @@
 from time import sleep
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
-from core.app_functions import app_login, app_login_setup
+from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log, runtime_log
+from core.app_functions import app_login, app_login_setup, service_reset
 from core.globals import country, manual_run, current_pin
-from core.screenrecord import ScreenRecorder
 from gui.manual_check import manual_check
+from core.screenrecord import ScreenRecorder
+from core import globals
 
 img_service = "Profile"
 recorder = ScreenRecorder(device_serial=controller.d.serial)
 
 def Profile_001():
+    recorder.start(f"{img_service}-001")
     try:
         if app_login_setup():
             if controller.click_by_image("Icons/Profile_Icon.png"):
@@ -64,8 +66,14 @@ def Profile_001():
 
     except Exception as e:
         error_log(e, "001", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Profile_002():
+    recorder.start(f"{img_service}-002")
     try:
         if app_login_setup():
             if controller.click_by_image("Icons/Profile_Icon.png"):
@@ -77,8 +85,14 @@ def Profile_002():
 
     except Exception as e:
         error_log(e, "002", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Profile_003():
+    recorder.start(f"{img_service}-003")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/Profile_Icon.png")
@@ -91,17 +105,23 @@ def Profile_003():
                 fail_log("Error: Reset password email failed", "003", img_service)
             controller.click_by_image("Icons/back_icon.png")
 
-            # manual_check(
-            #     instruction="Wait for the password reset email and reset the password\nLogin using the new password",
-            #     test_id="003",
-            #     service=img_service,
-            #     take_screenshot=False
-            # )
+            manual_check(
+                instruction="Wait for the password reset email and reset the password\nLogin using the new password",
+                test_id="003",
+                service=img_service,
+                take_screenshot=False
+            )
 
     except Exception as e:
         error_log(e, "003", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Profile_004():
+    recorder.start(f"{img_service}-004")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/Profile_Icon.png")
@@ -128,7 +148,12 @@ def Profile_004():
             controller.click_by_image("Icons/back_icon.png")
 
     except Exception as e:
-        error_log(e, "004", img_service)
+        error_log(e, "005", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 # THINK THIS BRAKES THE APP FOR NOW, will finish when it stops destroying everything
 def Profile_005():
@@ -153,6 +178,7 @@ def Profile_005():
         error_log(e, "005", img_service)
 
 def Profile_006():
+    recorder.start(f"{img_service}-006")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/Profile_Icon.png")
@@ -170,8 +196,14 @@ def Profile_006():
             controller.click_by_image("Icons/back_icon.png")
     except Exception as e:
         error_log(e, "006", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Profile_007():
+    recorder.start(f"{img_service}-007")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/Profile_Icon.png")
@@ -189,8 +221,15 @@ def Profile_007():
             controller.click_by_image("Icons/back_icon.png")
     except Exception as e:
         error_log(e, "007", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Profile_008():
+    recorder.start(f"{img_service}-008")
+    runtime_log(recorder.stop(globals.test_failed))
     try:
         if app_login_setup():
             controller.click_by_image("Icons/Profile_Icon.png")
@@ -211,8 +250,14 @@ def Profile_008():
             controller.settings_swipe_down()
     except Exception as e:
         error_log(e, "008", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Profile_009():
+    recorder.start(f"{img_service}-009")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/Profile_Icon.png")
@@ -233,8 +278,14 @@ def Profile_009():
             controller.settings_swipe_down()
     except Exception as e:
         error_log(e, "009", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Profile_010():
+    recorder.start(f"{img_service}-010")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/Profile_Icon.png")
@@ -255,8 +306,14 @@ def Profile_010():
             controller.settings_swipe_down()
     except Exception as e:
         error_log(e, "010", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Profile_011():
+    recorder.start(f"{img_service}-011")
     try:
         if app_login_setup():
             if country == "eur":
@@ -268,21 +325,26 @@ def Profile_011():
                 else:
                     fail_log("Vehicle tracking terms and conditions tab not displayed", "011", img_service)
 
-                # Getting an error
-                if controller.is_text_present("Whatever pops up when successful"):
+                if controller.is_text_present("Summary"):
                     log("Vehicle tracking terms and conditions page displayed")
                 else:
                     fail_log("Failed to display Vehicle tracking terms and conditions", "011", img_service)
                     controller.click_by_image("Icons/Error_Icon.png")
-                controller.click_by_image("Icons/back_icon.png")
+                controller.click_by_image("Icons/login_page_x.png")
                 controller.settings_swipe_down()
                 controller.settings_swipe_down()
             else:
                 blocked_log("Test blocked - Region locked (EUR)")
     except Exception as e:
         error_log(e, "011", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Profile_012():
+    recorder.start(f"{img_service}-012")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/Profile_Icon.png")
@@ -302,8 +364,14 @@ def Profile_012():
             controller.settings_swipe_down()
     except Exception as e:
         error_log(e, "012", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Profile_013():
+    recorder.start(f"{img_service}-013")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/Profile_Icon.png")
@@ -326,15 +394,27 @@ def Profile_013():
             controller.click_by_image("Icons/back_icon.png")
     except Exception as e:
         error_log(e, "013", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 #IOS only
 def Profile_014():
+    recorder.start(f"{img_service}-014")
     try:
         blocked_log("Test blocked - iOS only test")
     except Exception as e:
         error_log(e, "014", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Profile_015():
+    recorder.start(f"{img_service}-015")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/Profile_Icon.png")
@@ -356,8 +436,14 @@ def Profile_015():
             controller.click_by_image("Icons/back_icon.png")
     except Exception as e:
         error_log(e, "015", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Profile_016():
+    recorder.start(f"{img_service}-016")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/Profile_Icon.png")
@@ -395,8 +481,14 @@ def Profile_016():
             controller.click_by_image("Icons/back_icon.png")
     except Exception as e:
         error_log(e, "016", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Profile_017():
+    recorder.start(f"{img_service}-017")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/Profile_Icon.png")
@@ -414,8 +506,14 @@ def Profile_017():
             controller.click_by_image("Icons/back_icon.png")
     except Exception as e:
         error_log(e, "017", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Profile_018():
+    recorder.start(f"{img_service}-018")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/Profile_Icon.png")
@@ -442,14 +540,26 @@ def Profile_018():
 
     except Exception as e:
         error_log(e, "018", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Profile_019():
+    recorder.start(f"{img_service}-019")
     try:
         blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "019", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Profile_020():
+    recorder.start(f"{img_service}-020")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/Profile_Icon.png")
@@ -464,8 +574,12 @@ def Profile_020():
             else:
                 fail_log("Log out process failed", "020", img_service)
 
-            # End the test case back logged in
             if not manual_run:
                 app_login()
     except Exception as e:
         error_log(e, "020", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False

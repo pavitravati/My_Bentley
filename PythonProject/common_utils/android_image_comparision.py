@@ -59,7 +59,7 @@ def find_icon_in_screen(icon_filename, threshold=0.8):
     print("Match confidence: {max_val}")
     return max_val >= threshold
 
-def compare_with_expected_crop(expected_image_path, threshold=0.95, output_folder="Images/output"):
+def compare_with_expected_crop(expected_image_path, threshold=0.95, output_folder="Images/output", greyscale=False):
     """
     Compare cropped expected image with current screen using template match + SSIM.
     Saves only the matched region bounding box if match fails.
@@ -120,7 +120,7 @@ def compare_with_expected_crop(expected_image_path, threshold=0.95, output_folde
 
     # Return result
     if score >= threshold:
-        # print(score)
+        print(score)
         print("Match successful")
         return True
     else:

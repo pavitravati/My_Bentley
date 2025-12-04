@@ -1,9 +1,7 @@
 import subprocess
 import os
-from datetime import datetime
-from time import sleep
-from pathlib import Path
-
+from time import sleep, time
+from core import globals
 
 class ScreenRecorder:
     def __init__(self, device_serial):
@@ -14,6 +12,7 @@ class ScreenRecorder:
         self.temp_path = "/sdcard/test_rec.mp4"
         self.process = None
         self.output_path = None
+        self.start_time = 0
 
         os.makedirs(self.save_dir, exist_ok=True)
 
@@ -26,10 +25,11 @@ class ScreenRecorder:
 
         self.process = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         sleep(0.5)
-
+        self.start_time = time()
         return self.output_path
 
     def stop(self, save=True):
+        run_time = time() - self.start_time
         if not self.process:
             return None
 
@@ -37,18 +37,13 @@ class ScreenRecorder:
         self.process.wait(timeout=5)
         sleep(1)
 
+        adb = ["adb", "-s", self.device]
         if save:
-            # Pull file from device
-            adb = ["adb", "-s", self.device]
             subprocess.run(adb + ["pull", self.temp_path, self.output_path],
                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=30)
 
-            subprocess.run(adb + ["shell", "rm", self.temp_path],
-                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=5)
+        adb = ["adb", "-s", self.device]
+        subprocess.run(adb + ["shell", "rm", self.temp_path],
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=5)
 
-            return self.output_path
-        else:
-            adb = ["adb", "-s", self.device]
-            subprocess.run(adb + ["shell", "rm", self.temp_path],
-                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=5)
-            return None
+        return run_time

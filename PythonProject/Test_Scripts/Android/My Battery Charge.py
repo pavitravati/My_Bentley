@@ -1,13 +1,15 @@
 from common_utils.android_image_comparision import *
-from core.app_functions import app_login_setup
-from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log
+from core.app_functions import app_login_setup, service_reset
+from core.log_emitter import log, fail_log, error_log, metric_log, blocked_log, runtime_log
 from time import sleep
-from datetime import datetime, timedelta
+from datetime import datetime
 from core.globals import manual_run
 from gui.manual_check import manual_check
-import core.globals as globals
+from core.screenrecord import ScreenRecorder
+from core import globals
 
 img_service = "My Battery Charge"
+recorder = ScreenRecorder(device_serial=controller.d.serial)
 
 def extract_battery_status():
     metrics = []
@@ -17,7 +19,53 @@ def extract_battery_status():
     metrics.append(f"Estimated charging time: {controller.d(resourceId="uk.co.bentley.mybentley:id/textView_charge_time_rbc_charge_state").get_text()}")
     return metrics
 
+# Make sure that these actually do the preconditions
+def charger_schedule_check(turn_off=False, turn_on=False, timer_switch=False):
+    controller.click_by_image("Icons/remote_icon.png")
+    controller.click_text("MY BATTERY CHARGE")
+    controller.click_text("Set timer")
+    if compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
+        if turn_off:
+            while compare_with_expected_crop("Icons/Interior_heating_toggle.png"):
+                controller.click_by_image("Icons/Interior_heating_toggle.png.png")
+            controller.click_text("SYNC TO CAR")
+            timeout_check = 0
+            while not controller.is_text_present("Successfully sent to car"):
+                sleep(0.5)
+                timeout_check += 1
+                if timeout_check > 80:
+                    break
+            if controller.is_text_present("Successfully sent to car"):
+                return True
+            else:
+                return False
+        else:
+            return True
+    elif turn_on:
+        controller.click_by_image("Icons/timer_toggle_off.png")
+        controller.click_text("SYNC TO CAR")
+        timeout_check = 0
+        while not controller.is_text_present("Successfully sent to car"):
+            sleep(0.5)
+            timeout_check += 1
+            if timeout_check > 80:
+                break
+        if controller.is_text_present("Successfully sent to car"):
+            if timer_switch:
+                controller.click_text("MY BATTERY CHARGE")
+                controller.click_text("Battery charge")
+                controller.click_text("SWITCH TO TIMER MODE")
+            return True
+        else:
+            return False
+    else:
+        if timer_switch:
+            controller.click_text("Battery charge")
+            controller.click_text("SWITCH TO TIMER MODE")
+        return False if not turn_off else True
+
 def My_Battery_Charge_001():
+    recorder.start(f"{img_service}-001")
     try:
         if app_login_setup():
             controller.click_by_image("Icons/remote_icon.png")
@@ -30,10 +78,24 @@ def My_Battery_Charge_001():
             metric_log(f"Charging status: {metric[1].text}")
     except Exception as e:
         error_log(e, "001", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Battery_Charge_002():
+    recorder.start(f"{img_service}-002")
     try:
         if app_login_setup():
+            # Why is a timer needed to be set?
+            if not charger_schedule_check(False, True, True):
+                manual_check(
+                    instruction="Make sure that car there is a RBC Charge Timer scheduled and timer mode enabled",
+                    test_id="002",
+                    service=img_service,
+                    take_screenshot=False
+                )
             controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY BATTERY CHARGE")
 
@@ -68,10 +130,23 @@ def My_Battery_Charge_002():
                 fail_log("My battery charge service failed to open", "002", img_service)
     except Exception as e:
         error_log(e, "002", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Battery_Charge_003():
+    recorder.start(f"{img_service}-003")
     try:
         if app_login_setup():
+            if not charger_schedule_check(False, True, True):
+                manual_check(
+                    instruction="Make sure that car there is a RBC Charge Timer scheduled and timer mode enabled",
+                    test_id="003",
+                    service=img_service,
+                    take_screenshot=False
+                )
             controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY BATTERY CHARGE")
 
@@ -85,9 +160,12 @@ def My_Battery_Charge_003():
                 log("Quick start sent to the car")
             else:
                 fail_log("Quick start not sent to the car", "003", img_service)
-
+            timeout_check = 0
             while not controller.is_text_present("Successfully sent to car"):
                 sleep(0.5)
+                timeout_check += 1
+                if timeout_check > 80:
+                    break
 
             if controller.is_text_present("Successfully sent to car"):
                 log("Quick start successfully sent to the car")
@@ -109,17 +187,33 @@ def My_Battery_Charge_003():
             )
     except Exception as e:
         error_log(e, "003", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Battery_Charge_004():
+    recorder.start(f"{img_service}-004")
     try:
         if app_login_setup():
-
+            if not charger_schedule_check(False, True):
+                manual_check(
+                    instruction=f"Make sure that car there is a RBC Charge Timer scheduled",
+                    test_id="004",
+                    service=img_service,
+                    take_screenshot=False
+                )
             controller.click_by_image("Icons/remote_icon.png")
             controller.click_text("MY BATTERY CHARGE")
             if manual_run:
                 if controller.click_text("QUICK START"):
+                    timeout_check = 0
                     while not controller.is_text_present("Successfully sent to car"):
                         sleep(0.5)
+                        timeout_check += 1
+                        if timeout_check > 80:
+                            break
                     controller.click_text("MY BATTERY CHARGE")
 
             if controller.click_text("SWITCH TO TIMER MODE"):
@@ -132,9 +226,12 @@ def My_Battery_Charge_004():
                 log("Timer mode sent to the car")
             else:
                 fail_log("Timer mode not sent to the car", "004", img_service)
-
+            timeout_check = 0
             while not controller.is_text_present("Successfully sent to car"):
                 sleep(0.5)
+                timeout_check += 1
+                if timeout_check > 80:
+                    break
 
             if controller.is_text_present("Successfully sent to car"):
                 log("Timer mode successfully sent to the car")
@@ -156,11 +253,24 @@ def My_Battery_Charge_004():
             )
     except Exception as e:
         error_log(e, "004", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Battery_Charge_005():
+    recorder.start(f"{img_service}-005")
     try:
         blocked_log("Test blocked - Selecting days does not work")
         # if app_login_setup():
+        #     if not charger_schedule_check(True):
+        #         manual_check(
+        #             instruction=f"Make sure that car there is no RBC Charge Timer scheduled",
+        #             test_id="006",
+        #             service=img_service,
+        #             take_screenshot=False
+        #         )
             # controller.click_by_image("Icons/remote_icon.png")
             # controller.click_text("MY BATTERY CHARGE")
             # controller.click_text("Set timer")
@@ -226,9 +336,12 @@ def My_Battery_Charge_005():
             #     log("Sent timer mode to the car")
             # else:
             #     fail_log("Timer mode not sent to the car", "005", img_service)
-            #
+            # timeout_check = 0
             # while not controller.is_text_present("Successfully sent to car"):
             #     sleep(0.5)
+            #     timeout_check += 1
+            #     if timeout_check > 80:
+            #         break
             #
             # if controller.is_text_present("Successfully sent to car"):
             #     log("Timer mode successfully sent to the car")
@@ -242,12 +355,25 @@ def My_Battery_Charge_005():
 
     except Exception as e:
         error_log(e, "005", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Battery_Charge_006():
+    recorder.start(f"{img_service}-006")
     try:
         blocked_log("Test blocked - Selecting days does not work")
         # if app_login_setup():
         #     if not int(globals.fuel_pct) >= 30:
+        #         if not charger_schedule_check(True):
+        #             manual_check(
+        #                 instruction=f"Make sure that car there is no RBC Charge Timer scheduled",
+        #                 test_id="006",
+        #                 service=img_service,
+        #                 take_screenshot=False
+        #             )
         #         controller.click_by_image("Icons/remote_icon.png")
         #         controller.click_text("MY BATTERY CHARGE")
         #         controller.click_text("Set timer")
@@ -331,9 +457,12 @@ def My_Battery_Charge_006():
         #                 log("Sent timer mode to the car")
         #             else:
         #                 fail_log("Timer mode not sent to the car", "006", img_service)
-        #
+        #             timeout_check = 0
         #             while not controller.is_text_present("Successfully sent to car"):
         #                 sleep(0.5)
+        #                 timeout_check += 1
+        #                 if timeout_check > 80:
+        #                     break
         #
         #             if controller.is_text_present("Successfully sent to car"):
         #                 log("Timer mode successfully sent to the car")
@@ -348,8 +477,14 @@ def My_Battery_Charge_006():
         #     fail_log("Timers not displayed", "006", img_service)
     except Exception as e:
         error_log(e, "006", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Battery_Charge_007():
+    recorder.start(f"{img_service}-007")
     try:
         if app_login_setup():
             manual_check(
@@ -378,8 +513,13 @@ def My_Battery_Charge_007():
             controller.click_by_image("icons/back_icon.png")
     except Exception as e:
         error_log(e, "007", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
-def set_duplicate_timer():
+def set_duplicate_timer(num):
     controller.click_by_resource_id("uk.co.bentley.mybentley:id/textView_periodic_time_rbc_timer_setting")
     current_date = str(datetime.now())
     time = int(current_date[11:13])
@@ -389,7 +529,7 @@ def set_duplicate_timer():
     if controller.click_text("OK"):
         log("Timer time set")
     else:
-        fail_log("Timer time not set", "008", img_service)
+        fail_log("Timer time not set", num, img_service)
 
     controller.click_by_image("Icons/Repeat_days/monday_enable.png")
     if compare_with_expected_crop("Icons/Repeat_days/tuesday_enable.png"):
@@ -408,7 +548,7 @@ def set_duplicate_timer():
     if compare_with_expected_crop("Icons/Repeat_days/monday_wednesday_only.png"):
         log("Repeat days selected")
     else:
-        fail_log("Repeat days not selected", "008", img_service)
+        fail_log("Repeat days not selected", num, img_service)
 
     controller.click_by_resource_id("uk.co.bentley.mybentley:id/textView_preferred_charging_timer_from_timer")
     controller.click_by_content_desc(str(new_time))
@@ -416,7 +556,7 @@ def set_duplicate_timer():
     if controller.click_text("OK"):
         log("Starting time set")
     else:
-        fail_log("Starting time unable to be set", "008", img_service)
+        fail_log("Starting time unable to be set", num, img_service)
 
     controller.click_by_resource_id("uk.co.bentley.mybentley:id/textView_preferred_charging_timer_until_timer")
     controller.click_by_content_desc(str(new_time))
@@ -424,14 +564,15 @@ def set_duplicate_timer():
     if controller.click_text("OK"):
         log("Finishing time set")
     else:
-        fail_log("Finishing time unable to be set", "008", img_service)
+        fail_log("Finishing time unable to be set", num, img_service)
 
     if controller.click_text("Save"):
         log("Timer saved")
     else:
-        fail_log("Timer not saved", "008", img_service)
+        fail_log("Timer not saved", num, img_service)
 
 def My_Battery_Charge_008():
+    recorder.start(f"{img_service}-008")
     try:
         blocked_log("Test blocked - Selecting days does not work")
         # if app_login_setup():
@@ -443,10 +584,10 @@ def My_Battery_Charge_008():
         #                 buttons = controller.d.xpath('//*[@resource-id="uk.co.bentley.mybentley:id/textView_periodic_time_rbc_timer_item"]').all()
         #                 if len(buttons) == 2:
         #                     buttons[0].click()
-        #                     set_duplicate_timer()
+        #                     set_duplicate_timer("008")
         #
         #                     buttons[1].click()
-        #                     set_duplicate_timer()
+        #                     set_duplicate_timer("008")
         #                 else:
         #                     fail_log("There is not two timers, so cannot set duplicate timers", "008", img_service)
         #             else:
@@ -455,9 +596,20 @@ def My_Battery_Charge_008():
         #             fail_log("My battery charge page not displayed", "008", img_service)
     except Exception as e:
         error_log(e, "008", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def My_Battery_Charge_009():
+    recorder.start(f"{img_service}-009")
     try:
         blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "009", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False

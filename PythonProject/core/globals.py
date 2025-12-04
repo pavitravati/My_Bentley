@@ -1,13 +1,13 @@
 import os
 
-current_name = current_email = current_password = current_pin = second_email = second_password = ""
+current_name = current_email = current_password = current_pin = second_email = second_password = country = ""
 vehicle_type = current_vin = fuel_pct = battery_pct = current_car = ""
-app_version = device = phone_software = ""
+app_version = device = phone_software = phone_type = ""
 
 manual_run = True
 selected_services = []
-# rear_seat_heating = False
-rear_seat_heating = True
+rear_seat_heating = False
+# rear_seat_heating = True
 
 get_account_details_called = False
 
@@ -22,12 +22,15 @@ user_dir = os.environ.get("USERPROFILE")
 base_path = os.path.join(user_dir, "Volkswagen AG", "BY GQM - Smart Quality - Documents", "1. Workstreams", "1. Connected Car", "4. Testing", "Automated testing", "Automation app")
 sharedrive_path = base_path
 
+test_failed = False
+
 # temp
 current_name = "test gqm"
-vehicle_type = "phev"
-current_email = "testdrive@gqm.anonaddy.com"
+# vehicle_type = "phev"
+current_email = "29739@gqm.anonaddy.com"
 current_password = "Password1!"
-# current_pin = "1234"
+current_pin = "1234"
 current_vin = "SJAAE14V3TC029739"
+# current_vin = "SJAAC14V6TC026906"
 # current_name = "Michael Scott"
-fuel_pct = "80"
+# fuel_pct = "80"

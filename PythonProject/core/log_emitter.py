@@ -18,6 +18,7 @@ def metric_log(msg):
 
 def fail_log(msg, num, service, screenshot=True):
     print(f"❌ - {msg}")
+    globals.test_failed = True
     log_emitter.log_signal.emit(f"❌ - {msg}")
     if screenshot:
         controller.take_fail_screenshot(f"{service}-{msg}-{num}.png")
@@ -34,5 +35,10 @@ def blocked_log(msg):
 
 def error_log(e, num, service):
     print(f"⚠️ - {e}")
+    globals.test_failed = True
     log_emitter.log_signal.emit(f"⚠️ - Unexpected error: {e}")
     controller.take_fail_screenshot(f"{service}-{e}-{num}.png")
+
+def runtime_log(duration):
+    print(f"Test runtime: {round(duration)} seconds")
+    log_emitter.log_signal.emit(f"⌛ - {round(duration)}")

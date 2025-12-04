@@ -53,7 +53,6 @@ class MetricPage(QWidget):
 
         self.log_textbox = QTextEdit()
         self.log_textbox.setReadOnly(True)
-        print(logs)
 
         logs_combined = "\n".join(logs)
 

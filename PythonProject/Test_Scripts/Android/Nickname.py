@@ -1,10 +1,13 @@
 from time import sleep
 from common_utils.android_image_comparision import *
-from core.log_emitter import log, fail_log, error_log, blocked_log
-from core.app_functions import app_login, app_login_setup, identify_car, app_logout_setup
+from core.log_emitter import log, fail_log, error_log, blocked_log, runtime_log
+from core.app_functions import app_login, app_login_setup, identify_car, app_logout_setup, service_reset
 from core.globals import manual_run
+from core.screenrecord import ScreenRecorder
+from core import globals
 
 img_service = "Nickname"
+recorder = ScreenRecorder(device_serial=controller.d.serial)
 
 def nickname_page(num):
     if controller.click_by_image("Icons/info_btn.png"):
@@ -18,6 +21,7 @@ def nickname_page(num):
         fail_log("Edit button not clicked", num, img_service)
 
 def Nickname_001():
+    recorder.start(f"{img_service}-001")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -28,13 +32,18 @@ def Nickname_001():
                 log("Default vehicle details displayed")
             else:
                 fail_log("Default vehicle details not displayed", "001", img_service)
-
             controller.click_by_image("Icons/back_icon.png")
 
     except Exception as e:
         error_log(e, "001", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Nickname_002():
+    recorder.start(f"{img_service}-002")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -47,8 +56,14 @@ def Nickname_002():
 
     except Exception as e:
         error_log(e, "002", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Nickname_003():
+    recorder.start(f"{img_service}-003")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -92,8 +107,14 @@ def Nickname_003():
 
     except Exception as e:
         error_log(e, "003", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Nickname_004():
+    recorder.start(f"{img_service}-004")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -125,8 +146,14 @@ def Nickname_004():
 
     except Exception as e:
         error_log(e, "004", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Nickname_005():
+    recorder.start(f"{img_service}-005")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -179,8 +206,14 @@ def Nickname_005():
 
     except Exception as e:
         error_log(e, "005", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Nickname_006():
+    recorder.start(f"{img_service}-006")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -221,9 +254,15 @@ def Nickname_006():
 
     except Exception as e:
         error_log(e, "006", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 # text function can't do special chars so this is dodgy using pics of the keyboard
 def Nickname_007():
+    recorder.start(f"{img_service}-007")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -268,9 +307,15 @@ def Nickname_007():
 
     except Exception as e:
         error_log(e, "007", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 # Again uses pics of keyboard, picture only works for uk keyboard.
 def Nickname_008():
+    recorder.start(f"{img_service}-008")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -299,8 +344,14 @@ def Nickname_008():
 
     except Exception as e:
         error_log(e, "008", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Nickname_009():
+    recorder.start(f"{img_service}-009")
     try:
         if app_login_setup():
             controller.click_by_resource_id("uk.co.bentley.mybentley:id/tab_vehicle_dashboard")
@@ -360,9 +411,20 @@ def Nickname_009():
 
     except Exception as e:
         error_log(e, "009", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
 
 def Nickname_010():
+    recorder.start(f"{img_service}-010")
     try:
         blocked_log("Test blocked - Can't check style guide")
     except Exception as e:
         error_log(e, "010", img_service)
+    finally:
+        runtime_log(recorder.stop(globals.test_failed))
+        if globals.test_failed:
+            service_reset()
+            globals.test_failed = False
